@@ -1,15 +1,15 @@
 # Funcionalidades
 
-Documento funcional completo do NSJB Forms.
+Documento funcional do NSJB Forms.
 
-## Visao visual
+## Mapa visual
 
 ![Fluxo funcional resumido](diagramas/funcional.svg)
 
 ## Como ler
 
 - comece por esta pagina se voce quer entender o que a aplicacao faz
-- use [docs/DIAGRAMAS.md](DIAGRAMAS.md) para abrir a pagina visual
+- use [docs/DIAGRAMAS.md](DIAGRAMAS.md) para abrir os mapas visuais
 - use [README.md](../README.md) para a entrada mais curta do projeto
 
 ## Visao geral

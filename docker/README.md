@@ -20,7 +20,7 @@ O `docker/compose.yml` sobe os tres blocos oficiais do projeto:
 
 O fluxo esperado e subir tudo de uma vez. O compose resolve a ordem e aguarda o banco ficar pronto antes do backend depender dele.
 
-## Topologia
+## Mapa visual
 
 ![Fluxo de inicializacao](../docs/diagramas/inicializacao.svg)
 

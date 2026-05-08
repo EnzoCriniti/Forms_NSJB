@@ -11,29 +11,22 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 - Area administrativa para usuarios, socios, classificacoes, presets e catalogos.
 - Execucao oficial via Docker Compose com PostgreSQL.
 
-## Visao rapida
+## Mapa visual
 
 ![Arquitetura do NSJB Forms](docs/diagramas/infra.svg)
 
-## Fluxo oficial
+## Como funciona
 
-O usuario interage com o frontend.
-O frontend chama o backend.
-O backend valida, aplica regra de negocio e grava no PostgreSQL.
+1. o usuario abre o frontend
+2. o frontend chama o backend
+3. o backend valida, aplica as regras e grava no PostgreSQL
+4. o SQLite legado so entra na importacao inicial, se o snapshot existir
 
-Fluxo oficial:
+Leituras principais:
 
-1. subir a stack com Docker Compose
-2. abrir o frontend
-3. usar login ou link publico
-4. a API persiste e consolida os dados
-5. a importacao do SQLite legado acontece uma unica vez, se o snapshot existir
-
-Leitura principal:
-
-- [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - o que a aplicacao faz.
-- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - arquitetura e fluxos visuais.
-- [docker/README.md](docker/README.md) - como subir e operar a stack.
+- [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - o que a aplicacao entrega e como cada fluxo funciona.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais gerados em SVG a partir de D2.
+- [docker/README.md](docker/README.md) - como subir e operar a stack oficial.
 
 ## Organizacao do projeto
 
@@ -46,7 +39,7 @@ Leitura principal:
 
 ## Subir em outra maquina
 
-O fluxo oficial e via Docker Compose.
+O caminho oficial e via Docker Compose.
 
 ### Requisitos
 
@@ -85,7 +78,7 @@ docker compose -f docker/compose.yml logs -f
 ## Documentacao central
 
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo.
-- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fluxos.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fontes declarativas.
 
 ## Desenvolvimento e testes
 

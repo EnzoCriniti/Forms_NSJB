@@ -1,14 +1,14 @@
 # Arquitetura
 
-Este documento resume a arquitetura atual do NSJB Forms depois da separacao entre frontend, backend e Docker.
+Este documento resume a divisao de responsabilidades do NSJB Forms depois da separacao entre frontend, backend, dados e Docker.
 
 ## Leitura rapida
 
 - [docs/DIAGRAMAS.md](DIAGRAMAS.md) mostra a visao visual.
-- [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md) mostra o que a aplicacao entrega.
-- esta pagina explica onde cada responsabilidade vive no codigo.
+- [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md) explica o comportamento da aplicacao.
+- esta pagina mostra onde cada responsabilidade vive no codigo.
 
-## Visao visual
+## Mapa visual
 
 ![Arquitetura geral](diagramas/infra.svg)
 

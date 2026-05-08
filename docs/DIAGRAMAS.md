@@ -1,26 +1,27 @@
 # Diagramas
 
-Pagina visual oficial dos fluxos do NSJB Forms.
+Mapa visual do NSJB Forms.
 
-## Como usar
+## Como ler
 
 - Os arquivos fonte vivem em `docs/diagramas/*.d2`.
 - As imagens geradas vivem em `docs/diagramas/*.svg`.
 - Se mudar um diagrama, regenere o SVG a partir do `.d2` correspondente.
-- Quando precisar do contexto de estrutura, consulte [docs/MAPA-CODIGO.md](MAPA-CODIGO.md).
+- Use este documento como apoio visual e [docs/MAPA-CODIGO.md](MAPA-CODIGO.md) como mapa rapido de arquivos.
 
-## Arquitetura
+## Arquitetura geral
 
 ![Arquitetura geral](diagramas/infra.svg)
 
-## Inicializacao
+## Inicializacao da stack
 
 ![Fluxo de inicializacao](diagramas/inicializacao.svg)
 
-## Funcionalidades
+## Fluxo funcional
 
 ![Fluxo funcional resumido](diagramas/funcional.svg)
 
-## Observacao
+## Quando atualizar
 
+- Atualize o `.d2` e regenere o `.svg` quando a topologia, a stack Docker ou o fluxo funcional mudarem.
 - A documentacao tecnica continua em `README.md`, `docs/ARQUITETURA.md`, `docs/FUNCIONALIDADES.md` e `docs/MANUTENCAO.md`.
