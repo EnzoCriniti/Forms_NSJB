@@ -80,6 +80,10 @@ docker compose -f docker/compose.yml logs -f
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fontes declarativas.
 
+## Regra de manutencao
+
+Esta documentacao e viva. Quando o projeto avancar, ajuste os textos, diagramas e READMEs da area alterada no mesmo ciclo da mudanca.
+
 ## Desenvolvimento e testes
 
 - `npm run dev` - sobe a stack oficial via Docker Compose.

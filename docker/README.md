@@ -72,3 +72,7 @@ Se voce mexer em infraestrutura, comece por este arquivo e depois leia `docker/b
 - [docker/PLANO-MIGRACAO-DOCKER.md](PLANO-MIGRACAO-DOCKER.md)
 - [docker/HANDOFF-INFRA-BANCO.md](HANDOFF-INFRA-BANCO.md)
 - [docs/DIAGRAMAS.md](../docs/DIAGRAMAS.md)
+
+## Manutencao da documentacao
+
+Este README e os READMEs filhos devem acompanhar qualquer mudanca na stack. Se a infraestrutura mudar, atualize o texto e o diagrama no mesmo ciclo.

@@ -6,6 +6,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 
 - Veja `docs/MAPA-CODIGO.md` antes de procurar arquivos no repo inteiro.
 - Comece pela area certa: frontend, backend, docker ou docs.
+- Considere a documentacao como parte do codigo: se o comportamento mudou, atualize o texto correspondente.
 - Atualize os caminhos da documentacao quando mover arquivos.
 - Atualize os diagramas em `docs/diagramas/*.d2` e regenere os `*.svg` quando a arquitetura ou o fluxo mudar.
 - Registre bug encontrado com teste novo ou ajuste de teste existente.
@@ -39,6 +40,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 4. atualizar doc se a estrutura mudar
 5. validar a stack quando o fluxo real for afetado
 6. registrar commit claro
+7. revisar README e docs da area quando o fluxo ficar diferente
 
 ## Backlog de refatoracao
 
