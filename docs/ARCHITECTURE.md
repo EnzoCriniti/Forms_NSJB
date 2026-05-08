@@ -2,6 +2,12 @@
 
 Este documento resume a arquitetura atual do NSJB Forms depois da separacao entre frontend, backend e docker.
 
+## Leitura rapida
+
+- [docs/DIAGRAMAS.md](DIAGRAMAS.md) mostra a visao visual.
+- [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md) mostra o que a aplicacao entrega.
+- esta pagina explica onde cada responsabilidade vive no codigo.
+
 ## Camadas
 
 - `frontend/src/` - interface React.

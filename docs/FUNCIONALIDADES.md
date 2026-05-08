@@ -8,6 +8,12 @@ Documento funcional completo do NSJB Forms.
 
 Para o mapa visual da arquitetura e dos fluxos, veja [docs/DIAGRAMAS.md](DIAGRAMAS.md).
 
+## Como ler
+
+- comece por esta pagina se voce quer entender o que a aplicacao faz
+- use [docs/DIAGRAMAS.md](DIAGRAMAS.md) para ver os fluxos sem abrir o codigo
+- use [README.md](../README.md) para a entrada mais curta do projeto
+
 ## Visao geral
 
 O NSJB Forms centraliza a operacao de:
@@ -105,6 +111,15 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 4. telas consultam a API
 5. backend valida, aplica regras e persiste
 6. frontend atualiza a visao e os resumos
+
+## Resumo operacional
+
+Se voce so precisa de uma visao rapida, pense assim:
+
+- o frontend organiza a experiencia do usuario
+- o backend valida e grava os dados
+- o PostgreSQL concentra a persistencia oficial
+- o SQLite legado existe so para a transicao historica
 
 ## Relacao com a arquitetura
 

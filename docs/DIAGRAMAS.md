@@ -2,6 +2,12 @@
 
 Diagramas declarativos para ler a arquitetura e os fluxos sem precisar abrir o codigo.
 
+## Como usar
+
+- veja a imagem primeiro para bater o olho na estrutura
+- use o bloco Mermaid logo abaixo quando quiser editar o fluxo
+- mantenha os desenhos curtos; se a regra ficar longa, mova para a documentacao funcional
+
 ## Arquitetura geral
 
 ![Arquitetura geral](diagramas/infra.svg)
