@@ -9,6 +9,8 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - Considere a documentacao como parte do codigo: se o comportamento mudou, atualize o texto correspondente.
 - Atualize os caminhos da documentacao quando mover arquivos.
 - Atualize os diagramas em `docs/diagramas/*.d2` e regenere os `*.svg` quando a arquitetura ou o fluxo mudar.
+- Antes de remover qualquer resto de SQLite, rode `npm run verify:legacy-parity` e guarde o resultado da comparacao.
+- Execute essa comparacao em uma janela de congelamento da escrita ou com a stack parada, senao a base viva pode divergir do snapshot.
 - Registre bug encontrado com teste novo ou ajuste de teste existente.
 - Registre toda correcao ou refatoracao relevante em commit separado.
 - Rode `npm run test`, `npm run build` e `docker compose -f docker/compose.yml config` quando a mudanca tocar fluxo real.
@@ -55,6 +57,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - Extrair helpers repetidos de auditoria e erro para evitar copy/paste entre rotas.
 - Continuar a retirada de qualquer caminho ou dependencia indireta de SQLite legado.
 - Remover por completo a logica de importacao e compatibilidade com SQLite quando a migracao estiver fechada e validada.
+- Remover `backend/database/sqliteRuntime.mjs`, `backend/database/sqliteSchema.mjs`, `backend/database/drivers/sqliteDriver.mjs` e os testes que existirem apenas para o driver legado depois que a paridade estiver fechada.
 
 ## Limpeza final
 

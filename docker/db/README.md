@@ -47,6 +47,9 @@ flowchart LR
 
 - SQLite nao faz mais parte do fluxo oficial do ambiente
 - a camada de importacao legado existe so para a transicao e deve sair quando o backlog de limpeza fechar
+- use `npm run verify:legacy-parity` para comparar o snapshot SQLite legado com o PostgreSQL antes de remover o legado por completo
+- se rodar fora do compose, passe `NSJB_VERIFY_PGHOST=127.0.0.1` e, se necessario, `NSJB_VERIFY_PGPORT`
+- rode a comparacao depois de congelar as escritas, porque uma base viva pode divergir do snapshot legado por uso normal
 
 ## Manutencao
 
