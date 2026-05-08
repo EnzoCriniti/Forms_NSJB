@@ -78,13 +78,13 @@ export const writeAudit = async (req, auth, event) => {
 export const getSystemActor = () => getSystemAuditActor();
 
 export const auditLevelFromError = error => {
-  if (error?.code === "ESCALA_CONFLICT" || error?.statusCode === 409) return "warn";
+  if (error?.code === "ESCALA_CONFLICT" || error?.code === "ESCALA_LIMIT_REACHED" || error?.statusCode === 409) return "warn";
   if (error?.statusCode === 403) return "warn";
   return "error";
 };
 
 export const auditStatusFromError = error => {
-  if (error?.code === "ESCALA_CONFLICT" || error?.statusCode === 409) return "conflict";
+  if (error?.code === "ESCALA_CONFLICT" || error?.code === "ESCALA_LIMIT_REACHED" || error?.statusCode === 409) return "conflict";
   if (error?.statusCode === 403) return "denied";
   return "failure";
 };

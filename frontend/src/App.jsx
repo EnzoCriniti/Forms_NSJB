@@ -9,6 +9,7 @@ import { AdminSettingsModal } from "./features/admin/AdminSettingsModal";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { COLORS, Btn, ClosedPublicScreen } from "./components/ui";
 import { AppHeader } from "./components/AppHeader";
+import { AppStatusScreen } from "./components/AppStatusScreen";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
 import { loadStored, persist } from "./lib/storage";
@@ -578,39 +579,17 @@ export default function App() {
   );
 
   if (loading) {
-    return (
-      <div className="app-root" style={{ minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ width: 42, height: 42, borderRadius: "50%", border: `4px solid ${COLORS.borderLight}`, borderTopColor: COLORS.primary, margin: "0 auto 16px", animation: "spin 0.9s linear infinite" }} />
-          <strong>Carregando aplicação...</strong>
-        </div>
-      </div>
-    );
+    return <AppStatusScreen loading tone="loading" message="Carregando aplicação..." />;
   }
 
   if (error) {
-    return (
-      <div className="app-root" style={{ minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-        <div style={{ maxWidth: 460, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 16, padding: 24 }}>
-          <h2 style={{ marginTop: 0 }}>Erro ao iniciar</h2>
-          <p style={{ color: COLORS.textSecondary }}>{error}</p>
-          <Btn onClick={() => refreshBootstrap({ preserveSelection: false })}>Tentar novamente</Btn>
-        </div>
-      </div>
-    );
+    return <AppStatusScreen tone="error" title="Erro ao iniciar" message={error} actionLabel="Tentar novamente" onAction={() => refreshBootstrap({ preserveSelection: false })} />;
   }
 
   const targetForm = publicForm || (screen === "results" ? activeForm : null);
   const waitingForTarget = Boolean(targetForm) && !(publicForm && isFormClosedForPublic(publicForm)) && (targetForm.type === "escala_organ" ? !hasLoadedEscala(targetForm.id) : !hasLoadedResponses(targetForm.id));
   if (waitingForTarget) {
-    return (
-      <div className="app-root" style={{ minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ textAlign: "center" }}>
-          <div style={{ width: 42, height: 42, borderRadius: "50%", border: `4px solid ${COLORS.borderLight}`, borderTopColor: COLORS.primary, margin: "0 auto 16px", animation: "spin 0.9s linear infinite" }} />
-          <strong>Carregando dados do formulario...</strong>
-        </div>
-      </div>
-    );
+    return <AppStatusScreen loading tone="loading" message="Carregando dados do formulario..." />;
   }
 
   if (publicForm) {
@@ -628,8 +607,8 @@ export default function App() {
 
   if (!currentUser) {
     return (
-      <div className="app-root" style={{ minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-        <div style={{ width: "min(480px, 100%)", background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 18, padding: 28, boxShadow: "var(--shadow-md)" }}>
+      <>
+        <AppStatusScreen width={480} tone="info">
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary, fontWeight: 800 }}>NF</div>
             <div>
@@ -640,9 +619,9 @@ export default function App() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             <Btn onClick={() => setShowLogin(true)}>Entrar</Btn>
           </div>
-        </div>
+        </AppStatusScreen>
         {loginModal}
-      </div>
+      </>
     );
   }
 
