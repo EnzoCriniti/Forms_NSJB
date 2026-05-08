@@ -1,15 +1,15 @@
 # Manutencao
 
-Regras objetivas para manter o projeto consistente durante a migracao de estrutura.
+Guia unico para manter o projeto consistente, refatorar sem perder o foco e registrar o que mudou.
 
-## Checklist rapido
+## Como usar
 
 - Veja `docs/AI_CODEMAP.md` antes de procurar arquivos no repo inteiro.
-- Verifique se a mudanca pertence ao frontend, backend, docker ou docs.
+- Comece pela area certa: frontend, backend, docker ou docs.
 - Atualize os caminhos da documentacao quando mover arquivos.
-- Rode `npm run build` ao final.
-- Use `docs/CHECKLIST-MANUTENCAO.md` como lista viva da sequencia de manutencao.
-- Use `docs/CHECKLIST-REFATORACAO-PENDENTE.md` para retomar pendencias de codigo.
+- Registre bug encontrado com teste novo ou ajuste de teste existente.
+- Registre toda correcao ou refatoracao relevante em commit separado.
+- Rode `npm run test`, `npm run build` e `docker compose -f docker/compose.yml config` quando a mudanca tocar fluxo real.
 
 ## Separacao de responsabilidades
 
@@ -20,17 +20,42 @@ Regras objetivas para manter o projeto consistente durante a migracao de estrutu
 - Regras de negocio ficam em `backend/services/`.
 - Persistencia fica em `backend/repositories/`.
 - Validacao fica em `backend/validators/`.
+- Infraestrutura oficial fica em `docker/`.
 
 ## O que evitar
 
 - Colocar `fetch` direto em component ou screen.
 - Colocar regra de negocio em `App.jsx`.
 - Colocar SQL fora de repository.
-- Juntar doc historica com doc operacional.
+- Juntar documentacao historica com documentacao operacional.
+- Criar mais arquivos de checklist quando um documento unico resolve.
 
-## Quando atualizar docs
+## Rotina curta
 
-- Ao mover um arquivo de pasta.
-- Ao criar uma nova area de codigo.
-- Ao alterar um contrato importante entre frontend e backend.
-- Ao mudar a estrategia de banco ou container.
+1. ler `docs/AI_CODEMAP.md`
+2. identificar a menor mudanca util
+3. atualizar teste se houver bug ou regressao
+4. atualizar doc se a estrutura mudar
+5. validar a stack quando o fluxo real for afetado
+6. registrar commit claro
+
+## Backlog de refatoracao
+
+- Reduzir ainda mais `frontend/src/App.jsx` para ficar so como orquestrador.
+- Extrair o restante do fluxo de carregamento e selecao de tela para helpers puros.
+- Quebrar `frontend/src/screens/FormListScreen.jsx` em componentes menores de item, filtros e acoes.
+- Quebrar `frontend/src/screens/ResultsScreen.jsx` em blocos menores de resumo, lista e edicao.
+- Revisar `frontend/src/screens/CreateFormScreen.jsx` para separar edicao de formulario, preview e regras de validacao.
+- Revisar `frontend/src/screens/PublicFormScreen.jsx` e `frontend/src/screens/PublicEscalaScreen.jsx` para remover blocos visuais repetidos.
+- Dividir `backend/routes/formRoutes.mjs` em handlers menores por subdominio.
+- Dividir `backend/routes/adminRoutes.mjs` em partes menores para usuarios, catalogos e configuracoes criticas.
+- Extrair helpers repetidos de auditoria e erro para evitar copy/paste entre rotas.
+- Continuar a retirada de qualquer caminho ou dependencia indireta de SQLite legado.
+- Remover por completo a logica de importacao e compatibilidade com SQLite quando a migracao estiver fechada e validada.
+
+## Limpeza final
+
+- Remover arquivos obsoletos depois de cada extracao.
+- Confirmar que `frontend/dist/` nao fica versionado.
+- Confirmar que artefatos de build e caches locais nao entram no repo.
+- Manter a raiz do projeto livre de arquivos temporarios sem necessidade operacional.
