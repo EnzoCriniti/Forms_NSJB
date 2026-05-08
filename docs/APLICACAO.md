@@ -2,6 +2,8 @@
 
 ## Objetivo
 
+Resumo funcional da aplicacao. Para a lista completa de capacidades, veja [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md).
+
 O NSJB Forms centraliza dois fluxos:
 
 - formularios de presenca

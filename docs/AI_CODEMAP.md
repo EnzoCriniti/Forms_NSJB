@@ -70,6 +70,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - Para request/auth/auditoria do backend: `backend/routes/requestHelpers.mjs`.
 - Para ajustar o banco: `backend/database/` e `backend/database/drivers/`.
 - Para Docker e operacao: `docker/README.md`.
+- Para entender as funcionalidades da aplicacao: `docs/FUNCIONALIDADES.md`.
 
 ## Observacao sobre historico
 

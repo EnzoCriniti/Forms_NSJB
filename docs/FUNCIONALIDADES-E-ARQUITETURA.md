@@ -1,6 +1,6 @@
 # Funcionalidades e Arquitetura
 
-Mapa curto da estrutura atual do sistema.
+Mapa curto da estrutura atual do sistema. O detalhamento funcional vive em [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md).
 
 ## Visao geral
 
