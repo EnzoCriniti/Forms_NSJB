@@ -24,6 +24,7 @@ O NSJB Forms centraliza a operacao de:
 - administracao da base e configuracoes
 
 A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
+O fluxo oficial assume uma maquina ou ambiente unico com os tres containers da stack.
 
 ## Perfis de uso
 
@@ -42,6 +43,13 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - permite arquivar ou restaurar formularios
 - permite excluir formulario com chave mestra
 
+Como essa area funciona:
+
+1. o frontend pede a lista inicial ao backend
+2. o backend monta os metadados a partir do banco
+3. a tela aplica filtros locais de busca e ordenacao
+4. as acoes de arquivar, restaurar e excluir voltam para a API
+
 ### 2. Criacao e edicao de formularios
 
 - cria formularios de presenca
@@ -53,6 +61,13 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - define secoes e vagas de escala
 - salva rascunho, aberto, fechado ou arquivado
 
+Como essa area funciona:
+
+1. o usuario escolhe o tipo de formulario
+2. a tela monta o modelo inicial com base em presets ou formulario existente
+3. o frontend valida a estrutura basica antes de enviar
+4. o backend valida de novo e grava a versao final
+
 ### 3. Formulario publico de presenca
 
 - coleta respostas por link publico
@@ -61,6 +76,13 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - respeita regras de validacao do formulario
 - bloqueia duplicidade quando configurado
 - permite consulta do formulario aberto ou fechado
+
+Como essa area funciona:
+
+1. o link publico identifica o formulario pelo slug
+2. o frontend carrega a configuracao permitida para aquele formulario
+3. o usuario escolhe um socio e preenche os campos
+4. o backend salva a resposta e reaproveita a existente quando o fluxo permite edicao
 
 ### 4. Formulario publico de escala
 
@@ -71,6 +93,13 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - recarrega o estado ao encontrar conflito
 - salva a estrutura atualizada da escala
 
+Como essa area funciona:
+
+1. a tela publica consulta a estrutura da escala
+2. cada secao mostra vagas livres e ocupadas
+3. ao escolher um nome, o backend verifica limites e conflitos
+4. se houver disputa, o frontend recarrega o estado atual e tenta novamente
+
 ### 5. Resultados
 
 - exibe respostas por formulario
@@ -78,6 +107,13 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - mostra totais e resumo operacional
 - permite exportacao em CSV, quando habilitada pela tela
 - permite edicao de configuracao da escala por admin
+
+Como essa area funciona:
+
+1. o backend entrega a lista consolidada de respostas ou escala
+2. o frontend monta a tabela e os totais
+3. o admin pode entrar em ajustes quando a tela oferece edicao
+4. a exportacao CSV gera uma visao externa da mesma base
 
 ### 6. Administracao
 
@@ -90,6 +126,13 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - configura a chave mestra de exclusao de formularios
 - consulta logs de auditoria
 
+Como essa area funciona:
+
+1. o menu administrativo centraliza configuracoes de dominio
+2. os cadastros sao persistidos no backend
+3. as alteracoes entram no mesmo banco oficial da stack
+4. a auditoria registra operacoes relevantes para consulta posterior
+
 ### 7. Bootstrap e inicio
 
 - carrega dados iniciais ao abrir a aplicacao
@@ -97,11 +140,25 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - resolve o formulario publico via slug
 - carrega respostas e escala conforme a tela ativa
 
+Como essa area funciona:
+
+1. o backend sobe e carrega configuracoes e seed se necessario
+2. o frontend restaura sessao e estado local
+3. o usuario cai na ultima tela ativa ou no fluxo publico correto
+4. o sistema usa isso para evitar telas vazias ou estados inconsistentes
+
 ### 8. Persistencia
 
 - o banco oficial e PostgreSQL no Docker
 - o backend continua com uma camada de acesso separada por repository
 - o SQLite legado existe apenas como compatibilidade historica
+
+Como essa area funciona:
+
+1. a aplicacao grava no PostgreSQL do Docker
+2. a camada de repository isola consultas e comandos SQL
+3. a importacao do SQLite legado acontece uma vez quando o snapshot existe
+4. depois disso, o fluxo oficial nao depende mais do legado
 
 ## Fluxo funcional resumido
 

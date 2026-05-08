@@ -17,6 +17,19 @@ Nesta fase, o projeto e um MVP operado em Docker com persistencia em PostgreSQL,
 Usuario -> Frontend -> Backend -> PostgreSQL
 ```
 
+## Como funciona
+
+O frontend mostra a interface e dispara as requisicoes.
+O backend valida os dados, aplica as regras e grava no banco.
+O PostgreSQL guarda o estado oficial da aplicacao.
+
+Quando a aplicacao sobe:
+
+1. o container do PostgreSQL inicia primeiro
+2. o backend conecta no banco e carrega configuracoes
+3. o frontend sobe em seguida e consome a API
+4. se houver snapshot legado do SQLite, o backend faz a importacao unica
+
 ## Perfis
 
 - `visitante`: sem login, ve apenas formularios abertos e links publicos
@@ -45,6 +58,7 @@ A tela `Formularios` exibe:
 - link publico
 
 Visitantes veem apenas formularios `aberto`.
+Quem tem acesso interno consegue abrir resultados, editar ou arquivar.
 
 ### 2. Criacao e edicao
 
@@ -59,6 +73,7 @@ A tela `Novo` permite:
 - definir secoes da escala
 
 Os formularios sao salvos no PostgreSQL da stack Docker.
+O mesmo formulario pode ser reaberto para edicao enquanto estiver em estado editavel.
 
 ### 3. Formulario publico de presenca
 
@@ -69,6 +84,7 @@ O respondente:
 3. pode reabrir o mesmo link e editar a resposta existente
 
 As respostas sao salvas por formulario.
+Se o formulario permitir edicao, o mesmo link atualiza a resposta existente em vez de criar uma duplicidade.
 
 ### 4. Escala publica
 
@@ -79,6 +95,7 @@ O participante:
 3. seleciona o nome
 
 Cada nome so pode ocupar uma vaga por escala.
+Quando a vaga ja esta ocupada, o sistema devolve conflito e recarrega o estado antes de salvar.
 
 ### 5. Resultados
 
@@ -108,6 +125,8 @@ O menu `Configuracoes` concentra:
 - classificacoes
 - presets
 
+Nessa area, o admin ajusta o comportamento da base sem precisar mexer no codigo.
+
 ## Socios via Google Sheets
 
 O projeto mantem intencionalmente a configuracao por link direto de Google Sheets para facilitar a operacao atual.
@@ -120,6 +139,7 @@ Sao armazenados:
 - aba/intervalo
 
 A leitura e usada para popular a lista global de socios na base do backend.
+Na migracao atual, isso ajuda a manter o cadastro operacional sem depender de importacao manual a cada inicio.
 
 ## Documentos relacionados
 

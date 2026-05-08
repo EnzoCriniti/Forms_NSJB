@@ -10,6 +10,16 @@ Documentacao da stack oficial do NSJB Forms.
 - `docker/db/` - esquema, plano e desenho do banco.
 - `docker/postgres/` - README do service PostgreSQL.
 
+## Como a stack funciona
+
+O `docker/compose.yml` sobe os tres blocos oficiais do projeto:
+
+1. `postgres` recebe e persiste os dados
+2. `backend` conecta no banco, expõe a API e aplica regras
+3. `frontend` entrega a interface React para o usuario
+
+O fluxo esperado e subir tudo de uma vez. O compose resolve a ordem e aguarda o banco ficar pronto antes do backend depender dele.
+
 ## Topologia
 
 ![Topologia Docker](../docs/diagramas/infra.svg)
@@ -42,6 +52,8 @@ docker compose -f docker/compose.yml down
 - Nome do banco: `NSJB_PGDATABASE`
 - Usuario do banco: `NSJB_PGUSER`
 - Senha do banco: `NSJB_PGPASSWORD`
+
+Se voce mexer em infraestrutura, comece por este arquivo e depois leia `docker/backend/README.md` e `docker/db/README.md`.
 
 ## Documentacao por componente
 
