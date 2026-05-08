@@ -91,7 +91,7 @@ describe("App dashboard flow", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
 
-    expect(await screen.findByPlaceholderText("Usuario")).toBeInTheDocument();
+    expect(await screen.findByPlaceholderText("Usuário")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Fechar" })).toBeInTheDocument();
   });
 
@@ -152,7 +152,7 @@ describe("App dashboard flow", () => {
     });
 
     expect(screen.getByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Usuario")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Usuário")).toBeInTheDocument();
     vi.useRealTimers();
   });
 });

@@ -64,12 +64,12 @@ export const loginWithCredentials = async ({ username, password }) => {
   const secret = String(password || "");
 
   if (!login || !secret) {
-    throw makeError("Usuario e senha sao obrigatorios.", 400, "AUTH_INVALID_PAYLOAD");
+    throw makeError("Usuário e senha são obrigatórios.", 400, "AUTH_INVALID_PAYLOAD");
   }
 
   const user = await findUserByUsername(login);
   if (!user) {
-    throw makeError("Usuario ou senha invalidos.", 401, "AUTH_INVALID_CREDENTIALS");
+    throw makeError("Usuário ou senha inválidos.", 401, "AUTH_INVALID_CREDENTIALS");
   }
 
   const passwordMatches = user.password_hash && user.password_salt
@@ -81,7 +81,7 @@ export const loginWithCredentials = async ({ username, password }) => {
     : String(user.password || "") === secret;
 
   if (!passwordMatches) {
-    throw makeError("Usuario ou senha invalidos.", 401, "AUTH_INVALID_CREDENTIALS");
+    throw makeError("Usuário ou senha inválidos.", 401, "AUTH_INVALID_CREDENTIALS");
   }
 
   if (!user.password_hash || !user.password_salt) {
@@ -93,7 +93,7 @@ export const loginWithCredentials = async ({ username, password }) => {
     const minLastUsedAt = new Date(Date.now() - SESSION_IDLE_TIMEOUT_MS).toISOString();
     const activeAdminSession = await findActiveAuthSessionByRole("admin", now, minLastUsedAt);
     if (activeAdminSession) {
-      throw makeError("Ja existe um administrador conectado em outro dispositivo. Aguarde o logout ou o timeout de inatividade.", 409, "AUTH_ADMIN_SESSION_ACTIVE");
+      throw makeError("Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o tempo de inatividade.", 409, "AUTH_ADMIN_SESSION_ACTIVE");
     }
   } else {
     await revokeAuthSessionsByUserId(user.id);

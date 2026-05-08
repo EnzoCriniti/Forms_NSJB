@@ -11,7 +11,7 @@ import { AuthPanel } from "../../frontend/src/features/auth/AuthPanel.jsx";
 
 describe("AuthPanel", () => {
   it("mostra erro padronizado quando o login falha", async () => {
-    const onLogin = vi.fn().mockRejectedValue({ status: 401, code: "AUTH_INVALID_CREDENTIALS", message: "Usuario ou senha invalidos." });
+    const onLogin = vi.fn().mockRejectedValue({ status: 401, code: "AUTH_INVALID_CREDENTIALS", message: "Usuário ou senha inválidos." });
 
     render(
       <AuthPanel
@@ -27,7 +27,7 @@ describe("AuthPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByPlaceholderText("Usuario"), { target: { value: "admin" } });
+    fireEvent.change(screen.getByPlaceholderText("Usuário"), { target: { value: "admin" } });
     fireEvent.change(screen.getByPlaceholderText("Senha"), { target: { value: "errada" } });
     fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
 
@@ -41,7 +41,7 @@ describe("AuthPanel", () => {
     const onLogin = vi.fn().mockRejectedValue({
       status: 409,
       code: "AUTH_ADMIN_SESSION_ACTIVE",
-      message: "Ja existe um administrador conectado em outro dispositivo. Aguarde o logout ou o timeout de inatividade.",
+      message: "Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o tempo de inatividade.",
     });
 
     render(
@@ -58,11 +58,11 @@ describe("AuthPanel", () => {
       />,
     );
 
-    fireEvent.change(screen.getByPlaceholderText("Usuario"), { target: { value: "admin" } });
+    fireEvent.change(screen.getByPlaceholderText("Usuário"), { target: { value: "admin" } });
     fireEvent.change(screen.getByPlaceholderText("Senha"), { target: { value: "admin123" } });
     fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
 
     const alert = await screen.findByRole("alert");
-    expect(alert).toHaveTextContent("Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o timeout de inatividade.");
+    expect(alert).toHaveTextContent("Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o tempo de inatividade.");
   });
 });

@@ -23,14 +23,14 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
 
   const getLoginErrorMessage = error => {
     const message = String(error?.message || "");
-    if (error?.code === "AUTH_INVALID_PAYLOAD" || /usuario e senha sao obrigatorios/i.test(message)) {
+    if (error?.code === "AUTH_INVALID_PAYLOAD" || /usuario e senha sao obrigatorios|usu[aá]rio e senha s[aã]o obrigat[oó]rios/i.test(message)) {
       return "Informe usuário e senha.";
     }
-    if (error?.code === "AUTH_INVALID_CREDENTIALS" || /usuario ou senha invalidos/i.test(message)) {
+    if (error?.code === "AUTH_INVALID_CREDENTIALS" || /usuario ou senha invalidos|usu[aá]rio ou senha inv[aá]lidos/i.test(message)) {
       return "Usuário ou senha inválidos.";
     }
     if (error?.code === "AUTH_ADMIN_SESSION_ACTIVE" || /administrador conectado em outro dispositivo/i.test(message)) {
-      return "Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o timeout de inatividade.";
+      return "Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o tempo de inatividade.";
     }
     return resolveActionErrorMessage(error);
   };
@@ -38,18 +38,18 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
   const submit = async () => {
     setFeedback(null);
     if (!username.trim() || !password.trim()) {
-      setFeedback({ tone: "error", title: "Login", message: "Informe usuário e senha." });
+      setFeedback({ tone: "error", title: "Acesso", message: "Informe usuário e senha." });
       return;
     }
     setSaving(true);
-    setFeedback({ tone: "loading", title: "Login", message: "Entrando..." });
+    setFeedback({ tone: "loading", title: "Acesso", message: "Entrando..." });
     try {
       await onLogin(username.trim(), password);
       setUsername("");
       setPassword("");
       setFeedback(null);
     } catch (error) {
-      setFeedback({ tone: "error", title: "Login", message: getLoginErrorMessage(error) });
+      setFeedback({ tone: "error", title: "Acesso", message: getLoginErrorMessage(error) });
     } finally {
       setSaving(false);
     }
@@ -107,14 +107,14 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
     return (
       <div className="auth-panel auth-panel--sheet" style={{ display: "grid", gap: 12, width: "100%" }}>
         <div>
-          <strong style={{ display: "block", color: "var(--text)", fontSize: 14, marginBottom: 2 }}>Acesso</strong>
-          <span style={{ color: "var(--text-secondary)", fontSize: 12, lineHeight: 1.4 }}>Entre para liberar as opcoes do cabecalho e continuar no sistema.</span>
+          <strong style={{ display: "block", color: "var(--text)", fontSize: 14, marginBottom: 2 }}>Acessar conta</strong>
+          <span style={{ color: "var(--text-secondary)", fontSize: 12, lineHeight: 1.4 }}>Use seu usuário e senha para liberar as opções do cabeçalho e continuar no sistema.</span>
         </div>
         <input
           className="auth-panel__input"
           value={username}
           onChange={e => setUsername(e.target.value)}
-          placeholder="Usuario"
+          placeholder="Usuário"
           style={{ width: "100%" }}
         />
         <input
@@ -143,7 +143,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
       >
         <ThemeIcon theme={theme} />
       </Btn>
-      <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Usuario" style={{ width: 140 }} />
+      <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Usuário" style={{ width: 140 }} />
       <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" type="password" style={{ width: 128 }} onKeyDown={e => { if (e.key === "Enter") submit(); }} />
       <Btn onClick={submit} loading={saving} style={{ background: "#fff", color: "var(--primary)", minHeight: 38, boxShadow: "var(--shadow-sm)" }}>Entrar</Btn>
       {feedback && <FeedbackBanner fixed tone={feedback.tone} title={feedback.title} message={feedback.message} />}
