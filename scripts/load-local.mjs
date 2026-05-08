@@ -31,7 +31,7 @@ const startServer = async () => {
   const tempDir = makeTempDir();
   const port = 8900 + Math.floor(Math.random() * 200);
   const dbPath = path.join(tempDir, "load.sqlite");
-  const child = spawn(process.execPath, ["server/index.mjs"], {
+  const child = spawn(process.execPath, ["backend/index.mjs"], {
     cwd: process.cwd(),
     env: {
       ...process.env,

@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "storage": {
+    "strategy": "json-seed-runtime",
+    "description": "Este arquivo documenta a semente do MVP. Em producao, estes objetos viram colecoes/tabelas no backend."
+  },
+  "entities": {
+    "forms": {
+      "description": "Cada formulario publicado possui tipo, status e slug publico.",
+      "types": ["presenca", "escala_organ"]
+    },
+    "responses": {
+      "description": "Respostas do formulario de presenca, identificadas pelo nome selecionado."
+    },
+    "organScale": {
+      "description": "Escala da Organ com secoes, quantidade de responsaveis, quantidade de auxiliares e vagas pendentes/preenchidas."
+    },
+    "people": {
+      "description": "Lista de pessoas usada pelos seletores de nome nos formularios e escalas."
+    },
+    "presets": {
+      "description": "Presets separados por tipo de formulario: presenca ou escala_organ."
+    },
+    "users": {
+      "description": "Usuarios locais do MVP com username, senha e papel: admin ou viewer."
+    },
+    "theme": {
+      "description": "Preferencia local de tema claro/escuro."
+    }
+  }
+}

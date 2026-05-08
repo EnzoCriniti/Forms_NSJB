@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { PublicEscalaScreen } from "../../src/screens/PublicEscalaScreen.jsx";
+import { PublicEscalaScreen } from "../../frontend/src/screens/PublicEscalaScreen.jsx";
 
 const form = {
   id: 10,

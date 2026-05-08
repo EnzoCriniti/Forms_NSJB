@@ -1,0 +1,80 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nsjb-postgres
+    environment:
+      POSTGRES_DB: ${NSJB_PGDATABASE:-nsjb_forms}
+      POSTGRES_USER: ${NSJB_PGUSER:-nsjb}
+      POSTGRES_PASSWORD: ${NSJB_PGPASSWORD:-nsjb}
+    ports:
+      - "${NSJB_PGPORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${NSJB_PGUSER:-nsjb} -d ${NSJB_PGDATABASE:-nsjb_forms}
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/backend/Dockerfile
+    container_name: nsjb-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NSJB_API_PORT: ${NSJB_API_PORT:-8787}
+      NSJB_DB_DRIVER: ${NSJB_DB_DRIVER:-postgres}
+      NSJB_PGHOST: ${NSJB_PGHOST:-postgres}
+      NSJB_PGPORT: ${NSJB_PGPORT:-5432}
+      NSJB_PGDATABASE: ${NSJB_PGDATABASE:-nsjb_forms}
+      NSJB_PGUSER: ${NSJB_PGUSER:-nsjb}
+      NSJB_PGPASSWORD: ${NSJB_PGPASSWORD:-nsjb}
+      NSJB_PGSSLMODE: ${NSJB_PGSSLMODE:-disable}
+      NSJB_ORCHESTRATOR_INTERVAL_MS: ${NSJB_ORCHESTRATOR_INTERVAL_MS:-60000}
+    ports:
+      - "${NSJB_API_PORT:-8787}:${NSJB_API_PORT:-8787}"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:' + (process.env.NSJB_API_PORT || '8787') + '/api/health').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1))
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/frontend/Dockerfile
+    container_name: nsjb-frontend
+    environment:
+      NSJB_API_PROXY_TARGET: http://backend:${NSJB_API_PORT:-8787}
+    ports:
+      - "${NSJB_FRONTEND_PORT:-5173}:5173"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:5173/').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1))
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  postgres_data:

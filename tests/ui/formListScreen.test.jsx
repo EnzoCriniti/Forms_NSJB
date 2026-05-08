@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { FormListScreen } from "../../src/screens/FormListScreen.jsx";
+import { FormListScreen } from "../../frontend/src/screens/FormListScreen.jsx";
 
 const labels = [
   { id: 1, name: "Sessao de Escala", color: "#2e7d32" },

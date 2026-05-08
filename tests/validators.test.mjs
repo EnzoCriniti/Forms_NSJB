@@ -20,7 +20,7 @@ import {
   validateScaleTaskCatalogPayload,
   validatePeoplePayload,
   validateMembersConfigPayload,
-} from "../server/validators/payloadValidators.mjs";
+} from "../backend/validators/payloadValidators.mjs";
 
 test("validateFormPayload accepts a valid presence form", () => {
   assert.doesNotThrow(() => validateFormPayload({

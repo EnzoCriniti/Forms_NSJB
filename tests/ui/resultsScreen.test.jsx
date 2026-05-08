@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, it, expect, vi } from "vitest";
-import { ResultsScreen } from "../../src/screens/ResultsScreen.jsx";
+import { ResultsScreen } from "../../frontend/src/screens/ResultsScreen.jsx";
 
 const form = {
   id: 1,

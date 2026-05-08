@@ -7,8 +7,8 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { CreateFormScreen } from "../../src/screens/CreateFormScreen.jsx";
-import { ResultsScreen } from "../../src/screens/ResultsScreen.jsx";
+import { CreateFormScreen } from "../../frontend/src/screens/CreateFormScreen.jsx";
+import { ResultsScreen } from "../../frontend/src/screens/ResultsScreen.jsx";
 
 const baseProps = {
   onNavigate: vi.fn(),

@@ -11,7 +11,7 @@ import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { DatabaseSync } from "node:sqlite";
-import { visibleFormsFor } from "../src/lib/auth.js";
+import { visibleFormsFor } from "../frontend/src/lib/auth.js";
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -56,7 +56,7 @@ const startServer = async ({ tempDir } = {}) => {
   const actualTempDir = tempDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-forms-test-"));
   const port = 8800 + Math.floor(Math.random() * 200);
   const dbPath = path.join(actualTempDir, "test.sqlite");
-  const child = spawn(process.execPath, ["server/index.mjs"], {
+  const child = spawn(process.execPath, ["backend/index.mjs"], {
     cwd: process.cwd(),
     env: {
       ...process.env,

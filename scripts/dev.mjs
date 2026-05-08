@@ -11,8 +11,8 @@ const root = process.cwd();
 const nodeExec = process.execPath;
 
 const children = [
-  spawn(nodeExec, [path.join(root, "server", "index.mjs")], { stdio: "inherit" }),
-  spawn(nodeExec, [path.join(root, "node_modules", "vite", "bin", "vite.js"), "--host", "0.0.0.0", "--port", "5173", "--strictPort"], { stdio: "inherit" }),
+  spawn(nodeExec, [path.join(root, "backend", "index.mjs")], { stdio: "inherit" }),
+  spawn(nodeExec, [path.join(root, "node_modules", "vite", "bin", "vite.js"), "--config", path.join(root, "frontend", "vite.config.js"), "--host", "0.0.0.0", "--port", "5173", "--strictPort"], { stdio: "inherit" }),
 ];
 
 const shutdown = signal => {

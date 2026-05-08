@@ -1,78 +1,45 @@
 # NSJB Forms
 
-Aplicação para gestão de formulários de presença e escala da Organ.
+Aplicacao para gestao de formularios de presenca e escala do NSJB.
 
-A base agora está separada em:
+## Estrutura atual
 
-- `src/`: frontend React + Vite
-- `server/`: API local em Node + SQLite
-- `storage/nsjb-forms.sqlite`: banco local do projeto
+- `frontend/` - interface React + Vite
+- `backend/` - API Node containerizada
+- `shared/` - regras compartilhadas entre frontend e backend
+- `docker/` - stack containerizada e documentacao de operacao
+- `scripts/windows/` - atalhos e comandos locais para Windows
+- `storage/` - artefatos legados do runtime SQLite, sem uso no fluxo oficial
 
-## Rodar localmente
+## Documentacao principal
 
-No Windows:
+- [frontend/README.md](frontend/README.md) - estrutura do codigo da interface
+- [backend/README.md](backend/README.md) - estrutura do codigo da API local
+- [docker/README.md](docker/README.md) - visao geral da stack Docker
+- [docs/AI_CODEMAP.md](docs/AI_CODEMAP.md) - mapa para navegacao do codigo
+- [docs/APLICACAO.md](docs/APLICACAO.md) - visao funcional e fluxo do produto
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - arquitetura por camadas
+- [docs/CODING_PATTERNS.md](docs/CODING_PATTERNS.md) - padroes de implementacao
+- [docs/GUIDELINES-TECNICOS.md](docs/GUIDELINES-TECNICOS.md) - operacao e decisoes tecnicas
+- [docs/MANUTENCAO.md](docs/MANUTENCAO.md) - regras de manutencao e cuidado
+- [docs/briefing-original.md](docs/briefing-original.md) - briefing inicial
+- [docs/IA-LOG.md](docs/IA-LOG.md) - historico curto das alteracoes assistidas
 
-```bat
-start-mvp.bat
-```
+## Comandos uteis
 
-Ou manualmente:
+- `npm run dev`
+- `npm run docker:build`
+- `npm run docker:up`
+- `npm run docker:down`
+- `npm run docker:logs`
+- `npm run docker:ps`
 
-```powershell
-$env:PATH = "$PWD\tools\node;$env:PATH"
-.\tools\node\npm.cmd run dev
-```
+## Observacao
 
-O comando sobe:
+- o caminho oficial para rodar o ambiente e via Docker Compose
+- comandos locais continuam existindo como compatibilidade, mas nao sao o fluxo principal
 
-- frontend Vite em `http://127.0.0.1:5173`
-- API local em `http://127.0.0.1:8787`
-
-## Stack
-
-- React 19
-- Vite 7
-- Node 22
-- SQLite local via `node:sqlite`
-
-## Qualidade
-
-Build do frontend:
-
-```text
-npm run build
-```
-
-Testes automatizados:
-
-```text
-npm run test
-```
-
-Suítes:
-
-- `npm run test:api`: validadores e integração da API
-- `npm run test:ui`: componentes React em `jsdom`
-
-## Estado atual
-
-- formulários persistidos em SQLite
-- respostas persistidas por formulário
-- escala da Organ persistida por formulário
-- usuários, presets, classificações e sócios persistidos em SQLite
-- sessão atual e tema continuam no navegador
-- importação de sócios por link direto de Google Sheets foi mantida por decisão do projeto
-
-## Documentação normalizada
-
-- [docs/APLICACAO.md](docs/APLICACAO.md): visão funcional e fluxo do produto
-- [docs/FUNCIONALIDADES-E-ARQUITETURA.md](docs/FUNCIONALIDADES-E-ARQUITETURA.md): arquitetura, modelo de dados e API local
-- [docs/GUIDELINES-TECNICOS.md](docs/GUIDELINES-TECNICOS.md): operação, convenções e próximos passos técnicos
-- [docs/MANUTENCAO.md](docs/MANUTENCAO.md): regra de manutenção, cabeçalhos e decisões de camada
-- [docs/IA-LOG.md](docs/IA-LOG.md): log curto de mudanças feitas em sessões assistidas
-- [docs/briefing-original.md](docs/briefing-original.md): histórico do briefing inicial
-
-## Usuários de teste
+## Usuarios de teste
 
 - `admin` / `admin123`
 - `viewer` / `viewer123`

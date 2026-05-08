@@ -7,13 +7,13 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { AdminSettingsModal } from "../../src/features/admin/AdminSettingsModal.jsx";
+import { AdminSettingsModal } from "../../frontend/src/features/admin/AdminSettingsModal.jsx";
 
 const { fetchAuditLogsMock } = vi.hoisted(() => ({
   fetchAuditLogsMock: vi.fn(),
 }));
 
-vi.mock("../../src/lib/api.js", () => ({
+vi.mock("../../frontend/src/lib/api.js", () => ({
   fetchAuditLogs: (...args) => fetchAuditLogsMock(...args),
 }));
 

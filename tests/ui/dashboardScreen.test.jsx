@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { DashboardScreen } from "../../src/screens/DashboardScreen.jsx";
+import { DashboardScreen } from "../../frontend/src/screens/DashboardScreen.jsx";
 
 const forms = [
   {

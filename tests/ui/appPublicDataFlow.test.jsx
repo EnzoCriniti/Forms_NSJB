@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import App from "../../src/App.jsx";
+import App from "../../frontend/src/App.jsx";
 
 const bootstrap = forms => ({
   forms,

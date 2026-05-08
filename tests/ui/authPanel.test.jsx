@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { AuthPanel } from "../../src/features/auth/AuthPanel.jsx";
+import { AuthPanel } from "../../frontend/src/features/auth/AuthPanel.jsx";
 
 describe("AuthPanel", () => {
   it("mostra erro padronizado quando o login falha", async () => {

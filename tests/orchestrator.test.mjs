@@ -13,18 +13,18 @@ import path from "node:path";
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-orchestrator-test-"));
 process.env.NSJB_DB_PATH = path.join(tempDir, "test.sqlite");
 
-const { saveForm } = await import("../server/services/formsService.mjs");
-const { findFormById } = await import("../server/repositories/formsRepository.mjs");
-const { closeExpiredForms, refreshFormLifecycle } = await import("../server/orchestrator/formLifecycleOrchestrator.mjs");
-const { db } = await import("../server/db.mjs");
+const { saveForm } = await import("../backend/services/formsService.mjs");
+const { findFormById } = await import("../backend/repositories/formsRepository.mjs");
+const { closeExpiredForms, refreshFormLifecycle } = await import("../backend/orchestrator/formLifecycleOrchestrator.mjs");
+const { database } = await import("../backend/database/index.mjs");
 
-test.after(() => {
-  db.close();
+test.after(async () => {
+  await database.close?.();
   fs.rmSync(tempDir, { recursive: true, force: true });
 });
 
-test("closeExpiredForms fecha somente formularios abertos vencidos", () => {
-  const expired = saveForm({
+test("closeExpiredForms fecha somente formularios abertos vencidos", async () => {
+  const expired = await saveForm({
     type: "presenca",
     status: "aberto",
     title: "Formulario Vencido",
@@ -42,7 +42,7 @@ test("closeExpiredForms fecha somente formularios abertos vencidos", () => {
     scaleSections: [],
   });
 
-  const future = saveForm({
+  const future = await saveForm({
     type: "presenca",
     status: "aberto",
     title: "Formulario Futuro",
@@ -60,15 +60,15 @@ test("closeExpiredForms fecha somente formularios abertos vencidos", () => {
     scaleSections: [],
   });
 
-  const closed = closeExpiredForms(new Date(2026, 4, 4, 11, 0));
+  const closed = await closeExpiredForms(new Date(2026, 4, 4, 11, 0));
 
   assert.equal(closed, 1);
   assert.equal(findFormById(expired.id).status, "fechado");
   assert.equal(findFormById(future.id).status, "aberto");
 });
 
-test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no mesmo ciclo", () => {
-  const scheduled = saveForm({
+test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no mesmo ciclo", async () => {
+  const scheduled = await saveForm({
     type: "presenca",
     status: "rascunho",
     title: "Formulario Agendado",
@@ -86,7 +86,7 @@ test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no 
     scaleSections: [],
   });
 
-  const expired = saveForm({
+  const expired = await saveForm({
     type: "presenca",
     status: "aberto",
     title: "Formulario Para Fechar",
@@ -104,7 +104,7 @@ test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no 
     scaleSections: [],
   });
 
-  const result = refreshFormLifecycle(new Date(2026, 4, 4, 11, 0));
+  const result = await refreshFormLifecycle(new Date(2026, 4, 4, 11, 0));
 
   assert.equal(result.opened, 1);
   assert.equal(result.closed, 1);

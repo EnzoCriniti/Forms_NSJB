@@ -1,21 +1,21 @@
-# Aplicação
+# Aplicacao
 
 ## Objetivo
 
 O NSJB Forms centraliza dois fluxos:
 
-- formulários de presença
+- formularios de presenca
 - escala da Organ
 
-Nesta fase, o projeto é um MVP local com persistência em SQLite, pensado para operação simples em máquina única e evolução posterior para backend remoto.
+Nesta fase, o projeto e um MVP operado em Docker com persistencia em PostgreSQL, pensado para uso simples em maquina unica e evolucao posterior para backend remoto.
 
 ## Perfis
 
-- `visitante`: sem login, vê apenas formulários abertos e links públicos
-- `viewer`: visualiza resultados de todos os formulários
-- `admin`: cria formulários, edita escala, gerencia usuários, presets, classificações e sócios
+- `visitante`: sem login, ve apenas formularios abertos e links publicos
+- `viewer`: visualiza resultados de todos os formularios
+- `admin`: cria formularios, edita escala, gerencia usuarios, presets, classificacoes e socios
 
-Usuários padrão:
+Usuarios padrao:
 
 ```text
 admin / admin123
@@ -26,89 +26,89 @@ viewer / viewer123
 
 ### 1. Listagem
 
-A tela `Formulários` exibe:
+A tela `Formularios` exibe:
 
-- título
+- titulo
 - status
 - tipo
-- classificações
+- classificacoes
 - fechamento
 - preenchimento
-- link público
+- link publico
 
-Visitantes veem apenas formulários `aberto`.
+Visitantes veem apenas formularios `aberto`.
 
-### 2. Criação e edição
+### 2. Criacao e edicao
 
 A tela `Novo` permite:
 
 - criar `presenca`
 - criar `escala_organ`
 - aplicar presets
-- definir título, sessão, datas e status
-- configurar classificações
-- definir campos dinâmicos de presença
-- definir seções da escala
+- definir titulo, sessao, datas e status
+- configurar classificacoes
+- definir campos dinamicos de presenca
+- definir secoes da escala
 
-Os formulários são salvos no SQLite local.
+Os formularios sao salvos no PostgreSQL da stack Docker.
 
-### 3. Formulário público de presença
+### 3. Formulario publico de presenca
 
 O respondente:
 
-1. escolhe o nome na base de sócios
-2. preenche campos configurados no formulário
+1. escolhe o nome na base de socios
+2. preenche campos configurados no formulario
 3. pode reabrir o mesmo link e editar a resposta existente
 
-As respostas são salvas por formulário.
+As respostas sao salvas por formulario.
 
-### 4. Escala pública
+### 4. Escala publica
 
 O participante:
 
-1. acessa o link público da escala
+1. acessa o link publico da escala
 2. escolhe uma vaga pendente
 3. seleciona o nome
 
-Cada nome só pode ocupar uma vaga por escala.
+Cada nome so pode ocupar uma vaga por escala.
 
 ### 5. Resultados
 
-Para presença:
+Para presenca:
 
-- tabela por formulário
-- ordenação por coluna
+- tabela por formulario
+- ordenacao por coluna
 - visibilidade de colunas
-- totalização de campos `Sim/Não`
-- totalização de campos numéricos
-- exportação CSV
+- totalizacao de campos `Sim/Nao`
+- totalizacao de campos numericos
+- exportacao CSV
 
 Para escala:
 
 - vagas preenchidas
 - vagas pendentes
 - total de vagas
-- edição de responsáveis e auxiliares por administradores
-- exportação CSV
+- edicao de responsaveis e auxiliares por administradores
+- exportacao CSV
 
-### 6. Configurações
+### 6. Configuracoes
 
-O menu `Configurações` concentra:
+O menu `Configuracoes` concentra:
 
-- usuários
-- sócios
-- classificações
+- usuarios
+- socios
+- classificacoes
 - presets
 
-## Sócios via Google Sheets
+## Socios via Google Sheets
 
-O projeto mantém intencionalmente a configuração por link direto de Google Sheets para facilitar a operação atual.
+O projeto mantem intencionalmente a configuracao por link direto de Google Sheets para facilitar a operacao atual.
 
-São armazenados:
+Sao armazenados:
 
 - URL da planilha
 - coluna do nome
 - coluna do grau
 - aba/intervalo
 
-A leitura é usada para popular a lista global de sócios no SQLite local.
+A leitura e usada para popular a lista global de socios na base do backend.

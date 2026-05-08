@@ -7,8 +7,8 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import App from "../../src/App.jsx";
-import { STORAGE_KEYS } from "../../src/lib/appConstants.js";
+import App from "../../frontend/src/App.jsx";
+import { STORAGE_KEYS } from "../../frontend/src/lib/appConstants.js";
 
 const admin = {
   user: { id: 1, name: "Admin", username: "admin", role: "admin" },

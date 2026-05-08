@@ -15,28 +15,28 @@ Guia curto para agentes de IA neste repositorio.
 ## Como navegar no projeto
 
 - Paginas e rotas:
-  - `src/App.jsx` concentra a navegacao principal, o menu superior e o estado de tela.
-  - As telas ficam em `src/screens/*`.
-  - A navegacao publica por link usa hash em `#/f/<slug>` e tambem e resolvida em `src/App.jsx`.
+  - `frontend/src/App.jsx` concentra a navegacao principal, o menu superior e o estado de tela.
+  - As telas ficam em `frontend/src/screens/*`.
+  - A navegacao publica por link usa hash em `#/f/<slug>` e tambem e resolvida em `frontend/src/App.jsx`.
 - Componentes:
-  - Componentes visuais compartilhados ficam em `src/components/ui.jsx`.
-  - Modais e blocos de funcionalidade ficam em `src/features/*`.
+  - Componentes visuais compartilhados ficam em `frontend/src/components/ui.jsx`.
+  - Modais e blocos de funcionalidade ficam em `frontend/src/features/*`.
 - Services, hooks, libs e utils:
   - Nao ha uma pasta dedicada a hooks.
-  - Funcoes de apoio, auth, forms, storage e cliente HTTP ficam em `src/lib/*`.
+  - Funcoes de apoio, auth, forms, storage e cliente HTTP ficam em `frontend/src/lib/*`.
 - Tipos e interfaces:
   - Este projeto usa JavaScript e JSX, nao TypeScript.
-  - Nao ha uma pasta central de tipos; contratos de dados ficam distribuidos entre `src/lib/api.js`, `server/validators/*` e os arquivos de servico/repositorio.
+  - Nao ha uma pasta central de tipos; contratos de dados ficam distribuidos entre `frontend/src/lib/api.js`, `backend/validators/*` e os arquivos de servico/repositorio.
 - Estilos:
-  - Estilos globais e tema ficam em `src/styles.css`.
+  - Estilos globais e tema ficam em `frontend/src/styles.css`.
 - Chamadas de API:
-  - O cliente HTTP do frontend fica em `src/lib/api.js`.
-  - As rotas da API local ficam em `server/routes/apiRouter.mjs`.
-  - A logica de negocio do backend fica em `server/services/*` e os acessos ao banco em `server/repositories/*`.
+  - O cliente HTTP do frontend fica em `frontend/src/lib/api.js`.
+  - As rotas da API local ficam em `backend/routes/apiRouter.mjs`.
+  - A logica de negocio do backend fica em `backend/services/*` e os acessos ao banco em `backend/repositories/*`.
 - Configuracoes:
-  - Configuracoes do frontend ficam em `src/lib/appConstants.js` e `src/data/appData.json`.
-  - Configuracao do backend fica em `server/config.mjs`.
-  - Seed e dados iniciais ficam em `server/seed.mjs` e `src/data/seedData.js`.
+  - Configuracoes do frontend ficam em `frontend/src/lib/appConstants.js` e `frontend/src/data/appData.json`.
+  - Configuracao do backend fica em `backend/config.mjs`.
+  - Seed e dados iniciais ficam em `backend/seed.mjs` e `backend/data/seedData.mjs`.
   - Scripts de execucao ficam em `package.json`.
 
 ## Comandos uteis

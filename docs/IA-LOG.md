@@ -4,6 +4,26 @@
 
 Registro curto de decisoes e mudancas relevantes feitas por IAs ou em sessoes assistidas.
 
+## Leitura
+
+- Este arquivo e historico.
+- Entradas antigas podem citar caminhos legados como `src/` e `server/`.
+- Entradas mais novas devem usar a estrutura atual com `frontend/`, `backend/` e `docker/`.
+
+## 2026-05-08
+- autor/contexto: refinamento da migracao estrutural para separar de vez frontend, backend e regras compartilhadas
+- mudanca: o config do Vite saiu da raiz para `frontend/vite.config.js`, o backend deixou de importar arquivos da interface, o seed foi consolidado em `backend/data/seedData.mjs` e as regras compartilhadas foram isoladas em `shared/formRules.mjs`
+- arquivos: `frontend/vite.config.js`, `frontend/src/lib/forms.js`, `backend/services/escalaService.mjs`, `backend/services/responsesService.mjs`, `backend/seed.mjs`, `backend/data/seedData.mjs`, `shared/formRules.mjs`, `docker/frontend/Dockerfile`, `docker/backend/Dockerfile`, `README.md`, `docs/AI_CODEMAP.md`, `docs/ARCHITECTURE.md`, `docs/CODING_PATTERNS.md`, `frontend/README.md`, `docker/frontend/README.md`, `docker/backend/README.md`, `AGENTS.md`
+- validacao: `docker compose -f docker/compose.yml config`
+- riscos/pendencias: `node_modules` foi removido do workspace; para validar build/testes locais de novo, sera preciso reinstalar dependencias ou rodar tudo dentro do Docker
+
+## 2026-05-08
+- autor/contexto: centralizacao final da camada de banco antes da implementacao real do PostgreSQL
+- mudanca: `backend/database/index.mjs` passou a expor `databaseInfo`, `backend/index.mjs` e `backend/services/bootstrapService.mjs` pararam de importar `sqliteRuntime` diretamente, `backend/seed.mjs` passou a usar a facade `database`, e o modo `postgres` agora falha de forma explicita sem abrir SQLite por fora da camada publica
+- arquivos: `backend/database/index.mjs`, `backend/index.mjs`, `backend/services/bootstrapService.mjs`, `backend/seed.mjs`, `docs/AI_CODEMAP.md`, `docs/ARCHITECTURE.md`, `docker/db/DESENHO-CAMADA-BANCO.md`, `docker/db/README.md`
+- validacao: `node --input-type=module -e "import('./backend/seed.mjs')"`; `node --input-type=module -e "import('./backend/services/bootstrapService.mjs')"`; `node --input-type=module -e "import('./backend/database/index.mjs')"`; `NSJB_DB_DRIVER=postgres` falhando de forma esperada com `PostgreSQL driver is not implemented yet.`
+- riscos/pendencias: falta implementar o driver Postgres real e migrar o seed para a base alvo quando o pacote de acesso ao Postgres entrar
+
 ## Formato
 
 Adicionar novos itens no topo:
@@ -210,3 +230,11 @@ Adicionar novos itens no topo:
 - Escala organ agora aceita limite configuravel por formulario via `resultsConfig.maxAssignmentsPerPerson`.
 - O backend valida o limite tanto no salvamento manual da escala quanto no claim publico de vagas.
 - O frontend exibe o limite na configuracao da escala e bloqueia selecao acima do teto antes do envio.
+
+## 2026-05-07
+
+- autor/contexto: limpeza estrutural do repo durante a migracao de infraestrutura
+- mudanca: realocacao dos atalhos do Docker para `scripts/windows/`, criacao da documentacao por componente em `docker/frontend`, `docker/backend` e `docker/db`, ajuste dos caminhos internos dos `.bat` para continuar chamando `docker compose` na raiz e atualizacao da documentacao operacional
+- arquivos: `scripts/windows/start-docker.bat`, `scripts/windows/stop-docker.bat`, `scripts/windows/status-docker.bat`, `scripts/windows/logs-docker.bat`, `docker/README.md`, `docker/frontend/README.md`, `docker/backend/README.md`, `docker/db/README.md`, `docker/frontend/Dockerfile`, `docker/backend/Dockerfile`, `README.md`, `docs/AI_CODEMAP.md`, `docker/HANDOFF-INFRA-BANCO.md`, `docs/IA-LOG.md`
+- validacao: `npm run build`
+- riscos/pendencias: o compose ainda fica na raiz por compatibilidade; se quiser, o proximo passo e mover a orquestracao para `docker/compose.yml`
