@@ -11,6 +11,9 @@ Guia curto para agentes de IA neste repositorio.
 - Nao renomeie arquivos, componentes, rotas, funcoes ou variaveis publicas sem necessidade explicita.
 - Nao altere arquitetura, dependencias ou padroes globais sem pedido direto.
 - Preserve a compatibilidade com o padrao atual do projeto em React, API local e persistencia em SQLite.
+- Todo bug encontrado deve vir acompanhado de teste novo ou ajuste de teste existente que cubra a regressao.
+- Toda correcao ou alteracao relevante deve ficar registrada no git com commit objetivo e mensagem clara.
+- Se a mudanca afetar comportamento, documente o impacto nos arquivos de documentacao do repositorio que estiverem ligados a area alterada.
 
 ## Como navegar no projeto
 
