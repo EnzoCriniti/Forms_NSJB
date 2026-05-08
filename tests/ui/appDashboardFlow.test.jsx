@@ -94,10 +94,9 @@ describe("App dashboard flow", () => {
     await screen.findByRole("button", { name: "Dashboard" });
     fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
 
-    const headings = await screen.findAllByRole("heading", { name: "Configuracoes" });
-    expect(headings).toHaveLength(2);
-    expect(screen.getAllByText("Area administrativa principal do sistema.")).toHaveLength(2);
-    expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Acessos" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Configuracoes" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Area administrativa principal do sistema.")).not.toBeInTheDocument();
   });
 
   it("mostra apenas o botao Entrar no header quando nao ha sessao", async () => {

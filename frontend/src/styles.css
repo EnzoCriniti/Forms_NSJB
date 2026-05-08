@@ -957,6 +957,17 @@ button:not(.ui-btn):focus-visible {
     width: 100%;
   }
 
+  .login-modal-header {
+    align-items: flex-start !important;
+    flex-direction: column;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .login-modal-header > button {
+    align-self: flex-start;
+  }
+
   .settings-modal-header {
     align-items: stretch !important;
     flex-direction: column;
