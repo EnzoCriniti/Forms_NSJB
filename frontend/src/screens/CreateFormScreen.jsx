@@ -12,7 +12,7 @@ import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
-  { v: "person_select", l: "Nome da base de socios" },
+  { v: "person_select", l: "Pessoa da base sincronizada" },
   { v: "yes_no", l: "Sim / Nao" },
   { v: "number", l: "Numerico" },
   { v: "text", l: "Texto Curto" },
@@ -505,7 +505,7 @@ export const CreateFormScreen = ({
       <div className="create-form-people-bar" style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
         <Icon name="user" size={14} />
         <span style={{ fontSize: 12, color: COLORS.textMuted }}>
-          <strong style={{ color: COLORS.text }}>{people.length} pessoas</strong> carregadas. {membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Socios."}
+          <strong style={{ color: COLORS.text }}>{people.length} pessoas</strong> carregadas. {membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios."}
         </span>
       </div>
 
@@ -621,8 +621,8 @@ export const CreateFormScreen = ({
                     <div style={{ marginBottom: 10 }}>
                       <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Origem do campo</label>
                       <div className="create-form-segmented" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
-                        <button disabled={activeFieldCatalog.length === 0} onClick={() => setFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: activeFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: activeFieldCatalog.length === 0 ? 0.55 : 1 }}>Campo existente</button>
-                        <button onClick={() => setFieldMode("local")} style={{ border: `1px solid ${nFieldMode === "local" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "local" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "local" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>Campo local</button>
+                        <button disabled={activeFieldCatalog.length === 0} onClick={() => setFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: activeFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: activeFieldCatalog.length === 0 ? 0.55 : 1 }}>Da biblioteca</button>
+                        <button onClick={() => setFieldMode("local")} style={{ border: `1px solid ${nFieldMode === "local" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "local" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "local" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>Somente neste formulario</button>
                       </div>
                       {nFieldMode === "catalog" && (
                         <select value={nCatalogId} onChange={event => applyFieldCatalog(event.target.value)} style={inp}>
@@ -651,6 +651,11 @@ export const CreateFormScreen = ({
                       {nType === "person_select" ? "Rotulo (ex: Nome)" : "Pergunta / Rotulo"}
                     </label>
                     <input value={nLabel} onChange={event => setNLabel(event.target.value)} placeholder={nType === "person_select" ? "Nome" : "Ex: Vai ao Jantar?"} style={inp} autoFocus />
+                    {nType === "person_select" && (
+                      <div style={{ marginTop: 6, fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
+                        Este campo conecta o formulario com a base sincronizada e habilita o controle de faltantes e respostas por pessoa.
+                      </div>
+                    )}
                   </div>
                   {(nType === "text" || nType === "number") && (
                     <div className="create-form-validation-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -678,7 +683,7 @@ export const CreateFormScreen = ({
                   )}
                   {nType === "grid" && nFieldMode === "catalog" && (
                     <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 10 }}>
-                      A matriz deste campo vem do catalogo global. Para alterar linhas ou colunas, edite o campo base em Configuracoes &gt; Catalogo.
+                      A matriz deste campo vem da biblioteca global. Para alterar linhas ou colunas, edite o campo base em Configuracoes &gt; Campos e tarefas.
                     </div>
                   )}
                   {nType === "grid" && nFieldMode === "local" && (
@@ -746,7 +751,7 @@ export const CreateFormScreen = ({
               </label>
               <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: linkedPeopleField ? COLORS.textSecondary : COLORS.textMuted, cursor: linkedPeopleField ? "pointer" : "default" }}>
                 <input type="checkbox" checked={linkedPeopleField && resultsConfig.showLinkedRoster !== false} disabled={!linkedPeopleField} onChange={event => setResultsConfig({ ...resultsConfig, showLinkedRoster: event.target.checked })} />
-                Exibir lista completa da base vinculada e faltantes
+                Exibir lista da base vinculada e destacar faltantes
               </label>
               <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: COLORS.textSecondary, cursor: "pointer" }}>
                 <input

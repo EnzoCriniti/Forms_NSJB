@@ -75,6 +75,14 @@ const taskCategoryLabels = {
   outro: "Outro",
 };
 
+const normalizeIdentifier = value => String(value || "")
+  .trim()
+  .toLowerCase()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .replace(/[^a-z0-9]+/g, "_")
+  .replace(/^_+|_+$/g, "");
+
 const PaginatedList = ({ items, emptyText, renderItem }) => {
   const [page, setPage] = useState(1);
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
@@ -422,14 +430,15 @@ export const AdminSettingsModal = ({
   const [busyAction, setBusyAction] = useState(null);
   const [pendingDelete, setPendingDelete] = useState(null);
   const tabs = [
-    { key: "users", label: "Usuarios" },
-    { key: "security", label: "Seguranca" },
-    { key: "members", label: "Socios" },
-    { key: "catalog", label: "Catalogo" },
-    { key: "labels", label: "Classificacoes" },
-    { key: "presets", label: "Templates" },
-    ...(currentUser?.role === "admin" ? [{ key: "audit", label: "Auditoria" }] : []),
+    { key: "users", label: "Acessos", description: "Usuarios e perfis" },
+    { key: "members", label: "Base de socios", description: "Fonte sincronizada e mapeamento" },
+    { key: "catalog", label: "Campos e tarefas", description: "Biblioteca reutilizavel" },
+    { key: "labels", label: "Classificacoes", description: "Etiquetas dos formularios" },
+    { key: "presets", label: "Templates", description: "Modelos prontos" },
+    { key: "security", label: "Exclusao segura", description: "Chave mestra" },
+    ...(currentUser?.role === "admin" ? [{ key: "audit", label: "Historico", description: "Auditoria do sistema" }] : []),
   ];
+  const activeTab = tabs.find(item => item.key === tab) || tabs[0];
 
   const requestDelete = (title, message, confirmLabel, onConfirm) => {
     setPendingDelete({ title, message, confirmLabel, onConfirm });
@@ -484,12 +493,13 @@ export const AdminSettingsModal = ({
   };
 
   const submitFieldCatalog = async () => {
-    if (!fieldCatalogDraft.key.trim() || !fieldCatalogDraft.name.trim() || !fieldCatalogDraft.defaultLabel.trim()) return;
+    const resolvedKey = normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel);
+    if (!resolvedKey || !fieldCatalogDraft.name.trim() || !fieldCatalogDraft.defaultLabel.trim()) return;
     const isEdit = Boolean(fieldCatalogDraft.id);
     setBusyAction("fieldCatalog");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando campo base..." : "Criando campo base..." });
     try {
-      await onSaveFieldCatalogItem(fieldCatalogDraft);
+      await onSaveFieldCatalogItem({ ...fieldCatalogDraft, key: resolvedKey });
       setFieldCatalogDraft(emptyFieldCatalog);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -500,12 +510,13 @@ export const AdminSettingsModal = ({
   };
 
   const submitScaleTask = async () => {
-    if (!scaleTaskDraft.key.trim() || !scaleTaskDraft.name.trim() || !scaleTaskDraft.defaultLabel.trim()) return;
+    const resolvedKey = normalizeIdentifier(scaleTaskDraft.key || scaleTaskDraft.name || scaleTaskDraft.defaultLabel);
+    if (!resolvedKey || !scaleTaskDraft.name.trim() || !scaleTaskDraft.defaultLabel.trim()) return;
     const isEdit = Boolean(scaleTaskDraft.id);
     setBusyAction("scaleTask");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando tarefa base..." : "Criando tarefa base..." });
     try {
-      await onSaveScaleTaskCatalogItem(scaleTaskDraft);
+      await onSaveScaleTaskCatalogItem({ ...scaleTaskDraft, key: resolvedKey });
       setScaleTaskDraft(emptyScaleTaskCatalog);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -562,6 +573,11 @@ export const AdminSettingsModal = ({
               {item.label}
             </Btn>
           ))}
+        </div>
+
+        <div style={{ marginBottom: 18, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "12px 14px" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: COLORS.textMuted, textTransform: "uppercase", marginBottom: 4 }}>{activeTab.label}</div>
+          <div style={{ fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>{activeTab.description}</div>
         </div>
 
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
@@ -700,22 +716,30 @@ export const AdminSettingsModal = ({
                 <div>
                   <h4 style={{ margin: "0 0 10px" }}>{fieldCatalogDraft.id ? "Editar campo base" : "Novo campo base"}</h4>
                   <div style={{ display: "grid", gap: 10 }}>
+                    <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                      Preencha o nome exibido no formulario e ajuste o tipo. O identificador tecnico pode ser informado manualmente ou sera gerado automaticamente ao salvar.
+                    </div>
                     <AdminField>
-                      <input value={fieldCatalogDraft.key} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, key: e.target.value })} placeholder="Chave unica. Ex: presenca_sessao" style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Identificador tecnico</label>
+                      <input value={fieldCatalogDraft.key} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, key: e.target.value })} placeholder="Opcional. Ex: presenca_sessao" style={inputStyle} />
                     </AdminField>
                     <AdminField>
-                      <input value={fieldCatalogDraft.name} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, name: e.target.value })} placeholder="Nome interno. Ex: Presenca em sessao" style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome administrativo</label>
+                      <input value={fieldCatalogDraft.name} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, name: e.target.value })} placeholder="Ex: Presenca em sessao" style={inputStyle} />
                     </AdminField>
                     <AdminField>
-                      <input value={fieldCatalogDraft.defaultLabel} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, defaultLabel: e.target.value })} placeholder="Rotulo padrao no formulario" style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome exibido no formulario</label>
+                      <input value={fieldCatalogDraft.defaultLabel} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, defaultLabel: e.target.value })} placeholder="Ex: Sessao" style={inputStyle} />
                     </AdminField>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       <AdminField>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Tipo do campo</label>
                         <select value={fieldCatalogDraft.type} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, type: e.target.value })} style={inputStyle}>
                           {Object.entries(fieldTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                         </select>
                       </AdminField>
                       <AdminField>
+                        <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Grupo</label>
                         <select value={fieldCatalogDraft.category} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, category: e.target.value })} style={inputStyle}>
                           {Object.entries(fieldCategoryLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                         </select>
@@ -728,8 +752,12 @@ export const AdminSettingsModal = ({
                       />
                     )}
                     <AdminField>
-                      <textarea value={fieldCatalogDraft.description} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, description: e.target.value })} placeholder="Descricao interna opcional" rows={3} style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Observacoes internas</label>
+                      <textarea value={fieldCatalogDraft.description} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, description: e.target.value })} placeholder="Quando usar este campo ou o que a equipe precisa lembrar" rows={3} style={inputStyle} />
                     </AdminField>
+                    <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+                      Identificador previsto: <strong style={{ color: COLORS.text }}>{normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel) || "sera gerado ao preencher o nome"}</strong>
+                    </div>
                     <FieldCatalogPreview draft={fieldCatalogDraft} />
                     <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>
                       <input type="checkbox" checked={fieldCatalogDraft.active !== false} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, active: e.target.checked })} /> Ativo para novos formularios
@@ -749,7 +777,8 @@ export const AdminSettingsModal = ({
                       <div key={item.id} className="settings-row catalog-row">
                         <div>
                           <strong>{item.name}</strong>
-                          <div>{item.key} - {fieldTypeLabels[item.type]} - {fieldCategoryLabels[item.category]} - {item.active ? "Ativo" : "Inativo"}</div>
+                          <div>{item.defaultLabel || item.name} • {fieldTypeLabels[item.type]} • {fieldCategoryLabels[item.category]} • {item.active ? "Ativo" : "Inativo"}</div>
+                          <div>Id: {item.key}</div>
                           {item.description && <div>{item.description}</div>}
                         </div>
                         <Btn v="secondary" sz="sm" onClick={() => setFieldCatalogDraft({ ...emptyFieldCatalog, ...item, gridSchema: item.gridSchema || emptyFieldCatalog.gridSchema })}>Editar</Btn>
@@ -771,23 +800,34 @@ export const AdminSettingsModal = ({
                 <div>
                   <h4 style={{ margin: "0 0 10px" }}>{scaleTaskDraft.id ? "Editar tarefa base" : "Nova tarefa base"}</h4>
                   <div style={{ display: "grid", gap: 10 }}>
+                    <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                      Use esta biblioteca para reaproveitar tarefas recorrentes. O identificador tecnico pode ficar em branco e sera gerado ao salvar.
+                    </div>
                     <AdminField>
-                      <input value={scaleTaskDraft.key} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, key: e.target.value })} placeholder="Chave unica. Ex: preparo_jantar" style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Identificador tecnico</label>
+                      <input value={scaleTaskDraft.key} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, key: e.target.value })} placeholder="Opcional. Ex: preparo_jantar" style={inputStyle} />
                     </AdminField>
                     <AdminField>
-                      <input value={scaleTaskDraft.name} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, name: e.target.value })} placeholder="Nome interno" style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome administrativo</label>
+                      <input value={scaleTaskDraft.name} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, name: e.target.value })} placeholder="Ex: Preparo do jantar" style={inputStyle} />
                     </AdminField>
                     <AdminField>
-                      <input value={scaleTaskDraft.defaultLabel} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, defaultLabel: e.target.value })} placeholder="Rotulo padrao na escala" style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome exibido na escala</label>
+                      <input value={scaleTaskDraft.defaultLabel} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, defaultLabel: e.target.value })} placeholder="Ex: Preparacao do jantar" style={inputStyle} />
                     </AdminField>
                     <AdminField>
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Grupo</label>
                       <select value={scaleTaskDraft.category} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, category: e.target.value })} style={inputStyle}>
                         {Object.entries(taskCategoryLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                       </select>
                     </AdminField>
                     <AdminField>
-                      <textarea value={scaleTaskDraft.description} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, description: e.target.value })} placeholder="Descricao interna opcional" rows={3} style={inputStyle} />
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Observacoes internas</label>
+                      <textarea value={scaleTaskDraft.description} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, description: e.target.value })} placeholder="Quando usar esta tarefa ou como ela costuma aparecer na escala" rows={3} style={inputStyle} />
                     </AdminField>
+                    <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+                      Identificador previsto: <strong style={{ color: COLORS.text }}>{normalizeIdentifier(scaleTaskDraft.key || scaleTaskDraft.name || scaleTaskDraft.defaultLabel) || "sera gerado ao preencher o nome"}</strong>
+                    </div>
                     <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>
                       <input type="checkbox" checked={scaleTaskDraft.active !== false} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, active: e.target.checked })} /> Ativa para novas escalas
                     </label>
@@ -806,7 +846,8 @@ export const AdminSettingsModal = ({
                       <div key={item.id} className="settings-row catalog-row">
                         <div>
                           <strong>{item.name}</strong>
-                          <div>{item.key} - {taskCategoryLabels[item.category]} - {item.active ? "Ativa" : "Inativa"}</div>
+                          <div>{item.defaultLabel || item.name} • {taskCategoryLabels[item.category]} • {item.active ? "Ativa" : "Inativa"}</div>
+                          <div>Id: {item.key}</div>
                           {item.description && <div>{item.description}</div>}
                         </div>
                         <Btn v="secondary" sz="sm" onClick={() => setScaleTaskDraft(item)}>Editar</Btn>

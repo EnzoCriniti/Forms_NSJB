@@ -53,10 +53,10 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveFieldCatalogItem = vi.fn();
     render(<AdminSettingsModal {...baseProps} onSaveFieldCatalogItem={onSaveFieldCatalogItem} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Catalogo" }));
-    fireEvent.change(screen.getByPlaceholderText("Chave unica. Ex: presenca_sessao"), { target: { value: "presenca_sessao" } });
-    fireEvent.change(screen.getByPlaceholderText("Nome interno. Ex: Presenca em sessao"), { target: { value: "Presenca em sessao" } });
-    fireEvent.change(screen.getByPlaceholderText("Rotulo padrao no formulario"), { target: { value: "Sessao" } });
+    fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
+    fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: presenca_sessao"), { target: { value: "presenca_sessao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca em sessao"), { target: { value: "Presenca em sessao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Sessao"), { target: { value: "Sessao" } });
     expect(screen.getByText("Previa do campo")).toBeInTheDocument();
     expect(screen.getByText("Sessao")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Criar campo" }));
@@ -74,11 +74,11 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveScaleTaskCatalogItem = vi.fn();
     render(<AdminSettingsModal {...baseProps} onSaveScaleTaskCatalogItem={onSaveScaleTaskCatalogItem} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Catalogo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
     fireEvent.click(screen.getByRole("button", { name: "Tarefas da escala" }));
-    fireEvent.change(screen.getByPlaceholderText("Chave unica. Ex: preparo_jantar"), { target: { value: "preparo_jantar" } });
-    fireEvent.change(screen.getByPlaceholderText("Nome interno"), { target: { value: "Preparo do jantar" } });
-    fireEvent.change(screen.getByPlaceholderText("Rotulo padrao na escala"), { target: { value: "Preparacao do jantar" } });
+    fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: preparo_jantar"), { target: { value: "preparo_jantar" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Preparo do jantar"), { target: { value: "Preparo do jantar" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Preparacao do jantar"), { target: { value: "Preparacao do jantar" } });
     fireEvent.click(screen.getByRole("button", { name: "Criar tarefa" }));
 
     expect(onSaveScaleTaskCatalogItem).toHaveBeenCalledWith(expect.objectContaining({
@@ -93,10 +93,10 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveFieldCatalogItem = vi.fn();
     render(<AdminSettingsModal {...baseProps} onSaveFieldCatalogItem={onSaveFieldCatalogItem} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Catalogo" }));
-    fireEvent.change(screen.getByPlaceholderText("Chave unica. Ex: presenca_sessao"), { target: { value: "avaliacao_matriz" } });
-    fireEvent.change(screen.getByPlaceholderText("Nome interno. Ex: Presenca em sessao"), { target: { value: "Avaliacao em matriz" } });
-    fireEvent.change(screen.getByPlaceholderText("Rotulo padrao no formulario"), { target: { value: "Avaliacao" } });
+    fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
+    fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: presenca_sessao"), { target: { value: "avaliacao_matriz" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca em sessao"), { target: { value: "Avaliacao em matriz" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Sessao"), { target: { value: "Avaliacao" } });
     fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "grid" } });
     fireEvent.change(screen.getByDisplayValue("Opcao 1"), { target: { value: "Audio" } });
     fireEvent.change(screen.getByDisplayValue("3"), { target: { value: "Bom" } });
@@ -124,7 +124,7 @@ describe("AdminSettingsModal catalogo", () => {
 
     render(<AdminSettingsModal {...baseProps} fieldCatalog={fieldCatalog} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Catalogo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
     expect(screen.getByText("Campo 1")).toBeInTheDocument();
     expect(screen.queryByText("Campo 8")).not.toBeInTheDocument();
 
@@ -157,7 +157,7 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveFormDeleteKey = vi.fn().mockResolvedValue({ configured: true });
     render(<AdminSettingsModal {...baseProps} onSaveFormDeleteKey={onSaveFormDeleteKey} formDeleteKeyConfigured={false} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Seguranca" }));
+    fireEvent.click(screen.getByRole("button", { name: "Exclusao segura" }));
     fireEvent.change(screen.getByPlaceholderText("Nova chave mestra"), { target: { value: "segredo-novo" } });
     fireEvent.click(screen.getByRole("button", { name: "Cadastrar chave" }));
 
@@ -171,7 +171,7 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveFormDeleteKey = vi.fn().mockResolvedValue({ configured: true });
     render(<AdminSettingsModal {...baseProps} onSaveFormDeleteKey={onSaveFormDeleteKey} formDeleteKeyConfigured={true} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Seguranca" }));
+    fireEvent.click(screen.getByRole("button", { name: "Exclusao segura" }));
     fireEvent.change(screen.getByPlaceholderText("Chave mestra atual"), { target: { value: "antiga" } });
     fireEvent.change(screen.getByPlaceholderText("Nova chave mestra"), { target: { value: "nova" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar alteracao" }));
@@ -219,7 +219,7 @@ describe("AdminSettingsModal catalogo", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Socios" }));
+    fireEvent.click(screen.getByRole("button", { name: "Base de socios" }));
     fireEvent.change(screen.getByPlaceholderText("https://docs.google.com/spreadsheets/d/..."), {
       target: { value: "https://docs.google.com/spreadsheets/d/teste123/edit#gid=0" },
     });
@@ -267,8 +267,8 @@ describe("AdminSettingsModal auditoria", () => {
 
     render(<AdminSettingsModal {...baseProps} />);
 
-    expect(screen.getByRole("button", { name: "Auditoria" })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Auditoria" }));
+    expect(screen.getByRole("button", { name: "Historico" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Historico" }));
 
     expect(await screen.findByText("Formulario criado.")).toBeInTheDocument();
     expect(fetchAuditLogsMock).toHaveBeenCalledWith(expect.objectContaining({
@@ -287,7 +287,7 @@ describe("AdminSettingsModal auditoria", () => {
   it("nao mostra a aba de auditoria para viewer", () => {
     render(<AdminSettingsModal {...baseProps} currentUser={{ id: 2, name: "Viewer", role: "viewer" }} />);
 
-    expect(screen.queryByRole("button", { name: "Auditoria" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Historico" })).not.toBeInTheDocument();
   });
 
   it("mostra estado vazio quando nao ha logs", async () => {
@@ -299,7 +299,7 @@ describe("AdminSettingsModal auditoria", () => {
     });
 
     render(<AdminSettingsModal {...baseProps} />);
-    fireEvent.click(screen.getByRole("button", { name: "Auditoria" }));
+    fireEvent.click(screen.getByRole("button", { name: "Historico" }));
 
     expect(await screen.findByText("Nenhum log encontrado para os filtros atuais.")).toBeInTheDocument();
   });

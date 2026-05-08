@@ -34,7 +34,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByRole("spinbutton")).toBeDisabled();
     expect(screen.getByText("Configuracao dos Resultados")).toBeInTheDocument();
     expect(screen.getByLabelText("Habilitar pesquisa na planilha de respostas")).toBeInTheDocument();
-    expect(screen.getByLabelText("Exibir lista completa da base vinculada e faltantes")).toBeDisabled();
+    expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).toBeDisabled();
   });
 
   it("abre a pre-visualizacao e reflete o rascunho atual", () => {
@@ -82,7 +82,7 @@ describe("CreateFormScreen", () => {
     );
 
     expect(screen.getByRole("spinbutton")).toBeDisabled();
-    expect(screen.getByLabelText("Exibir lista completa da base vinculada e faltantes")).toBeDisabled();
+    expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).toBeDisabled();
   });
 
   it("salva alteracoes da totalizacao no submit", async () => {
@@ -156,7 +156,7 @@ describe("CreateFormScreen", () => {
       target: { value: "Formulario Catalogado" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.click(screen.getByRole("button", { name: "Campo existente" }));
+    fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "11" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "15h - Sessao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
@@ -219,7 +219,7 @@ describe("CreateFormScreen", () => {
       target: { value: "Formulario Catalogado" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.click(screen.getByRole("button", { name: "Campo existente" }));
+    fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "11" } });
 
     const typeSelect = screen.getByDisplayValue("Sim / Nao");
@@ -347,10 +347,10 @@ describe("CreateFormScreen", () => {
       target: { value: "Formulario com matriz" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.click(screen.getByRole("button", { name: "Campo existente" }));
+    fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "20" } });
 
-    expect(screen.getByText(/A matriz deste campo vem do catalogo global/)).toBeInTheDocument();
+    expect(screen.getByText(/A matriz deste campo vem da biblioteca global/)).toBeInTheDocument();
     expect(screen.queryByText("Adicionar linha")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));

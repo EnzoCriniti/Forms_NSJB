@@ -27,6 +27,13 @@ const infoCardStyle = {
   padding: 14,
 };
 
+const sectionTitleStyle = {
+  display: "block",
+  fontSize: 13,
+  color: COLORS.text,
+  marginBottom: 4,
+};
+
 const formatSyncDate = value => {
   if (!value) return "Nunca sincronizado";
   try {
@@ -110,60 +117,90 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
 
       <section style={{ display: "grid", gap: 12 }}>
         <div>
-          <strong style={{ display: "block", fontSize: 13, color: COLORS.text, marginBottom: 4 }}>Origem da base</strong>
-          <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Configure a planilha e o mapeamento das colunas que alimentam a base central.</div>
+          <strong style={{ ...sectionTitleStyle }}>Origem da base</strong>
+          <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Conecte a planilha e informe apenas o mapeamento principal. Os campos extras ficam separados mais abaixo.</div>
         </div>
 
-        <div style={{ display: "grid", gap: 6 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Tipo de origem</label>
-          <select value={draft.sourceType || "google_sheets"} onChange={event => setDraft({ ...draft, sourceType: event.target.value })} style={inputStyle}>
-            <option value="google_sheets">Google Sheets</option>
-          </select>
-        </div>
+        <section style={infoCardStyle}>
+          <div style={{ display: "grid", gap: 10 }}>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Tipo de origem</label>
+              <select value={draft.sourceType || "google_sheets"} onChange={event => setDraft({ ...draft, sourceType: event.target.value })} style={inputStyle}>
+                <option value="google_sheets">Google Sheets</option>
+              </select>
+            </div>
 
-        <div style={{ display: "grid", gap: 6 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Link publico do Google Sheets</label>
-          <input value={draft.sheetUrl || ""} onChange={e => setDraft({ ...draft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={inputStyle} />
-        </div>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Link publico do Google Sheets</label>
+              <input value={draft.sheetUrl || ""} onChange={e => setDraft({ ...draft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={inputStyle} />
+            </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do nome</label>
-            <input value={draft.nameColumn || ""} onChange={e => setDraft({ ...draft, nameColumn: e.target.value })} placeholder="B" style={inputStyle} />
-          </div>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do grau</label>
-            <input value={draft.grauColumn || ""} onChange={e => setDraft({ ...draft, grauColumn: e.target.value })} placeholder="A" style={inputStyle} />
-          </div>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do telefone</label>
-            <input value={draft.phoneColumn || ""} onChange={e => setDraft({ ...draft, phoneColumn: e.target.value })} placeholder="C" style={inputStyle} />
-          </div>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do id externo</label>
-            <input value={draft.externalIdColumn || ""} onChange={e => setDraft({ ...draft, externalIdColumn: e.target.value })} placeholder="D" style={inputStyle} />
-          </div>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna de ativo</label>
-            <input value={draft.activeColumn || ""} onChange={e => setDraft({ ...draft, activeColumn: e.target.value })} placeholder="E" style={inputStyle} />
-          </div>
-        </div>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Aba / intervalo do Google Sheets</label>
+              <input value={draft.range || ""} onChange={e => setDraft({ ...draft, range: e.target.value })} placeholder="Socios!A:B" style={inputStyle} />
+            </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 220px", gap: 10 }}>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Aba ou intervalo</label>
-            <input value={draft.range || ""} onChange={e => setDraft({ ...draft, range: e.target.value })} placeholder="Socios!A:E" style={inputStyle} />
+            <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
+              Use o formato <strong style={{ color: COLORS.text }}>Aba!A:B</strong>. Exemplo: <strong style={{ color: COLORS.text }}>Socios!A:B</strong>.
+            </div>
           </div>
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Frequencia da sincronizacao (horas)</label>
-            <input type="number" min="1" value={draft.syncFrequencyHours || 24} onChange={e => setDraft({ ...draft, syncFrequencyHours: Number(e.target.value) || 24 })} style={inputStyle} />
-          </div>
-        </div>
+        </section>
 
-        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: COLORS.textSecondary }}>
-          <input type="checkbox" checked={draft.syncEnabled !== false} onChange={e => setDraft({ ...draft, syncEnabled: e.target.checked })} />
-          Permitir sincronizacao automatica desta base
-        </label>
+        <section style={infoCardStyle}>
+          <div style={{ marginBottom: 10 }}>
+            <strong style={{ ...sectionTitleStyle, marginBottom: 2 }}>Mapeamento principal</strong>
+            <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Esses campos sao os minimos para o sistema identificar a pessoa na base.</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do grau</label>
+              <input value={draft.grauColumn || ""} onChange={e => setDraft({ ...draft, grauColumn: e.target.value })} placeholder="A" style={inputStyle} />
+            </div>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do nome</label>
+              <input value={draft.nameColumn || ""} onChange={e => setDraft({ ...draft, nameColumn: e.target.value })} placeholder="B" style={inputStyle} />
+            </div>
+          </div>
+          <div style={{ marginTop: 10, fontSize: 11, color: COLORS.textMuted }}>Informe apenas a letra da coluna: `A`, `B`, `C`...</div>
+        </section>
+
+        <details style={infoCardStyle} open={Boolean(draft.phoneColumn || draft.externalIdColumn || draft.activeColumn)}>
+          <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 700, color: COLORS.text }}>Campos extras opcionais</summary>
+          <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
+            <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Preencha apenas se a sua planilha tiver esses dados e voce quiser reaproveita-los na base interna.</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+              <div style={{ display: "grid", gap: 6 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do telefone</label>
+                <input value={draft.phoneColumn || ""} onChange={e => setDraft({ ...draft, phoneColumn: e.target.value })} placeholder="C" style={inputStyle} />
+              </div>
+              <div style={{ display: "grid", gap: 6 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do id externo</label>
+                <input value={draft.externalIdColumn || ""} onChange={e => setDraft({ ...draft, externalIdColumn: e.target.value })} placeholder="D" style={inputStyle} />
+              </div>
+              <div style={{ display: "grid", gap: 6 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna de ativo</label>
+                <input value={draft.activeColumn || ""} onChange={e => setDraft({ ...draft, activeColumn: e.target.value })} placeholder="E" style={inputStyle} />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <section style={infoCardStyle}>
+          <div style={{ marginBottom: 10 }}>
+            <strong style={{ ...sectionTitleStyle, marginBottom: 2 }}>Automacao</strong>
+            <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Defina se a base pode ser atualizada automaticamente e com qual frequencia.</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 220px", gap: 10 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: COLORS.textSecondary }}>
+              <input type="checkbox" checked={draft.syncEnabled !== false} onChange={e => setDraft({ ...draft, syncEnabled: e.target.checked })} />
+              Permitir sincronizacao automatica desta base
+            </label>
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Frequencia da sincronizacao (horas)</label>
+              <input type="number" min="1" value={draft.syncFrequencyHours || 24} onChange={e => setDraft({ ...draft, syncFrequencyHours: Number(e.target.value) || 24 })} style={inputStyle} />
+            </div>
+          </div>
+        </section>
 
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <Btn onClick={handleSave} loading={saving}>Salvar configuracao</Btn>
