@@ -5,10 +5,10 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import appData from "./data/appData.json";
-import { AuthPanel } from "./features/auth/AuthPanel";
 import { AdminSettingsModal } from "./features/admin/AdminSettingsModal";
-import { COLORS, Icon, Btn, ClosedPublicScreen } from "./components/ui";
+import { AuthPanel } from "./features/auth/AuthPanel";
+import { COLORS, Btn, ClosedPublicScreen } from "./components/ui";
+import { AppHeader } from "./components/AppHeader";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
 import { loadStored, persist } from "./lib/storage";
@@ -51,8 +51,6 @@ import {
   buildDuplicateFormDraft,
   buildSaveFormPayloadFromExisting,
   clampFontScale,
-  FONT_SCALE_MAX,
-  FONT_SCALE_MIN,
   FONT_SCALE_STEP,
   getPublicSlugFromLocation,
   normalizeStoredSession,
@@ -71,12 +69,6 @@ const EMPTY_BOOTSTRAP = {
   people: [],
   membersConfig: {},
 };
-
-const HeaderThemeIcon = ({ theme }) => (
-  theme === "dark"
-    ? <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    : <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-);
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -656,81 +648,20 @@ export default function App() {
 
   return (
     <div className="app-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>
-      <header className="app-header" style={{ background: COLORS.primary, padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, color: "#fff" }}>NF</div>
-          <span title={`Dados base JSON v${appData.version}`} style={{ fontWeight: 700, fontSize: 16, color: "#fff", letterSpacing: 0 }}>NSJB Forms</span>
-        </div>
-        <nav className="app-nav" style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
-          {nav.map(n => (
-            <button
-              key={n.key}
-              onClick={() => navigate(n.key)}
-              style={{
-                display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 10, fontSize: 12, fontWeight: 700,
-                border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
-                background: screen === n.key ? "rgba(255,255,255,0.2)" : "transparent",
-                color: screen === n.key ? "#fff" : "rgba(255,255,255,0.7)",
-              }}
-            ><Icon name={n.icon} size={14} />{n.label}</button>
-          ))}
-        </nav>
-        {currentUser ? (
-          <AuthPanel
-            user={currentUser}
-            onLogin={login}
-            onLogout={logout}
-            theme={theme}
-            fontScale={fontScale}
-            onIncreaseTextSize={increaseFontScale}
-            onDecreaseTextSize={decreaseFontScale}
-            onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-            onOpenSettings={() => setShowSettings(true)}
-          />
-        ) : (
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, alignItems: "center" }}>
-            <Btn
-              v="ghost"
-              sz="sm"
-              onClick={decreaseFontScale}
-              title="Diminuir fonte"
-              aria-label="Diminuir fonte"
-              disabled={fontScale <= FONT_SCALE_MIN}
-              style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
-            >
-              A-
-            </Btn>
-            <Btn
-              v="ghost"
-              sz="sm"
-              onClick={increaseFontScale}
-              title="Aumentar fonte"
-              aria-label="Aumentar fonte"
-              disabled={fontScale >= FONT_SCALE_MAX}
-              style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
-            >
-              A+
-            </Btn>
-            <Btn
-              v="ghost"
-              sz="sm"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
-              style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38, padding: "8px 10px" }}
-            >
-              <HeaderThemeIcon theme={theme} />
-            </Btn>
-            <Btn
-              v="ghost"
-              sz="sm"
-              onClick={() => setShowLogin(true)}
-              style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38, paddingInline: 14 }}
-            >
-              Entrar
-            </Btn>
-          </div>
-        )}
-      </header>
+      <AppHeader
+        nav={nav}
+        screen={screen}
+        currentUser={currentUser}
+        theme={theme}
+        fontScale={fontScale}
+        onNavigate={navigate}
+        onIncreaseFontScale={increaseFontScale}
+        onDecreaseFontScale={decreaseFontScale}
+        onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onOpenSettings={() => setShowSettings(true)}
+        onLogin={login}
+        onLogout={logout}
+      />
       <main className="app-main" style={{ maxWidth: 1120, margin: "0 auto", padding: "24px 20px" }}>
         {screen === "dashboard" && (
           <DashboardScreen

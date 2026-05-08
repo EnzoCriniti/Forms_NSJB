@@ -18,6 +18,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/screens/` - telas de nivel de pagina.
 - `frontend/src/features/` - modais e blocos de dominio.
 - `frontend/src/components/ui.jsx` - componentes visuais compartilhados.
+- `frontend/src/components/AppHeader.jsx` - cabecalho principal do app.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
 - `frontend/src/lib/forms.js` - helpers de formularios.
