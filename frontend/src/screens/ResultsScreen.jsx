@@ -6,6 +6,7 @@
 
 import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
+import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
 import { canEditEscala } from "../lib/auth";
 import { formatDateTime, getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField } from "../lib/forms";
 
@@ -300,56 +301,16 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
-          <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ margin: 0, fontSize: 20 }}>{form.title}</h2>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
-              <StatusBadge status={form.status} />
-              {form.labels.map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
-              <span style={{ fontSize: 11, color: COLORS.textMuted }}>Fecha: {formatDateTime(form.closing)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {grauOptions.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, margin: "18px 0 14px" }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>Filtrar por grau</span>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-              <Btn
-                v={selectedGrau === "todos" ? "primary" : "secondary"}
-                sz="sm"
-                onClick={() => setSelectedGrau("todos")}
-              >
-                Todos
-              </Btn>
-              {grauOptions.map(grau => (
-                <Btn
-                  key={grau}
-                  v={selectedGrau === grau ? "primary" : "secondary"}
-                  sz="sm"
-                  onClick={() => setSelectedGrau(grau)}
-                >
-                  {grau}
-                </Btn>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, margin: "30px 0 20px" }}>
-        {stats.map((card, index) => (
-          <div key={index} className="elevated metric-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "16px 18px" }}>
-            <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{card.l}</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: card.c }}>{card.v}</div>
-            <div style={{ fontSize: 11, color: COLORS.textMuted }}>{card.s}</div>
-          </div>
-        ))}
-      </div>
+      <ResultsPresenceHeader
+        onNavigate={onNavigate}
+        form={form}
+        labels={labels}
+        grauOptions={grauOptions}
+        selectedGrau={selectedGrau}
+        onSelectGrau={setSelectedGrau}
+        stats={stats}
+        onExport={exportCsv}
+      />
       {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
       <div className="totals-panel" style={{ background: COLORS.surface, borderRadius: 10, padding: 16, marginBottom: 12, border: `1px solid ${COLORS.borderLight}` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
@@ -393,10 +354,6 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
             return null;
           })}
         </div>
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "flex-end", margin: "0 0 12px" }}>
-        <Btn v="secondary" sz="sm" icon="download" onClick={exportCsv}>Exportar</Btn>
       </div>
 
       {resultsConfig.searchEnabled && (
