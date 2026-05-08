@@ -1,6 +1,6 @@
 # Mapa de Codigo
 
-Mapa operacional curto do repositorio para evitar buscas desnecessarias.
+Mapa operacional do repositorio para evitar buscas desnecessarias.
 
 ## Estrutura geral
 
@@ -37,6 +37,14 @@ Mapa operacional curto do repositorio para evitar buscas desnecessarias.
 - `frontend/src/styles.css` - tema e estilos globais.
 - `shared/formRules.mjs` - regras compartilhadas de validacao.
 
+## Convencoes de nomes
+
+- Arquivos e pastas publicas usam nomes curtos e consistentes.
+- Componentes React usam `PascalCase`.
+- Telas usam `PascalCase` e vivem em `frontend/src/screens/`.
+- Modulos de apoio usam `camelCase` ou nomes funcionais claros.
+- Documentacao tecnica usa nomes em portugues quando e um ponto de entrada oficial.
+
 ## Backend
 
 - `backend/index.mjs` - inicia a API.
@@ -55,6 +63,12 @@ Mapa operacional curto do repositorio para evitar buscas desnecessarias.
 - `backend/database/legacyImport.mjs` - importacao unica do snapshot SQLite para o Postgres.
 - `backend/data/seedData.mjs` - seed inicial da aplicacao.
 - `backend/seed.mjs` - seed inicial.
+
+## Bancos e migracao
+
+- `backend/database/` concentra a camada minima de acesso ao banco.
+- `backend/database/drivers/` separa o driver PostgreSQL oficial e o driver SQLite legado.
+- `backend/database/legacyImport.mjs` faz a importacao unica do snapshot antigo.
 
 ## Pontos de entrada mais comuns
 

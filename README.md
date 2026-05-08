@@ -2,7 +2,7 @@
 
 Sistema do NSJB para formularios de presenca, escala e acompanhamento operacional da Organ.
 
-## O que este projeto entrega
+## O que o projeto entrega
 
 - Cadastro, edicao e arquivamento de formularios.
 - Formulario publico de presenca com resposta persistida.
@@ -15,7 +15,7 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 
 ![Arquitetura geral](docs/diagramas/infra.svg)
 
-## Como funciona
+## Fluxo oficial
 
 O usuario interage com o frontend.
 O frontend chama o backend.
@@ -29,13 +29,13 @@ Fluxo oficial:
 4. a API persiste e consolida os dados
 5. a importacao do SQLite legado acontece uma unica vez, se o snapshot existir
 
-Para uma leitura rapida, use:
+Leitura principal:
 
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - o que a aplicacao faz.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - arquitetura e fluxos visuais.
 - [docker/README.md](docker/README.md) - como subir e operar a stack.
 
-## Como o projeto esta organizado
+## Organizacao do projeto
 
 - `frontend/` - interface React + Vite.
 - `backend/` - API Node, regras de negocio e persistencia.
@@ -44,7 +44,7 @@ Para uma leitura rapida, use:
 - `docs/` - documentacao funcional, tecnica e de manutencao.
 - `scripts/windows/` - atalhos locais para Windows.
 
-## Como subir em outra maquina
+## Subir em outra maquina
 
 O fluxo oficial e via Docker Compose.
 
@@ -82,7 +82,7 @@ docker compose -f docker/compose.yml ps
 docker compose -f docker/compose.yml logs -f
 ```
 
-## Documentacao principal
+## Documentacao central
 
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fluxos.

@@ -11,7 +11,7 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 ## Camadas principais
 
 - `frontend/src/` - interface React.
-- `backend/` - API em Docker, servicos, repositorios, validacao e banco.
+- `backend/` - API containerizada, servicos, repositorios, validacao e banco.
 - `shared/` - regras compartilhadas entre frontend e backend.
 - `docker/` - orquestracao, imagens e docs da stack.
 - `storage/` - restos legados do runtime SQLite; nao e fluxo oficial.
