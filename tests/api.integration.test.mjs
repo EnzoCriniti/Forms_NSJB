@@ -709,7 +709,9 @@ test("security endpoint configures and updates the form delete key", async () =>
 
     const securityLogs = readAuditLogs(ctx.dbPath, "WHERE action = ?", ["security_master_key_update"]);
     assert.ok(securityLogs.some(log => log.status === "success"));
-    const securityMetadata = JSON.parse(securityLogs.at(-1).metadata_json);
+    const lastSuccessLog = [...securityLogs].reverse().find(log => log.status === "success");
+    assert.ok(lastSuccessLog);
+    const securityMetadata = JSON.parse(lastSuccessLog.metadata_json);
     assert.deepEqual(securityMetadata, { status: "success" });
 
     const updatedStatusRes = await fetch(`${ctx.baseUrl}/api/security/form-delete-key/status`);

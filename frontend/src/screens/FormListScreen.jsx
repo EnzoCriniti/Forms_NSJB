@@ -6,6 +6,7 @@
 
 import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
+import { FormListToolbar } from "../components/FormListToolbar";
 import { ROLES, canCreateForms, canViewForm, visibleFormsFor } from "../lib/auth";
 import { buildFormSearchIndex, formatDate, formatDateTime, hasLinkedPeopleField, normalizeSearchText } from "../lib/forms";
 
@@ -56,34 +57,6 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pagedForms = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-
-  const controlStyle = {
-    minHeight: 38,
-    padding: "8px 10px",
-    border: `1px solid ${COLORS.border}`,
-    borderRadius: 8,
-    fontSize: 13,
-    fontFamily: "inherit",
-    background: COLORS.surface,
-    color: COLORS.text,
-    cursor: "pointer",
-    width: "auto",
-    boxShadow: "none",
-  };
-  const searchStyle = {
-    width: "100%",
-    minHeight: 38,
-    padding: "8px 38px 8px 34px",
-    border: `1px solid ${COLORS.border}`,
-    borderRadius: 8,
-    fontSize: 13,
-    fontFamily: "inherit",
-    outline: "none",
-    background: COLORS.surface,
-    color: COLORS.text,
-    boxSizing: "border-box",
-    boxShadow: "none",
-  };
 
   const updateFilters = setter => value => {
     setPage(1);
@@ -161,63 +134,21 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
         </div>
         {canCreateForms(user) && <Btn icon="plus" onClick={() => onNavigate("create")}>Novo Formulario</Btn>}
       </div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap", alignItems: "center", padding: 12, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, boxShadow: "var(--shadow-sm)" }}>
-        <div style={{ position: "relative", flex: "1 1 260px", minWidth: 220 }}>
-          <div style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: COLORS.textMuted }}><Icon name="search" size={16} /></div>
-          <input value={search} onChange={event => updateFilters(setSearch)(event.target.value)} placeholder="Buscar por titulo, data, classificacao ou status..." style={searchStyle} />
-          {search && (
-            <button
-              type="button"
-              aria-label="Limpar busca"
-              onClick={() => updateFilters(setSearch)("")}
-              style={{
-                position: "absolute",
-                right: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-                width: 28,
-                height: 28,
-                border: "none",
-                borderRadius: 8,
-                background: COLORS.surfaceAlt,
-                color: COLORS.textSecondary,
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Icon name="close" size={12} />
-            </button>
-          )}
-        </div>
-        {user && (
-          <>
-            <select value={fStatus || ""} onChange={event => updateFilters(setFStatus)(event.target.value || null)} style={controlStyle}>
-              <option value="">Todos os status</option>
-              <option value="aberto">Aberto</option>
-              <option value="fechado">Fechado</option>
-              <option value="rascunho">Rascunho</option>
-              <option value="arquivado">Arquivado</option>
-            </select>
-            <select value={fType || ""} onChange={event => updateFilters(setFType)(event.target.value || null)} style={controlStyle}>
-              <option value="">Todos os tipos</option>
-              <option value="presenca">Presenca</option>
-              <option value="escala_organ">Escala da Organ</option>
-            </select>
-            <select value={fLabel || ""} onChange={event => updateFilters(setFLabel)(event.target.value ? Number(event.target.value) : null)} style={controlStyle}>
-              <option value="">Todas as classificacoes</option>
-              {labels.map(label => <option key={label.id} value={label.id}>{label.name}</option>)}
-            </select>
-          </>
-        )}
-        <select value={sortBy} onChange={event => updateFilters(setSortBy)(event.target.value)} style={controlStyle}>
-          <option value="date_desc">Mais recentes</option>
-          <option value="title">Titulo</option>
-          <option value="status">Status</option>
-          <option value="responses">Mais preenchidos</option>
-        </select>
-      </div>
+      <FormListToolbar
+        search={search}
+        onSearchChange={value => updateFilters(setSearch)(value)}
+        onClearSearch={() => updateFilters(setSearch)("")}
+        status={fStatus}
+        onStatusChange={value => updateFilters(setFStatus)(value)}
+        type={fType}
+        onTypeChange={value => updateFilters(setFType)(value)}
+        label={fLabel}
+        onLabelChange={value => updateFilters(setFLabel)(value)}
+        sortBy={sortBy}
+        onSortChange={value => updateFilters(setSortBy)(value)}
+        showAdminFilters={Boolean(user)}
+        labels={labels}
+      />
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {pagedForms.map(form => {
           const archiveBusy = archiveAction === `${form.id}:${form.status === "arquivado" ? "rascunho" : "arquivado"}`;

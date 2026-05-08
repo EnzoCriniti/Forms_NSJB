@@ -20,6 +20,8 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/components/ui.jsx` - componentes visuais compartilhados.
 - `frontend/src/components/AppHeader.jsx` - cabecalho principal do app.
 - `frontend/src/components/AppStatusScreen.jsx` - estados centrais de carregamento e erro.
+- `frontend/src/components/LoginModal.jsx` - modal de login do frontend.
+- `frontend/src/components/FormListToolbar.jsx` - barra de busca e filtros da listagem.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
 - `frontend/src/lib/forms.js` - helpers de formularios.

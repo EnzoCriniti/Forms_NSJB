@@ -6,10 +6,10 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { AdminSettingsModal } from "./features/admin/AdminSettingsModal";
-import { AuthPanel } from "./features/auth/AuthPanel";
 import { COLORS, Btn, ClosedPublicScreen } from "./components/ui";
 import { AppHeader } from "./components/AppHeader";
 import { AppStatusScreen } from "./components/AppStatusScreen";
+import { LoginModal } from "./components/LoginModal";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
 import { loadStored, persist } from "./lib/storage";
@@ -548,36 +548,6 @@ export default function App() {
     setScreen("list");
   };
 
-  const loginModal = showLogin && !currentUser && (
-    <div className="modal-backdrop login-backdrop" onClick={() => setShowLogin(false)}>
-      <div className="modal-card login-modal-card" onClick={event => event.stopPropagation()} style={{ width: "min(520px, 100%)" }}>
-        <div className="login-modal-header" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: 22 }}>Entrar</h2>
-            <p style={{ margin: "6px 0 0", color: "var(--text-secondary)", lineHeight: 1.45 }}>
-              Acesse com sua conta para liberar as opcoes do cabecalho.
-            </p>
-          </div>
-          <Btn v="ghost" sz="sm" onClick={() => setShowLogin(false)}>
-            Fechar
-          </Btn>
-        </div>
-        <AuthPanel
-          user={null}
-          onLogin={login}
-          onLogout={logout}
-          theme={theme}
-          fontScale={fontScale}
-          onIncreaseTextSize={increaseFontScale}
-          onDecreaseTextSize={decreaseFontScale}
-          onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-          onOpenSettings={() => setShowSettings(true)}
-          variant="sheet"
-        />
-      </div>
-    </div>
-  );
-
   if (loading) {
     return <AppStatusScreen loading tone="loading" message="Carregando aplicação..." />;
   }
@@ -620,7 +590,18 @@ export default function App() {
             <Btn onClick={() => setShowLogin(true)}>Entrar</Btn>
           </div>
         </AppStatusScreen>
-        {loginModal}
+        <LoginModal
+          open={showLogin && !currentUser}
+          onClose={() => setShowLogin(false)}
+          onLogin={login}
+          onLogout={logout}
+          theme={theme}
+          fontScale={fontScale}
+          onIncreaseTextSize={increaseFontScale}
+          onDecreaseTextSize={decreaseFontScale}
+          onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
+          onOpenSettings={() => setShowSettings(true)}
+        />
       </>
     );
   }
@@ -669,7 +650,18 @@ export default function App() {
           />
         )}
       </main>
-      {loginModal}
+      <LoginModal
+        open={showLogin && !currentUser}
+        onClose={() => setShowLogin(false)}
+        onLogin={login}
+        onLogout={logout}
+        theme={theme}
+        fontScale={fontScale}
+        onIncreaseTextSize={increaseFontScale}
+        onDecreaseTextSize={decreaseFontScale}
+        onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
+        onOpenSettings={() => setShowSettings(true)}
+      />
       {showSettings && canCreateForms(currentUser) && (
         <AdminSettingsModal
           users={users}
