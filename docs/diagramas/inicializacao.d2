@@ -1,7 +1,17 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 5
+  }
+}
+
 direction: down
 style.fill: "#f8fafc"
 style.stroke: "#cbd5e1"
 style.stroke-width: 2
+style.border-radius: 18
+style.double-border: true
+style.font-size: 18
 
 compose: {
   label: "docker compose up -d --build\nsobe a stack oficial"
@@ -10,42 +20,47 @@ compose: {
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 postgres: {
-  label: "postgres\naguarda ficar healthy"
+  label: "postgres"
   style.fill: "#f0fdf4"
   style.stroke: "#22c55e"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 backend: {
-  label: "backend\ncarrega config e inicia a API"
+  label: "backend\nconfig e API"
   style.fill: "#ecfeff"
   style.stroke: "#14b8a6"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 frontend: {
-  label: "frontend\nexpõe a interface React"
+  label: "frontend\ninterface React"
   style.fill: "#fff7ed"
   style.stroke: "#fb923c"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 legacy: {
-  label: "SQLite legado\nimportacao unica se houver snapshot"
+  label: "SQLite legado"
   style.fill: "#fef2f2"
   style.stroke: "#ef4444"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 compose -> postgres

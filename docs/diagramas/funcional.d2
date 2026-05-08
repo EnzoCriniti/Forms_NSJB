@@ -1,42 +1,56 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id: 5
+  }
+}
+
 direction: right
 style.fill: "#f8fafc"
 style.stroke: "#cbd5e1"
 style.stroke-width: 2
+style.border-radius: 18
+style.double-border: true
+style.font-size: 18
 
 entrada: {
-  label: "Entrada\nlogin e links publicos"
+  label: "Entrada"
   style.fill: "#fff7ed"
   style.stroke: "#fb923c"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 operacao: {
-  label: "Operacao\nlistagem / criacao / edicao\npresenca / escala / resultados"
+  label: "Operacao\nlistagem, criacao,\nedicao, presenca e escala"
   style.fill: "#eff6ff"
   style.stroke: "#60a5fa"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 admin: {
-  label: "Administracao\nusuarios / socios / classificacoes\npresets / catalogos / auditoria"
+  label: "Administracao\nusuarios, socios,\nclassificacoes e auditoria"
   style.fill: "#ecfeff"
   style.stroke: "#14b8a6"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 base: {
-  label: "Base consolidada\nPostgreSQL + bootstrap de legado"
+  label: "Base consolidada\nPostgreSQL"
   style.fill: "#f0fdf4"
   style.stroke: "#22c55e"
   style.stroke-width: 2
   style.shadow: true
   style.border-radius: 16
+  style.font-size: 18
 }
 
 entrada -> operacao: "usa"
