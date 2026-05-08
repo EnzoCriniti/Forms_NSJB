@@ -15,6 +15,9 @@ import {
   savePeople,
   saveMembersConfig,
   syncMembersFromSource,
+  saveExternalBase,
+  deleteExternalBase,
+  syncExternalBase,
   saveFieldCatalogItem,
   deleteFieldCatalogItem,
   saveScaleTaskCatalogItem,
@@ -22,6 +25,7 @@ import {
 } from "../services/adminService.mjs";
 import {
   validateDeleteId,
+  validateExternalBasePayload,
   validateFieldCatalogPayload,
   validateLabelPayload,
   validateMembersConfigPayload,
@@ -413,6 +417,129 @@ export const handleAdminRoutes = async (req, res, url) => {
         entityLabel: "Socios",
         message: error.message,
         metadata: {},
+      });
+    }
+    return true;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/external-bases") {
+    const auth = await requireAdmin(req, res);
+    if (!auth) return true;
+    const body = await readBody(req);
+    try {
+      validateExternalBasePayload(body);
+      const externalBases = await saveExternalBase(body);
+      sendJson(res, 200, { externalBases });
+      writeAudit(req, auth, {
+        level: "info",
+        category: "admin",
+        action: "admin_save_external_base",
+        status: "success",
+        screen: "configuracoes",
+        entityType: "external-base",
+        entityId: body.id || null,
+        entityLabel: body.name || null,
+        message: "Base externa gravada.",
+        metadata: {
+          baseId: body.id || null,
+          name: body.name || null,
+          sourceType: body.sourceType || null,
+        },
+      });
+    } catch (error) {
+      sendKnownError(res, error);
+      writeAudit(req, auth, {
+        level: auditLevelFromError(error),
+        category: "admin",
+        action: "admin_save_external_base",
+        status: auditStatusFromError(error),
+        screen: "configuracoes",
+        entityType: "external-base",
+        entityId: body?.id || null,
+        entityLabel: body?.name || null,
+        message: error.message,
+        metadata: {
+          baseId: body?.id || null,
+          name: body?.name || null,
+          sourceType: body?.sourceType || null,
+        },
+      });
+    }
+    return true;
+  }
+
+  if (req.method === "DELETE" && url.pathname.startsWith("/api/external-bases/")) {
+    const auth = await requireAdmin(req, res);
+    if (!auth) return true;
+    const baseId = validateDeleteId(url.pathname.split("/").pop(), "Id da base externa");
+    try {
+      const externalBases = await deleteExternalBase(baseId);
+      sendJson(res, 200, { externalBases });
+      writeAudit(req, auth, {
+        level: "info",
+        category: "admin",
+        action: "admin_delete_external_base",
+        status: "success",
+        screen: "configuracoes",
+        entityType: "external-base",
+        entityId: baseId,
+        entityLabel: null,
+        message: "Base externa excluida.",
+        metadata: { baseId },
+      });
+    } catch (error) {
+      sendKnownError(res, error);
+      writeAudit(req, auth, {
+        level: auditLevelFromError(error),
+        category: "admin",
+        action: "admin_delete_external_base",
+        status: auditStatusFromError(error),
+        screen: "configuracoes",
+        entityType: "external-base",
+        entityId: baseId,
+        entityLabel: null,
+        message: error.message,
+        metadata: { baseId },
+      });
+    }
+    return true;
+  }
+
+  if (req.method === "POST" && /\/api\/external-bases\/\d+\/sync$/.test(url.pathname)) {
+    const auth = await requireAdmin(req, res);
+    if (!auth) return true;
+    const baseId = validateDeleteId(url.pathname.split("/")[3], "Id da base externa");
+    try {
+      const result = await syncExternalBase(baseId);
+      sendJson(res, 200, result);
+      writeAudit(req, auth, {
+        level: "info",
+        category: "admin",
+        action: "admin_sync_external_base",
+        status: "success",
+        screen: "configuracoes",
+        entityType: "external-base",
+        entityId: baseId,
+        entityLabel: result.externalBase?.name || null,
+        message: "Base externa sincronizada.",
+        metadata: {
+          baseId,
+          importedCount: result.importedCount,
+        },
+      });
+    } catch (error) {
+      sendKnownError(res, error);
+      writeAudit(req, auth, {
+        level: auditLevelFromError(error),
+        category: "admin",
+        action: "admin_sync_external_base",
+        status: auditStatusFromError(error),
+        screen: "configuracoes",
+        entityType: "external-base",
+        entityId: baseId,
+        entityLabel: null,
+        message: error.message,
+        metadata: { baseId },
       });
     }
     return true;

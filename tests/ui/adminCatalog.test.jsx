@@ -28,6 +28,7 @@ const baseProps = {
   fieldCatalog: [],
   scaleTaskCatalog: [],
   membersConfig: {},
+  externalBases: [],
   people: [],
   currentUser: { id: 1, name: "Admin", role: "admin" },
   onSaveUser: vi.fn(),
@@ -37,6 +38,9 @@ const baseProps = {
   onSavePreset: vi.fn(),
   onDeletePreset: vi.fn(),
   onSaveMembersConfig: vi.fn(),
+  onSaveExternalBase: vi.fn(),
+  onDeleteExternalBase: vi.fn(),
+  onSyncExternalBase: vi.fn(),
   onSavePeople: vi.fn(),
   onSyncMembersConfig: vi.fn(),
   formDeleteKeyConfigured: false,
@@ -236,6 +240,37 @@ describe("AdminSettingsModal catalogo", () => {
     expect(screen.getByText("Previa da base atual (2)")).toBeInTheDocument();
     expect(screen.getByText("Ana")).toBeInTheDocument();
     expect(screen.getByText("Bruno")).toBeInTheDocument();
+  });
+
+  it("cria base externa para uso em campos do formulario", () => {
+    const onSaveExternalBase = vi.fn();
+    render(<AdminSettingsModal {...baseProps} onSaveExternalBase={onSaveExternalBase} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Bases externas" }));
+    fireEvent.change(screen.getByPlaceholderText("Ex: Congregacoes, Turnos, Equipes"), {
+      target: { value: "Congregacoes" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Explique onde essa base sera usada no sistema."), {
+      target: { value: "Lista de congregacoes para visitantes." },
+    });
+    fireEvent.change(screen.getByPlaceholderText("https://docs.google.com/spreadsheets/d/..."), {
+      target: { value: "https://docs.google.com/spreadsheets/d/base123/edit#gid=0" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Itens!A:B"), {
+      target: { value: "Congregacoes!A:D" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Criar base" }));
+
+    expect(onSaveExternalBase).toHaveBeenCalledWith(expect.objectContaining({
+      name: "Congregacoes",
+      description: "Lista de congregacoes para visitantes.",
+      sheetUrl: "https://docs.google.com/spreadsheets/d/base123/edit#gid=0",
+      range: "Congregacoes!A:D",
+      valueColumn: "A",
+      labelColumn: "B",
+      syncEnabled: true,
+      active: true,
+    }));
   });
 });
 

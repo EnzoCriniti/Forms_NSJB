@@ -22,6 +22,7 @@ import {
   upsertScaleTaskCatalogRecord,
 } from "../repositories/catalogRepository.mjs";
 import { saveMembersConfig as saveMembersConfigSetting, syncMembersFromSource } from "./membersSyncService.mjs";
+import { deleteExternalBase as deleteExternalBaseSetting, listExternalBases, saveExternalBase as saveExternalBaseSetting, syncExternalBase } from "./externalBasesService.mjs";
 
 const MASTER_KEY_SETTING = "formDeleteKey";
 const MASTER_KEY_ITERATIONS = 210000;
@@ -134,6 +135,11 @@ export const savePeople = async people => {
 };
 
 export { saveMembersConfigSetting as saveMembersConfig, syncMembersFromSource };
+export { listExternalBases, syncExternalBase };
+
+export const saveExternalBase = async payload => saveExternalBaseSetting(payload);
+
+export const deleteExternalBase = async id => deleteExternalBaseSetting(id);
 
 export const saveFieldCatalogItem = async payload => {
   const key = normalizeKey(payload.key);

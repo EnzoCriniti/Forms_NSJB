@@ -6,9 +6,9 @@
 
 import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
-import { getPersonField, getPersonOptionLabel, getVisibleFields, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
+import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
-export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people }) => {
+export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [] }) => {
   const fields = getVisibleFields(form);
   const personField = getPersonField(form);
   const [values, setValues] = useState({});
@@ -29,6 +29,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
     ? responses.find(response => String(response.respondentName || "").trim().toLowerCase() === selectedPerson.name.trim().toLowerCase())
     : null;
   const duplicateResponseLocked = duplicateResponsesBlocked && Boolean(existingResponse);
+  const externalBaseMap = useMemo(() => new Map((externalBases || []).map(base => [String(base.id), base])), [externalBases]);
 
   const setFieldValue = (fieldId, value) => {
     setValues(prev => ({ ...prev, [String(fieldId)]: value }));
@@ -130,17 +131,29 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
               <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 10 }}>{field.label}{field.required ? " *" : ""}</label>
               {summarizeFieldValidation(field) && <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 8 }}>{summarizeFieldValidation(field)}</div>}
               {field.type === "person_select" && (
-                <select
-                  value={value}
-                  onChange={event => handleSelectMemberField(field, event.target.value)}
-                  style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
-                >
-                  <option value="">{isPrimaryPeopleBaseField(form, field) ? "Selecione seu nome..." : "Selecione uma pessoa..."}</option>
-                  {people.map(person => {
-                    const optionLabel = getPersonOptionLabel(person);
-                    return <option key={optionLabel} value={optionLabel}>{optionLabel}</option>;
-                  })}
-                </select>
+                (() => {
+                  const selectionSource = getFieldSelectionSource(field);
+                  const options = isExternalBaseSelectionField(field)
+                    ? (externalBaseMap.get(String(selectionSource?.externalBaseId || ""))?.items || []).filter(item => item.active !== false)
+                    : people.map(person => ({ value: getPersonOptionLabel(person), label: getPersonOptionLabel(person) }));
+
+                  return (
+                    <select
+                      value={value}
+                      onChange={event => handleSelectMemberField(field, event.target.value)}
+                      style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
+                    >
+                      <option value="">
+                        {isExternalBaseSelectionField(field)
+                          ? "Selecione uma opcao..."
+                          : isPrimaryPeopleBaseField(form, field)
+                            ? "Selecione seu nome..."
+                            : "Selecione uma pessoa..."}
+                      </option>
+                      {options.map(option => <option key={`${field.id}-${option.value}`} value={option.value}>{option.label}</option>)}
+                    </select>
+                  );
+                })()
               )}
               {field.type === "yes_no" && (
                 <div style={{ display: "flex", gap: 10 }}>

@@ -24,6 +24,7 @@ const isIdLike = value => value === undefined || value === null || Number.isInte
 const isOptionalPositiveIntegerLike = value => value === undefined || value === null || value === "" || (Number.isInteger(Number(value)) && Number(value) > 0);
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
 const MEMBER_BINDING_ROLES = ["primary", "secondary"];
+const SELECTION_SOURCE_KINDS = ["members", "external_base"];
 
 const validateFieldDefinition = field => {
   assert(isObject(field), "Campo de formulario invalido.");
@@ -33,6 +34,14 @@ const validateFieldDefinition = field => {
   assert(typeof field.required === "boolean", "Campo de formulario precisa informar required.");
   assert(typeof field.show === "boolean", "Campo de formulario precisa informar show.");
   assert(typeof field.total === "boolean", "Campo de formulario precisa informar total.");
+  if (field.selectionSource !== undefined && field.selectionSource !== null) {
+    assert(isObject(field.selectionSource), "Origem de selecao do campo invalida.");
+    assert(field.type === "person_select", "Somente campos de pessoa podem usar origem de selecao.");
+    assert(SELECTION_SOURCE_KINDS.includes(field.selectionSource.kind), "Tipo de origem de selecao invalido.");
+    if (field.selectionSource.kind === "external_base") {
+      assert(isIdLike(field.selectionSource.externalBaseId), "Base externa vinculada invalida.");
+    }
+  }
   if (field.memberBinding !== undefined && field.memberBinding !== null) {
     assert(isObject(field.memberBinding), "Vinculo de base do campo invalido.");
     assert(field.type === "person_select", "Somente campos de pessoa podem usar vinculo com a base.");
@@ -261,6 +270,32 @@ export const validateMembersConfigPayload = payload => {
   assert(isOptionalBoolean(payload.syncEnabled), "syncEnabled invalido.");
   assert(isOptionalPositiveIntegerLike(payload.syncFrequencyHours), "syncFrequencyHours invalido.");
   assert(isOptionalString(payload.lastSyncedAt), "lastSyncedAt invalido.");
+};
+
+export const validateExternalBasePayload = payload => {
+  assert(isObject(payload), "Payload de base externa invalido.");
+  assert(isIdLike(payload.id), "Id da base externa invalido.");
+  assert(isNonEmptyString(payload.name), "Nome da base externa e obrigatorio.");
+  assert(isOptionalString(payload.description), "Descricao da base externa invalida.");
+  assert(isOptionalString(payload.sourceType), "sourceType da base externa invalido.");
+  assert(isOptionalString(payload.sheetUrl), "sheetUrl da base externa invalido.");
+  assert(isOptionalString(payload.range), "range da base externa invalido.");
+  assert(isOptionalString(payload.valueColumn), "valueColumn da base externa invalido.");
+  assert(isOptionalString(payload.labelColumn), "labelColumn da base externa invalido.");
+  assert(isOptionalString(payload.descriptionColumn), "descriptionColumn da base externa invalido.");
+  assert(isOptionalString(payload.activeColumn), "activeColumn da base externa invalido.");
+  assert(isOptionalBoolean(payload.active), "active da base externa invalido.");
+  assert(isOptionalBoolean(payload.syncEnabled), "syncEnabled da base externa invalido.");
+  assert(isOptionalPositiveIntegerLike(payload.syncFrequencyHours), "syncFrequencyHours da base externa invalido.");
+  assert(isOptionalString(payload.lastSyncedAt), "lastSyncedAt da base externa invalido.");
+  assert(payload.items === undefined || Array.isArray(payload.items), "items da base externa invalido.");
+  for (const item of payload.items || []) {
+    assert(isObject(item), "Item da base externa invalido.");
+    assert(isOptionalString(item.value), "Valor do item da base externa invalido.");
+    assert(isOptionalString(item.label), "Rotulo do item da base externa invalido.");
+    assert(isOptionalString(item.description), "Descricao do item da base externa invalida.");
+    assert(isOptionalBoolean(item.active), "Status do item da base externa invalido.");
+  }
 };
 
 export const validateDeleteId = (value, label) => {

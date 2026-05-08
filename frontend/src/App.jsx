@@ -35,6 +35,9 @@ import {
   savePeople,
   saveMembersConfig,
   syncMembersConfig,
+  saveExternalBase,
+  deleteExternalBase,
+  syncExternalBase,
   saveFieldCatalogItem,
   deleteFieldCatalogItem,
   saveScaleTaskCatalogItem,
@@ -70,6 +73,7 @@ const EMPTY_BOOTSTRAP = {
   scaleTaskCatalog: [],
   people: [],
   membersConfig: {},
+  externalBases: [],
 };
 
 export default function App() {
@@ -100,7 +104,7 @@ export default function App() {
   const forms = bootstrap.forms;
   const responsesByForm = { ...(bootstrap.responsesByForm || {}), ...responseDetails };
   const escalaByForm = { ...(bootstrap.escalaByForm || {}), ...escalaDetails };
-  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig } = bootstrap;
+  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases } = bootstrap;
   const activeForm = useMemo(() => forms.find(form => form.id === activeFormId) || null, [forms, activeFormId]);
   const editingForm = useMemo(() => draftForm || forms.find(form => form.id === editingFormId) || null, [draftForm, forms, editingFormId]);
   const publicForm = useMemo(() => forms.find(form => form.slug === publicSlug) || null, [forms, publicSlug]);
@@ -525,6 +529,24 @@ export default function App() {
     return result;
   };
 
+  const handleSaveExternalBase = async base => {
+    const result = await saveExternalBase(base);
+    setBootstrap(prev => ({ ...prev, externalBases: result.externalBases }));
+    return result;
+  };
+
+  const handleDeleteExternalBase = async id => {
+    const result = await deleteExternalBase(id);
+    setBootstrap(prev => ({ ...prev, externalBases: result.externalBases }));
+    return result;
+  };
+
+  const handleSyncExternalBase = async id => {
+    const result = await syncExternalBase(id);
+    setBootstrap(prev => ({ ...prev, externalBases: result.externalBases }));
+    return result;
+  };
+
   const handleSaveFieldCatalogItem = async item => {
     const result = await saveFieldCatalogItem(item);
     setBootstrap(prev => ({ ...prev, fieldCatalog: result.fieldCatalog }));
@@ -584,7 +606,7 @@ export default function App() {
           ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} />
           : publicForm.type === "escala_organ"
             ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
-            : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={handleSaveResponse} onBack={publicOnBack} people={people} />}
+            : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} />}
       </div>
     );
   }
@@ -650,7 +672,7 @@ export default function App() {
           />
         )}
         {screen === "list" && <FormListScreen onNavigate={navigate} onDuplicateForm={handleDuplicateForm} onArchiveForm={handleArchiveForm} onTogglePinnedForm={handleTogglePinnedForm} pinnedFormIds={pinnedFormIds} user={currentUser} labels={labels} forms={forms} onDeleteForm={handleDeleteForm} formDeleteKeyConfigured={formDeleteKeyConfigured} />}
-        {screen === "create" && <CreateFormScreen onNavigate={navigate} people={people} membersConfig={membersConfig} labels={labels} presets={presets} fieldCatalog={fieldCatalog} scaleTaskCatalog={scaleTaskCatalog} onSavePreset={handleSavePreset} onSaveForm={handleSaveForm} form={editingForm} isDuplicateMode={Boolean(draftForm)} />}
+        {screen === "create" && <CreateFormScreen onNavigate={navigate} people={people} membersConfig={membersConfig} externalBases={externalBases} labels={labels} presets={presets} fieldCatalog={fieldCatalog} scaleTaskCatalog={scaleTaskCatalog} onSavePreset={handleSavePreset} onSaveForm={handleSaveForm} form={editingForm} isDuplicateMode={Boolean(draftForm)} />}
         {screen === "settings" && canCreateForms(currentUser) && (
           <SettingsScreen
             onNavigate={navigate}
@@ -660,6 +682,7 @@ export default function App() {
             fieldCatalog={fieldCatalog}
             scaleTaskCatalog={scaleTaskCatalog}
             membersConfig={membersConfig}
+            externalBases={externalBases}
             people={people}
             currentUser={currentUser}
             onSaveUser={handleSaveUser}
@@ -670,6 +693,9 @@ export default function App() {
             onDeletePreset={handleDeletePreset}
             onSaveMembersConfig={handleSaveMembersConfig}
             onSyncMembersConfig={handleSyncMembersConfig}
+            onSaveExternalBase={handleSaveExternalBase}
+            onDeleteExternalBase={handleDeleteExternalBase}
+            onSyncExternalBase={handleSyncExternalBase}
             onSavePeople={handleSavePeople}
             onSaveFieldCatalogItem={handleSaveFieldCatalogItem}
             onDeleteFieldCatalogItem={handleDeleteFieldCatalogItem}

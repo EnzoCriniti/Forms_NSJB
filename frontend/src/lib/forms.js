@@ -65,7 +65,23 @@ export const summarizeFieldValidation = field => {
 
 export const getVisibleFields = form => (form?.fieldDefinitions || []).filter(field => field.show !== false);
 
-export const getPeopleBaseFields = form => (form?.fieldDefinitions || []).filter(field => field.type === "person_select");
+export const getFieldSelectionSource = field => {
+  if (!field || field.type !== "person_select") return null;
+  const kind = field?.selectionSource?.kind;
+  if (kind === "external_base") {
+    return {
+      kind,
+      externalBaseId: field.selectionSource.externalBaseId ?? null,
+    };
+  }
+  return { kind: "members" };
+};
+
+export const isMembersSelectionField = field => getFieldSelectionSource(field)?.kind === "members";
+
+export const isExternalBaseSelectionField = field => getFieldSelectionSource(field)?.kind === "external_base";
+
+export const getPeopleBaseFields = form => (form?.fieldDefinitions || []).filter(field => field.type === "person_select" && isMembersSelectionField(field));
 
 export const getPrimaryPeopleBaseField = form => {
   const personFields = getPeopleBaseFields(form);

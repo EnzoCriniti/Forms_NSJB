@@ -9,7 +9,7 @@ import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
+import { getFieldSelectionSource, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
   { v: "person_select", l: "Pessoa da base sincronizada" },
@@ -106,6 +106,7 @@ export const CreateFormScreen = ({
   onNavigate,
   people = [],
   membersConfig = {},
+  externalBases = [],
   labels = [],
   presets = [],
   fieldCatalog = [],
@@ -138,6 +139,8 @@ export const CreateFormScreen = ({
   const [nLabel, setNLabel] = useState("");
   const [nRequired, setNRequired] = useState(false);
   const [nPersonRole, setNPersonRole] = useState("primary");
+  const [nSelectionSourceKind, setNSelectionSourceKind] = useState("members");
+  const [nExternalBaseId, setNExternalBaseId] = useState("");
   const [nGridRows, setNGridRows] = useState(DEFAULT_GRID_ROWS);
   const [nGridCols, setNGridCols] = useState(DEFAULT_GRID_COLS);
   const [nValidation, setNValidation] = useState({});
@@ -190,8 +193,12 @@ export const CreateFormScreen = ({
   const totalizableFields = useMemo(() => fields.filter(field => field.total), [fields]);
   const activeFieldCatalog = useMemo(() => fieldCatalog.filter(item => item.active !== false), [fieldCatalog]);
   const activeScaleTaskCatalog = useMemo(() => scaleTaskCatalog.filter(item => item.active !== false), [scaleTaskCatalog]);
+  const activeExternalBases = useMemo(() => externalBases.filter(item => item.active !== false), [externalBases]);
+  const externalBaseMap = useMemo(() => new Map((externalBases || []).map(base => [String(base.id), base])), [externalBases]);
   const availableTotals = useMemo(() => totalizableFields.filter(field => !resultsConfig.totalsLayout.some(item => String(item.fieldId) === String(field.id))), [resultsConfig.totalsLayout, totalizableFields]);
-  const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId) || (nType !== "person_select" && !nLabel.trim());
+  const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId)
+    || (nType !== "person_select" && !nLabel.trim())
+    || (nType === "person_select" && nSelectionSourceKind === "external_base" && !nExternalBaseId);
   const previewTitle = title.trim();
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();
@@ -209,6 +216,8 @@ export const CreateFormScreen = ({
     setNLabel("");
     setNRequired(false);
     setNPersonRole(hasPrimaryLinkedField ? "secondary" : "primary");
+    setNSelectionSourceKind("members");
+    setNExternalBaseId("");
     setNGridRows(DEFAULT_GRID_ROWS);
     setNGridCols(DEFAULT_GRID_COLS);
     setNValidation({});
@@ -227,7 +236,10 @@ export const CreateFormScreen = ({
     setNCatalogId(field.catalogFieldId || "");
     setNLabel(field.label);
     setNRequired(Boolean(field.required));
-    setNPersonRole(getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary");
+    const selectionSource = getFieldSelectionSource(field);
+    setNSelectionSourceKind(selectionSource?.kind || "members");
+    setNExternalBaseId(selectionSource?.kind === "external_base" ? String(selectionSource.externalBaseId || "") : "");
+    setNPersonRole(isMembersSelectionField(field) ? (getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary") : "secondary");
     setNGridRows(field.gridRows?.length ? field.gridRows : DEFAULT_GRID_ROWS);
     setNGridCols(field.gridCols?.length ? field.gridCols : DEFAULT_GRID_COLS);
     setNValidation(field.validation || {});
@@ -242,7 +254,7 @@ export const CreateFormScreen = ({
     const fallbackPrimary = explicitPrimary || personFields[0];
 
     return nextFields.map(field => {
-      if (field.type !== "person_select") return stripMemberBinding(field);
+      if (field.type !== "person_select" || !isMembersSelectionField(field)) return stripMemberBinding(field);
       return {
         ...field,
         memberBinding: {
@@ -262,7 +274,12 @@ export const CreateFormScreen = ({
       ? { catalogFieldId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name }
       : {};
     const validation = buildFieldValidation();
-    const memberBinding = resolvedType === "person_select"
+    const selectionSource = resolvedType === "person_select"
+      ? (nSelectionSourceKind === "external_base"
+          ? { kind: "external_base", externalBaseId: Number(nExternalBaseId) }
+          : { kind: "members" })
+      : undefined;
+    const memberBinding = resolvedType === "person_select" && nSelectionSourceKind === "members"
       ? { source: "members", role: nPersonRole }
       : undefined;
     const gridProps = resolvedType === "grid"
@@ -289,6 +306,7 @@ export const CreateFormScreen = ({
           required: nRequired,
           total: resolvedType === "yes_no" || resolvedType === "number",
           ...catalogProps,
+          ...(selectionSource ? { selectionSource } : {}),
           ...(memberBinding ? { memberBinding } : {}),
           validation,
           ...gridProps,
@@ -296,7 +314,7 @@ export const CreateFormScreen = ({
       });
       setFields(normalizePeopleBaseBindings(nextFields));
     } else {
-      const nextFields = [...fields, { id: Date.now(), type: resolvedType, label, required: nRequired, show: true, total: resolvedType === "yes_no" || resolvedType === "number", ...catalogProps, ...(memberBinding ? { memberBinding } : {}), validation, ...gridProps }];
+      const nextFields = [...fields, { id: Date.now(), type: resolvedType, label, required: nRequired, show: true, total: resolvedType === "yes_no" || resolvedType === "number", ...catalogProps, ...(selectionSource ? { selectionSource } : {}), ...(memberBinding ? { memberBinding } : {}), validation, ...gridProps }];
       setFields(normalizePeopleBaseBindings(nextFields));
     }
     resetFieldDraft();
@@ -309,6 +327,8 @@ export const CreateFormScreen = ({
     setNType(catalogItem.type);
     setNLabel(catalogItem.defaultLabel);
     if (catalogItem.type === "person_select") {
+      setNSelectionSourceKind("members");
+      setNExternalBaseId("");
       setNPersonRole(hasPrimaryLinkedField && !editingFieldId ? "secondary" : "primary");
     }
     if (catalogItem.type === "grid") {
@@ -631,8 +651,12 @@ export const CreateFormScreen = ({
                     {field.type === "grid" && field.gridRows?.length ? ` - ${field.gridRows.length} linhas x ${field.gridCols?.length ?? 0} colunas` : ""}
                   </div>
                   {field.type === "person_select" && (
-                    <div style={{ fontSize: 11, color: getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? COLORS.primary : COLORS.textMuted, marginTop: 2 }}>
-                      {getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? "Campo principal da base central" : "Campo auxiliar da base central"}
+                    <div style={{ fontSize: 11, color: field.selectionSource?.kind === "external_base" ? COLORS.accent : getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? COLORS.primary : COLORS.textMuted, marginTop: 2 }}>
+                      {field.selectionSource?.kind === "external_base"
+                        ? `Vinculado a ${externalBaseMap.get(String(field.selectionSource.externalBaseId || ""))?.name || "base externa"}`
+                        : getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"
+                          ? "Campo principal da base central"
+                          : "Campo auxiliar da base central"}
                     </div>
                   )}
                   {summarizeFieldValidation(field) && (
@@ -682,7 +706,18 @@ export const CreateFormScreen = ({
                       )}
                     </div>
                     <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>2. Tipo do campo</label>
-                    <select value={nType} disabled={nFieldMode === "catalog"} onChange={event => { setNType(event.target.value); setNPersonRole(event.target.value === "person_select" && hasPrimaryLinkedField ? "secondary" : "primary"); setNGridRows(DEFAULT_GRID_ROWS); setNGridCols(DEFAULT_GRID_COLS); setNValidation({}); }} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
+                    <select value={nType} disabled={nFieldMode === "catalog"} onChange={event => {
+                      const nextType = event.target.value;
+                      setNType(nextType);
+                      if (nextType === "person_select") {
+                        setNSelectionSourceKind("members");
+                        setNExternalBaseId("");
+                      }
+                      setNPersonRole(nextType === "person_select" && hasPrimaryLinkedField ? "secondary" : "primary");
+                      setNGridRows(DEFAULT_GRID_ROWS);
+                      setNGridCols(DEFAULT_GRID_COLS);
+                      setNValidation({});
+                    }} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
                       {FIELD_TYPES.map(type => <option key={type.v} value={type.v}>{type.l}</option>)}
                     </select>
                     {nFieldMode === "catalog" && (
@@ -699,27 +734,55 @@ export const CreateFormScreen = ({
                     {nType === "person_select" && (
                       <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
                         <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
-                          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>3. Vinculo com a base central</div>
+                          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>3. Origem da lista</div>
                           <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
-                            {nPersonRole === "primary"
-                              ? "Este campo sera o principal do formulario: controla respondente, faltantes, resumo e filtro por grau."
-                              : "Este campo usa a mesma base central, mas funciona apenas como vinculo auxiliar no preenchimento."}
+                            {nSelectionSourceKind === "members"
+                              ? (nPersonRole === "primary"
+                                  ? "Este campo sera o principal do formulario: controla respondente, faltantes, resumo e filtro por grau."
+                                  : "Este campo usa a mesma base central, mas funciona apenas como vinculo auxiliar no preenchimento.")
+                              : "Este campo vai usar uma base externa sincronizada e funcionara como seletor de opcoes no formulario."}
                           </div>
                         </div>
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                          <button onClick={() => setNPersonRole("primary")} style={{ border: `1px solid ${nPersonRole === "primary" ? COLORS.primary : COLORS.border}`, background: nPersonRole === "primary" ? COLORS.primaryLight : COLORS.surface, color: nPersonRole === "primary" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
-                            <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Campo principal</strong>
-                            <span style={{ fontSize: 11 }}>Libera resumo da base e filtros por grau.</span>
+                          <button onClick={() => { setNSelectionSourceKind("members"); setNExternalBaseId(""); }} style={{ border: `1px solid ${nSelectionSourceKind === "members" ? COLORS.primary : COLORS.border}`, background: nSelectionSourceKind === "members" ? COLORS.primaryLight : COLORS.surface, color: nSelectionSourceKind === "members" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
+                            <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Base central</strong>
+                            <span style={{ fontSize: 11 }}>Usa a base de socios do projeto.</span>
                           </button>
-                          <button onClick={() => setNPersonRole("secondary")} style={{ border: `1px solid ${nPersonRole === "secondary" ? COLORS.primary : COLORS.border}`, background: nPersonRole === "secondary" ? COLORS.primaryLight : COLORS.surface, color: nPersonRole === "secondary" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
-                            <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Campo auxiliar</strong>
-                            <span style={{ fontSize: 11 }}>Usa a lista central sem controlar faltantes.</span>
+                          <button onClick={() => setNSelectionSourceKind("external_base")} style={{ border: `1px solid ${nSelectionSourceKind === "external_base" ? COLORS.primary : COLORS.border}`, background: nSelectionSourceKind === "external_base" ? COLORS.primaryLight : COLORS.surface, color: nSelectionSourceKind === "external_base" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
+                            <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Base externa</strong>
+                            <span style={{ fontSize: 11 }}>Usa uma lista sincronizada separada.</span>
                           </button>
                         </div>
-                        {hasPrimaryLinkedField && !editingFieldId && nPersonRole === "primary" && (
-                          <div style={{ fontSize: 11, color: COLORS.warning }}>
-                            Ja existe um campo principal neste formulario. Ao salvar, o principal atual vira auxiliar.
+                        {nSelectionSourceKind === "external_base" && (
+                          <div style={{ display: "grid", gap: 6 }}>
+                            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Base externa vinculada</label>
+                            <select value={nExternalBaseId} onChange={event => setNExternalBaseId(event.target.value)} style={inp}>
+                              <option value="">Selecione uma base externa</option>
+                              {activeExternalBases.map(base => <option key={base.id} value={base.id}>{base.name}</option>)}
+                            </select>
+                            <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+                              O campo vai exibir as opcoes sincronizadas dessa base.
+                            </div>
                           </div>
+                        )}
+                        {nSelectionSourceKind === "members" && (
+                          <>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                              <button onClick={() => setNPersonRole("primary")} style={{ border: `1px solid ${nPersonRole === "primary" ? COLORS.primary : COLORS.border}`, background: nPersonRole === "primary" ? COLORS.primaryLight : COLORS.surface, color: nPersonRole === "primary" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
+                                <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Campo principal</strong>
+                                <span style={{ fontSize: 11 }}>Libera resumo da base e filtros por grau.</span>
+                              </button>
+                              <button onClick={() => setNPersonRole("secondary")} style={{ border: `1px solid ${nPersonRole === "secondary" ? COLORS.primary : COLORS.border}`, background: nPersonRole === "secondary" ? COLORS.primaryLight : COLORS.surface, color: nPersonRole === "secondary" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
+                                <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Campo auxiliar</strong>
+                                <span style={{ fontSize: 11 }}>Usa a lista central sem controlar faltantes.</span>
+                              </button>
+                            </div>
+                            {hasPrimaryLinkedField && !editingFieldId && nPersonRole === "primary" && (
+                              <div style={{ fontSize: 11, color: COLORS.warning }}>
+                                Ja existe um campo principal neste formulario. Ao salvar, o principal atual vira auxiliar.
+                              </div>
+                            )}
+                          </>
                         )}
                       </div>
                     )}

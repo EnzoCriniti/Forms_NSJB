@@ -229,6 +229,33 @@ describe("ResultsScreen", () => {
     expect(screen.queryByText("Joao")).not.toBeInTheDocument();
   });
 
+  it("mantem campo de base externa como coluna visivel nos resultados", () => {
+    render(
+      <ResultsScreen
+        onNavigate={vi.fn()}
+        responses={[
+          { id: 10, respondentName: "Maria", respondentGrau: "QS", values: { "1": "QS - Maria", "2": "Sim", "3": "JARDINS" } },
+        ]}
+        form={{
+          ...form,
+          fieldDefinitions: [
+            { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false, selectionSource: { kind: "members" }, memberBinding: { source: "members", role: "primary" } },
+            { id: 3, type: "person_select", label: "Congregacao", required: false, show: true, total: false, selectionSource: { kind: "external_base", externalBaseId: 9 } },
+            { id: 2, type: "yes_no", label: "Vai?", required: true, show: true, total: true },
+          ],
+        }}
+        sections={[]}
+        people={people}
+        user={{ role: "admin" }}
+        labels={[]}
+        onSaveSections={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Congregacao" })).toBeInTheDocument();
+    expect(screen.getByText("JARDINS")).toBeInTheDocument();
+  });
+
   it("exporta csv com colunas esperadas", async () => {
     const csvForm = {
       ...form,

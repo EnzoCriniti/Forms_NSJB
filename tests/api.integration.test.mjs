@@ -1246,3 +1246,61 @@ test("catalog endpoints persist field and scale task definitions", async () => {
     await ctx.cleanup();
   }
 });
+
+test("external bases endpoint persists CRUD data and exposes it on bootstrap", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const createRes = await authedJson(ctx.baseUrl, "/api/external-bases", {
+      name: "Congregacoes",
+      description: "Lista externa para visitantes.",
+      sourceType: "google_sheets",
+      sheetUrl: "https://docs.google.com/spreadsheets/d/base123/edit#gid=0",
+      range: "Congregacoes!A:D",
+      valueColumn: "A",
+      labelColumn: "B",
+      descriptionColumn: "C",
+      activeColumn: "D",
+      syncEnabled: true,
+      syncFrequencyHours: 12,
+      active: true,
+      items: [
+        { value: "CENTRAL", label: "Central", active: true },
+      ],
+    }, adminToken);
+    assert.equal(createRes.status, 200);
+    const createPayload = await createRes.json();
+    assert.equal(createPayload.externalBases.length, 1);
+    assert.equal(createPayload.externalBases[0].name, "Congregacoes");
+
+    const baseId = createPayload.externalBases[0].id;
+    const updateRes = await authedJson(ctx.baseUrl, "/api/external-bases", {
+      ...createPayload.externalBases[0],
+      id: baseId,
+      description: "Lista atualizada.",
+      active: false,
+    }, adminToken);
+    assert.equal(updateRes.status, 200);
+    const updatePayload = await updateRes.json();
+    assert.equal(updatePayload.externalBases[0].description, "Lista atualizada.");
+    assert.equal(updatePayload.externalBases[0].active, false);
+
+    const bootstrapRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
+    assert.equal(bootstrapRes.status, 200);
+    const bootstrap = await bootstrapRes.json();
+    assert.equal(bootstrap.externalBases.length, 1);
+    assert.equal(bootstrap.externalBases[0].name, "Congregacoes");
+    assert.equal(bootstrap.externalBases[0].description, "Lista atualizada.");
+
+    const deleteRes = await authedFetch(ctx.baseUrl, `/api/external-bases/${baseId}`, adminToken, { method: "DELETE" });
+    assert.equal(deleteRes.status, 200);
+    const deletePayload = await deleteRes.json();
+    assert.equal(deletePayload.externalBases.length, 0);
+
+    const logs = await readAuditLogs(ctx.db, "WHERE action IN (?, ?)", ["admin_save_external_base", "admin_delete_external_base"]);
+    assert.ok(logs.some(log => log.action === "admin_save_external_base" && log.status === "success"));
+    assert.ok(logs.some(log => log.action === "admin_delete_external_base" && log.status === "success"));
+  } finally {
+    await ctx.cleanup();
+  }
+});

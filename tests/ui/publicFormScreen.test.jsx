@@ -127,6 +127,52 @@ describe("PublicFormScreen", () => {
     }));
   });
 
+  it("renderiza opcoes de base externa em campo vinculado", async () => {
+    const onSaveResponse = vi.fn().mockResolvedValue(undefined);
+    render(
+      <PublicFormScreen
+        form={{
+          ...form,
+          fieldDefinitions: [
+            { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false, selectionSource: { kind: "members" }, memberBinding: { source: "members", role: "primary" } },
+            { id: 3, type: "person_select", label: "Congregacao", required: true, show: true, total: false, selectionSource: { kind: "external_base", externalBaseId: 9 } },
+            { id: 2, type: "yes_no", label: "Vai comparecer?", required: true, show: true, total: true },
+          ],
+        }}
+        responses={[]}
+        onSaveResponse={onSaveResponse}
+        onBack={vi.fn()}
+        people={people}
+        externalBases={[
+          {
+            id: 9,
+            name: "Congregacoes",
+            active: true,
+            items: [
+              { value: "CENTRAL", label: "Central", active: true },
+              { value: "JARDINS", label: "Jardins", active: true },
+            ],
+          },
+        ]}
+      />,
+    );
+
+    const selects = screen.getAllByRole("combobox");
+    fireEvent.change(selects[0], { target: { value: "QS - Maria" } });
+    fireEvent.change(selects[1], { target: { value: "JARDINS" } });
+    fireEvent.click(screen.getByRole("button", { name: "Sim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
+
+    expect(onSaveResponse).toHaveBeenCalledWith(expect.objectContaining({
+      respondentName: "Maria",
+      respondentGrau: "QS",
+      values: expect.objectContaining({
+        "1": "QS - Maria",
+        "3": "JARDINS",
+      }),
+    }));
+  });
+
   it("bloqueia envio quando campos obrigatorios nao foram preenchidos", () => {
     const onSaveResponse = vi.fn();
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={onSaveResponse} onBack={vi.fn()} people={people} />);

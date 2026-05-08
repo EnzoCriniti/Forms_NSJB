@@ -19,8 +19,10 @@ Mapa curto das areas mais mexidas por agentes.
   Configura campos do formulario e consome a biblioteca de campos. O tipo `person_select` e o elo com a base sincronizada.
   Campos de pessoa agora podem ser `primary` ou `secondary` em `memberBinding.role`.
   So o campo `primary` habilita respondente principal, faltantes, resumo e filtro por grau.
+  Campos de pessoa tambem podem apontar para `selectionSource.kind = external_base`, virando seletores sincronizados sem ativar regras de resumo da base central.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
+  Tambem centraliza a leitura da origem `members` vs `external_base`.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 
@@ -30,14 +32,16 @@ Mapa curto das areas mais mexidas por agentes.
   Salva a configuracao da origem externa e dispara a sincronizacao.
 - `backend/services/membersSyncHelpers.mjs`
   Converte CSV e aplica o mapeamento de colunas da planilha para a base local.
+- `backend/services/externalBasesService.mjs`
+  CRUD e sincronizacao de bases externas reutilizaveis para campos de formulario.
 - `backend/services/adminService.mjs`
   Orquestra os CRUDs administrativos e os catalogos globais.
 
 ## Testes ligados a essa area
 
 - `tests/ui/adminCatalog.test.jsx`
-  Cobertura da tela administrativa, catalogos, seguranca, base de socios e auditoria.
+  Cobertura da tela administrativa, catalogos, seguranca, base de socios, bases externas e auditoria.
 - `tests/ui/createFormScreen.test.jsx`
-  Cobertura do editor de campos e do vinculo com a base sincronizada.
+  Cobertura do editor de campos e do vinculo com a base sincronizada ou bases externas.
 - `tests/ui/appSaveFlow.test.jsx`
   Fluxo salvo do app com configuracao de resultados ligada a base vinculada.

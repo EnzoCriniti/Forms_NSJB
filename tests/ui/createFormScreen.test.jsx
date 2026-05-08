@@ -13,6 +13,7 @@ const baseProps = {
   onNavigate: vi.fn(),
   people: [{ name: "Maria", grau: "QS" }],
   membersConfig: { sheetUrl: "https://docs.google.com/spreadsheets/d/demo" },
+  externalBases: [],
   labels: [],
   presets: [],
   onSavePreset: vi.fn(),
@@ -190,7 +191,48 @@ describe("CreateFormScreen", () => {
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
       expect.objectContaining({
         type: "person_select",
+        selectionSource: { kind: "members" },
         memberBinding: { source: "members", role: "primary" },
+      }),
+    ]));
+  });
+
+  it("salva campo vinculado a base externa", async () => {
+    const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
+
+    render(
+      <CreateFormScreen
+        {...baseProps}
+        onSaveForm={onSaveForm}
+        externalBases={[
+          { id: 77, name: "Congregacoes", active: true, items: [] },
+        ]}
+      />,
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+      target: { value: "Formulario com Base Externa" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
+    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "person_select" } });
+    fireEvent.click(screen.getByRole("button", { name: /Base externa/i }));
+    fireEvent.change(screen.getByDisplayValue("Selecione uma base externa"), { target: { value: "77" } });
+    fireEvent.change(screen.getByPlaceholderText("Nome"), { target: { value: "Congregacao" } });
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+
+    await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        type: "person_select",
+        label: "Congregacao",
+        selectionSource: { kind: "external_base", externalBaseId: 77 },
+      }),
+    ]));
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions).not.toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        label: "Congregacao",
+        memberBinding: expect.anything(),
       }),
     ]));
   });

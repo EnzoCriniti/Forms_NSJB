@@ -16,6 +16,7 @@ import { getJsonSetting } from "../repositories/settingsRepository.mjs";
 import { listFieldCatalog, listScaleTaskCatalog } from "../repositories/catalogRepository.mjs";
 import { refreshFormLifecycle } from "../orchestrator/formLifecycleOrchestrator.mjs";
 import { DEFAULT_MEMBERS_CONFIG } from "../data/seedData.mjs";
+import { listExternalBases } from "./externalBasesService.mjs";
 
 export const getBootstrap = async () => {
   await refreshFormLifecycle();
@@ -42,6 +43,7 @@ export const getBootstrap = async () => {
     scaleTaskCatalog: await listScaleTaskCatalog(),
     people: await listPeople(),
     membersConfig: await getJsonSetting("membersConfig", DEFAULT_MEMBERS_CONFIG),
+    externalBases: await listExternalBases(),
     storage: databaseInfo,
   };
 };

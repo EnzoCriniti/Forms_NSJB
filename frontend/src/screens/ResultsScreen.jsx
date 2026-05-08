@@ -8,7 +8,7 @@ import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
 import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
 import { canEditEscala } from "../lib/auth";
-import { formatDateTime, getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField } from "../lib/forms";
+import { formatDateTime, getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 
 const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
 
@@ -19,7 +19,7 @@ export const ResultsScreen = ({ onNavigate, responses, form, sections, people, u
 );
 
 const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) => {
-  const columns = useMemo(() => getVisibleFields(form).filter(field => field.type !== "person_select"), [form]);
+  const columns = useMemo(() => getVisibleFields(form).filter(field => !(field.type === "person_select" && isPrimaryPeopleBaseField(form, field))), [form]);
   const resultsConfig = getResultsConfig(form);
   const [sortCol, setSortCol] = useState(null);
   const [sortDir, setSortDir] = useState("asc");

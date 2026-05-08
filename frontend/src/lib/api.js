@@ -126,6 +126,18 @@ export const syncMembersConfig = () => requestJson("/api/members-config/sync", {
   body: JSON.stringify({}),
 });
 
+export const saveExternalBase = base => requestJson("/api/external-bases", {
+  method: "POST",
+  body: JSON.stringify(base),
+});
+
+export const deleteExternalBase = id => requestJson(`/api/external-bases/${id}`, { method: "DELETE" });
+
+export const syncExternalBase = id => requestJson(`/api/external-bases/${id}/sync`, {
+  method: "POST",
+  body: JSON.stringify({}),
+});
+
 export const saveFieldCatalogItem = item => requestJson("/api/field-catalog", {
   method: "POST",
   body: JSON.stringify(item),
