@@ -2,14 +2,20 @@
 
 ## Objetivo
 
-Resumo funcional da aplicacao. Para a lista completa de capacidades, veja [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md).
+Resumo funcional da aplicacao. Para a lista completa de capacidades, veja [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md) e para a visao visual veja [docs/DIAGRAMAS.md](DIAGRAMAS.md).
 
-O NSJB Forms centraliza dois fluxos:
+O NSJB Forms centraliza dois fluxos principais:
 
 - formularios de presenca
 - escala da Organ
 
 Nesta fase, o projeto e um MVP operado em Docker com persistencia em PostgreSQL, pensado para uso simples em maquina unica e evolucao posterior para backend remoto.
+
+## Visao rapida
+
+```text
+Usuario -> Frontend -> Backend -> PostgreSQL
+```
 
 ## Perfis
 
@@ -114,3 +120,9 @@ Sao armazenados:
 - aba/intervalo
 
 A leitura e usada para popular a lista global de socios na base do backend.
+
+## Documentos relacionados
+
+- [README.md](../README.md)
+- [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md)
+- [docs/DIAGRAMAS.md](DIAGRAMAS.md)

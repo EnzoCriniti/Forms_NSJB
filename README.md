@@ -1,6 +1,6 @@
 # NSJB Forms
 
-Sistema do NSJB para formularios de presenca e escala da Organ.
+Sistema do NSJB para formularios de presenca, escala e acompanhamento operacional da Organ.
 
 ## O que este projeto entrega
 
@@ -14,6 +14,12 @@ Sistema do NSJB para formularios de presenca e escala da Organ.
 ## Visao rapida
 
 ![Arquitetura geral](docs/diagramas/infra.svg)
+
+Se voce for ler uma unica pagina primeiro, leia:
+
+- [docs/APLICACAO.md](docs/APLICACAO.md) - resumo funcional da aplicacao.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - arquitetura e fluxos visuais.
+- [docker/README.md](docker/README.md) - como subir e operar a stack.
 
 ## Como o projeto esta organizado
 
@@ -62,11 +68,11 @@ docker compose -f docker/compose.yml ps
 docker compose -f docker/compose.yml logs -f
 ```
 
-## Funcionalidades principais
+## Documentacao principal
 
-- [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo da aplicacao.
-- [docs/APLICACAO.md](docs/APLICACAO.md) - visao resumida do produto.
-- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - fluxos e arquitetura em Mermaid.
+- [docs/APLICACAO.md](docs/APLICACAO.md) - visao funcional resumida.
+- [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fluxos.
 
 ## Desenvolvimento e testes
 
