@@ -35,6 +35,15 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 - `backend/data/seedData.mjs` guarda os dados seed da aplicacao.
 - `backend/seed.mjs` popula dados iniciais.
 
+## Diagrama rapido
+
+```mermaid
+flowchart LR
+  UI[Frontend] --> API[Backend]
+  API --> DB[(PostgreSQL)]
+  LEG[(SQLite legado)] -. importacao unica .-> DB
+```
+
 ## Fluxo Basico
 
 1. O usuario interage com uma tela em `frontend/src/screens/*`.
@@ -50,3 +59,4 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 - Nao duplique chamadas HTTP fora de `frontend/src/lib/api.js`.
 - Nao mova responsabilidade de persistencia para services.
 - Nao misture validacao estrutural com regra de negocio.
+- Para um desenho mais visual, consulte [docs/DIAGRAMAS.md](DIAGRAMAS.md).

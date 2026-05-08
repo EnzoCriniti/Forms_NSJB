@@ -10,6 +10,15 @@ Documentacao da stack oficial do NSJB Forms.
 - `docker/db/` - esquema, plano e desenho do banco.
 - `docker/postgres/` - README do service PostgreSQL.
 
+## Topologia
+
+```mermaid
+flowchart LR
+  U[Usuario] --> F[frontend]
+  F --> B[backend]
+  B --> P[(postgres)]
+```
+
 ## Como subir em qualquer maquina
 
 Use a partir da raiz do repositorio:
@@ -47,3 +56,4 @@ docker compose -f docker/compose.yml down
 - [docker/postgres/README.md](postgres/README.md)
 - [docker/PLANO-MIGRACAO-DOCKER.md](PLANO-MIGRACAO-DOCKER.md)
 - [docker/HANDOFF-INFRA-BANCO.md](HANDOFF-INFRA-BANCO.md)
+- [docs/DIAGRAMAS.md](../docs/DIAGRAMAS.md)

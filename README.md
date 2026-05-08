@@ -11,6 +11,16 @@ Sistema do NSJB para formularios de presenca e escala da Organ.
 - Area administrativa para usuarios, socios, classificacoes, presets e catalogos.
 - Execucao oficial via Docker Compose com PostgreSQL.
 
+## Visao rapida
+
+```mermaid
+flowchart LR
+  U[Usuario] --> F[Frontend React]
+  F --> B[Backend Node]
+  B --> P[(PostgreSQL)]
+  B -. importa uma vez .-> S[(SQLite legado)]
+```
+
 ## Como o projeto esta organizado
 
 - `frontend/` - interface React + Vite.
@@ -62,6 +72,7 @@ docker compose -f docker/compose.yml logs -f
 
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo da aplicacao.
 - [docs/APLICACAO.md](docs/APLICACAO.md) - visao resumida do produto.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - fluxos e arquitetura em Mermaid.
 
 ## Desenvolvimento e testes
 
@@ -84,6 +95,7 @@ docker compose -f docker/compose.yml logs -f
 - [frontend/README.md](frontend/README.md) - estrutura da interface.
 - [backend/README.md](backend/README.md) - estrutura da API e banco.
 - [docker/README.md](docker/README.md) - operacao da stack oficial.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - diagramas declarativos.
 - [docs/AI_CODEMAP.md](docs/AI_CODEMAP.md) - mapa rapido do codigo.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - arquitetura por camadas.
 - [docs/CODING_PATTERNS.md](docs/CODING_PATTERNS.md) - padroes de implementacao.

@@ -1,6 +1,6 @@
 # Funcionalidades e Arquitetura
 
-Mapa curto da estrutura atual do sistema. O detalhamento funcional vive em [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md).
+Mapa curto da estrutura atual do sistema. O detalhamento funcional vive em [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md) e os fluxos visuais ficam em [docs/DIAGRAMAS.md](DIAGRAMAS.md).
 
 ## Visao geral
 
@@ -17,6 +17,15 @@ Mapa curto da estrutura atual do sistema. O detalhamento funcional vive em [docs
 4. O service trata a regra.
 5. O repository acessa o banco.
 6. O frontend atualiza o estado e a visualizacao.
+
+## Fluxo visual curto
+
+```mermaid
+flowchart LR
+  U[Usuario] --> F[Frontend]
+  F --> B[Backend]
+  B --> P[(PostgreSQL)]
+```
 
 ## Funcionalidades centrais
 

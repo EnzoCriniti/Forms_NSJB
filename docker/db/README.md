@@ -8,6 +8,14 @@ Esta pasta documenta a camada de banco do NSJB Forms.
 - o SQLite ficou apenas como compatibilidade interna temporaria no codigo
 - na primeira subida, o backend importa automaticamente o snapshot legado de `storage/nsjb-forms.sqlite` quando ele existe no build context
 
+## Fluxo de banco
+
+```mermaid
+flowchart LR
+  S[(storage/nsjb-forms.sqlite)] -. importacao unica .-> P[(PostgreSQL)]
+  B[backend/database] --> P
+```
+
 ## Onde olhar no codigo
 
 - `backend/database/` - facade e drivers de banco

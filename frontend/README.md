@@ -19,6 +19,12 @@ Codigo da interface do NSJB Forms.
 
 - `frontend/index.html`
 
+## Leitura rapida
+
+- Interface, telas e componentes ficam em `frontend/src/`.
+- Regras compartilhadas de formulários ficam em `shared/formRules.mjs`.
+- Diagramas declarativos da arquitetura ficam em [`docs/DIAGRAMAS.md`](../docs/DIAGRAMAS.md).
+
 ## Observacao
 
 - o frontend e servido pelo Vite na fase local e pelo container de frontend na fase Docker

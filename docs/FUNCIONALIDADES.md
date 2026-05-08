@@ -2,6 +2,18 @@
 
 Documento funcional completo do NSJB Forms.
 
+## Visao visual
+
+```mermaid
+flowchart LR
+  U[Usuario] --> A[Acesso publico ou interno]
+  A --> F[Frontend]
+  F --> B[Backend]
+  B --> P[(PostgreSQL)]
+```
+
+Para o mapa visual da arquitetura e dos fluxos, veja [docs/DIAGRAMAS.md](DIAGRAMAS.md).
+
 ## Visao geral
 
 O NSJB Forms centraliza a operacao de:
@@ -114,3 +126,4 @@ A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 - [docs/APLICACAO.md](APLICACAO.md)
 - [docs/FUNCIONALIDADES-E-ARQUITETURA.md](FUNCIONALIDADES-E-ARQUITETURA.md)
 - [docs/ARCHITECTURE.md](ARCHITECTURE.md)
+- [docs/DIAGRAMAS.md](DIAGRAMAS.md)

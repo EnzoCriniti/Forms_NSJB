@@ -8,6 +8,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `backend/` - API containerizada, regras de negocio, validacao e persistencia.
 - `shared/` - regras compartilhadas entre frontend e backend.
 - `docker/` - stack containerizada e documentacao de operacao.
+- `docs/DIAGRAMAS.md` - diagramas declarativos de arquitetura e fluxo.
 - `scripts/windows/` - atalhos locais para Windows.
 - `storage/` - restos legados do runtime SQLite; nao e fluxo oficial.
 
@@ -23,7 +24,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/components/LoginModal.jsx` - modal de login do frontend.
 - `frontend/src/components/FormListToolbar.jsx` - barra de busca e filtros da listagem.
 - `frontend/src/components/FormListCard.jsx` - card individual da listagem de formularios.
-- `frontend/src/components/ResultsPresenceHeader.jsx` - cabecalho e resumo da tela de resultados de presença.
+- `frontend/src/components/ResultsPresenceHeader.jsx` - cabecalho e resumo da tela de resultados de presenca.
 - `frontend/src/components/CreateFormFieldPreview.jsx` - previa isolada do campo em criacao de formulario.
 - `frontend/src/components/CreateFormTemplateBar.jsx` - barra de selecao de template na criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
@@ -42,7 +43,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `backend/app.mjs` - cria o servidor HTTP.
 - `backend/routes/apiRouter.mjs` - despachante principal das rotas.
 - `backend/routes/systemRoutes.mjs` - auth, health, bootstrap e audit logs.
-- `backend/routes/formRoutes.mjs` - formulários, respostas e escala.
+- `backend/routes/formRoutes.mjs` - formularios, respostas e escala.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
 - `backend/routes/requestHelpers.mjs` - helpers compartilhados de request, auth e auditoria.
 - `backend/services/` - regras de negocio.
@@ -76,6 +77,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - Para ajustar o banco: `backend/database/` e `backend/database/drivers/`.
 - Para Docker e operacao: `docker/README.md`.
 - Para entender as funcionalidades da aplicacao: `docs/FUNCIONALIDADES.md`.
+- Para ver os fluxos visuais da aplicacao: `docs/DIAGRAMAS.md`.
 
 ## Observacao sobre historico
 
