@@ -1,18 +1,13 @@
 /**
  * @file scripts/load-local.mjs
  * @summary Runner simples de carga local.
- * @responsibility Simular envios sequenciais e concorrentes para validar resposta e bootstrap.
+ * @responsibility Simular envios sequenciais e concorrentes contra o stack PostgreSQL local.
  */
 
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
 import { spawn } from "node:child_process";
 import { performance } from "node:perf_hooks";
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-forms-load-"));
 
 const waitForHealth = async baseUrl => {
   for (let attempt = 0; attempt < 40; attempt += 1) {
@@ -28,15 +23,19 @@ const waitForHealth = async baseUrl => {
 };
 
 const startServer = async () => {
-  const tempDir = makeTempDir();
   const port = 8900 + Math.floor(Math.random() * 200);
-  const dbPath = path.join(tempDir, "load.sqlite");
   const child = spawn(process.execPath, ["backend/index.mjs"], {
     cwd: process.cwd(),
     env: {
       ...process.env,
       NSJB_API_PORT: String(port),
-      NSJB_DB_PATH: dbPath,
+      NSJB_DB_DRIVER: "postgres",
+      NSJB_PGHOST: "127.0.0.1",
+      NSJB_PGPORT: "5432",
+      NSJB_PGDATABASE: "nsjb_forms",
+      NSJB_PGUSER: "nsjb",
+      NSJB_PGPASSWORD: "nsjb",
+      NSJB_PGSSLMODE: "disable",
     },
     stdio: "ignore",
   });
@@ -45,18 +44,14 @@ const startServer = async () => {
   const ready = await waitForHealth(baseUrl);
   if (!ready) {
     child.kill("SIGTERM");
-    fs.rmSync(tempDir, { recursive: true, force: true });
     throw new Error("Servidor local de carga nao iniciou.");
   }
 
   return {
     baseUrl,
-    dbPath,
-    tempDir,
     stop: async () => {
       if (!child.killed) child.kill("SIGTERM");
       await wait(200);
-      fs.rmSync(tempDir, { recursive: true, force: true });
     },
   };
 };

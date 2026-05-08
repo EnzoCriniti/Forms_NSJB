@@ -1,16 +1,13 @@
 /**
  * @file tests/api.integration.test.mjs
  * @summary Testes de integracao da API local.
- * @responsibility Verificar bootstrap, validacao HTTP e persistencia principal com SQLite isolado.
+ * @responsibility Verificar bootstrap, validacao HTTP e persistencia principal com PostgreSQL isolado.
  */
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
 import { spawn } from "node:child_process";
-import { DatabaseSync } from "node:sqlite";
+import { buildTestDatabaseEnv, createTestDatabase, dropTestDatabase, openTestDatabase } from "./helpers/postgresTestDb.mjs";
 import { visibleFormsFor } from "../frontend/src/lib/auth.js";
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -51,17 +48,17 @@ const authedFetch = (baseUrl, pathname, token, options = {}) => fetch(`${baseUrl
   headers: { ...(options.headers || {}), ...authHeaders(token) },
 });
 
-const startServer = async ({ tempDir } = {}) => {
-  const ownsTempDir = !tempDir;
-  const actualTempDir = tempDir ?? fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-forms-test-"));
+const startServer = async ({ dbName } = {}) => {
   const port = 8800 + Math.floor(Math.random() * 200);
-  const dbPath = path.join(actualTempDir, "test.sqlite");
+  const actualDbName = dbName || await createTestDatabase();
+  const ownsDb = !dbName;
+  const db = openTestDatabase(actualDbName);
   const child = spawn(process.execPath, ["backend/index.mjs"], {
     cwd: process.cwd(),
     env: {
       ...process.env,
+      ...buildTestDatabaseEnv(actualDbName),
       NSJB_API_PORT: String(port),
-      NSJB_DB_PATH: dbPath,
     },
     stdio: "ignore",
   });
@@ -87,7 +84,8 @@ const startServer = async ({ tempDir } = {}) => {
 
   return {
     baseUrl,
-    dbPath,
+    dbName: actualDbName,
+    db,
     stop: async () => {
       if (!child.killed) child.kill("SIGTERM");
       await wait(150);
@@ -97,85 +95,55 @@ const startServer = async ({ tempDir } = {}) => {
         if (!child.killed) child.kill("SIGTERM");
         await wait(150);
       })();
-      if (ownsTempDir) {
-        fs.rmSync(actualTempDir, { recursive: true, force: true });
+      await db.close();
+      if (ownsDb) {
+        await dropTestDatabase(actualDbName);
       }
     },
   };
 };
 
-const readSchemaMigrations = dbPath => {
-  const sqlite = new DatabaseSync(dbPath);
-  try {
-    return sqlite.prepare("SELECT version, name FROM schema_migrations ORDER BY version").all();
-  } finally {
-    sqlite.close();
-  }
-};
+const readSchemaMigrations = db => db.queryMany("SELECT version, name FROM schema_migrations ORDER BY version");
 
-const readResponseStorage = (dbPath, responseId = null) => {
-  const sqlite = new DatabaseSync(dbPath);
-  try {
-    const responseValues = responseId
-      ? sqlite.prepare(`
+const readResponseStorage = async (db, responseId = null) => {
+  const responseValues = responseId
+    ? await db.queryMany(`
         SELECT response_id, field_id, field_type, value_text, value_number, value_boolean, value_json
         FROM response_values
         WHERE response_id = ?
         ORDER BY response_id ASC, field_id ASC, id ASC
-      `).all(responseId)
-      : sqlite.prepare(`
+      `, [responseId])
+    : await db.queryMany(`
         SELECT response_id, field_id, field_type, value_text, value_number, value_boolean, value_json
         FROM response_values
         ORDER BY response_id ASC, field_id ASC, id ASC
-      `).all();
-    const responses = responseId
-      ? sqlite.prepare("SELECT id, values_json FROM responses WHERE id = ?").all(responseId)
-      : sqlite.prepare("SELECT id, values_json FROM responses ORDER BY id").all();
-    return {
-      responses,
-      responseValues,
-    };
-  } finally {
-    sqlite.close();
-  }
+      `);
+  const responses = responseId
+    ? await db.queryMany("SELECT id, values_json FROM responses WHERE id = ?", [responseId])
+    : await db.queryMany("SELECT id, values_json FROM responses ORDER BY id");
+  return {
+    responses,
+    responseValues,
+  };
 };
 
-const readFormDeleteKeySetting = dbPath => {
-  const sqlite = new DatabaseSync(dbPath);
-  try {
-    return sqlite.prepare("SELECT value_json FROM settings WHERE key = ?").get("formDeleteKey");
-  } finally {
-    sqlite.close();
-  }
-};
+const readFormDeleteKeySetting = db => db.queryOne("SELECT value_json FROM settings WHERE key = ?", ["formDeleteKey"]);
 
-const readAuditLogs = (dbPath, where = "", params = []) => {
-  const sqlite = new DatabaseSync(dbPath);
-  try {
-    return sqlite.prepare(`
+const readAuditLogs = (db, where = "", params = []) => db.queryMany(`
       SELECT id, created_at, level, category, action, status, screen, actor_id, actor_name, actor_role, entity_type, entity_id, entity_label, message, metadata_json, request_id, ip_address, user_agent
       FROM audit_logs
       ${where}
       ORDER BY id ASC
-    `).all(...params);
-  } finally {
-    sqlite.close();
-  }
-};
+    `, params);
 
-const readFormCounts = (dbPath, formId) => {
-  const sqlite = new DatabaseSync(dbPath);
-  try {
-    const getCount = query => Number(sqlite.prepare(query).get(formId)?.count || 0);
-    return {
-      forms: getCount("SELECT COUNT(*) AS count FROM forms WHERE id = ?"),
-      responses: getCount("SELECT COUNT(*) AS count FROM responses WHERE form_id = ?"),
-      responseValues: getCount("SELECT COUNT(*) AS count FROM response_values WHERE form_id = ?"),
-      escalaAssignments: getCount("SELECT COUNT(*) AS count FROM escala_assignments WHERE form_id = ?"),
-    };
-  } finally {
-    sqlite.close();
-  }
+const readFormCounts = async (db, formId) => {
+  const getCount = async query => Number((await db.queryOne(query, [formId]))?.count || 0);
+  return {
+    forms: await getCount("SELECT COUNT(*) AS count FROM forms WHERE id = ?"),
+    responses: await getCount("SELECT COUNT(*) AS count FROM responses WHERE form_id = ?"),
+    responseValues: await getCount("SELECT COUNT(*) AS count FROM response_values WHERE form_id = ?"),
+    escalaAssignments: await getCount("SELECT COUNT(*) AS count FROM escala_assignments WHERE form_id = ?"),
+  };
 };
 
 test("bootstrap returns seeded data and storage metadata", async () => {
@@ -190,8 +158,8 @@ test("bootstrap returns seeded data and storage metadata", async () => {
     assert.equal(Object.prototype.hasOwnProperty.call(payload.users[0] || {}, "password"), false);
     assert.deepEqual(payload.responsesByForm, {});
     assert.deepEqual(payload.escalaByForm, {});
-    assert.equal(payload.storage.driver, "sqlite");
-    assert.equal(payload.storage.path, ctx.dbPath);
+    assert.equal(payload.storage.driver, "postgres");
+    assert.equal(payload.storage.location, `127.0.0.1:5432/${ctx.dbName}`);
   } finally {
     await ctx.cleanup();
   }
@@ -294,12 +262,12 @@ test("auth endpoints log in and resolve the current user", async () => {
     });
     assert.equal(afterLogoutRes.status, 401);
 
-    const logs = readAuditLogs(ctx.dbPath, "WHERE action IN (?, ?)", ["auth_login", "auth_logout"]);
+    const logs = await readAuditLogs(ctx.db, "WHERE action IN (?, ?)", ["auth_login", "auth_logout"]);
     assert.ok(logs.some(log => log.action === "auth_login" && log.status === "success"));
     assert.ok(logs.some(log => log.action === "auth_logout" && log.status === "success"));
     const loginLog = logs.find(log => log.action === "auth_login");
     assert.ok(loginLog);
-    const loginMetadata = JSON.parse(loginLog.metadata_json);
+    const loginMetadata = loginLog.metadata_json;
     assert.equal(Object.prototype.hasOwnProperty.call(loginMetadata, "password"), false);
   } finally {
     await ctx.cleanup();
@@ -446,11 +414,11 @@ test("audit logs endpoint is restricted to admin and supports filters", async ()
   }
 });
 
-test("sqlite initializes a fresh database with recorded migrations", async () => {
+test("postgres initializes a fresh database with the official schema", async () => {
   const ctx = await startServer();
   try {
-    const migrations = readSchemaMigrations(ctx.dbPath);
-    assert.deepEqual(migrations.map(row => row.version), [1, 2, 3, 4, 5, 6]);
+    const schemaTable = await ctx.db.queryOne("SELECT COUNT(*) AS count FROM schema_migrations");
+    assert.equal(Number(schemaTable?.count || 0), 0);
 
     const bootstrapRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
     const bootstrap = await bootstrapRes.json();
@@ -461,20 +429,20 @@ test("sqlite initializes a fresh database with recorded migrations", async () =>
   }
 });
 
-test("sqlite reopens the same database without duplicating seed or migrations", async () => {
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-forms-test-"));
+test("postgres reopens the same database without duplicating seed or migrations", async () => {
+  const dbName = await createTestDatabase();
   try {
-    const first = await startServer({ tempDir });
+    const first = await startServer({ dbName });
     const firstBootstrapRes = await fetch(`${first.baseUrl}/api/bootstrap`);
     const firstBootstrap = await firstBootstrapRes.json();
-    const firstMigrations = readSchemaMigrations(first.dbPath);
-    await first.stop();
+    const firstMigrations = await readSchemaMigrations(first.db);
+    await first.cleanup();
 
-    const second = await startServer({ tempDir });
+    const second = await startServer({ dbName });
     try {
       const secondBootstrapRes = await fetch(`${second.baseUrl}/api/bootstrap`);
       const secondBootstrap = await secondBootstrapRes.json();
-      const secondMigrations = readSchemaMigrations(second.dbPath);
+      const secondMigrations = await readSchemaMigrations(second.db);
 
       assert.equal(secondBootstrap.forms.length, firstBootstrap.forms.length);
       assert.equal(secondBootstrap.users.length, firstBootstrap.users.length);
@@ -483,7 +451,7 @@ test("sqlite reopens the same database without duplicating seed or migrations", 
       await second.cleanup();
     }
   } finally {
-    fs.rmSync(tempDir, { recursive: true, force: true });
+    await dropTestDatabase(dbName);
   }
 });
 
@@ -527,7 +495,7 @@ test("forms endpoint persists a valid draft form", async () => {
     const created = await createRes.json();
     assert.equal(created.form.title, "Formulario de Teste Automatizado");
 
-    const logs = readAuditLogs(ctx.dbPath, "WHERE action = ?", ["create_form"]);
+    const logs = await readAuditLogs(ctx.db, "WHERE action = ?", ["create_form"]);
     assert.ok(logs.some(log => log.status === "success"));
 
     const bootstrapRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
@@ -692,9 +660,9 @@ test("security endpoint configures and updates the form delete key", async () =>
     assert.equal(createRes.status, 200);
     assert.deepEqual(await createRes.json(), { configured: true });
 
-    const storedSetting = readFormDeleteKeySetting(ctx.dbPath);
+    const storedSetting = await readFormDeleteKeySetting(ctx.db);
     assert.ok(storedSetting);
-    const storedValue = JSON.parse(storedSetting.value_json);
+    const storedValue = storedSetting.value_json;
     assert.equal(storedValue.algorithm, "pbkdf2-sha512");
     assert.ok(storedValue.hash);
     assert.ok(storedValue.salt);
@@ -707,11 +675,11 @@ test("security endpoint configures and updates the form delete key", async () =>
     assert.equal(updateRes.status, 200);
     assert.deepEqual(await updateRes.json(), { configured: true });
 
-    const securityLogs = readAuditLogs(ctx.dbPath, "WHERE action = ?", ["security_master_key_update"]);
+    const securityLogs = await readAuditLogs(ctx.db, "WHERE action = ?", ["security_master_key_update"]);
     assert.ok(securityLogs.some(log => log.status === "success"));
     const lastSuccessLog = [...securityLogs].reverse().find(log => log.status === "success");
     assert.ok(lastSuccessLog);
-    const securityMetadata = JSON.parse(lastSuccessLog.metadata_json);
+    const securityMetadata = lastSuccessLog.metadata_json;
     assert.deepEqual(securityMetadata, { status: "success" });
 
     const updatedStatusRes = await fetch(`${ctx.baseUrl}/api/security/form-delete-key/status`);
@@ -789,7 +757,7 @@ test("delete form removes responses, response_values and escala assignments with
     });
     assert.equal(responseRes.status, 200);
 
-    const presenceCountsBefore = readFormCounts(ctx.dbPath, presence.form.id);
+    const presenceCountsBefore = await readFormCounts(ctx.db, presence.form.id);
     assert.equal(presenceCountsBefore.responses, 1);
     assert.equal(presenceCountsBefore.responseValues, 3);
     assert.equal(presenceCountsBefore.forms, 1);
@@ -800,7 +768,7 @@ test("delete form removes responses, response_values and escala assignments with
     const deletePresenceRes = await authedJson(ctx.baseUrl, `/api/forms/${presence.form.id}`, { masterKey: "segredo-1" }, adminToken, "DELETE");
     assert.equal(deletePresenceRes.status, 200);
 
-    const presenceCountsAfter = readFormCounts(ctx.dbPath, presence.form.id);
+    const presenceCountsAfter = await readFormCounts(ctx.db, presence.form.id);
     assert.deepEqual(presenceCountsAfter, {
       forms: 0,
       responses: 0,
@@ -837,13 +805,13 @@ test("delete form removes responses, response_values and escala assignments with
       }, adminToken, "PUT");
     assert.equal(saveEscalaRes.status, 200);
 
-    const scaleCountsBefore = readFormCounts(ctx.dbPath, scaleForm.form.id);
+    const scaleCountsBefore = await readFormCounts(ctx.db, scaleForm.form.id);
     assert.equal(scaleCountsBefore.escalaAssignments, 1);
 
     const deleteScaleRes = await authedJson(ctx.baseUrl, `/api/forms/${scaleForm.form.id}`, { masterKey: "segredo-1" }, adminToken, "DELETE");
     assert.equal(deleteScaleRes.status, 200);
 
-    const scaleCountsAfter = readFormCounts(ctx.dbPath, scaleForm.form.id);
+    const scaleCountsAfter = await readFormCounts(ctx.db, scaleForm.form.id);
     assert.deepEqual(scaleCountsAfter, {
       forms: 0,
       responses: 0,
@@ -856,7 +824,7 @@ test("delete form removes responses, response_values and escala assignments with
     assert.ok(!bootstrap.forms.some(form => form.id === presence.form.id));
     assert.ok(!bootstrap.forms.some(form => form.id === scaleForm.form.id));
 
-    const deleteLogs = readAuditLogs(ctx.dbPath, "WHERE action = ?", ["delete_form"]);
+    const deleteLogs = await readAuditLogs(ctx.db, "WHERE action = ?", ["delete_form"]);
     assert.ok(deleteLogs.some(log => log.status === "success"));
   } finally {
     await ctx.cleanup();
@@ -910,9 +878,9 @@ test("responses endpoint persists normalized values and keeps bootstrap compatib
     assert.equal(responsePayload.mode, "create");
 
     const savedResponseId = responsePayload.responses[0].id;
-    const storageAfterInsert = readResponseStorage(ctx.dbPath, savedResponseId);
+    const storageAfterInsert = await readResponseStorage(ctx.db, savedResponseId);
     assert.equal(storageAfterInsert.responses.length, 1);
-    assert.deepEqual(JSON.parse(storageAfterInsert.responses[0].values_json), {
+    assert.deepEqual(storageAfterInsert.responses[0].values_json, {
       1: "QS - Maria",
       2: "Sim",
       3: 4,
@@ -922,10 +890,10 @@ test("responses endpoint persists normalized values and keeps bootstrap compatib
     assert.equal(storageAfterInsert.responseValues.length, 5);
     const byFieldAfterInsert = new Map(storageAfterInsert.responseValues.map(row => [String(row.field_id), row]));
     assert.equal(byFieldAfterInsert.get("1").value_text, "QS - Maria");
-    assert.equal(byFieldAfterInsert.get("2").value_boolean, 1);
+    assert.equal(byFieldAfterInsert.get("2").value_boolean, true);
     assert.equal(byFieldAfterInsert.get("3").value_number, 4);
     assert.equal(byFieldAfterInsert.get("4").value_text, "Observacao livre");
-    assert.deepEqual(JSON.parse(byFieldAfterInsert.get("5").value_json), { "Linha A": "Coluna 1", "Linha B": "Coluna 2" });
+    assert.deepEqual(byFieldAfterInsert.get("5").value_json, { "Linha A": "Coluna 1", "Linha B": "Coluna 2" });
     assert.equal(byFieldAfterInsert.get("5").value_text, null);
 
     const invalidResponseRes = await postJson(ctx.baseUrl, "/api/responses", {
@@ -944,12 +912,12 @@ test("responses endpoint persists normalized values and keeps bootstrap compatib
     const invalidPayload = await invalidResponseRes.json();
     assert.match(invalidPayload.error, /pelo menos 3 caracteres/i);
 
-    const storageAfterInvalid = readResponseStorage(ctx.dbPath, savedResponseId);
+    const storageAfterInvalid = await readResponseStorage(ctx.db, savedResponseId);
     assert.equal(storageAfterInvalid.responses.length, 1);
 
-    const responseLogs = readAuditLogs(ctx.dbPath, "WHERE action = ?", ["save_response"]);
+    const responseLogs = await readAuditLogs(ctx.db, "WHERE action = ?", ["save_response"]);
     assert.ok(responseLogs.some(log => log.status === "success"));
-    const responseMetadata = JSON.parse(responseLogs.findLast(log => log.status === "success").metadata_json);
+    const responseMetadata = responseLogs.findLast(log => log.status === "success").metadata_json;
     assert.equal(responseMetadata.fieldCount, 5);
     assert.equal(Object.prototype.hasOwnProperty.call(responseMetadata, "values"), false);
 
@@ -975,31 +943,26 @@ test("responses endpoint persists normalized values and keeps bootstrap compatib
     const updatedPayload = await updateRes.json();
     assert.equal(updatedPayload.responses.length, 1);
 
-    const storageAfterUpdate = readResponseStorage(ctx.dbPath, savedResponseId);
+    const storageAfterUpdate = await readResponseStorage(ctx.db, savedResponseId);
     assert.equal(storageAfterUpdate.responses.length, 1);
     assert.equal(storageAfterUpdate.responseValues.length, 5);
     const byFieldAfterUpdate = new Map(storageAfterUpdate.responseValues.map(row => [String(row.field_id), row]));
-    assert.equal(byFieldAfterUpdate.get("2").value_boolean, 0);
+    assert.equal(byFieldAfterUpdate.get("2").value_boolean, false);
     assert.equal(byFieldAfterUpdate.get("3").value_number, 6);
     assert.equal(byFieldAfterUpdate.get("4").value_text, "Observacao atualizada");
-    assert.deepEqual(JSON.parse(byFieldAfterUpdate.get("5").value_json), { "Linha A": "Coluna 2", "Linha B": "Coluna 1" });
+    assert.deepEqual(byFieldAfterUpdate.get("5").value_json, { "Linha A": "Coluna 2", "Linha B": "Coluna 1" });
 
-    const sqlite = new DatabaseSync(ctx.dbPath);
-    try {
-      sqlite.prepare(`
-        UPDATE responses
-        SET values_json = ?
-        WHERE id = ?
-      `).run(JSON.stringify({
-        1: "LEGADO",
-        2: "Nao",
-        3: 999,
-        4: "Texto legado",
-        5: { "Linha A": "Legado", "Linha B": "Legado" },
-      }), savedResponseId);
-    } finally {
-      sqlite.close();
-    }
+    await ctx.db.execute(`
+      UPDATE responses
+      SET values_json = ?
+      WHERE id = ?
+    `, [JSON.stringify({
+      1: "LEGADO",
+      2: "Nao",
+      3: 999,
+      4: "Texto legado",
+      5: { "Linha A": "Legado", "Linha B": "Legado" },
+    }), savedResponseId]);
 
     const normalizedRes = await fetch(`${ctx.baseUrl}/api/forms/${created.form.id}/responses`);
     assert.equal(normalizedRes.status, 200);
@@ -1008,12 +971,7 @@ test("responses endpoint persists normalized values and keeps bootstrap compatib
     assert.equal(normalizedResponse.values["3"], 6);
     assert.deepEqual(normalizedResponse.values["5"], { "Linha A": "Coluna 2", "Linha B": "Coluna 1" });
 
-    const sqliteFallback = new DatabaseSync(ctx.dbPath);
-    try {
-      sqliteFallback.prepare("DELETE FROM response_values WHERE response_id = ?").run(savedResponseId);
-    } finally {
-      sqliteFallback.close();
-    }
+    await ctx.db.execute("DELETE FROM response_values WHERE response_id = ?", [savedResponseId]);
 
     const fallbackRes = await fetch(`${ctx.baseUrl}/api/forms/${created.form.id}/responses`);
     assert.equal(fallbackRes.status, 200);
@@ -1186,7 +1144,7 @@ test("public escala claim endpoint persists a slot and rejects conflicts", async
     const duplicatePayload = await duplicateRes.json();
     assert.equal(duplicatePayload.code, "ESCALA_LIMIT_REACHED");
 
-    const conflictLogs = readAuditLogs(ctx.dbPath, "WHERE action = ? AND status = ?", ["claim_escala_slot", "conflict"]);
+    const conflictLogs = await readAuditLogs(ctx.db, "WHERE action = ? AND status = ?", ["claim_escala_slot", "conflict"]);
     assert.ok(conflictLogs.length >= 1);
 
     const conflictRes = await postJson(ctx.baseUrl, `/api/forms/${created.form.id}/escala/claim`, {
@@ -1263,7 +1221,7 @@ test("catalog endpoints persist field and scale task definitions", async () => {
     assert.deepEqual(bootstrap.fieldCatalog.find(item => item.key === "avaliacao_matriz").gridSchema.cols, ["1", "2", "3"]);
     assert.equal(bootstrap.scaleTaskCatalog[0].name, "Preparo do jantar");
 
-    const logs = readAuditLogs(ctx.dbPath, "WHERE action IN (?, ?)", ["admin_create_field_catalog", "admin_create_scale_task_catalog"]);
+    const logs = await readAuditLogs(ctx.db, "WHERE action IN (?, ?)", ["admin_create_field_catalog", "admin_create_scale_task_catalog"]);
     assert.ok(logs.length >= 2);
   } finally {
     await ctx.cleanup();

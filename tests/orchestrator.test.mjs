@@ -6,12 +6,10 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
+import { buildTestDatabaseEnv, createTestDatabase, dropTestDatabase } from "./helpers/postgresTestDb.mjs";
 
-const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-orchestrator-test-"));
-process.env.NSJB_DB_PATH = path.join(tempDir, "test.sqlite");
+const testDbName = await createTestDatabase();
+Object.assign(process.env, buildTestDatabaseEnv(testDbName));
 
 const { saveForm } = await import("../backend/services/formsService.mjs");
 const { findFormById } = await import("../backend/repositories/formsRepository.mjs");
@@ -20,7 +18,7 @@ const { database } = await import("../backend/database/index.mjs");
 
 test.after(async () => {
   await database.close?.();
-  fs.rmSync(tempDir, { recursive: true, force: true });
+  await dropTestDatabase(testDbName);
 });
 
 test("closeExpiredForms fecha somente formularios abertos vencidos", async () => {

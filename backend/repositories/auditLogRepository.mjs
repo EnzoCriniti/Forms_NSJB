@@ -1,7 +1,7 @@
 /**
  * @file backend/repositories/auditLogRepository.mjs
  * @summary Acesso a dados de auditoria administrativa.
- * @responsibility Persistir e consultar eventos de auditoria no SQLite principal.
+ * @responsibility Persistir e consultar eventos de auditoria no PostgreSQL principal.
  */
 
 import { nowIso, parseJson, stringifyJson } from "../database/shared.mjs";

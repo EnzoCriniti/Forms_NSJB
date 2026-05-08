@@ -12,6 +12,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `docs/diagramas/*.d2` - fontes declarativas dos diagramas.
 - `docs/diagramas/*.svg` - imagens finais embutidas nos Markdown.
 - `scripts/windows/` - atalhos locais para Windows.
+- `tests/helpers/postgresTestDb.mjs` - helper de isolamento PostgreSQL para testes.
 - `storage/` - snapshot historico usado apenas em verificacao de paridade.
 
 ## Interface
@@ -66,6 +67,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/database/drivers/` - driver Postgres oficial.
 - `backend/data/seedData.mjs` - seed inicial da aplicacao.
 - `backend/seed.mjs` - seed inicial.
+- `scripts/load-local.mjs` - runner de carga local contra o stack PostgreSQL.
 
 ## Bancos e migracao
 

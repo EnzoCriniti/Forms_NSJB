@@ -69,7 +69,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - [x] remover `backend/database/drivers/sqliteDriver.mjs`
 - [x] remover `backend/database/legacyImport.mjs`
 - [x] remover `tests/legacyImport.test.mjs`
-- [ ] migrar os testes que ainda dependem de SQLite para o fluxo PostgreSQL
+- [x] migrar os testes que ainda dependem de SQLite para o fluxo PostgreSQL
 - [ ] revisar e cortar referencias de SQLite nos docs e diagramas
 - [ ] atualizar `docs/MAPA-CODIGO.md` para refletir somente o caminho oficial
 - [ ] validar `npm run test`, `npm run build`, `docker compose -f docker/compose.yml config`

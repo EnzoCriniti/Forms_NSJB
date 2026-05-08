@@ -1,7 +1,7 @@
 /**
  * @file backend/repositories/sessionsRepository.mjs
  * @summary Acesso a sessoes autenticadas.
- * @responsibility Criar, localizar e revogar tokens opacos persistidos em SQLite.
+ * @responsibility Criar, localizar e revogar tokens opacos persistidos no PostgreSQL.
  */
 
 import { nowIso } from "../database/shared.mjs";

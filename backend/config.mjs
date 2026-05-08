@@ -7,7 +7,6 @@
 export const API_PORT = Number(process.env.NSJB_API_PORT || 8787);
 export const ORCHESTRATOR_INTERVAL_MS = Number(process.env.NSJB_ORCHESTRATOR_INTERVAL_MS || 60_000);
 export const DB_DRIVER = String(process.env.NSJB_DB_DRIVER || "postgres").toLowerCase();
-export const DB_PATH = process.env.NSJB_DB_PATH || "";
 export const PGHOST = process.env.NSJB_PGHOST || "postgres";
 export const PGPORT = Number(process.env.NSJB_PGPORT || 5432);
 export const PGDATABASE = process.env.NSJB_PGDATABASE || "nsjb_forms";

@@ -1,18 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
+import { buildTestDatabaseEnv, createTestDatabase, dropTestDatabase } from "./helpers/postgresTestDb.mjs";
 
-const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-audit-test-"));
-process.env.NSJB_DB_PATH = path.join(tempDir, "test.sqlite");
+const testDbName = await createTestDatabase();
+Object.assign(process.env, buildTestDatabaseEnv(testDbName));
 
 const { database } = await import("../backend/database/index.mjs");
 const { listAuditLogRecords } = await import("../backend/repositories/auditLogRepository.mjs");
 
 test.after(async () => {
   await database.close?.();
-  fs.rmSync(tempDir, { recursive: true, force: true });
+  await dropTestDatabase(testDbName);
 });
 
 test("listAuditLogRecords mapeia rows recebidas do banco", async () => {
