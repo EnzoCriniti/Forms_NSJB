@@ -9,13 +9,12 @@ import { claimEscalaSlot, saveEscala, getEscalaForForm } from "../services/escal
 import { saveForm, deleteForm } from "../services/formsService.mjs";
 import { saveResponse, getResponsesByFormId } from "../services/responsesService.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
-import { summarizeResponseAuditMetadata, summarizeSecurityAuditMetadata } from "../services/auditLogService.mjs";
+import { summarizeResponseAuditMetadata } from "../services/auditLogService.mjs";
 import {
   validateDeleteId,
   validateEscalaClaimPayload,
   validateEscalaPayload,
   validateFormDeleteKeyPayload,
-  validateFormDeleteKeyUpdatePayload,
   validateFormPayload,
   validateResponsePayload,
 } from "../validators/payloadValidators.mjs";
@@ -32,10 +31,6 @@ import {
 } from "./requestHelpers.mjs";
 
 export const handleFormRoutes = async (req, res, url) => {
-  if (req.method === "PUT" && url.pathname === "/api/security/form-delete-key") {
-    return false;
-  }
-
   if (req.method === "POST" && url.pathname === "/api/forms") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;

@@ -7,9 +7,9 @@
 import { sendJson } from "../core/http.mjs";
 import { extractBearerToken, loginWithCredentials, logoutByToken } from "../services/authService.mjs";
 import { getBootstrap } from "../services/bootstrapService.mjs";
-import { getFormDeleteKeyStatus } from "../services/adminService.mjs";
+import { getFormDeleteKeyStatus, saveFormDeleteKey } from "../services/adminService.mjs";
 import { listAuditLogs } from "../services/auditLogService.mjs";
-import { validateAuthLoginPayload } from "../validators/payloadValidators.mjs";
+import { validateAuthLoginPayload, validateFormDeleteKeyUpdatePayload } from "../validators/payloadValidators.mjs";
 import {
   auditLevelFromError,
   auditStatusFromError,
@@ -18,6 +18,7 @@ import {
   readBody,
   requireAdmin,
   requireAuth,
+  sendKnownError,
   writeAudit,
 } from "./requestHelpers.mjs";
 
@@ -110,6 +111,75 @@ export const handleSystemRoutes = async (req, res, url) => {
 
   if (req.method === "GET" && url.pathname === "/api/security/form-delete-key/status") {
     sendJson(res, 200, await getFormDeleteKeyStatus());
+    return true;
+  }
+
+  if (req.method === "PUT" && url.pathname === "/api/security/form-delete-key") {
+    const auth = await requireAdmin(req, res);
+    if (!auth) return true;
+    const body = await readBody(req);
+    if (!body) {
+      sendJson(res, 400, { error: "Payload JSON invalido." });
+      writeAudit(req, auth, {
+        level: "error",
+        category: "security",
+        action: "security_master_key_update",
+        status: "failure",
+        screen: "seguranca",
+        entityType: "security",
+        entityId: "formDeleteKey",
+        entityLabel: "Chave mestra",
+        message: "Payload JSON invalido.",
+        metadata: { status: "failure" },
+      });
+      return true;
+    }
+    try {
+      validateFormDeleteKeyUpdatePayload(body);
+      const result = await saveFormDeleteKey(body);
+      sendJson(res, 200, result);
+      await writeAudit(req, auth, {
+        level: "info",
+        category: "security",
+        action: "security_master_key_update",
+        status: "success",
+        screen: "seguranca",
+        entityType: "security",
+        entityId: "formDeleteKey",
+        entityLabel: "Chave mestra",
+        message: "Chave mestra atualizada.",
+        metadata: { status: "success" },
+      });
+    } catch (error) {
+      if (sendKnownError(res, error)) {
+        await writeAudit(req, auth, {
+          level: auditLevelFromError(error),
+          category: "security",
+          action: "security_master_key_update",
+          status: auditStatusFromError(error),
+          screen: "seguranca",
+          entityType: "security",
+          entityId: "formDeleteKey",
+          entityLabel: "Chave mestra",
+          message: error.message,
+          metadata: { status: auditStatusFromError(error) },
+        });
+        return true;
+      }
+      await writeAudit(req, auth, {
+        level: auditLevelFromError(error),
+        category: "security",
+        action: "security_master_key_update",
+        status: auditStatusFromError(error),
+        screen: "seguranca",
+        entityType: "security",
+        entityId: "formDeleteKey",
+        entityLabel: "Chave mestra",
+        message: error.message,
+        metadata: { status: auditStatusFromError(error) },
+      });
+      throw error;
+    }
     return true;
   }
 

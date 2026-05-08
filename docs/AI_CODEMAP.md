@@ -31,9 +31,10 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 
 - `backend/index.mjs` - inicia a API.
 - `backend/app.mjs` - cria o servidor HTTP.
-- `backend/routes/apiRouter.mjs` - concentra as rotas.
+- `backend/routes/apiRouter.mjs` - despachante principal das rotas.
 - `backend/routes/systemRoutes.mjs` - auth, health, bootstrap e audit logs.
 - `backend/routes/formRoutes.mjs` - formulários, respostas e escala.
+- `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
 - `backend/routes/requestHelpers.mjs` - helpers compartilhados de request, auth e auditoria.
 - `backend/services/` - regras de negocio.
 - `backend/repositories/` - acesso ao banco.
