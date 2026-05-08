@@ -8,6 +8,7 @@ Regras objetivas para manter o projeto consistente durante a migracao de estrutu
 - Verifique se a mudanca pertence ao frontend, backend, docker ou docs.
 - Atualize os caminhos da documentacao quando mover arquivos.
 - Rode `npm run build` ao final.
+- Use `docs/CHECKLIST-MANUTENCAO.md` como lista viva da sequencia de manutencao.
 
 ## Separacao de responsabilidades
 
@@ -32,4 +33,3 @@ Regras objetivas para manter o projeto consistente durante a migracao de estrutu
 - Ao criar uma nova area de codigo.
 - Ao alterar um contrato importante entre frontend e backend.
 - Ao mudar a estrategia de banco ou container.
-
