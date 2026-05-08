@@ -1,0 +1,54 @@
+direction: right
+style.fill: "#f8fafc"
+style.stroke: "#cbd5e1"
+style.stroke-width: 2
+
+usuario: {
+  label: "Usuario\nacessa a interface"
+  style.fill: "#fff7ed"
+  style.stroke: "#fb923c"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+frontend: {
+  label: "Frontend\nReact + Vite\nApp.jsx / Screens / Components"
+  style.fill: "#eff6ff"
+  style.stroke: "#60a5fa"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+backend: {
+  label: "Backend\nAPI / Services / Repositories"
+  style.fill: "#ecfeff"
+  style.stroke: "#14b8a6"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+postgres: {
+  label: "PostgreSQL\nfonte oficial de persistencia"
+  style.fill: "#f0fdf4"
+  style.stroke: "#22c55e"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+sqlite_legado: {
+  label: "SQLite legado\nimportacao unica"
+  style.fill: "#fef2f2"
+  style.stroke: "#ef4444"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+usuario -> frontend: "usa"
+frontend -> backend: "API local"
+backend -> postgres: "grava e consulta"
+sqlite_legado -> backend: "snapshot inicial"

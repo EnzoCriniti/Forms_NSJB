@@ -4,17 +4,23 @@ Pagina visual oficial dos fluxos do NSJB Forms.
 
 ## Como usar
 
-- Abra a versao HTML em [docs/diagramas/index.html](diagramas/index.html).
-- Use essa pagina como referencia visual principal.
+- Os arquivos fonte vivem em `docs/diagramas/*.d2`.
+- As imagens geradas vivem em `docs/diagramas/*.svg`.
+- Se mudar um diagrama, regenere o SVG a partir do `.d2` correspondente.
 - Quando precisar do contexto de estrutura, consulte [docs/MAPA-CODIGO.md](MAPA-CODIGO.md).
 
-## O que a pagina visual mostra
+## Arquitetura
 
-- arquitetura geral entre frontend, backend, PostgreSQL e legado SQLite
-- fluxo de inicializacao da stack Docker
-- fluxo funcional resumido da aplicacao
+![Arquitetura geral](diagramas/infra.svg)
+
+## Inicializacao
+
+![Fluxo de inicializacao](diagramas/inicializacao.svg)
+
+## Funcionalidades
+
+![Fluxo funcional resumido](diagramas/funcional.svg)
 
 ## Observacao
 
-- Os diagramas antigos em SVG foram substituidos por uma pagina HTML com layout mais legivel.
 - A documentacao tecnica continua em `README.md`, `docs/ARQUITETURA.md`, `docs/FUNCIONALIDADES.md` e `docs/MANUTENCAO.md`.

@@ -7,6 +7,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - Veja `docs/MAPA-CODIGO.md` antes de procurar arquivos no repo inteiro.
 - Comece pela area certa: frontend, backend, docker ou docs.
 - Atualize os caminhos da documentacao quando mover arquivos.
+- Atualize os diagramas em `docs/diagramas/*.d2` e regenere os `*.svg` quando a arquitetura ou o fluxo mudar.
 - Registre bug encontrado com teste novo ou ajuste de teste existente.
 - Registre toda correcao ou refatoracao relevante em commit separado.
 - Rode `npm run test`, `npm run build` e `docker compose -f docker/compose.yml config` quando a mudanca tocar fluxo real.

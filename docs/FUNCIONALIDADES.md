@@ -4,7 +4,7 @@ Documento funcional completo do NSJB Forms.
 
 ## Visao visual
 
-Veja a versao visual em [docs/diagramas/index.html](diagramas/index.html).
+![Fluxo funcional resumido](diagramas/funcional.svg)
 
 ## Como ler
 

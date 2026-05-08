@@ -8,6 +8,10 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 - [docs/FUNCIONALIDADES.md](FUNCIONALIDADES.md) mostra o que a aplicacao entrega.
 - esta pagina explica onde cada responsabilidade vive no codigo.
 
+## Visao visual
+
+![Arquitetura geral](diagramas/infra.svg)
+
 ## Camadas principais
 
 - `frontend/src/` - interface React.
@@ -40,10 +44,6 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 - `backend/database/drivers/` guarda o driver Postgres oficial e o driver SQLite legado.
 - `backend/data/seedData.mjs` guarda os dados iniciais da aplicacao.
 - `backend/seed.mjs` popula dados iniciais.
-
-## Visao visual
-
-Veja a versao visual em [docs/diagramas/index.html](diagramas/index.html).
 
 ## Fluxo basico
 

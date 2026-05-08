@@ -22,7 +22,7 @@ O fluxo esperado e subir tudo de uma vez. O compose resolve a ordem e aguarda o 
 
 ## Topologia
 
-Veja a versao visual em [docs/diagramas/index.html](../docs/diagramas/index.html).
+![Fluxo de inicializacao](../docs/diagramas/inicializacao.svg)
 
 ## Leitura rapida
 

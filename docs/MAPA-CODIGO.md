@@ -8,7 +8,9 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/` - API containerizada, regras de negocio, validacao e persistencia.
 - `shared/` - regras compartilhadas entre frontend e backend.
 - `docker/` - stack containerizada e documentacao de operacao.
-- `docs/DIAGRAMAS.md` - diagramas declarativos de arquitetura e fluxo.
+- `docs/DIAGRAMAS.md` - diagramas declarativos e imagens geradas a partir de D2.
+- `docs/diagramas/*.d2` - fontes declarativas dos diagramas.
+- `docs/diagramas/*.svg` - imagens finais embutidas nos Markdown.
 - `scripts/windows/` - atalhos locais para Windows.
 - `storage/` - restos legados do runtime SQLite; nao e fluxo oficial.
 

@@ -13,7 +13,7 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 
 ## Visao rapida
 
-Veja a versao visual em [docs/diagramas/index.html](docs/diagramas/index.html).
+![Arquitetura do NSJB Forms](docs/diagramas/infra.svg)
 
 ## Fluxo oficial
 
@@ -108,7 +108,7 @@ docker compose -f docker/compose.yml logs -f
 - [frontend/README.md](frontend/README.md) - estrutura da interface.
 - [backend/README.md](backend/README.md) - estrutura da API e banco.
 - [docker/README.md](docker/README.md) - operacao da stack oficial.
-- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - diagramas declarativos.
+- [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - diagramas declarativos e imagens geradas.
 - [docs/MAPA-CODIGO.md](docs/MAPA-CODIGO.md) - mapa rapido do codigo.
 - [docs/ARQUITETURA.md](docs/ARQUITETURA.md) - arquitetura por camadas.
 - [docs/PADROES-CODIGO.md](docs/PADROES-CODIGO.md) - padroes de implementacao.

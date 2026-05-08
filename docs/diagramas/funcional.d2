@@ -1,0 +1,44 @@
+direction: right
+style.fill: "#f8fafc"
+style.stroke: "#cbd5e1"
+style.stroke-width: 2
+
+entrada: {
+  label: "Entrada\nlogin e links publicos"
+  style.fill: "#fff7ed"
+  style.stroke: "#fb923c"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+operacao: {
+  label: "Operacao\nlistagem / criacao / edicao\npresenca / escala / resultados"
+  style.fill: "#eff6ff"
+  style.stroke: "#60a5fa"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+admin: {
+  label: "Administracao\nusuarios / socios / classificacoes\npresets / catalogos / auditoria"
+  style.fill: "#ecfeff"
+  style.stroke: "#14b8a6"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+base: {
+  label: "Base consolidada\nPostgreSQL + bootstrap de legado"
+  style.fill: "#f0fdf4"
+  style.stroke: "#22c55e"
+  style.stroke-width: 2
+  style.shadow: true
+  style.border-radius: 16
+}
+
+entrada -> operacao: "usa"
+operacao -> admin: "quando autorizado"
+operacao -> base: "consulta e persiste"
