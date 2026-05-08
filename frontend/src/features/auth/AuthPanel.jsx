@@ -106,10 +106,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
   if (isSheet) {
     return (
       <div className="auth-panel auth-panel--sheet" style={{ display: "grid", gap: 12, width: "100%" }}>
-        <div>
-          <strong style={{ display: "block", color: "var(--text)", fontSize: 14, marginBottom: 2 }}>Informe seus dados</strong>
-          <span style={{ color: "var(--text-secondary)", fontSize: 12, lineHeight: 1.4 }}>Use seu usuário e senha para continuar e liberar as opções do cabeçalho.</span>
-        </div>
+        <strong style={{ display: "block", color: "var(--text)", fontSize: 14 }}>Entrar</strong>
         <input
           className="auth-panel__input"
           value={username}

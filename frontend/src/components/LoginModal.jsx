@@ -16,10 +16,7 @@ export const LoginModal = ({ open, onClose, onLogin, onLogout, theme, fontScale,
       <div className="modal-card login-modal-card" onClick={event => event.stopPropagation()} style={{ width: "min(520px, 100%)" }}>
         <div className="login-modal-header" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: 22 }}>Entrar no sistema</h2>
-            <p style={{ margin: "6px 0 0", color: "var(--text-secondary)", lineHeight: 1.45 }}>
-              Use seu usuário e senha para continuar.
-            </p>
+            <h2 style={{ margin: 0, fontSize: 22 }}>Entrar</h2>
           </div>
           <Btn v="ghost" sz="sm" onClick={onClose}>
             Fechar
