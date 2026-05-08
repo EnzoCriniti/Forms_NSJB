@@ -35,3 +35,7 @@ Container da API do NSJB Forms.
 - o backend usa PostgreSQL como banco oficial no Docker
 - o fluxo oficial nao depende mais de volume local de SQLite
 - o backend importa o snapshot legado de `storage/nsjb-forms.sqlite` apenas na primeira subida do Postgres, se o arquivo existir no build context
+
+## Manutencao
+
+Se o contrato da API, as variaveis de ambiente ou o bootstrap mudarem, atualize este README junto com `backend/config.mjs`, `docker/compose.yml` e `docs/diagramas/inicializacao.d2`.

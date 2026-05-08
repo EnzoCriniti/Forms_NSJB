@@ -47,3 +47,7 @@ flowchart LR
 
 - SQLite nao faz mais parte do fluxo oficial do ambiente
 - a camada de importacao legado existe so para a transicao e deve sair quando o backlog de limpeza fechar
+
+## Manutencao
+
+Atualize este documento sempre que o alvo de banco, a importacao legado ou a ordem de subida do compose mudar. O conteudo desta pasta deve acompanhar a evolucao da migracao.

@@ -29,3 +29,7 @@ Banco oficial da stack Docker do NSJB Forms.
 ## Proxima etapa
 
 - manter a paridade de seed e dados com o backend
+
+## Manutencao
+
+Se o service PostgreSQL mudar de porta, nome, volume ou variaveis, atualize este README, o `docker/compose.yml` e o mapa visual em `docs/diagramas/inicializacao.d2` no mesmo ciclo.

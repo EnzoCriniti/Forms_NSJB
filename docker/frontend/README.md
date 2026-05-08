@@ -25,3 +25,7 @@ Container do frontend do NSJB Forms.
 - nesta fase o container usa `npm ci` completo porque o Vite roda no proprio container
 - a troca para servidor estatico de producao pode ser feita depois que o fluxo estabilizar
 - o frontend depende do backend estar saudavel antes de subir
+
+## Manutencao
+
+Se o fluxo do frontend mudar, ajuste este README junto com `frontend/vite.config.js`, `docker/compose.yml` e o diagrama em `docs/diagramas/inicializacao.d2`.
