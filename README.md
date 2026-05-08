@@ -36,6 +36,13 @@ Leituras principais:
 - `docs/` - documentacao funcional, tecnica e de manutencao.
 - `scripts/windows/` - atalhos locais para Windows.
 
+Atalhos prontos para Windows:
+
+- `scripts/windows/start-docker.bat` - sobe a stack Docker.
+- `scripts/windows/restart-docker.bat` - reinicia a stack com rebuild.
+- `scripts/windows/stop-docker.bat` - derruba a stack.
+- `scripts/windows/status-docker.bat` - mostra o estado atual.
+
 ## Subir em outra maquina
 
 O caminho oficial e via Docker Compose.
