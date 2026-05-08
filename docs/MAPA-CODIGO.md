@@ -12,7 +12,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `docs/diagramas/*.d2` - fontes declarativas dos diagramas.
 - `docs/diagramas/*.svg` - imagens finais embutidas nos Markdown.
 - `scripts/windows/` - atalhos locais para Windows.
-- `storage/` - restos legados do runtime SQLite; nao e fluxo oficial.
+- `storage/` - snapshot historico usado apenas em verificacao de paridade.
 
 ## Interface
 
@@ -63,16 +63,15 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/validators/` - validacao estrutural.
 - `backend/core/` - utilitarios compartilhados.
 - `backend/database/` - camada minima de acesso ao banco.
-- `backend/database/drivers/` - driver SQLite legado e driver Postgres oficial.
-- `backend/database/legacyImport.mjs` - importacao unica do snapshot SQLite para o Postgres.
+- `backend/database/drivers/` - driver Postgres oficial.
 - `backend/data/seedData.mjs` - seed inicial da aplicacao.
 - `backend/seed.mjs` - seed inicial.
 
 ## Bancos e migracao
 
 - `backend/database/` concentra a camada minima de acesso ao banco.
-- `backend/database/drivers/` separa o driver PostgreSQL oficial e o driver SQLite legado.
-- `backend/database/legacyImport.mjs` faz a importacao unica do snapshot antigo.
+- `backend/database/drivers/` separa o driver PostgreSQL oficial.
+- `storage/nsjb-forms.sqlite` permanece apenas como snapshot historico enquanto a paridade for conferida.
 
 ## Pontos de entrada mais comuns
 

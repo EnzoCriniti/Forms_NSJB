@@ -5,27 +5,27 @@ Esta pasta documenta a camada de banco do NSJB Forms.
 ## Leitura rapida
 
 - o banco oficial e PostgreSQL no compose
-- o SQLite existe apenas como compatibilidade temporaria durante a transicao
-- a importacao do legado acontece uma unica vez na primeira subida, quando o snapshot existe
+- o snapshot historico de SQLite serve apenas para verificacao de paridade durante o corte final
 
 ## Estado atual
 
 - o backend Docker persiste os dados no PostgreSQL do compose
-- o SQLite ficou apenas como compatibilidade interna temporaria no codigo
-- na primeira subida, o backend importa automaticamente o snapshot legado de `storage/nsjb-forms.sqlite` quando ele existe no build context
+- o SQLite nao faz mais parte do fluxo oficial do runtime
+- o snapshot historico de `storage/nsjb-forms.sqlite` fica apenas para comparacao de paridade antes do corte final
 
 ## Fluxo de banco
 
 ```mermaid
 flowchart LR
-  S[(storage/nsjb-forms.sqlite)] -. importacao unica .-> P[(PostgreSQL)]
+  S[(storage/nsjb-forms.sqlite)] -. snapshot historico .-> C[verificador de paridade]
+  C --> P[(PostgreSQL)]
   B[backend/database] --> P
 ```
 
 ## Onde olhar no codigo
 
 - `backend/database/` - facade e drivers de banco
-- `backend/database/drivers/` - driver SQLite legado e driver Postgres oficial
+- `backend/database/drivers/` - driver Postgres oficial
 - `backend/seed.mjs` - seed inicial da aplicacao
 - `backend/data/seedData.mjs` - dados seed usados pelo backend
 
@@ -46,8 +46,8 @@ flowchart LR
 ## Regra pratica
 
 - SQLite nao faz mais parte do fluxo oficial do ambiente
-- a camada de importacao legado existe so para a transicao e deve sair quando o backlog de limpeza fechar
-- use `npm run verify:legacy-parity` para comparar o snapshot SQLite legado com o PostgreSQL antes de remover o legado por completo
+- a referencia historica existe so para comparacao de paridade enquanto a limpeza final nao fecha
+- use `npm run verify:legacy-parity` para comparar o snapshot historico com o PostgreSQL antes de remover o restante do legado por completo
 - se rodar fora do compose, passe `NSJB_VERIFY_PGHOST=127.0.0.1` e, se necessario, `NSJB_VERIFY_PGPORT`
 - rode a comparacao depois de congelar as escritas, porque uma base viva pode divergir do snapshot legado por uso normal
 

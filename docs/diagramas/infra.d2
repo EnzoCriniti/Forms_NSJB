@@ -53,17 +53,6 @@ postgres: {
   style.font-size: 18
 }
 
-sqlite_legado: {
-  label: "SQLite legado"
-  style.fill: "#fef2f2"
-  style.stroke: "#ef4444"
-  style.stroke-width: 2
-  style.shadow: true
-  style.border-radius: 16
-  style.font-size: 18
-}
-
 usuario -> frontend: "usa"
 frontend -> backend: "API local"
 backend -> postgres: "grava e consulta"
-sqlite_legado -> backend: "snapshot inicial"

@@ -18,7 +18,7 @@ Este documento resume a divisao de responsabilidades do NSJB Forms depois da sep
 - `backend/` - API containerizada, servicos, repositorios, validacao e banco.
 - `shared/` - regras compartilhadas entre frontend e backend.
 - `docker/` - orquestracao, imagens e docs da stack.
-- `storage/` - restos legados do runtime SQLite; nao e fluxo oficial.
+- `storage/` - snapshot historico usado apenas como referencia de paridade.
 
 ## Frontend
 
@@ -41,7 +41,7 @@ Este documento resume a divisao de responsabilidades do NSJB Forms depois da sep
 - `backend/validators/` valida payloads.
 - `backend/core/` guarda utilitarios de dominio.
 - `backend/database/` guarda a camada minima de acesso ao banco.
-- `backend/database/drivers/` guarda o driver Postgres oficial e o driver SQLite legado.
+- `backend/database/drivers/` guarda o driver Postgres oficial.
 - `backend/data/seedData.mjs` guarda os dados iniciais da aplicacao.
 - `backend/seed.mjs` popula dados iniciais.
 

@@ -57,7 +57,23 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - Extrair helpers repetidos de auditoria e erro para evitar copy/paste entre rotas.
 - Continuar a retirada de qualquer caminho ou dependencia indireta de SQLite legado.
 - Remover por completo a logica de importacao e compatibilidade com SQLite quando a migracao estiver fechada e validada.
-- Remover `backend/database/sqliteRuntime.mjs`, `backend/database/sqliteSchema.mjs`, `backend/database/drivers/sqliteDriver.mjs` e os testes que existirem apenas para o driver legado depois que a paridade estiver fechada.
+- Remover os testes, snapshots e documentos que ainda existirem apenas para o caminho legado depois que a paridade estiver fechada.
+
+## Checklist de corte final SQLite
+
+- [ ] congelar escrita da aplicacao durante a janela de comparacao
+- [ ] rodar `npm run verify:legacy-parity` contra o snapshot antigo e o PostgreSQL atual
+- [ ] validar e registrar qualquer divergencia restante antes do corte
+- [x] remover `backend/database/sqliteRuntime.mjs`
+- [x] remover `backend/database/sqliteSchema.mjs`
+- [x] remover `backend/database/drivers/sqliteDriver.mjs`
+- [x] remover `backend/database/legacyImport.mjs`
+- [x] remover `tests/legacyImport.test.mjs`
+- [ ] migrar os testes que ainda dependem de SQLite para o fluxo PostgreSQL
+- [ ] revisar e cortar referencias de SQLite nos docs e diagramas
+- [ ] atualizar `docs/MAPA-CODIGO.md` para refletir somente o caminho oficial
+- [ ] validar `npm run test`, `npm run build`, `docker compose -f docker/compose.yml config`
+- [ ] remover `storage/nsjb-forms.sqlite` depois da ultima comparacao de paridade
 
 ## Limpeza final
 

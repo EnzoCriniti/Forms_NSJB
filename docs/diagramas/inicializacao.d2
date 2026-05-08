@@ -54,7 +54,7 @@ frontend: {
 }
 
 legacy: {
-  label: "SQLite legado"
+  label: "snapshot historico"
   style.fill: "#fef2f2"
   style.stroke: "#ef4444"
   style.stroke-width: 2
@@ -66,4 +66,4 @@ legacy: {
 compose -> postgres
 postgres -> backend
 backend -> frontend
-legacy -> backend: "bootstrap"
+legacy -> backend: "comparacao"

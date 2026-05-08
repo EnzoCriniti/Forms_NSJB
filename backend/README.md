@@ -12,7 +12,7 @@ Codigo da API do NSJB Forms.
 - `repositories/` - acesso a persistencia.
 - `validators/` - validacao de payload.
 - `core/` - utilitarios de dominio e HTTP.
-- `database/` - facade de banco, drivers e importacao legado.
+- `database/` - facade de banco e drivers oficiais.
 - `orchestrator/` - automacoes de ciclo de vida.
 - `seed.mjs` - seed inicial.
 
@@ -27,7 +27,7 @@ O caminho normal e:
 4. o layer de `database/` escolhe o driver oficial
 
 O driver oficial atual e PostgreSQL no Docker.
-O SQLite ficou apenas como compatibilidade historica e importacao unica do snapshot legado.
+O SQLite nao faz mais parte do caminho oficial.
 
 ## Entrada principal
 
@@ -38,7 +38,7 @@ O SQLite ficou apenas como compatibilidade historica e importacao unica do snaps
 - `backend/routes/` separa as rotas por dominio.
 - `backend/services/` concentra as regras de negocio.
 - `backend/repositories/` concentra persistencia e consultas.
-- `backend/database/` concentra facade, drivers e importacao legado.
+- `backend/database/` concentra facade e drivers oficiais.
 - `backend/orchestrator/` cuida do ciclo de vida do bootstrap.
 - Diagramas declarativos da arquitetura ficam em [`docs/DIAGRAMAS.md`](../docs/DIAGRAMAS.md).
 
