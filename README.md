@@ -103,3 +103,4 @@ docker compose -f docker/compose.yml logs -f
 
 - O backend persiste os dados no PostgreSQL do Docker.
 - A stack local continua disponivel como compatibilidade, mas nao e o caminho oficial.
+- Na primeira subida do Postgres, o backend importa automaticamente o snapshot legado de `storage/nsjb-forms.sqlite` quando ele estiver presente no repo.

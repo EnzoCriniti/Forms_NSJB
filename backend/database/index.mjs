@@ -6,6 +6,7 @@
 
 import { DB_DRIVER } from "../config.mjs";
 import { PGDATABASE, PGHOST, PGPORT } from "../config.mjs";
+import { importLegacySqliteSnapshot } from "./legacyImport.mjs";
 import { createPostgresDriver } from "./drivers/postgresDriver.mjs";
 import { createSqliteDriver } from "./drivers/sqliteDriver.mjs";
 
@@ -18,8 +19,10 @@ const databaseDriver = await (async () => {
     };
   }
   if (DB_DRIVER === "postgres") {
+    const database = await createPostgresDriver();
+    await importLegacySqliteSnapshot(database);
     return {
-      database: await createPostgresDriver(),
+      database,
       databaseInfo: {
         driver: "postgres",
         path: null,

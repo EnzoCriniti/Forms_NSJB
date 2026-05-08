@@ -6,6 +6,7 @@ Esta pasta documenta a camada de banco do NSJB Forms.
 
 - o backend Docker persiste os dados no PostgreSQL do compose
 - o SQLite ficou apenas como compatibilidade interna temporaria no codigo
+- na primeira subida, o backend importa automaticamente o snapshot legado de `storage/nsjb-forms.sqlite` quando ele existe no build context
 
 ## Onde olhar no codigo
 
@@ -31,3 +32,4 @@ Esta pasta documenta a camada de banco do NSJB Forms.
 ## Regra pratica
 
 - SQLite nao faz mais parte do fluxo oficial do ambiente
+- a camada de importacao legado existe so para a transicao e deve sair quando o backlog de limpeza fechar

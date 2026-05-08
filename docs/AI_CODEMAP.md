@@ -22,6 +22,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/components/AppStatusScreen.jsx` - estados centrais de carregamento e erro.
 - `frontend/src/components/LoginModal.jsx` - modal de login do frontend.
 - `frontend/src/components/FormListToolbar.jsx` - barra de busca e filtros da listagem.
+- `frontend/src/components/FormListCard.jsx` - card individual da listagem de formularios.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
@@ -47,6 +48,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `backend/core/` - utilitarios compartilhados.
 - `backend/database/` - camada minima de acesso ao banco.
 - `backend/database/drivers/` - driver SQLite legado e driver Postgres oficial.
+- `backend/database/legacyImport.mjs` - importacao unica do snapshot SQLite para o Postgres.
 - `backend/data/seedData.mjs` - seed inicial da aplicacao.
 - `backend/seed.mjs` - seed inicial.
 

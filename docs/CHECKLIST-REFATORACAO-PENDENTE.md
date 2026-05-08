@@ -31,6 +31,7 @@ Backlog vivo para continuar a limpeza sem perder o foco.
 - [ ] Extrair helpers repetidos de auditoria e erro para evitar copy/paste entre rotas.
 - [ ] Revisar `backend/services/` para separar regras grandes de negocio quando surgirem novos pontos de complexidade.
 - [ ] Continuar a retirada de qualquer caminho ou dependencia indireta de SQLite legado.
+- [ ] Remover por completo a logica de importacao/compatibilidade com SQLite quando a migracao estiver fechada e validada.
 - [ ] Manter cada mudança de comportamento coberta por teste de API.
 
 ## Testes

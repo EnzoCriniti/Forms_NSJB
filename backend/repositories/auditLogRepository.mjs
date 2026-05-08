@@ -118,13 +118,13 @@ export const listAuditLogRecords = async (filters = {}) => {
   const { where, params } = buildFilters(filters);
   const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
 
-  const total = await database.queryOne(`
+  const total = (await database.queryOne(`
     SELECT COUNT(*) AS count
     FROM audit_logs
     ${whereClause}
-  `, params)?.count || 0;
+  `, params))?.count || 0;
 
-  const items = await database.queryMany(`
+  const items = (await database.queryMany(`
     SELECT
       id, created_at, level, category, action, status, screen,
       actor_id, actor_name, actor_role, entity_type, entity_id, entity_label,
@@ -133,7 +133,7 @@ export const listAuditLogRecords = async (filters = {}) => {
     ${whereClause}
     ORDER BY created_at DESC, id DESC
     LIMIT ? OFFSET ?
-  `, [...params, limit, offset]).map(mapAuditLogRow);
+  `, [...params, limit, offset])).map(mapAuditLogRow);
 
   return {
     items,
