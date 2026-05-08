@@ -15,9 +15,23 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 
 ![Arquitetura geral](docs/diagramas/infra.svg)
 
-Se voce for ler uma unica pagina primeiro, leia:
+## Como funciona
 
-- [docs/APLICACAO.md](docs/APLICACAO.md) - resumo funcional da aplicacao.
+O usuario interage com o frontend.
+O frontend chama o backend.
+O backend valida, aplica regra de negocio e grava no PostgreSQL.
+
+Fluxo oficial:
+
+1. subir a stack com Docker Compose
+2. abrir o frontend
+3. usar login ou link publico
+4. a API persiste e consolida os dados
+5. a importacao do SQLite legado acontece uma unica vez, se o snapshot existir
+
+Para uma leitura rapida, use:
+
+- [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - o que a aplicacao faz.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - arquitetura e fluxos visuais.
 - [docker/README.md](docker/README.md) - como subir e operar a stack.
 
@@ -70,7 +84,6 @@ docker compose -f docker/compose.yml logs -f
 
 ## Documentacao principal
 
-- [docs/APLICACAO.md](docs/APLICACAO.md) - visao funcional resumida.
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fluxos.
 
@@ -116,3 +129,4 @@ docker compose -f docker/compose.yml logs -f
 - O backend persiste os dados no PostgreSQL do Docker.
 - A stack local continua disponivel como compatibilidade, mas nao e o caminho oficial.
 - Na primeira subida do Postgres, o backend importa automaticamente o snapshot legado de `storage/nsjb-forms.sqlite` quando ele estiver presente no repo.
+- A configuracao dos socios continua vindo de Google Sheets para manter a operacao simples.

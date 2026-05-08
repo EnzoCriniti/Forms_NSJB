@@ -61,3 +61,4 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 - Nao mova responsabilidade de persistencia para services.
 - Nao misture validacao estrutural com regra de negocio.
 - Para um desenho mais visual, consulte [docs/DIAGRAMAS.md](DIAGRAMAS.md).
+- Para o resumo de uso e operacao, use o `README.md` da raiz.

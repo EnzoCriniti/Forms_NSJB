@@ -189,7 +189,5 @@ Se voce so precisa de uma visao rapida, pense assim:
 ## Documentos relacionados
 
 - [README.md](../README.md)
-- [docs/APLICACAO.md](APLICACAO.md)
-- [docs/FUNCIONALIDADES-E-ARQUITETURA.md](FUNCIONALIDADES-E-ARQUITETURA.md)
 - [docs/ARCHITECTURE.md](ARCHITECTURE.md)
 - [docs/DIAGRAMAS.md](DIAGRAMAS.md)
