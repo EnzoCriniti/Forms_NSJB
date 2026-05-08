@@ -47,6 +47,17 @@ import { ResultsScreen } from "./screens/ResultsScreen";
 import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 import { isFormClosedForPublic } from "./lib/forms";
+import {
+  buildDuplicateFormDraft,
+  buildSaveFormPayloadFromExisting,
+  clampFontScale,
+  FONT_SCALE_MAX,
+  FONT_SCALE_MIN,
+  FONT_SCALE_STEP,
+  getPublicSlugFromLocation,
+  normalizeStoredSession,
+  sanitizeUser,
+} from "./lib/appShell";
 
 const EMPTY_BOOTSTRAP = {
   forms: [],
@@ -61,84 +72,11 @@ const EMPTY_BOOTSTRAP = {
   membersConfig: {},
 };
 
-const sanitizeUser = user => user ? {
-  id: user.id,
-  name: user.name,
-  username: user.username,
-  role: user.role,
-} : null;
-
-const cloneFormDraft = form => JSON.parse(JSON.stringify(form));
-
-const buildDuplicateFormDraft = form => {
-  const copy = cloneFormDraft(form);
-  return {
-    ...copy,
-    id: null,
-    slug: "",
-    status: "rascunho",
-    title: copy.title ? `${copy.title} (Copia)` : "Formulario (Copia)",
-  };
-};
-
-const buildSaveFormPayloadFromExisting = (form, status = form?.status) => ({
-  id: form?.id,
-  slug: form?.slug,
-  type: form?.type,
-  status,
-  title: form?.title || "",
-  sessionName: form?.sessionName || "",
-  description: form?.description || "",
-  labels: form?.labels || [],
-  date: form?.date || "",
-  closing: form?.closing || "",
-  closingText: form?.closingText || "",
-  totalExpected: form?.totalExpected || 0,
-  fieldDefinitions: form?.fieldDefinitions || [],
-  resultsConfig: form?.resultsConfig || {},
-  scaleSections: form?.scaleSections || [],
-});
-
 const HeaderThemeIcon = ({ theme }) => (
   theme === "dark"
     ? <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     : <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
 );
-
-const FONT_SCALE_MIN = 0.9;
-const FONT_SCALE_MAX = 1.3;
-const FONT_SCALE_STEP = 0.1;
-const clampFontScale = value => Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, Number(value.toFixed(2))));
-
-const normalizeStoredSession = stored => {
-  if (!stored) return null;
-  const token = typeof stored.token === "string" && stored.token.trim() ? stored.token : null;
-  if (!token) return null;
-  return {
-    user: sanitizeUser(stored.user || stored),
-    token,
-    expiresAt: stored.expiresAt || null,
-  };
-};
-
-const decodePublicSlug = slug => {
-  if (!slug) return null;
-  try {
-    return decodeURIComponent(slug);
-  } catch {
-    return slug;
-  }
-};
-
-const getPublicSlugFromLocation = () => {
-  if (window.location.hash.startsWith("#/f/")) {
-    return decodePublicSlug(window.location.hash.replace("#/f/", ""));
-  }
-  if (window.location.pathname.startsWith("/f/")) {
-    return decodePublicSlug(window.location.pathname.replace("/f/", ""));
-  }
-  return null;
-};
 
 export default function App() {
   const [screen, setScreen] = useState("list");

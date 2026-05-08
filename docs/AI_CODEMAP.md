@@ -21,6 +21,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
 - `frontend/src/lib/forms.js` - helpers de formularios.
+- `frontend/src/lib/appShell.js` - helpers puros do shell principal.
 - `frontend/src/lib/storage.js` - persistencia local.
 - `frontend/src/data/` - dados estaticos da UI.
 - `frontend/src/styles.css` - tema e estilos globais.
@@ -31,6 +32,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `backend/index.mjs` - inicia a API.
 - `backend/app.mjs` - cria o servidor HTTP.
 - `backend/routes/apiRouter.mjs` - concentra as rotas.
+- `backend/routes/requestHelpers.mjs` - helpers compartilhados de request, auth e auditoria.
 - `backend/services/` - regras de negocio.
 - `backend/repositories/` - acesso ao banco.
 - `backend/validators/` - validacao estrutural.
@@ -54,8 +56,10 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 
 - Para navegar a interface: `frontend/src/App.jsx`.
 - Para mexer em tela especifica: `frontend/src/screens/`.
+- Para ajustar o shell principal do frontend: `frontend/src/lib/appShell.js`.
 - Para ajustar regras de negocio: `backend/services/`.
 - Para mexer em persistencia: `backend/repositories/`.
+- Para request/auth/auditoria do backend: `backend/routes/requestHelpers.mjs`.
 - Para ajustar o banco: `backend/database/` e `backend/database/drivers/`.
 - Para Docker e operacao: `docker/README.md`.
 

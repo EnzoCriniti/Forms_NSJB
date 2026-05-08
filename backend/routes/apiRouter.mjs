@@ -4,14 +4,14 @@
  * @responsibility Traduzir requests em chamadas de servico e respostas JSON.
  */
 
-import { parseBody, sendJson } from "../core/http.mjs";
-import { loginWithCredentials, logoutByToken, getAuthenticatedUserFromToken, extractBearerToken } from "../services/authService.mjs";
+import { sendJson } from "../core/http.mjs";
+import { extractBearerToken, loginWithCredentials, logoutByToken } from "../services/authService.mjs";
 import { getBootstrap } from "../services/bootstrapService.mjs";
 import { saveForm, deleteForm } from "../services/formsService.mjs";
 import { saveResponse, getResponsesByFormId } from "../services/responsesService.mjs";
 import { claimEscalaSlot, saveEscala, getEscalaForForm } from "../services/escalaService.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
-import { recordAuditLog, buildAuditActorFromAuth, getSystemAuditActor, listAuditLogs, summarizeResponseAuditMetadata, summarizeSecurityAuditMetadata } from "../services/auditLogService.mjs";
+import { listAuditLogs, summarizeResponseAuditMetadata, summarizeSecurityAuditMetadata } from "../services/auditLogService.mjs";
 import {
   validateDeleteId,
   validateAuthLoginPayload,
@@ -45,110 +45,19 @@ import {
   getFormDeleteKeyStatus,
   saveFormDeleteKey,
 } from "../services/adminService.mjs";
-
-const sendEscalaError = (res, error) => {
-  if (error?.statusCode === 409 || error?.code === "ESCALA_CONFLICT") {
-    sendJson(res, 409, { error: error.message, code: error.code || "ESCALA_CONFLICT" });
-    return true;
-  }
-
-  if (error?.statusCode === 404 || error?.code === "FORM_NOT_FOUND") {
-    sendJson(res, 404, { error: error.message, code: error.code || "FORM_NOT_FOUND" });
-    return true;
-  }
-
-  return false;
-};
-
-const sendKnownError = (res, error) => {
-  if (!error?.statusCode) return false;
-  sendJson(res, error.statusCode, { error: error.message, code: error.code || undefined });
-  return true;
-};
-
-const readBody = async req => {
-  try {
-    return await parseBody(req);
-  } catch {
-    return null;
-  }
-};
-
-const requireAuth = async req => {
-  const token = extractBearerToken(req.headers);
-  if (!token) return null;
-  return getAuthenticatedUserFromToken(token);
-};
-
-const requireAdmin = async (req, res) => {
-  const auth = await requireAuth(req);
-  if (!auth) {
-    sendJson(res, 401, { error: "Nao autenticado." });
-    return null;
-  }
-  if (auth.user?.role !== "admin") {
-    sendJson(res, 403, { error: "Permissao insuficiente." });
-    return null;
-  }
-  return auth;
-};
-
-const VISITOR_ACTOR = { id: null, name: "Visitante", role: "visitor" };
-
-const auditMeta = req => ({
-  requestId: req.auditContext?.requestId || null,
-  ipAddress: req.auditContext?.ipAddress || null,
-  userAgent: req.auditContext?.userAgent || null,
-});
-
-const auditActor = (auth, fallback = VISITOR_ACTOR) => buildAuditActorFromAuth(auth, fallback);
-
-const auditLevelFromError = error => {
-  if (error?.code === "ESCALA_CONFLICT" || error?.statusCode === 409) return "warn";
-  if (error?.statusCode === 403) return "warn";
-  return "error";
-};
-
-const auditStatusFromError = error => {
-  if (error?.code === "ESCALA_CONFLICT" || error?.statusCode === 409) return "conflict";
-  if (error?.statusCode === 403) return "denied";
-  return "failure";
-};
-
-const writeAudit = async (req, auth, event) => {
-  await recordAuditLog({
-    ...event,
-    actor: event.actor || auditActor(auth, event.fallbackActor || VISITOR_ACTOR),
-    ...auditMeta(req),
-  });
-};
-
-const toAuditDate = (value, endOfDay = false) => {
-  const text = String(value || "").trim();
-  if (!text) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
-    return new Date(`${text}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`).toISOString();
-  }
-  const parsed = new Date(text);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString();
-};
-
-const readAuditFilters = url => ({
-  from: toAuditDate(url.searchParams.get("from")),
-  to: toAuditDate(url.searchParams.get("to"), true),
-  level: url.searchParams.get("level"),
-  category: url.searchParams.get("category"),
-  action: url.searchParams.get("action"),
-  status: url.searchParams.get("status"),
-  screen: url.searchParams.get("screen"),
-  actor: url.searchParams.get("actor"),
-  entityType: url.searchParams.get("entityType"),
-  entityId: url.searchParams.get("entityId"),
-  search: url.searchParams.get("search"),
-  limit: url.searchParams.get("limit"),
-  offset: url.searchParams.get("offset"),
-});
+import {
+  auditLevelFromError,
+  auditStatusFromError,
+  getSystemActor,
+  getVisitorActor,
+  readAuditFilters,
+  readBody,
+  requireAdmin,
+  requireAuth,
+  sendEscalaError,
+  sendKnownError,
+  writeAudit,
+} from "./requestHelpers.mjs";
 
 export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/auth/login") {
@@ -174,7 +83,7 @@ export const handleApiRequest = async (req, res, url) => {
         metadata: {
           username: result.user?.username || body.username || null,
         },
-        actor: result.user || getSystemAuditActor(),
+        actor: result.user || getSystemActor(),
       });
     } catch (error) {
       sendJson(res, error.statusCode || 400, { error: error.message, code: error.code });
@@ -323,7 +232,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/forms") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateFormPayload(body);
       const form = await saveForm(body);
@@ -477,7 +386,7 @@ export const handleApiRequest = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/responses") {
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateResponsePayload(body);
       const result = await saveResponse(body);
@@ -487,7 +396,7 @@ export const handleApiRequest = async (req, res, url) => {
         action: result.mode === "update" ? "update_response" : "save_response",
         status: "success",
         screen: "public-form",
-        actor: getSystemAuditActor(),
+        actor: getSystemActor(),
         entityType: "response",
         entityId: result.responseId,
         entityLabel: `Formulario ${body.formId}`,
@@ -507,7 +416,7 @@ export const handleApiRequest = async (req, res, url) => {
         action: "save_response",
         status: auditStatusFromError(error),
         screen: "public-form",
-        actor: VISITOR_ACTOR,
+        actor: getVisitorActor(),
         entityType: "response",
         entityId: body?.formId || null,
         entityLabel: body?.respondentName || null,
@@ -541,7 +450,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "PUT" && url.pathname.startsWith("/api/escala/")) {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     const formId = validateDeleteId(url.pathname.split("/").pop(), "formId da escala");
     try {
       validateEscalaPayload(formId, body);
@@ -585,7 +494,7 @@ export const handleApiRequest = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname.startsWith("/api/forms/") && url.pathname.endsWith("/escala/claim")) {
-    const body = await parseBody(req);
+    const body = await readBody(req);
     const formId = validateDeleteId(url.pathname.split("/")[3], "Id do formulario");
     try {
       validateEscalaClaimPayload(body);
@@ -597,7 +506,7 @@ export const handleApiRequest = async (req, res, url) => {
         action: "claim_escala_slot",
         status: "success",
         screen: "public-escala",
-        actor: VISITOR_ACTOR,
+        actor: getVisitorActor(),
         entityType: "form",
         entityId: formId,
         entityLabel: `Escala ${formId}`,
@@ -616,7 +525,7 @@ export const handleApiRequest = async (req, res, url) => {
           action: "claim_escala_slot",
           status: auditStatusFromError(error),
           screen: "public-escala",
-          actor: VISITOR_ACTOR,
+          actor: getVisitorActor(),
           entityType: "form",
           entityId: formId,
           entityLabel: `Escala ${formId}`,
@@ -635,7 +544,7 @@ export const handleApiRequest = async (req, res, url) => {
         action: "claim_escala_slot",
         status: auditStatusFromError(error),
         screen: "public-escala",
-        actor: VISITOR_ACTOR,
+        actor: getVisitorActor(),
         entityType: "form",
         entityId: formId,
         entityLabel: `Escala ${formId}`,
@@ -664,7 +573,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/users") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateUserPayload(body);
       const users = await saveUser(body);
@@ -751,7 +660,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/labels") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateLabelPayload(body);
       const labels = await saveLabel(body);
@@ -834,7 +743,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/presets") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validatePresetPayload(body);
       const presets = await savePreset(body);
@@ -917,7 +826,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "PUT" && url.pathname === "/api/people") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validatePeoplePayload(body);
       const people = await savePeople(body.people || []);
@@ -959,7 +868,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "PUT" && url.pathname === "/api/members-config") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateMembersConfigPayload(body);
       const membersConfig = await saveMembersConfig(body);
@@ -1003,7 +912,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/field-catalog") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateFieldCatalogPayload(body);
       const fieldCatalog = await saveFieldCatalogItem(body);
@@ -1090,7 +999,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/scale-task-catalog") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
-    const body = await parseBody(req);
+    const body = await readBody(req);
     try {
       validateScaleTaskCatalogPayload(body);
       const scaleTaskCatalog = await saveScaleTaskCatalogItem(body);
