@@ -7,6 +7,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
+import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
@@ -412,16 +413,13 @@ export const CreateFormScreen = ({
         ))}
       </div>
 
-      <div className="create-form-template-bar" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, padding: "10px 14px", background: COLORS.surfaceAlt, borderRadius: 10, border: `1px solid ${COLORS.borderLight}` }}>
-        <Icon name="clipboard" size={14} />
-        <span style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, whiteSpace: "nowrap" }}>Selecao de template:</span>
-        <select value={preset || ""} onChange={event => applyTemplate(event.target.value || null)} style={{ ...inp, flex: 1, maxWidth: 320 }}>
-          <option value="">Template vazio</option>
-          {presets.filter(item => item.type === format).map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
-        </select>
-        {preset && <span style={{ fontSize: 11, color: COLORS.accent, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}><Icon name="check" size={12} /> Aplicado</span>}
-        {preset && <Btn v="ghost" sz="sm" onClick={() => applyTemplate(null)}>Limpar</Btn>}
-      </div>
+      <CreateFormTemplateBar
+        format={format}
+        preset={preset}
+        presets={presets}
+        onApplyTemplate={applyTemplate}
+        onClearTemplate={() => applyTemplate(null)}
+      />
 
       <div style={{ display: "grid", gap: 14, marginBottom: 20 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
