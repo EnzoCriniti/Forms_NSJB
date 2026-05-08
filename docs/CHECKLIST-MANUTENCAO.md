@@ -12,6 +12,7 @@ Lista viva para manter a migracao e a limpeza do projeto sob controle.
 - [ ] Registrar toda correcao ou refatoracao relevante em commit separado.
 - [ ] Remover artefatos de build antes de fechar a tarefa.
 - [ ] Validar com `npm run test`, `npm run build` e `docker compose -f docker/compose.yml config` quando a mudanca tocar fluxo real.
+- [ ] Use `docs/CHECKLIST-REFATORACAO-PENDENTE.md` como backlog para a proxima rodada.
 
 ## Frontend
 

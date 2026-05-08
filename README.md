@@ -54,6 +54,7 @@ docker compose -f docker/compose.yml down
 - [docs/GUIDELINES-TECNICOS.md](docs/GUIDELINES-TECNICOS.md) - decisoes e operacao.
 - [docs/MANUTENCAO.md](docs/MANUTENCAO.md) - regras de manutencao.
 - [docs/CHECKLIST-MANUTENCAO.md](docs/CHECKLIST-MANUTENCAO.md) - ordem de trabalho e backlog vivo.
+- [docs/CHECKLIST-REFATORACAO-PENDENTE.md](docs/CHECKLIST-REFATORACAO-PENDENTE.md) - backlog de refatoracao pendente.
 - [docs/briefing-original.md](docs/briefing-original.md) - briefing inicial.
 - [docs/IA-LOG.md](docs/IA-LOG.md) - historico curto das alteracoes assistidas.
 

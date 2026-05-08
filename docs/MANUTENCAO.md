@@ -9,6 +9,7 @@ Regras objetivas para manter o projeto consistente durante a migracao de estrutu
 - Atualize os caminhos da documentacao quando mover arquivos.
 - Rode `npm run build` ao final.
 - Use `docs/CHECKLIST-MANUTENCAO.md` como lista viva da sequencia de manutencao.
+- Use `docs/CHECKLIST-REFATORACAO-PENDENTE.md` para retomar pendencias de codigo.
 
 ## Separacao de responsabilidades
 
