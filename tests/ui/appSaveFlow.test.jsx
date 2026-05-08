@@ -1,0 +1,182 @@
+/**
+ * @file tests/ui/appSaveFlow.test.jsx
+ * @summary Teste integrado do fluxo principal do App.
+ * @responsibility Validar edicao de formulario, refresh silencioso e uso da configuracao salva nos resultados.
+ */
+
+import React from "react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import App from "../../src/App.jsx";
+import { STORAGE_KEYS } from "../../src/lib/appConstants.js";
+
+const admin = {
+  user: { id: 1, name: "Admin", username: "admin", role: "admin" },
+  token: "session-token",
+  expiresAt: "2026-05-05T00:00:00.000Z",
+};
+
+const originalForm = {
+  id: 10,
+  slug: "presenca-edicao",
+  type: "presenca",
+  status: "aberto",
+  title: "Presenca Edicao",
+  sessionName: "",
+  description: "",
+  date: "2026-05-04",
+  closing: "2026-05-05T20:00",
+  closingText: "",
+  totalExpected: 0,
+  labels: [],
+  fieldDefinitions: [
+    { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+    { id: 2, type: "yes_no", label: "Vai?", required: true, show: true, total: true },
+  ],
+  resultsConfig: {
+    searchEnabled: true,
+    showLinkedRoster: true,
+    totalsLayout: [{ fieldId: 2, style: "bar" }],
+  },
+  scaleSections: [],
+  metrics: { responses: 1, total: 2 },
+};
+
+const bootstrap = form => ({
+  forms: [form],
+  responsesByForm: {},
+  escalaByForm: {},
+  users: [admin.user],
+  labels: [],
+  presets: [],
+  people: [
+    { name: "Maria", grau: "QS" },
+    { name: "Joao", grau: "QM" },
+  ],
+  membersConfig: {},
+});
+
+describe("App save flow", () => {
+  beforeEach(() => {
+    window.location.hash = "";
+    window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify(admin));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    window.location.hash = "";
+    window.localStorage.clear();
+  });
+
+  it("mantem a tela montada apos editar e usa resultsConfig atualizado nos resultados", async () => {
+    let savedForm = originalForm;
+    const fetchMock = vi.fn(async (url, options = {}) => {
+      if (url === "/api/auth/me") {
+        return jsonResponse({ user: admin.user, expiresAt: admin.expiresAt });
+      }
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap(savedForm));
+      }
+      if (url === "/api/security/form-delete-key/status") {
+        return jsonResponse({ configured: false });
+      }
+      if (url === "/api/forms" && options.method === "POST") {
+        const payload = JSON.parse(options.body);
+        savedForm = {
+          ...originalForm,
+          ...payload,
+          id: originalForm.id,
+          resultsConfig: payload.resultsConfig,
+        };
+        return jsonResponse({ form: savedForm });
+      }
+      if (url === `/api/forms/${originalForm.id}/responses`) {
+        return jsonResponse({
+          responses: [
+            { id: 1, respondentName: "Maria", respondentGrau: "QS", values: { "1": "QS - Maria", "2": "Sim" } },
+          ],
+        });
+      }
+      if (url === "/api/auth/logout") {
+        return jsonResponse({ ok: true });
+      }
+      return jsonResponse({}, false);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { container } = render(<App />);
+
+    await screen.findByText("Presenca Edicao - 04/05/2026");
+
+    const actions = container.querySelector(".card-actions");
+    fireEvent.click(within(actions).getByRole("button", { name: "Editar formulario" }));
+
+    await screen.findByText("Editar Formulario");
+    fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
+    fireEvent.click(screen.getByLabelText("Exibir lista completa da base vinculada e faltantes"));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+
+    await waitFor(() => expect(screen.getByText("Formulario alterado com sucesso")).toBeInTheDocument());
+
+    fireEvent.click(screen.getByRole("button", { name: "Voltar para Formularios" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
+
+    await screen.findByText("Totalizacao");
+    expect(screen.queryByText("Use a lupinha ao lado do nome de cada coluna para filtrar.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Joao")).not.toBeInTheDocument();
+  });
+
+  it("abre uma copia como novo formulario em rascunho e salva sem reutilizar id ou slug", async () => {
+    let savedForm = originalForm;
+    const fetchMock = vi.fn(async (url, options = {}) => {
+      if (url === "/api/auth/me") {
+        return jsonResponse({ user: admin.user, expiresAt: admin.expiresAt });
+      }
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap(savedForm));
+      }
+      if (url === "/api/security/form-delete-key/status") {
+        return jsonResponse({ configured: false });
+      }
+      if (url === "/api/forms" && options.method === "POST") {
+        const payload = JSON.parse(options.body);
+        expect(payload.id).toBeFalsy();
+        expect(payload.slug).toBeFalsy();
+        expect(payload.status).toBe("rascunho");
+        expect(payload.title).toBe("Presenca Edicao (Copia)");
+        savedForm = {
+          ...originalForm,
+          ...payload,
+          id: 22,
+          slug: "presenca-edicao-copia",
+        };
+        return jsonResponse({ form: savedForm });
+      }
+      if (url === "/api/auth/logout") {
+        return jsonResponse({ ok: true });
+      }
+      return jsonResponse({}, false);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { container } = render(<App />);
+
+    await screen.findByText("Presenca Edicao - 04/05/2026");
+
+    const actions = container.querySelector(".card-actions");
+    fireEvent.click(within(actions).getByRole("button", { name: "Duplicar" }));
+
+    await screen.findByText("Novo Formulario");
+    expect(screen.getByDisplayValue("Presenca Edicao (Copia)")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Rascunho")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+
+    await waitFor(() => expect(screen.getByText("Formulario salvo com sucesso")).toBeInTheDocument());
+  });
+});
+
+const jsonResponse = (payload, ok = true) => ({
+  ok,
+  json: async () => payload,
+});

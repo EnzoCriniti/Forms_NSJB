@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.vite/
+npm-debug.log*
+tools/node/
+storage/
+screenshots/
+imagens/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.DS_Store
+Thumbs.db
