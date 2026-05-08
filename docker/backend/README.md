@@ -6,9 +6,9 @@ Container da API do NSJB Forms.
 
 - executa a API Node
 - aplica bootstrap, regras de negocio e acesso ao PostgreSQL
-- expõe a porta `8787`
+- expoe a porta `8787`
 
-## Arquivos
+## Arquivos principais
 
 - `docker/backend/Dockerfile`
 - `backend/index.mjs`
@@ -22,8 +22,15 @@ Container da API do NSJB Forms.
 
 - `NSJB_API_PORT=8787`
 - `NSJB_ORCHESTRATOR_INTERVAL_MS=60000`
+- `NSJB_DB_DRIVER=postgres`
+- `NSJB_PGHOST=postgres`
+- `NSJB_PGPORT=5432`
+- `NSJB_PGDATABASE=nsjb_forms`
+- `NSJB_PGUSER=nsjb`
+- `NSJB_PGPASSWORD=nsjb`
+- `NSJB_PGSSLMODE=disable`
 
 ## Observacoes
 
-- o backend usa PostgreSQL como banco oficial
+- o backend usa PostgreSQL como banco oficial no Docker
 - o fluxo oficial nao depende mais de volume local de SQLite

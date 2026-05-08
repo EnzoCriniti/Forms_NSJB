@@ -1,27 +1,43 @@
 # Docker
 
-Visao geral da stack containerizada do NSJB Forms.
+Documentacao da stack oficial do NSJB Forms.
 
-## Componentes
+## O que existe aqui
 
-- `docker/frontend/` - imagem do frontend e sua operacao
-- `docker/backend/` - imagem da API local e sua operacao
-- `docker/db/` - documentacao do estado atual do banco e da migracao para PostgreSQL
-- `docker/postgres/` - container PostgreSQL alvo da migracao
+- `docker/compose.yml` - orquestracao da stack.
+- `docker/frontend/` - imagem e README do frontend.
+- `docker/backend/` - imagem e README do backend.
+- `docker/db/` - esquema, plano e desenho do banco.
+- `docker/postgres/` - README do service PostgreSQL.
 
-## Entradas principais
+## Como subir em qualquer maquina
 
-- `docker/compose.yml` - orquestracao da stack Docker
-- `docker/frontend/Dockerfile` - imagem do frontend
-- `docker/backend/Dockerfile` - imagem do backend
+Use a partir da raiz do repositorio:
 
-## Fluxo oficial
+```powershell
+docker compose -f docker/compose.yml up -d --build
+```
 
-- subir a stack: `npm run dev` ou `npm run docker:up`
-- parar a stack: `npm run docker:down`
-- rebuild: `npm run docker:build`
-- logs: `npm run docker:logs`
-- o backend persiste os dados no PostgreSQL do Docker, nao em arquivo local
+Isso sobe:
+
+- `frontend` em `http://localhost:5173`
+- `backend` em `http://localhost:8787`
+- `postgres` em `localhost:5432`
+
+## Como parar
+
+```powershell
+docker compose -f docker/compose.yml down
+```
+
+## Ajustes comuns
+
+- Porta do frontend: `NSJB_FRONTEND_PORT`
+- Porta da API: `NSJB_API_PORT`
+- Porta do PostgreSQL: `NSJB_PGPORT`
+- Nome do banco: `NSJB_PGDATABASE`
+- Usuario do banco: `NSJB_PGUSER`
+- Senha do banco: `NSJB_PGPASSWORD`
 
 ## Documentacao por componente
 

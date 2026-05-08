@@ -5,6 +5,7 @@
  */
 
 import { DB_DRIVER } from "../config.mjs";
+import { PGDATABASE, PGHOST, PGPORT } from "../config.mjs";
 import { createPostgresDriver } from "./drivers/postgresDriver.mjs";
 import { createSqliteDriver } from "./drivers/sqliteDriver.mjs";
 
@@ -13,13 +14,17 @@ const databaseDriver = await (async () => {
     const { db, storagePath } = await import("./sqliteRuntime.mjs");
     return {
       database: createSqliteDriver(db),
-      databaseInfo: { driver: "sqlite", path: storagePath },
+      databaseInfo: { driver: "sqlite", path: storagePath, location: storagePath },
     };
   }
   if (DB_DRIVER === "postgres") {
     return {
       database: await createPostgresDriver(),
-      databaseInfo: { driver: "postgres", path: null },
+      databaseInfo: {
+        driver: "postgres",
+        path: null,
+        location: `${PGHOST}:${PGPORT}/${PGDATABASE}`,
+      },
     };
   }
   throw new Error(`Unsupported DB driver: ${DB_DRIVER}.`);

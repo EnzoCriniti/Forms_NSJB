@@ -14,7 +14,7 @@ const stopOrchestrator = startFormLifecycleOrchestrator();
 
 server.listen(API_PORT, "0.0.0.0", () => {
   console.log(`NSJB API em http://127.0.0.1:${API_PORT}`);
-  console.log(`${databaseInfo.driver.toUpperCase()}: ${databaseInfo.path || "n/a"}`);
+  console.log(`${databaseInfo.driver.toUpperCase()}: ${databaseInfo.location || databaseInfo.path || "n/a"}`);
 });
 
 const shutdown = () => {
