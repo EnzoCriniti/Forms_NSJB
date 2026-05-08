@@ -1,8 +1,8 @@
 # Mapa de Codigo
 
-Mapa operacional curto do codebase para evitar buscas desnecessarias.
+Mapa operacional curto do repositorio para evitar buscas desnecessarias.
 
-## Estrutura atual
+## Estrutura geral
 
 - `frontend/` - interface React + Vite.
 - `backend/` - API containerizada, regras de negocio, validacao e persistencia.
@@ -12,14 +12,14 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `scripts/windows/` - atalhos locais para Windows.
 - `storage/` - restos legados do runtime SQLite; nao e fluxo oficial.
 
-## Frontend
+## Interface
 
-- `frontend/src/App.jsx` - orquestra navegacao, sessao e telas.
+- `frontend/src/App.jsx` - coordena navegacao, sessao e telas.
 - `frontend/src/main.jsx` - ponto de entrada do React.
 - `frontend/src/screens/` - telas de nivel de pagina.
 - `frontend/src/features/` - modais e blocos de dominio.
 - `frontend/src/components/ui.jsx` - componentes visuais compartilhados.
-- `frontend/src/components/AppHeader.jsx` - cabecalho principal do app.
+- `frontend/src/components/AppHeader.jsx` - cabecalho principal da aplicacao.
 - `frontend/src/components/AppStatusScreen.jsx` - estados centrais de carregamento e erro.
 - `frontend/src/components/LoginModal.jsx` - modal de login do frontend.
 - `frontend/src/components/FormListToolbar.jsx` - barra de busca e filtros da listagem.
@@ -30,8 +30,8 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
-- `frontend/src/lib/forms.js` - helpers de formularios.
-- `frontend/src/lib/appShell.js` - helpers puros do shell principal.
+- `frontend/src/lib/forms.js` - funcoes de apoio para formularios.
+- `frontend/src/lib/appShell.js` - funcoes puras do shell principal.
 - `frontend/src/lib/storage.js` - persistencia local.
 - `frontend/src/data/` - dados estaticos da UI.
 - `frontend/src/styles.css` - tema e estilos globais.
@@ -41,11 +41,11 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 
 - `backend/index.mjs` - inicia a API.
 - `backend/app.mjs` - cria o servidor HTTP.
-- `backend/routes/apiRouter.mjs` - despachante principal das rotas.
-- `backend/routes/systemRoutes.mjs` - auth, health, bootstrap e auditoria.
+- `backend/routes/apiRouter.mjs` - roteador principal das rotas.
+- `backend/routes/systemRoutes.mjs` - autenticacao, health, bootstrap e auditoria.
 - `backend/routes/formRoutes.mjs` - formularios, respostas e escala.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
-- `backend/routes/requestHelpers.mjs` - helpers compartilhados de requisicao, auth e auditoria.
+- `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth e auditoria.
 - `backend/services/` - regras de negocio.
 - `backend/repositories/` - acesso ao banco.
 - `backend/validators/` - validacao estrutural.
@@ -73,7 +73,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - Para ajustar o shell principal do frontend: `frontend/src/lib/appShell.js`.
 - Para ajustar regras de negocio: `backend/services/`.
 - Para mexer em persistencia: `backend/repositories/`.
-- Para request/auth/auditoria do backend: `backend/routes/requestHelpers.mjs`.
+- Para requisicao, auth e auditoria do backend: `backend/routes/requestHelpers.mjs`.
 - Para ajustar o banco: `backend/database/` e `backend/database/drivers/`.
 - Para Docker e operacao: `docker/README.md`.
 - Para entender as funcionalidades da aplicacao: `docs/FUNCIONALIDADES.md`.

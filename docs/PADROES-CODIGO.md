@@ -28,7 +28,7 @@ Padroes de implementacao usados neste repositorio.
 - Adicione a rota em `backend/routes/apiRouter.mjs`.
 - Adicione service e repository se houver persistencia.
 
-## Dados e seed
+## Dados e carga inicial
 
 - Atualize `backend/data/seedData.mjs` quando mudar dados base.
 - Atualize `backend/seed.mjs` quando mudar a primeira carga do banco.

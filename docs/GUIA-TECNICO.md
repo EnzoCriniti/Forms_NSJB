@@ -1,6 +1,6 @@
 # Guia Tecnico
 
-Guia pratico para operar e manter o projeto sem perder a separacao entre frontend, backend e banco.
+Guia pratico para operar e manter o projeto sem perder a separacao entre frontend, backend, banco e Docker.
 
 ## Antes de mexer
 
@@ -18,7 +18,7 @@ Guia pratico para operar e manter o projeto sem perder a separacao entre fronten
 
 ## Validacao
 
-- Rode `npm run build` depois de mudancas no frontend ou no fluxo de navega.
+- Rode `npm run build` depois de mudancas no frontend ou no fluxo de navegacao.
 - Rode `npm run test:api` quando tocar backend, rotas ou persistencia.
 - Rode `npm run test:ui` quando tocar telas, componentes ou fluxo do usuario.
 - Se um teste falhar por ambiente, registre isso no retorno final.

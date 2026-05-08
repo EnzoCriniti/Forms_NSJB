@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="460" viewBox="0 0 1280 460" role="img" aria-labelledby="title desc">
   <title id="title">Arquitetura geral NSJB Forms</title>
   <desc id="desc">Fluxo visual entre usuario, frontend, backend, PostgreSQL e importacao unica do SQLite legado.</desc>
   <defs>
@@ -8,46 +8,46 @@
     </linearGradient>
     <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#f6f8fb"/>
+      <stop offset="100%" stop-color="#f7f9fc"/>
     </linearGradient>
     <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 z" fill="#2f3a4a"/>
+      <path d="M0,0 L12,6 L0,12 z" fill="#324152"/>
     </marker>
     <marker id="arrowSoft" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-      <path d="M0,0 L12,6 L0,12 z" fill="#7b8797"/>
+      <path d="M0,0 L12,6 L0,12 z" fill="#7c8796"/>
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="1200" height="420" rx="28" fill="url(#bg)"/>
-  <text x="60" y="54" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#18212f">NSJB Forms</text>
-  <text x="60" y="82" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#5c6675">Arquitetura oficial em Docker com PostgreSQL como banco principal</text>
+  <rect x="0" y="0" width="1280" height="460" rx="28" fill="url(#bg)"/>
+  <text x="64" y="58" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#18212f">NSJB Forms</text>
+  <text x="64" y="86" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#5b6574">Arquitetura oficial em Docker com PostgreSQL como banco principal</text>
 
-  <rect x="70" y="150" width="180" height="112" rx="18" fill="url(#card)" stroke="#cfd8e3"/>
-  <text x="160" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2a37">Frontend</text>
-  <text x="160" y="216" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">React + Vite</text>
-  <text x="160" y="238" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">UI e fluxos do usuario</text>
+  <rect x="70" y="160" width="245" height="138" rx="20" fill="url(#card)" stroke="#cad4e1"/>
+  <text x="192.5" y="200" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2a37">Frontend</text>
+  <text x="192.5" y="230" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">React + Vite</text>
+  <text x="192.5" y="252" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">Interface e telas do usuario</text>
 
-  <rect x="350" y="150" width="180" height="112" rx="18" fill="url(#card)" stroke="#cfd8e3"/>
-  <text x="440" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2a37">Backend</text>
-  <text x="440" y="216" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">Node + API</text>
-  <text x="440" y="238" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">Regras, validacao e persistencia</text>
+  <rect x="355" y="160" width="245" height="138" rx="20" fill="url(#card)" stroke="#cad4e1"/>
+  <text x="477.5" y="200" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2a37">Backend</text>
+  <text x="477.5" y="230" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">Node + API</text>
+  <text x="477.5" y="252" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">Regras, validacao e persistencia</text>
 
-  <rect x="650" y="130" width="220" height="152" rx="18" fill="#ffffff" stroke="#cfd8e3"/>
-  <text x="760" y="174" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2a37">PostgreSQL</text>
-  <text x="760" y="202" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">Banco oficial do Docker</text>
-  <text x="760" y="226" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">Fonte unica de dados</text>
-  <text x="760" y="250" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#556170">Volume persistente</text>
+  <rect x="640" y="146" width="245" height="166" rx="20" fill="#ffffff" stroke="#cad4e1"/>
+  <text x="762.5" y="188" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#1f2a37">PostgreSQL</text>
+  <text x="762.5" y="218" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">Banco oficial do Docker</text>
+  <text x="762.5" y="240" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">Fonte unica de dados</text>
+  <text x="762.5" y="262" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#566170">Volume persistente</text>
 
-  <rect x="940" y="150" width="190" height="112" rx="18" fill="#fffaf6" stroke="#e7c9a8"/>
-  <text x="1035" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#5a4631">SQLite legado</text>
-  <text x="1035" y="216" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#7b6753">Somente importacao unica</text>
-  <text x="1035" y="238" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#7b6753">Nao e fluxo oficial</text>
+  <rect x="925" y="160" width="245" height="138" rx="20" fill="#fffaf6" stroke="#e6c8a9"/>
+  <text x="1047.5" y="200" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#5a4631">SQLite legado</text>
+  <text x="1047.5" y="230" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#7b6753">Importacao unica</text>
+  <text x="1047.5" y="252" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#7b6753">Fora do fluxo oficial</text>
 
-  <path d="M250 206 L350 206" stroke="#2f3a4a" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
-  <path d="M530 206 L650 206" stroke="#2f3a4a" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
-  <path d="M870 206 L940 206" stroke="#7b8797" stroke-width="3" stroke-dasharray="10 8" fill="none" marker-end="url(#arrowSoft)"/>
+  <path d="M315 229 L355 229" stroke="#324152" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M600 229 L640 229" stroke="#324152" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+  <path d="M885 229 L925 229" stroke="#7c8796" stroke-width="3" stroke-dasharray="9 7" fill="none" marker-end="url(#arrowSoft)"/>
 
-  <text x="300" y="188" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#52606d">HTTP</text>
-  <text x="590" y="188" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#52606d">repositorios</text>
-  <text x="905" y="188" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" fill="#7b8797">migração unica</text>
+  <text x="335" y="208" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#5f6b79">HTTP</text>
+  <text x="620" y="208" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#5f6b79">repositorios</text>
+  <text x="905" y="208" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#7c8796">migração unica</text>
 </svg>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="360" viewBox="0 0 1280 360" role="img" aria-labelledby="title desc">
   <title id="title">Fluxo de inicializacao da stack</title>
   <desc id="desc">Sequencia da subida do Docker Compose, validacao do PostgreSQL, backend e frontend com importacao unica do SQLite legado.</desc>
   <defs>
@@ -11,32 +11,32 @@
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="1200" height="340" rx="28" fill="url(#bg3)"/>
-  <text x="60" y="54" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#1f2a37">Fluxo de inicializacao da stack</text>
-  <text x="60" y="82" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#5c6675">Subida oficial via Docker Compose com importacao unica do legado quando necessario</text>
+  <rect x="0" y="0" width="1280" height="360" rx="28" fill="url(#bg3)"/>
+  <text x="64" y="56" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="700" fill="#1f2a37">Fluxo de inicializacao da stack</text>
+  <text x="64" y="84" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#5b6574">Subida oficial via Docker Compose com importacao unica do legado quando necessario</text>
 
-  <rect x="80" y="130" width="170" height="82" rx="18" fill="#ffffff" stroke="#cfd8e3"/>
-  <text x="165" y="166" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">Docker</text>
-  <text x="165" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#556170">compose up -d --build</text>
+  <rect x="74" y="138" width="180" height="98" rx="18" fill="#ffffff" stroke="#cad4e1"/>
+  <text x="164" y="175" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">Docker</text>
+  <text x="164" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#566170">compose up -d --build</text>
 
-  <rect x="310" y="130" width="170" height="82" rx="18" fill="#ffffff" stroke="#cfd8e3"/>
-  <text x="395" y="166" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">PostgreSQL</text>
-  <text x="395" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#556170">healthcheck ok</text>
+  <rect x="290" y="138" width="180" height="98" rx="18" fill="#ffffff" stroke="#cad4e1"/>
+  <text x="380" y="175" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">PostgreSQL</text>
+  <text x="380" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#566170">healthcheck ok</text>
 
-  <rect x="540" y="130" width="170" height="82" rx="18" fill="#ffffff" stroke="#cfd8e3"/>
-  <text x="625" y="166" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">Backend</text>
-  <text x="625" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#556170">sobe e valida o banco</text>
+  <rect x="506" y="138" width="180" height="98" rx="18" fill="#ffffff" stroke="#cad4e1"/>
+  <text x="596" y="175" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">Backend</text>
+  <text x="596" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#566170">sobe e valida o banco</text>
 
-  <rect x="770" y="130" width="170" height="82" rx="18" fill="#fffaf6" stroke="#e7c9a8"/>
-  <text x="855" y="166" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#5a4631">SQLite legado</text>
-  <text x="855" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#7b6753">importacao unica</text>
+  <rect x="722" y="138" width="180" height="98" rx="18" fill="#fffaf6" stroke="#e6c8a9"/>
+  <text x="812" y="175" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#5a4631">SQLite legado</text>
+  <text x="812" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#7b6753">importacao unica</text>
 
-  <rect x="1000" y="130" width="140" height="82" rx="18" fill="#ffffff" stroke="#cfd8e3"/>
-  <text x="1070" y="166" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">Frontend</text>
-  <text x="1070" y="190" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#556170">fica disponivel</text>
+  <rect x="938" y="138" width="180" height="98" rx="18" fill="#ffffff" stroke="#cad4e1"/>
+  <text x="1028" y="175" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="22" font-weight="700" fill="#1f2a37">Frontend</text>
+  <text x="1028" y="198" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#566170">fica disponivel</text>
 
-  <path d="M250 171 L310 171" stroke="#30475e" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
-  <path d="M480 171 L540 171" stroke="#30475e" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
-  <path d="M710 171 L770 171" stroke="#7b8797" stroke-width="3" stroke-dasharray="10 8" fill="none" marker-end="url(#arrow3)"/>
-  <path d="M940 171 L1000 171" stroke="#30475e" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
+  <path d="M254 187 L290 187" stroke="#30475e" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
+  <path d="M470 187 L506 187" stroke="#30475e" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
+  <path d="M686 187 L722 187" stroke="#7c8796" stroke-width="3" stroke-dasharray="9 7" fill="none" marker-end="url(#arrow3)"/>
+  <path d="M902 187 L938 187" stroke="#30475e" stroke-width="4" fill="none" marker-end="url(#arrow3)"/>
 </svg>
