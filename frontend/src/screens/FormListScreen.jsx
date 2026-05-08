@@ -28,6 +28,7 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
   const [archiveAction, setArchiveAction] = useState(null);
 
   const availableForms = visibleFormsFor(user, forms);
+  const canPinForms = canCreateForms(user);
   const pinnedSet = useMemo(() => new Set(pinnedFormIds), [pinnedFormIds]);
   const normalizedSearch = normalizeSearchText(search);
   const filtered = useMemo(() => availableForms.filter(form => {
@@ -38,14 +39,14 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
     if (user && fType && form.type !== fType) return false;
     return true;
   }).sort((a, b) => {
-    const aPinned = user ? pinnedSet.has(a.id) : false;
-    const bPinned = user ? pinnedSet.has(b.id) : false;
+    const aPinned = canPinForms ? pinnedSet.has(a.id) : false;
+    const bPinned = canPinForms ? pinnedSet.has(b.id) : false;
     if (aPinned !== bPinned) return aPinned ? -1 : 1;
     if (sortBy === "title") return a.title.localeCompare(b.title, "pt-BR");
     if (sortBy === "status") return a.status.localeCompare(b.status, "pt-BR");
     if (sortBy === "responses") return (b.metrics?.responses || 0) - (a.metrics?.responses || 0);
     return String(b.date || "").localeCompare(String(a.date || ""));
-  }), [availableForms, normalizedSearch, labels, user, fLabel, fStatus, fType, sortBy, pinnedSet]);
+  }), [availableForms, normalizedSearch, labels, user, fLabel, fStatus, fType, sortBy, pinnedSet, canPinForms]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
@@ -141,6 +142,7 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
               user={user}
               labels={labels}
               isPinned={isPinned}
+              canPinForms={canPinForms}
               archiveBusy={archiveBusy}
               onNavigate={onNavigate}
               onDuplicateForm={onDuplicateForm}

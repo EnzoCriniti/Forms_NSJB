@@ -35,7 +35,7 @@ O fluxo oficial assume uma maquina ou ambiente unico com os tres containers da s
 ### 1. Listagem de formularios
 
 - exibe titulo, tipo, status, classificacoes, fechamento e resumo de preenchimento
-- permite buscar, ordenar, filtrar e fixar formularios
+- permite buscar, ordenar, filtrar e fixar formularios para perfis de edicao
 - permite abrir link publico
 - permite acessar resultados, quando o perfil autoriza
 - permite arquivar ou restaurar formularios

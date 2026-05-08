@@ -177,6 +177,13 @@ describe("FormListScreen", () => {
     expect(window.location.hash).toBe("");
   });
 
+  it("nao mostra fixar formulario para usuario apenas de visualizacao", () => {
+    render(<FormListScreen onNavigate={vi.fn()} user={{ role: "viewer", name: "Viewer" }} labels={labels} forms={forms} />);
+
+    expect(screen.queryByRole("button", { name: "Fixar formulario" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Desfixar formulario" })).not.toBeInTheDocument();
+  });
+
   it("move as acoes de edicao para baixo quando o card nao tem base vinculada", () => {
     const { container } = render(
       <FormListScreen

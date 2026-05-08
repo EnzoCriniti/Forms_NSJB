@@ -23,6 +23,7 @@ export const FormListCard = ({
   user,
   labels = [],
   isPinned = false,
+  canPinForms = false,
   archiveBusy = false,
   onNavigate,
   onDuplicateForm,
@@ -107,7 +108,7 @@ export const FormListCard = ({
             style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", marginTop: 12 }}
             onClick={event => event.stopPropagation()}
           >
-            {user && (
+            {canPinForms && (
               <Btn
                 v={isPinned ? "warning" : "ghost"}
                 icon="pin"
@@ -151,7 +152,7 @@ export const FormListCard = ({
           </div>
           <div className="card-actions" style={{ display: "grid", gap: 10, minWidth: 0 }} onClick={event => event.stopPropagation()}>
             <div className="card-secondary-actions" style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              {user && (
+              {canPinForms && (
                 <Btn
                   v={isPinned ? "warning" : "ghost"}
                   icon="pin"
