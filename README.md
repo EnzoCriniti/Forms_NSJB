@@ -13,13 +13,7 @@ Sistema do NSJB para formularios de presenca e escala da Organ.
 
 ## Visao rapida
 
-```mermaid
-flowchart LR
-  U[Usuario] --> F[Frontend React]
-  F --> B[Backend Node]
-  B --> P[(PostgreSQL)]
-  B -. importa uma vez .-> S[(SQLite legado)]
-```
+![Arquitetura geral](docs/diagramas/infra.svg)
 
 ## Como o projeto esta organizado
 

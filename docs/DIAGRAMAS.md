@@ -4,6 +4,8 @@ Diagramas declarativos para ler a arquitetura e os fluxos sem precisar abrir o c
 
 ## Arquitetura geral
 
+![Arquitetura geral](diagramas/infra.svg)
+
 ```mermaid
 flowchart LR
   subgraph UI[Frontend]
@@ -33,6 +35,8 @@ flowchart LR
 
 ## Fluxo de inicializacao
 
+![Fluxo de inicializacao](diagramas/inicializacao.svg)
+
 ```mermaid
 flowchart TD
   A[Docker Compose] --> B[PostgreSQL healthy]
@@ -45,6 +49,8 @@ flowchart TD
 ```
 
 ## Fluxo funcional resumido
+
+![Fluxo funcional resumido](diagramas/funcional.svg)
 
 ```mermaid
 flowchart LR

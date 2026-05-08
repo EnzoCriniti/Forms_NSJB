@@ -20,12 +20,7 @@ Mapa curto da estrutura atual do sistema. O detalhamento funcional vive em [docs
 
 ## Fluxo visual curto
 
-```mermaid
-flowchart LR
-  U[Usuario] --> F[Frontend]
-  F --> B[Backend]
-  B --> P[(PostgreSQL)]
-```
+![Fluxo funcional resumido](diagramas/funcional.svg)
 
 ## Funcionalidades centrais
 

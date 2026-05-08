@@ -37,12 +37,7 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 
 ## Diagrama rapido
 
-```mermaid
-flowchart LR
-  UI[Frontend] --> API[Backend]
-  API --> DB[(PostgreSQL)]
-  LEG[(SQLite legado)] -. importacao unica .-> DB
-```
+![Arquitetura geral](diagramas/infra.svg)
 
 ## Fluxo Basico
 

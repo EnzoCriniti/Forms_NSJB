@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Fluxo funcional resumido</title>
+  <desc id="desc">Sequencia simplificada entre usuario, frontend, backend e PostgreSQL.</desc>
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffdf8"/>
+      <stop offset="100%" stop-color="#f3f0ea"/>
+    </linearGradient>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#7c4d1f"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="360" rx="28" fill="url(#bg2)"/>
+  <text x="60" y="54" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#2d2418">Fluxo funcional resumido</text>
+  <text x="60" y="82" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="16" fill="#6a5a46">Visao curta para leitura rapida da aplicacao</text>
+
+  <rect x="80" y="144" width="180" height="92" rx="18" fill="#ffffff" stroke="#e0d3bf"/>
+  <text x="170" y="182" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#2d2418">Usuario</text>
+  <text x="170" y="206" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#6a5a46">Acesso publico ou interno</text>
+
+  <rect x="320" y="144" width="200" height="92" rx="18" fill="#ffffff" stroke="#e0d3bf"/>
+  <text x="420" y="182" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#2d2418">Frontend</text>
+  <text x="420" y="206" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#6a5a46">Telas, modais e navegacao</text>
+
+  <rect x="570" y="144" width="200" height="92" rx="18" fill="#ffffff" stroke="#e0d3bf"/>
+  <text x="670" y="182" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#2d2418">Backend</text>
+  <text x="670" y="206" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#6a5a46">Regras e persistencia</text>
+
+  <rect x="820" y="132" width="240" height="116" rx="18" fill="#ffffff" stroke="#e0d3bf"/>
+  <text x="940" y="174" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#2d2418">PostgreSQL</text>
+  <text x="940" y="200" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#6a5a46">Base oficial do ambiente</text>
+  <text x="940" y="222" text-anchor="middle" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" fill="#6a5a46">Docker Compose</text>
+
+  <path d="M260 190 L320 190" stroke="#7c4d1f" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+  <path d="M520 190 L570 190" stroke="#7c4d1f" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+  <path d="M770 190 L820 190" stroke="#7c4d1f" stroke-width="4" fill="none" marker-end="url(#arrow2)"/>
+</svg>

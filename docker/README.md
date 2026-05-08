@@ -12,12 +12,7 @@ Documentacao da stack oficial do NSJB Forms.
 
 ## Topologia
 
-```mermaid
-flowchart LR
-  U[Usuario] --> F[frontend]
-  F --> B[backend]
-  B --> P[(postgres)]
-```
+![Topologia Docker](../docs/diagramas/infra.svg)
 
 ## Como subir em qualquer maquina
 

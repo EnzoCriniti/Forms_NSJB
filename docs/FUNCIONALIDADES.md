@@ -4,13 +4,7 @@ Documento funcional completo do NSJB Forms.
 
 ## Visao visual
 
-```mermaid
-flowchart LR
-  U[Usuario] --> A[Acesso publico ou interno]
-  A --> F[Frontend]
-  F --> B[Backend]
-  B --> P[(PostgreSQL)]
-```
+![Fluxo funcional resumido](diagramas/funcional.svg)
 
 Para o mapa visual da arquitetura e dos fluxos, veja [docs/DIAGRAMAS.md](DIAGRAMAS.md).
 
