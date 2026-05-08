@@ -38,18 +38,18 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
   const submit = async () => {
     setFeedback(null);
     if (!username.trim() || !password.trim()) {
-      setFeedback({ tone: "error", title: "Acesso", message: "Informe usuário e senha." });
+      setFeedback({ tone: "error", title: "Entrada", message: "Informe usuário e senha." });
       return;
     }
     setSaving(true);
-    setFeedback({ tone: "loading", title: "Acesso", message: "Entrando..." });
+    setFeedback({ tone: "loading", title: "Entrada", message: "Entrando..." });
     try {
       await onLogin(username.trim(), password);
       setUsername("");
       setPassword("");
       setFeedback(null);
     } catch (error) {
-      setFeedback({ tone: "error", title: "Acesso", message: getLoginErrorMessage(error) });
+      setFeedback({ tone: "error", title: "Entrada", message: getLoginErrorMessage(error) });
     } finally {
       setSaving(false);
     }
@@ -107,8 +107,8 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
     return (
       <div className="auth-panel auth-panel--sheet" style={{ display: "grid", gap: 12, width: "100%" }}>
         <div>
-          <strong style={{ display: "block", color: "var(--text)", fontSize: 14, marginBottom: 2 }}>Acessar conta</strong>
-          <span style={{ color: "var(--text-secondary)", fontSize: 12, lineHeight: 1.4 }}>Use seu usuário e senha para liberar as opções do cabeçalho e continuar no sistema.</span>
+          <strong style={{ display: "block", color: "var(--text)", fontSize: 14, marginBottom: 2 }}>Informe seus dados</strong>
+          <span style={{ color: "var(--text-secondary)", fontSize: 12, lineHeight: 1.4 }}>Use seu usuário e senha para continuar e liberar as opções do cabeçalho.</span>
         </div>
         <input
           className="auth-panel__input"
