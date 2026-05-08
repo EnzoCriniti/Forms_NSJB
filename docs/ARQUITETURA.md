@@ -18,7 +18,6 @@ Este documento resume a divisao de responsabilidades do NSJB Forms depois da sep
 - `backend/` - API containerizada, servicos, repositorios, validacao e banco.
 - `shared/` - regras compartilhadas entre frontend e backend.
 - `docker/` - orquestracao, imagens e docs da stack.
-- `storage/` - snapshot historico usado apenas como referencia de paridade.
 
 ## Frontend
 

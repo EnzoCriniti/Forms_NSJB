@@ -149,14 +149,12 @@ Como essa area funciona:
 
 - o banco oficial e PostgreSQL no Docker
 - o backend continua com uma camada de acesso separada por repository
-- o snapshot historico de SQLite serve apenas para verificacao de paridade durante a limpeza final
 
 Como essa area funciona:
 
 1. a aplicacao grava no PostgreSQL do Docker
 2. a camada de repository isola consultas e comandos SQL
-3. o snapshot historico pode ser usado pela comparacao de paridade antes do corte final
-4. depois disso, o fluxo oficial nao depende mais do legado
+3. o fluxo oficial nao depende de arquivo local legado
 
 ## Fluxo funcional resumido
 
@@ -174,7 +172,6 @@ Se voce so precisa de uma visao rapida, pense assim:
 - o frontend organiza a experiencia do usuario
 - o backend valida e grava os dados
 - o PostgreSQL concentra a persistencia oficial
-- o SQLite nao faz mais parte do caminho oficial do produto
 
 ## Relacao com a arquitetura
 

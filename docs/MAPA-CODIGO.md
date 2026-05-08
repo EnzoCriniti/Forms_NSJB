@@ -13,7 +13,6 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `docs/diagramas/*.svg` - imagens finais embutidas nos Markdown.
 - `scripts/windows/` - atalhos locais para Windows.
 - `tests/helpers/postgresTestDb.mjs` - helper de isolamento PostgreSQL para testes.
-- `storage/` - snapshot historico usado apenas em verificacao de paridade.
 
 ## Interface
 
@@ -73,7 +72,6 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 
 - `backend/database/` concentra a camada minima de acesso ao banco.
 - `backend/database/drivers/` separa o driver PostgreSQL oficial.
-- `storage/nsjb-forms.sqlite` permanece apenas como snapshot historico enquanto a paridade for conferida.
 
 ## Pontos de entrada mais comuns
 

@@ -9,8 +9,6 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - Considere a documentacao como parte do codigo: se o comportamento mudou, atualize o texto correspondente.
 - Atualize os caminhos da documentacao quando mover arquivos.
 - Atualize os diagramas em `docs/diagramas/*.d2` e regenere os `*.svg` quando a arquitetura ou o fluxo mudar.
-- Antes de remover qualquer resto de SQLite, rode `npm run verify:legacy-parity` e guarde o resultado da comparacao.
-- Execute essa comparacao em uma janela de congelamento da escrita ou com a stack parada, senao a base viva pode divergir do snapshot.
 - Registre bug encontrado com teste novo ou ajuste de teste existente.
 - Registre toda correcao ou refatoracao relevante em commit separado.
 - Rode `npm run test`, `npm run build` e `docker compose -f docker/compose.yml config` quando a mudanca tocar fluxo real.
@@ -55,25 +53,8 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 - Dividir `backend/routes/formRoutes.mjs` em handlers menores por subdominio.
 - Dividir `backend/routes/adminRoutes.mjs` em partes menores para usuarios, catalogos e configuracoes criticas.
 - Extrair helpers repetidos de auditoria e erro para evitar copy/paste entre rotas.
-- Continuar a retirada de qualquer caminho ou dependencia indireta de SQLite legado.
-- Remover por completo a logica de importacao e compatibilidade com SQLite quando a migracao estiver fechada e validada.
-- Remover os testes, snapshots e documentos que ainda existirem apenas para o caminho legado depois que a paridade estiver fechada.
-
-## Checklist de corte final SQLite
-
-- [ ] congelar escrita da aplicacao durante a janela de comparacao
-- [ ] rodar `npm run verify:legacy-parity` contra o snapshot antigo e o PostgreSQL atual
-- [ ] validar e registrar qualquer divergencia restante antes do corte
-- [x] remover `backend/database/sqliteRuntime.mjs`
-- [x] remover `backend/database/sqliteSchema.mjs`
-- [x] remover `backend/database/drivers/sqliteDriver.mjs`
-- [x] remover `backend/database/legacyImport.mjs`
-- [x] remover `tests/legacyImport.test.mjs`
-- [x] migrar os testes que ainda dependem de SQLite para o fluxo PostgreSQL
-- [ ] revisar e cortar referencias de SQLite nos docs e diagramas
-- [ ] atualizar `docs/MAPA-CODIGO.md` para refletir somente o caminho oficial
-- [ ] validar `npm run test`, `npm run build`, `docker compose -f docker/compose.yml config`
-- [ ] remover `storage/nsjb-forms.sqlite` depois da ultima comparacao de paridade
+- Continuar a limpeza de referencias historicas que nao ajudam no fluxo atual.
+- Remover documentos obsoletos quando deixarem de agregar contexto.
 
 ## Limpeza final
 

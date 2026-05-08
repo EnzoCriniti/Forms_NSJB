@@ -27,7 +27,6 @@ O caminho normal e:
 4. o layer de `database/` escolhe o driver oficial
 
 O driver oficial atual e PostgreSQL no Docker.
-O SQLite nao faz mais parte do caminho oficial.
 
 ## Entrada principal
 

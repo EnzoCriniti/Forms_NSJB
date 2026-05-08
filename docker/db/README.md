@@ -5,21 +5,16 @@ Esta pasta documenta a camada de banco do NSJB Forms.
 ## Leitura rapida
 
 - o banco oficial e PostgreSQL no compose
-- o snapshot historico de SQLite serve apenas para verificacao de paridade durante o corte final
 
 ## Estado atual
 
 - o backend Docker persiste os dados no PostgreSQL do compose
-- o SQLite nao faz mais parte do fluxo oficial do runtime
-- o snapshot historico de `storage/nsjb-forms.sqlite` fica apenas para comparacao de paridade antes do corte final
 
 ## Fluxo de banco
 
 ```mermaid
 flowchart LR
-  S[(storage/nsjb-forms.sqlite)] -. snapshot historico .-> C[verificador de paridade]
-  C --> P[(PostgreSQL)]
-  B[backend/database] --> P
+  B[backend/database] --> P[(PostgreSQL)]
 ```
 
 ## Onde olhar no codigo
@@ -40,16 +35,11 @@ flowchart LR
 ## Ordem recomendada
 
 1. manter o service PostgreSQL como padrao do compose
-2. validar paridade de dados e comportamento
-3. remover sobras de compatibilidade SQLite quando nao houver mais dependencia
+2. manter a documentacao alinhada com a evolucao da infraestrutura
 
 ## Regra pratica
 
-- SQLite nao faz mais parte do fluxo oficial do ambiente
-- a referencia historica existe so para comparacao de paridade enquanto a limpeza final nao fecha
-- use `npm run verify:legacy-parity` para comparar o snapshot historico com o PostgreSQL antes de remover o restante do legado por completo
-- se rodar fora do compose, passe `NSJB_VERIFY_PGHOST=127.0.0.1` e, se necessario, `NSJB_VERIFY_PGPORT`
-- rode a comparacao depois de congelar as escritas, porque uma base viva pode divergir do snapshot legado por uso normal
+- se rodar fora do compose, ajuste `NSJB_PGHOST` e `NSJB_PGPORT` conforme o alvo de banco
 
 ## Manutencao
 

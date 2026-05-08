@@ -18,8 +18,7 @@ Este documento deve ser mantido sempre atualizado quando houver mudanca em:
 
 Banco atual:
 
-- `SQLite`
-- arquivo local em `storage/nsjb-forms.sqlite`
+- `PostgreSQL` no compose oficial
 
 Origem do schema:
 

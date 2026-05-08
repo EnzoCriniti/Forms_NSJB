@@ -20,7 +20,6 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 1. o usuario abre o frontend
 2. o frontend chama o backend
 3. o backend valida, aplica as regras e grava no PostgreSQL
-4. o snapshot SQLite historico fica apenas como referencia de paridade durante o corte final
 
 Leituras principais:
 
@@ -123,5 +122,4 @@ Esta documentacao e viva. Quando o projeto avancar, ajuste os textos, diagramas 
 
 - O backend persiste os dados no PostgreSQL do Docker.
 - A stack local continua disponivel como compatibilidade, mas nao e o caminho oficial.
-- O snapshot historico de `storage/nsjb-forms.sqlite` fica apenas como referencia de paridade durante a limpeza final do legado.
 - A configuracao dos socios continua vindo de Google Sheets para manter a operacao simples.

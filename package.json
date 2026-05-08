@@ -14,7 +14,6 @@
     "docker:restart": "docker compose -f docker/compose.yml down && docker compose -f docker/compose.yml up -d --build",
     "docker:logs": "docker compose -f docker/compose.yml logs -f",
     "docker:ps": "docker compose -f docker/compose.yml ps",
-    "verify:legacy-parity": "node scripts/verify-legacy-parity.mjs",
     "build": "vite build --config frontend/vite.config.js",
     "preview": "vite preview --config frontend/vite.config.js --host 0.0.0.0",
     "test": "npm run test:api && npm run test:ui",
