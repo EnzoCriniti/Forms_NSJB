@@ -58,8 +58,13 @@ import {
   sendKnownError,
   writeAudit,
 } from "./requestHelpers.mjs";
+import { handleSystemRoutes } from "./systemRoutes.mjs";
 
 export const handleApiRequest = async (req, res, url) => {
+  if (await handleSystemRoutes(req, res, url)) {
+    return true;
+  }
+
   if (req.method === "POST" && url.pathname === "/api/auth/login") {
     const body = await readBody(req);
     if (!body) {
