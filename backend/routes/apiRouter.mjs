@@ -59,9 +59,13 @@ import {
   writeAudit,
 } from "./requestHelpers.mjs";
 import { handleSystemRoutes } from "./systemRoutes.mjs";
+import { handleFormRoutes } from "./formRoutes.mjs";
 
 export const handleApiRequest = async (req, res, url) => {
   if (await handleSystemRoutes(req, res, url)) {
+    return true;
+  }
+  if (await handleFormRoutes(req, res, url)) {
     return true;
   }
 
