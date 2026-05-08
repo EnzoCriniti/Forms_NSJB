@@ -24,6 +24,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `frontend/src/components/FormListToolbar.jsx` - barra de busca e filtros da listagem.
 - `frontend/src/components/FormListCard.jsx` - card individual da listagem de formularios.
 - `frontend/src/components/ResultsPresenceHeader.jsx` - cabecalho e resumo da tela de resultados de presença.
+- `frontend/src/components/CreateFormFieldPreview.jsx` - previa isolada do campo em criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.

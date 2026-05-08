@@ -6,6 +6,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
+import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
@@ -352,9 +353,6 @@ export const CreateFormScreen = ({
     return undefined;
   };
 
-  const activeRows = nGridRows.filter(row => row.trim());
-  const activeCols = nGridCols.filter(col => col.trim());
-
   const submitForm = async nextStatus => {
     setSaving(true);
     setSaveError("");
@@ -388,56 +386,6 @@ export const CreateFormScreen = ({
       setSaving(false);
     }
   };
-
-  const FieldPreview = () => (
-    <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 14, height: "100%" }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Previa do campo</div>
-      <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: COLORS.text }}>
-        {fieldLabel}{nRequired ? <span style={{ color: COLORS.danger }}> *</span> : ""}
-      </div>
-      {nType === "person_select" && (
-        <select disabled style={{ ...inp, color: COLORS.textMuted }}>
-          <option>{people.length ? "Selecione uma pessoa..." : "Nenhuma pessoa configurada"}</option>
-        </select>
-      )}
-      {nType === "yes_no" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-          <button disabled style={{ padding: "10px", border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, background: COLORS.surface, fontWeight: 700, fontSize: 13, cursor: "default" }}>Sim</button>
-          <button disabled style={{ padding: "10px", border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, background: COLORS.surface, fontWeight: 700, fontSize: 13, cursor: "default" }}>Nao</button>
-        </div>
-      )}
-      {nType === "number" && <input disabled type="number" placeholder="0" style={inp} />}
-      {nType === "text" && <input disabled placeholder="Digite sua resposta..." style={inp} />}
-      {nType === "grid" && (
-        activeRows.length === 0 || activeCols.length === 0
-          ? <div style={{ fontSize: 12, color: COLORS.textMuted, fontStyle: "italic" }}>Adicione linhas e colunas para ver a previa</div>
-          : <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
-                <thead>
-                  <tr>
-                    <th style={{ padding: "5px 8px", textAlign: "left", borderBottom: `2px solid ${COLORS.borderLight}`, color: COLORS.textMuted, fontWeight: 600, minWidth: 80 }} />
-                    {activeCols.map((col, index) => (
-                      <th key={index} style={{ padding: "5px 8px", textAlign: "center", borderBottom: `2px solid ${COLORS.borderLight}`, color: COLORS.textSecondary, fontWeight: 700, whiteSpace: "nowrap" }}>{col}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeRows.map((row, rowIndex) => (
-                    <tr key={rowIndex} style={{ borderBottom: rowIndex < activeRows.length - 1 ? `1px solid ${COLORS.borderLight}` : "none" }}>
-                      <td style={{ padding: "7px 8px", fontWeight: 500, color: COLORS.text }}>{row}</td>
-                      {activeCols.map((_, colIndex) => (
-                        <td key={colIndex} style={{ padding: "7px 8px", textAlign: "center" }}>
-                          <input type="radio" disabled style={{ cursor: "default" }} />
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-      )}
-    </div>
-  );
 
   return (
     <div>
@@ -732,7 +680,14 @@ export const CreateFormScreen = ({
                     <Btn v="ghost" sz="sm" onClick={resetFieldDraft}>Cancelar</Btn>
                   </div>
                 </div>
-                <FieldPreview />
+                <CreateFormFieldPreview
+                  fieldLabel={fieldLabel}
+                  fieldType={nType}
+                  required={nRequired}
+                  people={people}
+                  gridRows={nGridRows}
+                  gridCols={nGridCols}
+                />
               </div>
             </div>
           ) : (
