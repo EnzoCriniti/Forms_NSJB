@@ -34,6 +34,7 @@ import {
   deletePreset,
   savePeople,
   saveMembersConfig,
+  syncMembersConfig,
   saveFieldCatalogItem,
   deleteFieldCatalogItem,
   saveScaleTaskCatalogItem,
@@ -511,6 +512,17 @@ export default function App() {
   const handleSaveMembersConfig = async nextConfig => {
     const result = await saveMembersConfig(nextConfig);
     setBootstrap(prev => ({ ...prev, membersConfig: result.membersConfig }));
+    return result;
+  };
+
+  const handleSyncMembersConfig = async () => {
+    const result = await syncMembersConfig();
+    setBootstrap(prev => ({
+      ...prev,
+      people: result.people,
+      membersConfig: result.membersConfig,
+    }));
+    return result;
   };
 
   const handleSaveFieldCatalogItem = async item => {
@@ -657,6 +669,7 @@ export default function App() {
             onSavePreset={handleSavePreset}
             onDeletePreset={handleDeletePreset}
             onSaveMembersConfig={handleSaveMembersConfig}
+            onSyncMembersConfig={handleSyncMembersConfig}
             onSavePeople={handleSavePeople}
             onSaveFieldCatalogItem={handleSaveFieldCatalogItem}
             onDeleteFieldCatalogItem={handleDeleteFieldCatalogItem}

@@ -33,6 +33,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/components/CreateFormLivePreview.jsx` - previa do formulario completo durante a criacao.
 - `frontend/src/components/CreateFormTemplateBar.jsx` - barra de selecao de template na criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
+- `frontend/src/features/members/MemberListConfigModal.jsx` - configuracao da base central de socios e origem externa.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
 - `frontend/src/lib/forms.js` - funcoes de apoio para formularios.
@@ -60,6 +61,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
 - `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth e auditoria.
 - `backend/services/` - regras de negocio.
+- `backend/services/membersSyncService.mjs` - sincronizacao da base central de socios com a origem externa.
 - `backend/repositories/` - acesso ao banco.
 - `backend/repositories/peopleRepository.mjs` - base central de socios e metadados de sincronizacao.
 - `backend/validators/` - validacao estrutural.

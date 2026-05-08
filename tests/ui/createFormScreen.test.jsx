@@ -52,7 +52,7 @@ describe("CreateFormScreen", () => {
 
     expect(screen.getByText("Pre-visualizacao do formulario")).toBeInTheDocument();
     expect(screen.getByText("Formulario Preview")).toBeInTheDocument();
-    expect(screen.getByText("Descricao da previa")).toBeInTheDocument();
+    expect(screen.getAllByText("Descricao da previa")).toHaveLength(2);
     expect(screen.getByText("Nenhum campo visivel adicionado ainda.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ocultar visualizacao" })).toBeInTheDocument();
   });

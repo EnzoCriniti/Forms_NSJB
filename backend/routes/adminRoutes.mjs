@@ -14,6 +14,7 @@ import {
   deletePreset,
   savePeople,
   saveMembersConfig,
+  syncMembersFromSource,
   saveFieldCatalogItem,
   deleteFieldCatalogItem,
   saveScaleTaskCatalogItem,
@@ -373,6 +374,45 @@ export const handleAdminRoutes = async (req, res, url) => {
           sheetUrl: body?.sheetUrl || null,
           range: body?.range || null,
         },
+      });
+    }
+    return true;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/members-config/sync") {
+    const auth = await requireAdmin(req, res);
+    if (!auth) return true;
+    try {
+      const result = await syncMembersFromSource();
+      sendJson(res, 200, result);
+      writeAudit(req, auth, {
+        level: "info",
+        category: "admin",
+        action: "admin_sync_members",
+        status: "success",
+        screen: "configuracoes",
+        entityType: "people",
+        entityId: null,
+        entityLabel: "Socios",
+        message: "Base de socios sincronizada.",
+        metadata: {
+          importedCount: result.importedCount,
+          sourceType: result.membersConfig?.sourceType || null,
+        },
+      });
+    } catch (error) {
+      sendKnownError(res, error);
+      writeAudit(req, auth, {
+        level: auditLevelFromError(error),
+        category: "admin",
+        action: "admin_sync_members",
+        status: auditStatusFromError(error),
+        screen: "configuracoes",
+        entityType: "people",
+        entityId: null,
+        entityLabel: "Socios",
+        message: error.message,
+        metadata: {},
       });
     }
     return true;

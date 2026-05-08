@@ -94,8 +94,9 @@ describe("App dashboard flow", () => {
     await screen.findByRole("button", { name: "Dashboard" });
     fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
 
-    expect(await screen.findByRole("heading", { name: "Configuracoes" })).toBeInTheDocument();
-    expect(screen.getByText("Area administrativa principal do sistema.")).toBeInTheDocument();
+    const headings = await screen.findAllByRole("heading", { name: "Configuracoes" });
+    expect(headings).toHaveLength(2);
+    expect(screen.getAllByText("Area administrativa principal do sistema.")).toHaveLength(2);
     expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
   });
 

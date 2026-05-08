@@ -21,7 +21,7 @@ import {
   upsertFieldCatalogRecord,
   upsertScaleTaskCatalogRecord,
 } from "../repositories/catalogRepository.mjs";
-import { DEFAULT_MEMBERS_CONFIG } from "../data/seedData.mjs";
+import { saveMembersConfig as saveMembersConfigSetting, syncMembersFromSource } from "./membersSyncService.mjs";
 
 const MASTER_KEY_SETTING = "formDeleteKey";
 const MASTER_KEY_ITERATIONS = 210000;
@@ -133,14 +133,7 @@ export const savePeople = async people => {
   return listPeople();
 };
 
-export const saveMembersConfig = async config => {
-  const normalized = {
-    ...DEFAULT_MEMBERS_CONFIG,
-    ...(config || {}),
-  };
-  await saveJsonSetting("membersConfig", normalized);
-  return getJsonSetting("membersConfig", DEFAULT_MEMBERS_CONFIG);
-};
+export { saveMembersConfigSetting as saveMembersConfig, syncMembersFromSource };
 
 export const saveFieldCatalogItem = async payload => {
   const key = normalizeKey(payload.key);

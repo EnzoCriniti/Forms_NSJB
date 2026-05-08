@@ -121,6 +121,11 @@ export const saveMembersConfig = config => requestJson("/api/members-config", {
   body: JSON.stringify(config),
 });
 
+export const syncMembersConfig = () => requestJson("/api/members-config/sync", {
+  method: "POST",
+  body: JSON.stringify({}),
+});
+
 export const saveFieldCatalogItem = item => requestJson("/api/field-catalog", {
   method: "POST",
   body: JSON.stringify(item),

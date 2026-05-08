@@ -404,6 +404,7 @@ export const AdminSettingsModal = ({
   onDeleteScaleTaskCatalogItem,
   onSaveMembersConfig,
   onSavePeople,
+  onSyncMembersConfig,
   formDeleteKeyConfigured = null,
   onSaveFormDeleteKey,
   onClose,
@@ -613,7 +614,7 @@ export const AdminSettingsModal = ({
           </section>
         )}
 
-        {tab === "members" && <MemberListConfigModalContent config={membersConfig} people={people} onSave={onSaveMembersConfig} onSavePeople={onSavePeople} />}
+        {tab === "members" && <MemberListConfigModalContent config={membersConfig} people={people} onSave={onSaveMembersConfig} onSync={onSyncMembersConfig} />}
 
         {tab === "security" && (
           <section className="settings-grid">

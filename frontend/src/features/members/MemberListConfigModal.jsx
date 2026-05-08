@@ -1,116 +1,190 @@
 /**
  * @file frontend/src/features/members/MemberListConfigModal.jsx
  * @summary Configuracao da base de socios.
- * @responsibility Salvar parametros do Google Sheets e importar pessoas para a base local.
+ * @responsibility Salvar origem externa e sincronizar a base central de socios.
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS, Btn, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
 
 const PAGE_SIZE = 12;
 
-function colIndex(letter) {
-  return letter.toUpperCase().charCodeAt(0) - 65;
-}
+const inputStyle = {
+  width: "100%",
+  minHeight: 42,
+  padding: "10px 12px",
+  border: `1px solid ${COLORS.border}`,
+  borderRadius: 10,
+  background: COLORS.surface,
+  color: COLORS.text,
+  boxShadow: "var(--shadow-sm)",
+};
 
-function parseCSV(text) {
-  return text.split("\n").map(line => {
-    const result = [];
-    let current = "";
-    let inQuotes = false;
-    for (let i = 0; i < line.length; i++) {
-      if (line[i] === '"') { inQuotes = !inQuotes; }
-      else if (line[i] === "," && !inQuotes) { result.push(current.trim()); current = ""; }
-      else { current += line[i]; }
-    }
-    result.push(current.trim());
-    return result;
-  }).filter(row => row.some(cell => cell !== ""));
-}
+const infoCardStyle = {
+  background: COLORS.surfaceAlt,
+  border: `1px solid ${COLORS.borderLight}`,
+  borderRadius: 12,
+  padding: 14,
+};
 
-async function fetchPeople(cfg) {
-  const match = cfg.sheetUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if (!match) throw new Error("URL do Google Sheets invalida.");
-  const id = match[1];
-  const [sheetPart, rangePart] = cfg.range.includes("!") ? cfg.range.split("!") : ["", cfg.range];
-  const params = new URLSearchParams({ tqx: "out:csv" });
-  if (sheetPart) params.set("sheet", sheetPart);
-  if (rangePart) params.set("range", rangePart);
-  const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?${params}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Erro ao buscar planilha (${res.status}).`);
-  const text = await res.text();
-  const rows = parseCSV(text);
-  const nameCol = colIndex(cfg.nameColumn || "B");
-  const grauCol = colIndex(cfg.grauColumn || "A");
-  return rows
-    .slice(1) // pula header
-    .map(row => ({ name: row[nameCol] || "", grau: row[grauCol] || "" }))
-    .filter(p => p.name);
-}
+const formatSyncDate = value => {
+  if (!value) return "Nunca sincronizado";
+  try {
+    return new Date(value).toLocaleString("pt-BR");
+  } catch {
+    return "Nunca sincronizado";
+  }
+};
 
-export const MemberListConfigModalContent = ({ config, people, onSave, onSavePeople }) => {
+const syncStatusLabel = config => {
+  if (!config?.sheetUrl) return "Origem nao configurada";
+  if (!config?.syncEnabled) return "Sincronizacao desativada";
+  if (!config?.lastSyncedAt) return "Aguardando primeira sincronizacao";
+  return "Base sincronizada";
+};
+
+export const MemberListConfigModalContent = ({ config, people, onSave, onSync }) => {
   const [draft, setDraft] = useState(config);
   const [toast, setToast] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [page, setPage] = useState(1);
-  const input = {
-    width: "100%",
-    minHeight: 42,
-    padding: "10px 12px",
-    border: `1px solid ${COLORS.border}`,
-    borderRadius: 10,
-    background: COLORS.surface,
-    color: COLORS.text,
-    boxShadow: "var(--shadow-sm)",
-  };
+
+  useEffect(() => {
+    setDraft(config);
+  }, [config]);
+
   const totalPages = Math.max(1, Math.ceil(people.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const visiblePeople = people.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const handleSave = async () => {
     setSaving(true);
-    setToast({ type: "loading", message: "Salvando e buscando lista..." });
+    setToast({ type: "loading", message: "Salvando configuracao da base..." });
     try {
       await onSave(draft);
-      const fetched = await fetchPeople(draft);
-      await onSavePeople(fetched);
-      setToast({ type: "success", message: `${fetched.length} socios carregados.` });
-    } catch (e) {
-      setToast({ type: "error", message: resolveActionErrorMessage(e) });
+      setToast({ type: "success", message: "Configuracao da base salva." });
+    } catch (error) {
+      setToast({ type: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setSaving(false);
+      window.setTimeout(() => setToast(null), 3000);
     }
-    setSaving(false);
-    setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleSync = async () => {
+    setSyncing(true);
+    setToast({ type: "loading", message: "Sincronizando base de socios..." });
+    try {
+      const result = await onSync();
+      setToast({ type: "success", message: `${result.importedCount} socios sincronizados.` });
+    } catch (error) {
+      setToast({ type: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setSyncing(false);
+      window.setTimeout(() => setToast(null), 3500);
+    }
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "relative", display: "grid", gap: 16 }}>
       {toast && <FeedbackBanner fixed tone={toast.type} message={toast.message} />}
-      <div style={{ display: "grid", gap: 10 }}>
-        <div style={{ display: "grid", gap: 6 }}>
-          <input value={draft.sheetUrl} onChange={e => setDraft({ ...draft, sheetUrl: e.target.value })} placeholder="Link publico do Google Sheets" style={input} />
+
+      <section style={infoCardStyle}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div>
+            <strong style={{ display: "block", fontSize: 13, color: COLORS.text }}>Base central de socios</strong>
+            <div style={{ marginTop: 4, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.5 }}>
+              Os formularios, escalas e automacoes futuras consomem esta base a partir do banco.
+            </div>
+          </div>
+          <div style={{ textAlign: "right", minWidth: 180 }}>
+            <div style={{ fontSize: 11, color: COLORS.textMuted, textTransform: "uppercase", fontWeight: 800 }}>Status</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>{syncStatusLabel(config)}</div>
+            <div style={{ marginTop: 4, fontSize: 11, color: COLORS.textMuted }}>
+              Ultima sincronizacao: {formatSyncDate(config?.lastSyncedAt)}
+            </div>
+          </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      </section>
+
+      <section style={{ display: "grid", gap: 12 }}>
+        <div>
+          <strong style={{ display: "block", fontSize: 13, color: COLORS.text, marginBottom: 4 }}>Origem da base</strong>
+          <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Configure a planilha e o mapeamento das colunas que alimentam a base central.</div>
+        </div>
+
+        <div style={{ display: "grid", gap: 6 }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Tipo de origem</label>
+          <select value={draft.sourceType || "google_sheets"} onChange={event => setDraft({ ...draft, sourceType: event.target.value })} style={inputStyle}>
+            <option value="google_sheets">Google Sheets</option>
+          </select>
+        </div>
+
+        <div style={{ display: "grid", gap: 6 }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Link publico do Google Sheets</label>
+          <input value={draft.sheetUrl || ""} onChange={e => setDraft({ ...draft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={inputStyle} />
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
           <div style={{ display: "grid", gap: 6 }}>
-            <input value={draft.nameColumn} onChange={e => setDraft({ ...draft, nameColumn: e.target.value })} placeholder="Coluna do nome. Ex: B" style={input} />
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do nome</label>
+            <input value={draft.nameColumn || ""} onChange={e => setDraft({ ...draft, nameColumn: e.target.value })} placeholder="B" style={inputStyle} />
           </div>
           <div style={{ display: "grid", gap: 6 }}>
-            <input value={draft.grauColumn} onChange={e => setDraft({ ...draft, grauColumn: e.target.value })} placeholder="Coluna do grau. Ex: A" style={input} />
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do grau</label>
+            <input value={draft.grauColumn || ""} onChange={e => setDraft({ ...draft, grauColumn: e.target.value })} placeholder="A" style={inputStyle} />
+          </div>
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do telefone</label>
+            <input value={draft.phoneColumn || ""} onChange={e => setDraft({ ...draft, phoneColumn: e.target.value })} placeholder="C" style={inputStyle} />
+          </div>
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do id externo</label>
+            <input value={draft.externalIdColumn || ""} onChange={e => setDraft({ ...draft, externalIdColumn: e.target.value })} placeholder="D" style={inputStyle} />
+          </div>
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna de ativo</label>
+            <input value={draft.activeColumn || ""} onChange={e => setDraft({ ...draft, activeColumn: e.target.value })} placeholder="E" style={inputStyle} />
           </div>
         </div>
-        <div style={{ display: "grid", gap: 6 }}>
-          <input value={draft.range} onChange={e => setDraft({ ...draft, range: e.target.value })} placeholder="Aba ou intervalo. Ex: Socios!A:B" style={input} />
+
+        <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 220px", gap: 10 }}>
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Aba ou intervalo</label>
+            <input value={draft.range || ""} onChange={e => setDraft({ ...draft, range: e.target.value })} placeholder="Socios!A:E" style={inputStyle} />
+          </div>
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Frequencia da sincronizacao (horas)</label>
+            <input type="number" min="1" value={draft.syncFrequencyHours || 24} onChange={e => setDraft({ ...draft, syncFrequencyHours: Number(e.target.value) || 24 })} style={inputStyle} />
+          </div>
         </div>
-        <Btn onClick={handleSave} loading={saving}>Salvar configuracao</Btn>
-        <p style={{ margin: 0, fontSize: 12, color: COLORS.textMuted }}>Salvamos o link e as colunas para a fonte global de socios. A planilha precisa estar acessivel publicamente para o preview funcionar.</p>
-      </div>
-      <div style={{ marginTop: 18, borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 12 }}>
-        <strong style={{ fontSize: 12 }}>Previa da lista atual ({people.length})</strong>
-        <div style={{ maxHeight: 220, overflowY: "auto", overflowX: "hidden", marginTop: 8, paddingRight: 8 }}>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: COLORS.textSecondary }}>
+          <input type="checkbox" checked={draft.syncEnabled !== false} onChange={e => setDraft({ ...draft, syncEnabled: e.target.checked })} />
+          Permitir sincronizacao automatica desta base
+        </label>
+
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <Btn onClick={handleSave} loading={saving}>Salvar configuracao</Btn>
+          <Btn v="secondary" onClick={handleSync} loading={syncing} disabled={!draft.sheetUrl || draft.syncEnabled === false}>Sincronizar agora</Btn>
+        </div>
+
+        <div style={{ fontSize: 12, color: COLORS.textMuted, lineHeight: 1.55 }}>
+          O banco passa a ser a fonte operacional da aplicacao. A planilha funciona como origem externa de sincronizacao.
+        </div>
+      </section>
+
+      <section style={{ ...infoCardStyle, paddingTop: 12 }}>
+        <strong style={{ display: "block", fontSize: 12, color: COLORS.text }}>Previa da base atual ({people.length})</strong>
+        <div style={{ maxHeight: 260, overflowY: "auto", overflowX: "hidden", marginTop: 8, paddingRight: 8 }}>
           {visiblePeople.map(person => (
-            <div key={`${person.grau}-${person.name}`} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 12, padding: "9px 0", fontSize: 12, borderBottom: `1px solid ${COLORS.borderLight}` }}>
+            <div key={`${person.externalKey || person.id}-${person.name}`} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) auto auto", gap: 12, padding: "9px 0", fontSize: 12, borderBottom: `1px solid ${COLORS.borderLight}` }}>
               <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{person.name}</span>
-              <strong style={{ minWidth: 28, textAlign: "right" }}>{person.grau}</strong>
+              <strong style={{ minWidth: 28, textAlign: "right" }}>{person.grau || "-"}</strong>
+              <span style={{ minWidth: 80, textAlign: "right", color: person.active === false ? COLORS.danger : COLORS.textMuted }}>
+                {person.active === false ? "Inativo" : "Ativo"}
+              </span>
             </div>
           ))}
         </div>
@@ -125,22 +199,22 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSavePeo
             </div>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };
 
-export const MemberListConfigModal = ({ config, people, onSave, onClose }) => (
+export const MemberListConfigModal = ({ config, people, onSave, onSync, onClose }) => (
   <div className="modal-backdrop">
     <div className="modal-card">
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", marginBottom: 16 }}>
         <div>
-          <h3 style={{ margin: 0 }}>Lista de socios</h3>
-          <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 12 }}>Configuracao global usada pelos seletores de nome.</p>
+          <h3 style={{ margin: 0 }}>Base de socios</h3>
+          <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 12 }}>Configuracao da fonte central usada pelos seletores e automacoes.</p>
         </div>
         <Btn v="ghost" onClick={onClose}>Fechar</Btn>
       </div>
-      <MemberListConfigModalContent config={config} people={people} onSave={onSave} onSavePeople={() => {}} />
+      <MemberListConfigModalContent config={config} people={people} onSave={onSave} onSync={onSync} />
     </div>
   </div>
 );

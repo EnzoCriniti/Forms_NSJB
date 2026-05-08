@@ -38,6 +38,7 @@ const baseProps = {
   onDeletePreset: vi.fn(),
   onSaveMembersConfig: vi.fn(),
   onSavePeople: vi.fn(),
+  onSyncMembersConfig: vi.fn(),
   formDeleteKeyConfigured: false,
   onSaveFormDeleteKey: vi.fn(),
   onSaveFieldCatalogItem: vi.fn(),
@@ -179,6 +180,62 @@ describe("AdminSettingsModal catalogo", () => {
       currentMasterKey: "antiga",
       newMasterKey: "nova",
     });
+  });
+
+  it("salva e sincroniza a base central de socios", async () => {
+    const onSaveMembersConfig = vi.fn().mockResolvedValue({
+      membersConfig: {
+        sourceType: "google_sheets",
+      },
+    });
+    const onSyncMembersConfig = vi.fn().mockResolvedValue({
+      importedCount: 2,
+      membersConfig: {
+        sourceType: "google_sheets",
+        lastSyncedAt: "2026-05-08T12:00:00.000Z",
+      },
+      people: [
+        { id: 1, name: "Ana", grau: "M", active: true },
+        { id: 2, name: "Bruno", grau: "C", active: false },
+      ],
+    });
+
+    render(
+      <AdminSettingsModal
+        {...baseProps}
+        membersConfig={{
+          sourceType: "google_sheets",
+          sheetUrl: "",
+          nameColumn: "B",
+          grauColumn: "A",
+          syncEnabled: true,
+        }}
+        people={[
+          { id: 1, name: "Ana", grau: "M", active: true },
+          { id: 2, name: "Bruno", grau: "C", active: false },
+        ]}
+        onSaveMembersConfig={onSaveMembersConfig}
+        onSyncMembersConfig={onSyncMembersConfig}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Socios" }));
+    fireEvent.change(screen.getByPlaceholderText("https://docs.google.com/spreadsheets/d/..."), {
+      target: { value: "https://docs.google.com/spreadsheets/d/teste123/edit#gid=0" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar configuracao" }));
+
+    await waitFor(() => expect(onSaveMembersConfig).toHaveBeenCalledWith(expect.objectContaining({
+      sheetUrl: "https://docs.google.com/spreadsheets/d/teste123/edit#gid=0",
+      sourceType: "google_sheets",
+    })));
+
+    fireEvent.click(screen.getByRole("button", { name: "Sincronizar agora" }));
+
+    await waitFor(() => expect(onSyncMembersConfig).toHaveBeenCalled());
+    expect(screen.getByText("Previa da base atual (2)")).toBeInTheDocument();
+    expect(screen.getByText("Ana")).toBeInTheDocument();
+    expect(screen.getByText("Bruno")).toBeInTheDocument();
   });
 });
 
