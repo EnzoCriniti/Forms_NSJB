@@ -1,4 +1,4 @@
-# Architecture
+# Arquitetura
 
 Este documento resume a arquitetura atual do NSJB Forms depois da separacao entre frontend, backend e docker.
 

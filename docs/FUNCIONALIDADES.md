@@ -189,5 +189,5 @@ Se voce so precisa de uma visao rapida, pense assim:
 ## Documentos relacionados
 
 - [README.md](../README.md)
-- [docs/ARCHITECTURE.md](ARCHITECTURE.md)
+- [docs/ARQUITETURA.md](ARQUITETURA.md)
 - [docs/DIAGRAMAS.md](DIAGRAMAS.md)

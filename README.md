@@ -109,10 +109,10 @@ docker compose -f docker/compose.yml logs -f
 - [backend/README.md](backend/README.md) - estrutura da API e banco.
 - [docker/README.md](docker/README.md) - operacao da stack oficial.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - diagramas declarativos.
-- [docs/AI_CODEMAP.md](docs/AI_CODEMAP.md) - mapa rapido do codigo.
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - arquitetura por camadas.
-- [docs/CODING_PATTERNS.md](docs/CODING_PATTERNS.md) - padroes de implementacao.
-- [docs/GUIDELINES-TECNICOS.md](docs/GUIDELINES-TECNICOS.md) - decisoes e operacao.
+- [docs/MAPA-CODIGO.md](docs/MAPA-CODIGO.md) - mapa rapido do codigo.
+- [docs/ARQUITETURA.md](docs/ARQUITETURA.md) - arquitetura por camadas.
+- [docs/PADROES-CODIGO.md](docs/PADROES-CODIGO.md) - padroes de implementacao.
+- [docs/GUIA-TECNICO.md](docs/GUIA-TECNICO.md) - decisoes e operacao.
 - [docs/MANUTENCAO.md](docs/MANUTENCAO.md) - regras de manutencao.
 - [docs/briefing-original.md](docs/briefing-original.md) - briefing inicial.
 - [docs/IA-LOG.md](docs/IA-LOG.md) - historico curto das alteracoes assistidas.

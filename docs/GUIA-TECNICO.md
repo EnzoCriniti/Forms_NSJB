@@ -1,10 +1,10 @@
-# Guidelines Tecnicos
+# Guia Tecnico
 
 Guia pratico para operar e manter o projeto sem perder a separacao entre frontend, backend e banco.
 
 ## Antes de mexer
 
-- Consulte `docs/AI_CODEMAP.md` para achar o ponto certo de edicao.
+- Consulte `docs/MAPA-CODIGO.md` para achar o ponto certo de edicao.
 - Se a area nao estiver mapeada, leia a doc especifica antes de buscar o repo inteiro.
 - Prefira mudancas pequenas e localizadas.
 

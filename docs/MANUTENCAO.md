@@ -4,7 +4,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 
 ## Como usar
 
-- Veja `docs/AI_CODEMAP.md` antes de procurar arquivos no repo inteiro.
+- Veja `docs/MAPA-CODIGO.md` antes de procurar arquivos no repo inteiro.
 - Comece pela area certa: frontend, backend, docker ou docs.
 - Atualize os caminhos da documentacao quando mover arquivos.
 - Registre bug encontrado com teste novo ou ajuste de teste existente.
@@ -32,7 +32,7 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 
 ## Rotina curta
 
-1. ler `docs/AI_CODEMAP.md`
+1. ler `docs/MAPA-CODIGO.md`
 2. identificar a menor mudanca util
 3. atualizar teste se houver bug ou regressao
 4. atualizar doc se a estrutura mudar

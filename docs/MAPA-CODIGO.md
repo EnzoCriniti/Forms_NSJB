@@ -1,4 +1,4 @@
-# AI_CODEMAP
+# Mapa de Codigo
 
 Mapa operacional curto do codebase para evitar buscas desnecessarias.
 
@@ -14,7 +14,7 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 
 ## Frontend
 
-- `frontend/src/App.jsx` - orquestra navega, sessao e telas.
+- `frontend/src/App.jsx` - orquestra navegacao, sessao e telas.
 - `frontend/src/main.jsx` - ponto de entrada do React.
 - `frontend/src/screens/` - telas de nivel de pagina.
 - `frontend/src/features/` - modais e blocos de dominio.
@@ -42,10 +42,10 @@ Mapa operacional curto do codebase para evitar buscas desnecessarias.
 - `backend/index.mjs` - inicia a API.
 - `backend/app.mjs` - cria o servidor HTTP.
 - `backend/routes/apiRouter.mjs` - despachante principal das rotas.
-- `backend/routes/systemRoutes.mjs` - auth, health, bootstrap e audit logs.
+- `backend/routes/systemRoutes.mjs` - auth, health, bootstrap e auditoria.
 - `backend/routes/formRoutes.mjs` - formularios, respostas e escala.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
-- `backend/routes/requestHelpers.mjs` - helpers compartilhados de request, auth e auditoria.
+- `backend/routes/requestHelpers.mjs` - helpers compartilhados de requisicao, auth e auditoria.
 - `backend/services/` - regras de negocio.
 - `backend/repositories/` - acesso ao banco.
 - `backend/validators/` - validacao estrutural.

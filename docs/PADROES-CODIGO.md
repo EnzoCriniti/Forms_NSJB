@@ -1,4 +1,4 @@
-# Coding Patterns
+# Padroes de Codigo
 
 Padroes de implementacao usados neste repositorio.
 
