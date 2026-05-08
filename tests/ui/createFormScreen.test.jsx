@@ -37,6 +37,26 @@ describe("CreateFormScreen", () => {
     expect(screen.getByLabelText("Exibir lista completa da base vinculada e faltantes")).toBeDisabled();
   });
 
+  it("abre a pre-visualizacao e reflete o rascunho atual", () => {
+    render(<CreateFormScreen {...baseProps} />);
+
+    expect(screen.queryByText("Pre-visualizacao do formulario")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Visualizar formulario" }));
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+      target: { value: "Formulario Preview" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Prezada Irmandade..."), {
+      target: { value: "Descricao da previa" },
+    });
+
+    expect(screen.getByText("Pre-visualizacao do formulario")).toBeInTheDocument();
+    expect(screen.getByText("Formulario Preview")).toBeInTheDocument();
+    expect(screen.getByText("Descricao da previa")).toBeInTheDocument();
+    expect(screen.getByText("Nenhum campo visivel adicionado ainda.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ocultar visualizacao" })).toBeInTheDocument();
+  });
+
   it("desabilita total esperado e lista completa sem vinculo com socios", () => {
     render(
       <CreateFormScreen

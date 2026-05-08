@@ -7,6 +7,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
+import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
 
@@ -138,6 +139,7 @@ export const CreateFormScreen = ({
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (!form) {
@@ -184,6 +186,9 @@ export const CreateFormScreen = ({
   const activeScaleTaskCatalog = useMemo(() => scaleTaskCatalog.filter(item => item.active !== false), [scaleTaskCatalog]);
   const availableTotals = useMemo(() => totalizableFields.filter(field => !resultsConfig.totalsLayout.some(item => String(item.fieldId) === String(field.id))), [resultsConfig.totalsLayout, totalizableFields]);
   const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId) || (nType !== "person_select" && !nLabel.trim());
+  const previewTitle = title.trim();
+  const previewDescription = desc.trim();
+  const previewClosingText = closingText.trim();
 
   const togLabel = id => setSelLabels(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   const updateScale = (index, patch) => setScaleDraft(scaleDraft.map((section, sectionIndex) => sectionIndex === index ? { ...section, ...patch } : section));
@@ -421,6 +426,16 @@ export const CreateFormScreen = ({
         onClearTemplate={() => applyTemplate(null)}
       />
 
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+        <Btn
+          v={showPreview ? "secondary" : "primary"}
+          icon="eye"
+          onClick={() => setShowPreview(prev => !prev)}
+        >
+          {showPreview ? "Ocultar visualizacao" : "Visualizar formulario"}
+        </Btn>
+      </div>
+
       <div style={{ display: "grid", gap: 14, marginBottom: 20 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
           <div>
@@ -493,6 +508,31 @@ export const CreateFormScreen = ({
           <strong style={{ color: COLORS.text }}>{people.length} pessoas</strong> carregadas. {membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Socios."}
         </span>
       </div>
+
+      {showPreview && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10 }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>
+                Pre-visualizacao do formulario
+              </div>
+              <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 2 }}>
+                Esta area mostra como o link publico esta ficando com base no rascunho atual.
+              </div>
+            </div>
+          </div>
+          <CreateFormLivePreview
+            format={format}
+            title={previewTitle}
+            description={previewDescription}
+            closingText={previewClosingText}
+            fields={fields}
+            people={people}
+            scaleSections={scaleDraft}
+            scaleLimit={scaleLimit}
+          />
+        </div>
+      )}
 
       {format === "escala_organ" && (
         <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 16, marginBottom: 20 }}>

@@ -30,6 +30,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/components/FormListCard.jsx` - card individual da listagem de formularios.
 - `frontend/src/components/ResultsPresenceHeader.jsx` - cabecalho e resumo da tela de resultados de presenca.
 - `frontend/src/components/CreateFormFieldPreview.jsx` - previa isolada do campo em criacao de formulario.
+- `frontend/src/components/CreateFormLivePreview.jsx` - previa do formulario completo durante a criacao.
 - `frontend/src/components/CreateFormTemplateBar.jsx` - barra de selecao de template na criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/lib/api.js` - cliente HTTP.
