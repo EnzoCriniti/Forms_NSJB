@@ -19,8 +19,15 @@ export const STORAGE_KEYS = {
 };
 
 export const DEFAULT_MEMBERS_CONFIG = {
+  sourceType: "google_sheets",
   sheetUrl: "",
   nameColumn: "B",
   grauColumn: "A",
+  phoneColumn: "",
+  externalIdColumn: "",
+  activeColumn: "",
   range: "Socios!A:B",
+  syncEnabled: true,
+  syncFrequencyHours: 24,
+  lastSyncedAt: null,
 };

@@ -18,6 +18,7 @@ const assert = (condition, message) => {
 const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
 const isNonEmptyString = value => typeof value === "string" && value.trim().length > 0;
 const isOptionalString = value => value === undefined || value === null || typeof value === "string";
+const isOptionalBoolean = value => value === undefined || value === null || typeof value === "boolean";
 const isOptionalNumberLike = value => value === undefined || value === null || value === "" || Number.isFinite(Number(value));
 const isIdLike = value => value === undefined || value === null || Number.isInteger(Number(value));
 const isOptionalPositiveIntegerLike = value => value === undefined || value === null || value === "" || (Number.isInteger(Number(value)) && Number(value) > 0);
@@ -228,17 +229,31 @@ export const validatePeoplePayload = payload => {
   assert(Array.isArray(payload.people), "Lista de socios invalida.");
   for (const person of payload.people) {
     assert(isObject(person), "Socio invalido.");
+    assert(isIdLike(person.id), "Id do socio invalido.");
     assert(isNonEmptyString(person.name), "Socio precisa de nome.");
     assert(isOptionalString(person.grau), "Grau do socio invalido.");
+    assert(isOptionalString(person.phone), "Telefone do socio invalido.");
+    assert(isOptionalBoolean(person.active), "Status do socio invalido.");
+    assert(isOptionalString(person.source), "Origem do socio invalida.");
+    assert(isOptionalString(person.externalKey), "Chave externa do socio invalida.");
+    assert(isOptionalString(person.syncedAt), "Data de sincronizacao do socio invalida.");
+    assert(person.metadata === undefined || isObject(person.metadata), "Metadata do socio invalida.");
   }
 };
 
 export const validateMembersConfigPayload = payload => {
   assert(isObject(payload), "Payload de configuracao de socios invalido.");
+  assert(isOptionalString(payload.sourceType), "sourceType invalido.");
   assert(isOptionalString(payload.sheetUrl), "sheetUrl invalido.");
   assert(isOptionalString(payload.nameColumn), "nameColumn invalido.");
   assert(isOptionalString(payload.grauColumn), "grauColumn invalido.");
+  assert(isOptionalString(payload.phoneColumn), "phoneColumn invalido.");
+  assert(isOptionalString(payload.externalIdColumn), "externalIdColumn invalido.");
+  assert(isOptionalString(payload.activeColumn), "activeColumn invalido.");
   assert(isOptionalString(payload.range), "range invalido.");
+  assert(isOptionalBoolean(payload.syncEnabled), "syncEnabled invalido.");
+  assert(isOptionalPositiveIntegerLike(payload.syncFrequencyHours), "syncFrequencyHours invalido.");
+  assert(isOptionalString(payload.lastSyncedAt), "lastSyncedAt invalido.");
 };
 
 export const validateDeleteId = (value, label) => {

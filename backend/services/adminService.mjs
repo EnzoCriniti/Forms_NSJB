@@ -21,6 +21,7 @@ import {
   upsertFieldCatalogRecord,
   upsertScaleTaskCatalogRecord,
 } from "../repositories/catalogRepository.mjs";
+import { DEFAULT_MEMBERS_CONFIG } from "../data/seedData.mjs";
 
 const MASTER_KEY_SETTING = "formDeleteKey";
 const MASTER_KEY_ITERATIONS = 210000;
@@ -133,8 +134,12 @@ export const savePeople = async people => {
 };
 
 export const saveMembersConfig = async config => {
-  await saveJsonSetting("membersConfig", config);
-  return getJsonSetting("membersConfig", {});
+  const normalized = {
+    ...DEFAULT_MEMBERS_CONFIG,
+    ...(config || {}),
+  };
+  await saveJsonSetting("membersConfig", normalized);
+  return getJsonSetting("membersConfig", DEFAULT_MEMBERS_CONFIG);
 };
 
 export const saveFieldCatalogItem = async payload => {

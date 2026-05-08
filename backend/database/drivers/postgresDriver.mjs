@@ -57,9 +57,17 @@ const ensureSchema = async pool => {
   const client = await pool.connect();
   try {
     const exists = await client.query("SELECT to_regclass('public.forms') AS exists");
-    if (exists.rows[0]?.exists) return;
-    const schemaSql = fs.readFileSync(SCHEMA_PATH, "utf8");
-    await client.query(schemaSql);
+    if (!exists.rows[0]?.exists) {
+      const schemaSql = fs.readFileSync(SCHEMA_PATH, "utf8");
+      await client.query(schemaSql);
+    }
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS phone TEXT");
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE");
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'manual'");
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS external_key TEXT");
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS metadata_json JSONB NOT NULL DEFAULT '{}'::jsonb");
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS synced_at TIMESTAMPTZ");
+    await client.query("CREATE INDEX IF NOT EXISTS idx_people_external_key ON people(external_key)");
   } finally {
     client.release();
   }

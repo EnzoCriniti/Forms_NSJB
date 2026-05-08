@@ -112,8 +112,8 @@ test("admin payload validators accept valid payloads", () => {
     fieldDefinitions: [],
     scaleSections: [],
   }));
-  assert.doesNotThrow(() => validatePeoplePayload({ people: [{ name: "Maria", grau: "QS" }] }));
-  assert.doesNotThrow(() => validateMembersConfigPayload({ sheetUrl: "", nameColumn: "B", grauColumn: "A", range: "Socios!A:B" }));
+  assert.doesNotThrow(() => validatePeoplePayload({ people: [{ name: "Maria", grau: "QS", phone: "5511999999999", active: true, source: "google_sheets", externalKey: "abc-1", syncedAt: "2026-05-08T10:00:00Z", metadata: { rowNumber: 4 } }] }));
+  assert.doesNotThrow(() => validateMembersConfigPayload({ sourceType: "google_sheets", sheetUrl: "", nameColumn: "B", grauColumn: "A", phoneColumn: "C", externalIdColumn: "D", activeColumn: "E", range: "Socios!A:E", syncEnabled: true, syncFrequencyHours: 24, lastSyncedAt: null }));
   assert.doesNotThrow(() => validateFormDeleteKeyPayload({ masterKey: "segredo" }));
   assert.doesNotThrow(() => validateFormDeleteKeyUpdatePayload({ currentMasterKey: "antiga", newMasterKey: "nova" }));
   assert.doesNotThrow(() => validateFormDeleteKeyUpdatePayload({ newMasterKey: "nova" }));
@@ -155,4 +155,5 @@ test("catalog and admin validators reject invalid payloads", () => {
   assert.throws(() => validateScaleTaskCatalogPayload({ key: "tarefa", name: "", category: "cozinha", defaultLabel: "Tarefa" }), /Nome da tarefa base e obrigatorio/);
   assert.throws(() => validatePeoplePayload({ people: [{}] }), /Socio precisa de nome/);
   assert.throws(() => validateMembersConfigPayload({ sheetUrl: 123 }), /sheetUrl invalido/);
+  assert.throws(() => validatePeoplePayload({ people: [{ name: "Maria", active: "sim" }] }), /Status do socio invalido/);
 });

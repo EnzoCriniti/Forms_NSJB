@@ -61,6 +61,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth e auditoria.
 - `backend/services/` - regras de negocio.
 - `backend/repositories/` - acesso ao banco.
+- `backend/repositories/peopleRepository.mjs` - base central de socios e metadados de sincronizacao.
 - `backend/validators/` - validacao estrutural.
 - `backend/core/` - utilitarios compartilhados.
 - `backend/database/` - camada minima de acesso ao banco.
