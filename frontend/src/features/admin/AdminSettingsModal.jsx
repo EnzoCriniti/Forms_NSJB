@@ -615,18 +615,14 @@ export const AdminSettingsModal = ({
 
   const content = (
       <div
-        className={isScreen ? "settings-screen-card modal-card modal-card-wide" : "modal-card modal-card-wide"}
+        className={isScreen ? "settings-screen-card" : "modal-card modal-card-wide"}
         style={isScreen ? { width: "100%", maxWidth: "100%", margin: 0 } : undefined}
       >
-        <div className="settings-modal-header" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
-          <div>
-            <h3 style={{ margin: 0 }}>Configuracoes</h3>
-            <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 12 }}>
-              {isScreen ? "Administração do sistema." : "Administração do sistema."}
-            </p>
+        {!isScreen && (
+          <div className="settings-modal-header" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
+            <Btn v="ghost" onClick={onClose}>Fechar</Btn>
           </div>
-          <Btn v="ghost" onClick={onClose}>{isScreen ? "Voltar" : "Fechar"}</Btn>
-        </div>
+        )}
 
         <div className="settings-tabs" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
           {tabs.map(item => (

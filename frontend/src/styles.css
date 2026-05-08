@@ -619,6 +619,11 @@ input[type="radio"] {
   width: min(920px, 100%);
 }
 
+.settings-screen-card {
+  color: var(--text);
+  width: 100%;
+}
+
 .settings-grid {
   display: grid;
   gap: 18px;
