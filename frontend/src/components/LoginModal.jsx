@@ -16,7 +16,7 @@ export const LoginModal = ({ open, onClose, onLogin, onLogout, theme, fontScale,
       <div className="modal-card login-modal-card" onClick={event => event.stopPropagation()} style={{ width: "min(520px, 100%)" }}>
         <div className="login-modal-header" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
           <div>
-            <h2 style={{ margin: 0, fontSize: 22 }}>Entrar</h2>
+            <h2 style={{ margin: 0, fontSize: 22 }}>Acesso</h2>
           </div>
           <Btn v="ghost" sz="sm" onClick={onClose}>
             Fechar

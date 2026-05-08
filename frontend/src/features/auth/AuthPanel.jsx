@@ -106,7 +106,6 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
   if (isSheet) {
     return (
       <div className="auth-panel auth-panel--sheet" style={{ display: "grid", gap: 12, width: "100%" }}>
-        <strong style={{ display: "block", color: "var(--text)", fontSize: 14 }}>Entrar</strong>
         <input
           className="auth-panel__input"
           value={username}
