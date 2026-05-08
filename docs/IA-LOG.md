@@ -9,6 +9,7 @@ Registro curto de decisoes e mudancas relevantes feitas por IAs ou em sessoes as
 - Este arquivo e historico.
 - Entradas antigas podem citar caminhos legados como `src/` e `server/`.
 - Entradas mais novas devem usar a estrutura atual com `frontend/`, `backend/` e `docker/`.
+- Para documentos vivos, prefira `docs/MAPA-CODIGO.md`, `docs/ARQUITETURA.md`, `docs/PADROES-CODIGO.md`, `docs/GUIA-TECNICO.md` e `docs/MANUTENCAO.md`.
 
 ## 2026-05-08
 - autor/contexto: refinamento da migracao estrutural para separar de vez frontend, backend e regras compartilhadas
