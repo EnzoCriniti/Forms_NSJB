@@ -12,7 +12,7 @@ import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
-  { v: "person_select", l: "Pessoa vinculada" },
+  { v: "person_select", l: "Seletor por base" },
   { v: "yes_no", l: "Sim / Nao" },
   { v: "number", l: "Numerico" },
   { v: "text", l: "Texto Curto" },

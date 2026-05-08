@@ -53,7 +53,7 @@ const EMPTY_AUDIT_FILTERS = {
 const AUDIT_PAGE_SIZE = 10;
 
 const fieldTypeLabels = {
-  person_select: "Pessoa vinculada",
+  person_select: "Seletor por base",
   yes_no: "Sim / Nao",
   number: "Numero",
   text: "Texto",
@@ -622,7 +622,7 @@ export const AdminSettingsModal = ({
           <div>
             <h3 style={{ margin: 0 }}>Configuracoes</h3>
             <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 12 }}>
-              {isScreen ? "Area administrativa principal do sistema." : "Area administrativa do MVP."}
+              {isScreen ? "Administração do sistema." : "Administração do sistema."}
             </p>
           </div>
           <Btn v="ghost" onClick={onClose}>{isScreen ? "Voltar" : "Fechar"}</Btn>
@@ -640,11 +640,6 @@ export const AdminSettingsModal = ({
               {item.label}
             </Btn>
           ))}
-        </div>
-
-        <div style={{ marginBottom: 18, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "12px 14px" }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: COLORS.textMuted, textTransform: "uppercase", marginBottom: 4 }}>{activeTab.label}</div>
-          <div style={{ fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>{activeTab.description}</div>
         </div>
 
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
@@ -708,7 +703,7 @@ export const AdminSettingsModal = ({
                   Cadastre uma lista externa sincronizada para usar em campos do formulario. Essas bases nao substituem a base central de socios.
                 </div>
                 <AdminField>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Pessoa vinculada</label>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Seletor por base</label>
                   <input value={externalBaseDraft.name} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, name: e.target.value })} placeholder="Ex: Congregacoes, Turnos, Equipes" style={inputStyle} />
                 </AdminField>
                 <AdminField>
