@@ -15,7 +15,6 @@ export const LABELS = [
 
 export const DEFAULT_USERS = [
   { id: 1, username: "admin", password: "admin123", role: "admin", name: "Administrador" },
-  { id: 2, username: "viewer", password: "viewer123", role: "viewer", name: "Visualizador" },
 ];
 
 export const DEFAULT_MEMBERS_CONFIG = {

@@ -37,6 +37,18 @@ const loginAsAdmin = async baseUrl => {
   return payload.token;
 };
 
+const createViewerUser = async (baseUrl, adminToken) => {
+  const username = `viewer_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+  const createRes = await authedJson(baseUrl, "/api/users", {
+    name: "Visualizador",
+    username,
+    password: "viewer123",
+    role: "viewer",
+  }, adminToken);
+  assert.equal(createRes.status, 200);
+  return { username, password: "viewer123" };
+};
+
 const authedJson = (baseUrl, pathname, body, token, method = "POST") => fetch(`${baseUrl}${pathname}`, {
   method,
   headers: { "Content-Type": "application/json", ...authHeaders(token) },
@@ -277,17 +289,20 @@ test("auth endpoints log in and resolve the current user", async () => {
 test("nova sessao revoga a anterior da mesma conta", async () => {
   const ctx = await startServer();
   try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const viewer = await createViewerUser(ctx.baseUrl, adminToken);
+
     const firstLoginRes = await postJson(ctx.baseUrl, "/api/auth/login", {
-      username: "viewer",
-      password: "viewer123",
+      username: viewer.username,
+      password: viewer.password,
     });
     assert.equal(firstLoginRes.status, 200);
     const firstLogin = await firstLoginRes.json();
     assert.ok(firstLogin.token);
 
     const secondLoginRes = await postJson(ctx.baseUrl, "/api/auth/login", {
-      username: "viewer",
-      password: "viewer123",
+      username: viewer.username,
+      password: viewer.password,
     });
     assert.equal(secondLoginRes.status, 200);
     const secondLogin = await secondLoginRes.json();
@@ -340,6 +355,9 @@ test("nova sessao admin revoga sessoes de outros administradores", async () => {
 test("admin endpoints require admin credentials", async () => {
   const ctx = await startServer();
   try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const viewer = await createViewerUser(ctx.baseUrl, adminToken);
+
     const unauthRes = await postJson(ctx.baseUrl, "/api/forms", {
       type: "presenca",
       status: "aberto",
@@ -352,8 +370,8 @@ test("admin endpoints require admin credentials", async () => {
     assert.equal(unauthRes.status, 401);
 
     const viewerRes = await postJson(ctx.baseUrl, "/api/auth/login", {
-      username: "viewer",
-      password: "viewer123",
+      username: viewer.username,
+      password: viewer.password,
     });
     assert.equal(viewerRes.status, 200);
     const viewerPayload = await viewerRes.json();
@@ -376,6 +394,7 @@ test("audit logs endpoint is restricted to admin and supports filters", async ()
   const ctx = await startServer();
   try {
     const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const viewer = await createViewerUser(ctx.baseUrl, adminToken);
     const createRes = await authedJson(ctx.baseUrl, "/api/forms", {
       type: "presenca",
       status: "aberto",
@@ -388,8 +407,8 @@ test("audit logs endpoint is restricted to admin and supports filters", async ()
     assert.equal(createRes.status, 200);
 
     const viewerLoginRes = await postJson(ctx.baseUrl, "/api/auth/login", {
-      username: "viewer",
-      password: "viewer123",
+      username: viewer.username,
+      password: viewer.password,
     });
     assert.equal(viewerLoginRes.status, 200);
     const viewerPayload = await viewerLoginRes.json();

@@ -116,7 +116,6 @@ Esta documentacao e viva. Quando o projeto avancar, ajuste os textos, diagramas 
 ## Contas de teste
 
 - `admin` / `admin123`
-- `viewer` / `viewer123`
 
 ## Dados e persistencia
 
