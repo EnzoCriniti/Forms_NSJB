@@ -407,6 +407,7 @@ export const AdminSettingsModal = ({
   formDeleteKeyConfigured = null,
   onSaveFormDeleteKey,
   onClose,
+  mode = "modal",
 }) => {
   const [tab, setTab] = useState("users");
   const [userDraft, setUserDraft] = useState(emptyUser);
@@ -531,15 +532,21 @@ export const AdminSettingsModal = ({
     }
   };
 
-  return (
-    <div className="modal-backdrop">
-      <div className="modal-card modal-card-wide">
+  const isScreen = mode === "screen";
+
+  const content = (
+      <div
+        className={isScreen ? "settings-screen-card modal-card modal-card-wide" : "modal-card modal-card-wide"}
+        style={isScreen ? { width: "100%", maxWidth: "100%", margin: 0 } : undefined}
+      >
         <div className="settings-modal-header" style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
           <div>
             <h3 style={{ margin: 0 }}>Configuracoes</h3>
-            <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 12 }}>Area administrativa do MVP.</p>
+            <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 12 }}>
+              {isScreen ? "Area administrativa principal do sistema." : "Area administrativa do MVP."}
+            </p>
           </div>
-          <Btn v="ghost" onClick={onClose}>Fechar</Btn>
+          <Btn v="ghost" onClick={onClose}>{isScreen ? "Voltar" : "Fechar"}</Btn>
         </div>
 
         <div className="settings-tabs" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
@@ -931,6 +938,15 @@ export const AdminSettingsModal = ({
           }}
         />
       </div>
+  );
+
+  if (isScreen) {
+    return content;
+  }
+
+  return (
+    <div className="modal-backdrop">
+      {content}
     </div>
   );
 };

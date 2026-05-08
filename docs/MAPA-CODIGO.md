@@ -79,6 +79,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - Fluxo publico por link: `frontend/src/App.jsx` + `frontend/src/screens/PublicFormScreen.jsx` ou `PublicEscalaScreen.jsx`.
 - Listagem interna: `frontend/src/screens/FormListScreen.jsx`.
 - Criacao e edicao: `frontend/src/screens/CreateFormScreen.jsx`.
+- Configuracoes: `frontend/src/screens/SettingsScreen.jsx`.
 - Resultados: `frontend/src/screens/ResultsScreen.jsx`.
 - Admin: `frontend/src/features/admin/AdminSettingsModal.jsx`.
 - API: `backend/routes/apiRouter.mjs`.

@@ -75,6 +75,30 @@ describe("App dashboard flow", () => {
     expect(screen.getByText("Resumo operacional da aplicacao sem entrar nas Configuracoes.")).toBeInTheDocument();
   });
 
+  it("abre configuracoes em tela dedicada para admin", async () => {
+    window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({
+      user: admin,
+      token: "token-admin",
+      expiresAt: null,
+    }));
+
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") return jsonResponse(bootstrap);
+      if (url === "/api/auth/me") return jsonResponse({ user: admin, expiresAt: null });
+      if (url === "/api/security/form-delete-key/status") return jsonResponse({ configured: false });
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    await screen.findByRole("button", { name: "Dashboard" });
+    fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
+
+    expect(await screen.findByRole("heading", { name: "Configuracoes" })).toBeInTheDocument();
+    expect(screen.getByText("Area administrativa principal do sistema.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
+  });
+
   it("mostra apenas o botao Entrar no header quando nao ha sessao", async () => {
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") return jsonResponse(bootstrap);

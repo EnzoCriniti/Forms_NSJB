@@ -5,7 +5,6 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { AdminSettingsModal } from "./features/admin/AdminSettingsModal";
 import { COLORS, Btn, ClosedPublicScreen } from "./components/ui";
 import { AppHeader } from "./components/AppHeader";
 import { AppStatusScreen } from "./components/AppStatusScreen";
@@ -45,6 +44,7 @@ import { FormListScreen } from "./screens/FormListScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { ResultsScreen } from "./screens/ResultsScreen";
+import { SettingsScreen } from "./screens/SettingsScreen";
 import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 import { isFormClosedForPublic } from "./lib/forms";
@@ -81,7 +81,6 @@ export default function App() {
   const [theme, setTheme] = useState(() => loadStored(STORAGE_KEYS.theme, "light"));
   const [fontScale, setFontScale] = useState(() => Number(loadStored(STORAGE_KEYS.fontScale, 1)) || 1);
   const [pinnedFormsByUser, setPinnedFormsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedForms, {}));
-  const [showSettings, setShowSettings] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -230,7 +229,6 @@ export default function App() {
     setActiveFormId(null);
     setEditingFormId(null);
     setDraftForm(null);
-    setShowSettings(false);
     setScreen("list");
     setShowLogin(promptLogin && !publicForm);
   };
@@ -329,6 +327,10 @@ export default function App() {
       return;
     }
     if (nextScreen === "create" && !canCreateForms(currentUser)) {
+      setScreen("list");
+      return;
+    }
+    if (nextScreen === "settings" && !canCreateForms(currentUser)) {
       setScreen("list");
       return;
     }
@@ -600,7 +602,7 @@ export default function App() {
           onIncreaseTextSize={increaseFontScale}
           onDecreaseTextSize={decreaseFontScale}
           onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-          onOpenSettings={() => setShowSettings(true)}
+          onOpenSettings={() => navigate("settings")}
         />
       </>
     );
@@ -618,7 +620,7 @@ export default function App() {
         onIncreaseFontScale={increaseFontScale}
         onDecreaseFontScale={decreaseFontScale}
         onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-        onOpenSettings={() => setShowSettings(true)}
+        onOpenSettings={() => navigate("settings")}
         onLogin={login}
         onLogout={logout}
       />
@@ -637,6 +639,33 @@ export default function App() {
         )}
         {screen === "list" && <FormListScreen onNavigate={navigate} onDuplicateForm={handleDuplicateForm} onArchiveForm={handleArchiveForm} onTogglePinnedForm={handleTogglePinnedForm} pinnedFormIds={pinnedFormIds} user={currentUser} labels={labels} forms={forms} onDeleteForm={handleDeleteForm} formDeleteKeyConfigured={formDeleteKeyConfigured} />}
         {screen === "create" && <CreateFormScreen onNavigate={navigate} people={people} membersConfig={membersConfig} labels={labels} presets={presets} fieldCatalog={fieldCatalog} scaleTaskCatalog={scaleTaskCatalog} onSavePreset={handleSavePreset} onSaveForm={handleSaveForm} form={editingForm} isDuplicateMode={Boolean(draftForm)} />}
+        {screen === "settings" && canCreateForms(currentUser) && (
+          <SettingsScreen
+            onNavigate={navigate}
+            users={users}
+            labels={labels}
+            presets={presets}
+            fieldCatalog={fieldCatalog}
+            scaleTaskCatalog={scaleTaskCatalog}
+            membersConfig={membersConfig}
+            people={people}
+            currentUser={currentUser}
+            onSaveUser={handleSaveUser}
+            onDeleteUser={handleDeleteUser}
+            onSaveLabel={handleSaveLabel}
+            onDeleteLabel={handleDeleteLabel}
+            onSavePreset={handleSavePreset}
+            onDeletePreset={handleDeletePreset}
+            onSaveMembersConfig={handleSaveMembersConfig}
+            onSavePeople={handleSavePeople}
+            onSaveFieldCatalogItem={handleSaveFieldCatalogItem}
+            onDeleteFieldCatalogItem={handleDeleteFieldCatalogItem}
+            onSaveScaleTaskCatalogItem={handleSaveScaleTaskCatalogItem}
+            onDeleteScaleTaskCatalogItem={handleDeleteScaleTaskCatalogItem}
+            formDeleteKeyConfigured={formDeleteKeyConfigured}
+            onSaveFormDeleteKey={handleSaveFormDeleteKey}
+          />
+        )}
         {screen === "results" && activeForm && (
           <ResultsScreen
             onNavigate={navigate}
@@ -660,35 +689,8 @@ export default function App() {
         onIncreaseTextSize={increaseFontScale}
         onDecreaseTextSize={decreaseFontScale}
         onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-        onOpenSettings={() => setShowSettings(true)}
+        onOpenSettings={() => navigate("settings")}
       />
-      {showSettings && canCreateForms(currentUser) && (
-        <AdminSettingsModal
-          users={users}
-          labels={labels}
-          presets={presets}
-          fieldCatalog={fieldCatalog}
-          scaleTaskCatalog={scaleTaskCatalog}
-          membersConfig={membersConfig}
-          people={people}
-          currentUser={currentUser}
-          onSaveUser={handleSaveUser}
-          onDeleteUser={handleDeleteUser}
-          onSaveLabel={handleSaveLabel}
-          onDeleteLabel={handleDeleteLabel}
-          onSavePreset={handleSavePreset}
-          onDeletePreset={handleDeletePreset}
-          onSaveMembersConfig={handleSaveMembersConfig}
-          onSavePeople={handleSavePeople}
-          onSaveFieldCatalogItem={handleSaveFieldCatalogItem}
-          onDeleteFieldCatalogItem={handleDeleteFieldCatalogItem}
-          onSaveScaleTaskCatalogItem={handleSaveScaleTaskCatalogItem}
-          onDeleteScaleTaskCatalogItem={handleDeleteScaleTaskCatalogItem}
-          formDeleteKeyConfigured={formDeleteKeyConfigured}
-          onSaveFormDeleteKey={handleSaveFormDeleteKey}
-          onClose={() => setShowSettings(false)}
-        />
-      )}
     </div>
   );
 }
