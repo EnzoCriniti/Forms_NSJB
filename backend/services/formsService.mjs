@@ -66,8 +66,8 @@ export const saveForm = async payload => {
     title: payload.title,
     sessionName: payload.sessionName || "",
     description: payload.description || "",
-    date: payload.date || "",
-    closing: payload.closing || "",
+    date: payload.date || null,
+    closing: payload.closing || null,
     closingText: payload.closingText || "",
     totalExpected: Number(payload.totalExpected || 0),
     labels: payload.labels || [],
@@ -82,7 +82,7 @@ export const saveForm = async payload => {
 
   // Reabrir um formulario vencido deve prevalecer sobre o fechamento antigo.
   if (existingForm && existingForm.status !== "aberto" && values.status === "aberto" && isPastClosingDate(values.closing)) {
-    values.closing = "";
+    values.closing = null;
   }
 
   const formId = await upsertFormRecord(values);

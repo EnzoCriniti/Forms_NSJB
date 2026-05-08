@@ -121,7 +121,6 @@ export const closeExpiredFormRecords = async cutoff => {
     SET status = 'fechado', updated_at = ?
     WHERE status = 'aberto'
       AND closing IS NOT NULL
-      AND closing != ''
       AND closing <= ?
   `, [nowIso(), cutoff]);
   return Number(result.rowCount || 0);
@@ -133,7 +132,6 @@ export const openScheduledFormRecords = async cutoffDate => {
     SET status = 'aberto', updated_at = ?
     WHERE status = 'rascunho'
       AND date IS NOT NULL
-      AND date != ''
       AND date <= ?
   `, [nowIso(), cutoffDate]);
   return Number(result.rowCount || 0);

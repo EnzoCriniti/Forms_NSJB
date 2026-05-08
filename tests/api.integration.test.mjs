@@ -651,13 +651,13 @@ test("forms endpoint clears expired closing when manually reopening a form", asy
     assert.equal(updateRes.status, 200);
     const updated = await updateRes.json();
     assert.equal(updated.form.status, "aberto");
-    assert.equal(updated.form.closing, "");
+    assert.equal(updated.form.closing, null);
 
     const refreshedRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
     const refreshed = await refreshedRes.json();
     const savedForm = refreshed.forms.find(form => form.id === existing.id);
     assert.equal(savedForm.status, "aberto");
-    assert.equal(savedForm.closing, "");
+    assert.equal(savedForm.closing, null);
   } finally {
     await ctx.cleanup();
   }

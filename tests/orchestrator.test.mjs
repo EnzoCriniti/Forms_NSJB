@@ -111,3 +111,35 @@ test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no 
   assert.equal((await findFormById(scheduled.id)).status, "aberto");
   assert.equal((await findFormById(expired.id)).status, "fechado");
 });
+
+test("saveForm normaliza datas vazias para null e o lifecycle ignora formulario sem agenda", async () => {
+  const draft = await saveForm({
+    type: "presenca",
+    status: "rascunho",
+    title: "Formulario Sem Agenda",
+    sessionName: "",
+    description: "",
+    date: "",
+    closing: "",
+    closingText: "",
+    totalExpected: 0,
+    labels: [],
+    fieldDefinitions: [
+      { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+    ],
+    resultsConfig: {},
+    scaleSections: [],
+  });
+
+  assert.equal(draft.date, null);
+  assert.equal(draft.closing, null);
+
+  const stored = await findFormById(draft.id);
+  assert.equal(stored.date, null);
+  assert.equal(stored.closing, null);
+
+  const result = await refreshFormLifecycle(new Date(2026, 4, 4, 11, 0));
+  assert.equal(result.opened, 0);
+  assert.equal(result.closed, 0);
+  assert.equal((await findFormById(draft.id)).status, "rascunho");
+});
