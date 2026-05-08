@@ -6,7 +6,7 @@ Container da API do NSJB Forms.
 
 - executa a API Node
 - aplica bootstrap, regras de negocio e acesso ao PostgreSQL
-- expoe a porta `8787`
+- expõe a porta `8787`
 
 ## Arquivos principais
 

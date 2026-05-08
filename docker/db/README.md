@@ -2,6 +2,12 @@
 
 Esta pasta documenta a camada de banco do NSJB Forms.
 
+## Leitura rapida
+
+- o banco oficial e PostgreSQL no compose
+- o SQLite existe apenas como compatibilidade temporaria durante a transicao
+- a importacao do legado acontece uma unica vez na primeira subida, quando o snapshot existe
+
 ## Estado atual
 
 - o backend Docker persiste os dados no PostgreSQL do compose

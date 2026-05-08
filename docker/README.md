@@ -8,7 +8,7 @@ Documentacao da stack oficial do NSJB Forms.
 - `docker/frontend/` - imagem e README do frontend.
 - `docker/backend/` - imagem e README do backend.
 - `docker/db/` - esquema, plano e desenho do banco.
-- `docker/postgres/` - README do service PostgreSQL.
+- `docker/postgres/` - README do servico PostgreSQL.
 
 ## Como a stack funciona
 
@@ -23,6 +23,14 @@ O fluxo esperado e subir tudo de uma vez. O compose resolve a ordem e aguarda o 
 ## Topologia
 
 ![Topologia Docker](../docs/diagramas/infra.svg)
+
+## Leitura rapida
+
+- `docker/compose.yml` define a stack completa.
+- `docker/backend/README.md` explica o container da API.
+- `docker/frontend/README.md` explica o container da interface.
+- `docker/db/README.md` resume o banco e a migracao.
+- `docker/postgres/README.md` documenta o servico PostgreSQL.
 
 ## Como subir em qualquer maquina
 
