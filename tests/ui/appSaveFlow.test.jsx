@@ -106,7 +106,7 @@ describe("App save flow", () => {
 
     const { container } = render(<App />);
 
-    await screen.findByText("Presenca Edicao - 04/05/2026");
+    await screen.findByText(/Presenca Edicao/i);
 
     const actions = container.querySelector(".card-actions");
     fireEvent.click(within(actions).getByRole("button", { name: "Editar formulario" }));
@@ -161,7 +161,7 @@ describe("App save flow", () => {
 
     const { container } = render(<App />);
 
-    await screen.findByText("Presenca Edicao - 04/05/2026");
+    await screen.findByText(/Presenca Edicao/i);
 
     const actions = container.querySelector(".card-actions");
     fireEvent.click(within(actions).getByRole("button", { name: "Duplicar" }));

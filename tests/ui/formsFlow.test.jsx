@@ -55,7 +55,9 @@ describe("Forms flow", () => {
       "text",
       "grid",
     ]);
-    expect(payload.resultsConfig.totalsLayout).toEqual([]);
+    expect(payload.resultsConfig.totalsLayout).toHaveLength(1);
+    expect(payload.resultsConfig.totalsLayout[0].fieldId).toEqual(expect.any(Number));
+    expect(payload.resultsConfig.totalsLayout[0].style).toBe("number");
   }, 10000);
 
   it("exibe respostas com campos variados na tela de resultados", () => {

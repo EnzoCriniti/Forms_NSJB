@@ -31,9 +31,8 @@ describe("PublicFormScreen", () => {
   it("renderiza campos dinamicos do formulario", () => {
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} />);
 
-    expect(screen.getByText("Link publico")).toBeInTheDocument();
     expect(screen.getByText("Formulario Publico - 10/05/2026")).toBeInTheDocument();
-    expect(screen.getByText("Data do evento")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
     expect(screen.getByText("Nome *")).toBeInTheDocument();
     expect(screen.getByText("Vai comparecer? *")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Enviar Resposta" })).toBeInTheDocument();

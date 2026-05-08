@@ -63,8 +63,8 @@ test("closeExpiredForms fecha somente formularios abertos vencidos", async () =>
   const closed = await closeExpiredForms(new Date(2026, 4, 4, 11, 0));
 
   assert.equal(closed, 1);
-  assert.equal(findFormById(expired.id).status, "fechado");
-  assert.equal(findFormById(future.id).status, "aberto");
+  assert.equal((await findFormById(expired.id)).status, "fechado");
+  assert.equal((await findFormById(future.id)).status, "aberto");
 });
 
 test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no mesmo ciclo", async () => {
@@ -108,6 +108,6 @@ test("refreshFormLifecycle abre rascunhos agendados e fecha abertos vencidos no 
 
   assert.equal(result.opened, 1);
   assert.equal(result.closed, 1);
-  assert.equal(findFormById(scheduled.id).status, "aberto");
-  assert.equal(findFormById(expired.id).status, "fechado");
+  assert.equal((await findFormById(scheduled.id)).status, "aberto");
+  assert.equal((await findFormById(expired.id)).status, "fechado");
 });
