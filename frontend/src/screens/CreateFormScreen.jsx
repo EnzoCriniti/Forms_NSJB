@@ -9,7 +9,7 @@ import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
+import { getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
   { v: "person_select", l: "Pessoa da base sincronizada" },
@@ -42,6 +42,11 @@ const getCatalogGridSchema = item => ({
   rows: item?.gridSchema?.rows?.length ? item.gridSchema.rows : DEFAULT_GRID_ROWS,
   cols: item?.gridSchema?.cols?.length ? item.gridSchema.cols : DEFAULT_GRID_COLS,
 });
+
+const stripMemberBinding = field => {
+  const { memberBinding, ...rest } = field || {};
+  return rest;
+};
 
 const moveItem = (items, index, direction) => {
   const targetIndex = index + direction;
@@ -132,6 +137,7 @@ export const CreateFormScreen = ({
   const [nCatalogId, setNCatalogId] = useState("");
   const [nLabel, setNLabel] = useState("");
   const [nRequired, setNRequired] = useState(false);
+  const [nPersonRole, setNPersonRole] = useState("primary");
   const [nGridRows, setNGridRows] = useState(DEFAULT_GRID_ROWS);
   const [nGridCols, setNGridCols] = useState(DEFAULT_GRID_COLS);
   const [nValidation, setNValidation] = useState({});
@@ -189,6 +195,7 @@ export const CreateFormScreen = ({
   const previewTitle = title.trim();
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();
+  const hasPrimaryLinkedField = useMemo(() => fields.some(field => field.type === "person_select" && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"), [fields]);
 
   const togLabel = id => setSelLabels(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   const updateScale = (index, patch) => setScaleDraft(scaleDraft.map((section, sectionIndex) => sectionIndex === index ? { ...section, ...patch } : section));
@@ -199,13 +206,14 @@ export const CreateFormScreen = ({
     setNType("yes_no");
     setNFieldMode("local");
     setNCatalogId("");
-      setNLabel("");
-      setNRequired(false);
-      setNGridRows(DEFAULT_GRID_ROWS);
-      setNGridCols(DEFAULT_GRID_COLS);
-      setNValidation({});
-      setAddOpen(false);
-    };
+    setNLabel("");
+    setNRequired(false);
+    setNPersonRole(hasPrimaryLinkedField ? "secondary" : "primary");
+    setNGridRows(DEFAULT_GRID_ROWS);
+    setNGridCols(DEFAULT_GRID_COLS);
+    setNValidation({});
+    setAddOpen(false);
+  };
 
   const openNewFieldDraft = () => {
     resetFieldDraft();
@@ -219,10 +227,30 @@ export const CreateFormScreen = ({
     setNCatalogId(field.catalogFieldId || "");
     setNLabel(field.label);
     setNRequired(Boolean(field.required));
+    setNPersonRole(getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary");
     setNGridRows(field.gridRows?.length ? field.gridRows : DEFAULT_GRID_ROWS);
     setNGridCols(field.gridCols?.length ? field.gridCols : DEFAULT_GRID_COLS);
     setNValidation(field.validation || {});
     setAddOpen(true);
+  };
+
+  const normalizePeopleBaseBindings = nextFields => {
+    const personFields = nextFields.filter(field => field.type === "person_select");
+    if (personFields.length === 0) return nextFields.map(stripMemberBinding);
+
+    const explicitPrimary = personFields.find(field => field?.memberBinding?.role === "primary");
+    const fallbackPrimary = explicitPrimary || personFields[0];
+
+    return nextFields.map(field => {
+      if (field.type !== "person_select") return stripMemberBinding(field);
+      return {
+        ...field,
+        memberBinding: {
+          source: "members",
+          role: String(field.id) === String(fallbackPrimary.id) ? "primary" : "secondary",
+        },
+      };
+    });
   };
 
   const addField = () => {
@@ -234,6 +262,9 @@ export const CreateFormScreen = ({
       ? { catalogFieldId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name }
       : {};
     const validation = buildFieldValidation();
+    const memberBinding = resolvedType === "person_select"
+      ? { source: "members", role: nPersonRole }
+      : undefined;
     const gridProps = resolvedType === "grid"
       ? {
           gridRows: catalogItem ? getCatalogGridSchema(catalogItem).rows : nGridRows.filter(row => row.trim()),
@@ -241,7 +272,7 @@ export const CreateFormScreen = ({
         }
       : {};
     if (editingFieldId) {
-      setFields(fields.map(field => {
+      const nextFields = fields.map(field => {
         if (field.id !== editingFieldId) return field;
         const {
           catalogFieldId,
@@ -258,12 +289,15 @@ export const CreateFormScreen = ({
           required: nRequired,
           total: resolvedType === "yes_no" || resolvedType === "number",
           ...catalogProps,
+          ...(memberBinding ? { memberBinding } : {}),
           validation,
           ...gridProps,
         };
-      }));
+      });
+      setFields(normalizePeopleBaseBindings(nextFields));
     } else {
-      setFields([...fields, { id: Date.now(), type: resolvedType, label, required: nRequired, show: true, total: resolvedType === "yes_no" || resolvedType === "number", ...catalogProps, validation, ...gridProps }]);
+      const nextFields = [...fields, { id: Date.now(), type: resolvedType, label, required: nRequired, show: true, total: resolvedType === "yes_no" || resolvedType === "number", ...catalogProps, ...(memberBinding ? { memberBinding } : {}), validation, ...gridProps }];
+      setFields(normalizePeopleBaseBindings(nextFields));
     }
     resetFieldDraft();
   };
@@ -274,6 +308,9 @@ export const CreateFormScreen = ({
     if (!catalogItem) return;
     setNType(catalogItem.type);
     setNLabel(catalogItem.defaultLabel);
+    if (catalogItem.type === "person_select") {
+      setNPersonRole(hasPrimaryLinkedField && !editingFieldId ? "secondary" : "primary");
+    }
     if (catalogItem.type === "grid") {
       const schema = getCatalogGridSchema(catalogItem);
       setNGridRows(schema.rows);
@@ -593,6 +630,11 @@ export const CreateFormScreen = ({
                     {FIELD_TYPES.find(type => type.v === field.type)?.l}
                     {field.type === "grid" && field.gridRows?.length ? ` - ${field.gridRows.length} linhas x ${field.gridCols?.length ?? 0} colunas` : ""}
                   </div>
+                  {field.type === "person_select" && (
+                    <div style={{ fontSize: 11, color: getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? COLORS.primary : COLORS.textMuted, marginTop: 2 }}>
+                      {getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? "Campo principal da base central" : "Campo auxiliar da base central"}
+                    </div>
+                  )}
                   {summarizeFieldValidation(field) && (
                     <div style={{ fontSize: 11, color: COLORS.accent, marginTop: 2 }}>
                       Validação: {summarizeFieldValidation(field)}
@@ -612,14 +654,17 @@ export const CreateFormScreen = ({
 
           {addOpen ? (
             <div style={{ marginTop: 10, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 16 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 12 }}>
-                {editingFieldId ? "Editar campo" : "Novo campo"}
+              <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>Editor de campo</div>
+                <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45, marginTop: 4 }}>
+                  Escolha a origem do campo, defina o tipo e finalize o comportamento. Campos de pessoa podem ser principais ou auxiliares dentro da base central.
+                </div>
               </div>
               <div className="create-form-editor-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignItems: "start" }}>
                 <div style={{ display: "grid", gap: 10 }}>
-                  <div>
+                  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
                     <div style={{ marginBottom: 10 }}>
-                      <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Origem do campo</label>
+                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>1. Origem do campo</label>
                       <div className="create-form-segmented" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
                         <button disabled={activeFieldCatalog.length === 0} onClick={() => setFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: activeFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: activeFieldCatalog.length === 0 ? 0.55 : 1 }}>Da biblioteca</button>
                         <button onClick={() => setFieldMode("local")} style={{ border: `1px solid ${nFieldMode === "local" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "local" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "local" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>Somente neste formulario</button>
@@ -636,8 +681,8 @@ export const CreateFormScreen = ({
                         </div>
                       )}
                     </div>
-                    <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Tipo do campo</label>
-                    <select value={nType} disabled={nFieldMode === "catalog"} onChange={event => { setNType(event.target.value); setNGridRows(DEFAULT_GRID_ROWS); setNGridCols(DEFAULT_GRID_COLS); setNValidation({}); }} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>2. Tipo do campo</label>
+                    <select value={nType} disabled={nFieldMode === "catalog"} onChange={event => { setNType(event.target.value); setNPersonRole(event.target.value === "person_select" && hasPrimaryLinkedField ? "secondary" : "primary"); setNGridRows(DEFAULT_GRID_ROWS); setNGridCols(DEFAULT_GRID_COLS); setNValidation({}); }} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
                       {FIELD_TYPES.map(type => <option key={type.v} value={type.v}>{type.l}</option>)}
                     </select>
                     {nFieldMode === "catalog" && (
@@ -646,19 +691,41 @@ export const CreateFormScreen = ({
                       </div>
                     )}
                   </div>
-                  <div>
-                    <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
+                  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
                       {nType === "person_select" ? "Rotulo (ex: Nome)" : "Pergunta / Rotulo"}
                     </label>
                     <input value={nLabel} onChange={event => setNLabel(event.target.value)} placeholder={nType === "person_select" ? "Nome" : "Ex: Vai ao Jantar?"} style={inp} autoFocus />
                     {nType === "person_select" && (
-                      <div style={{ marginTop: 6, fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
-                        Este campo conecta o formulario com a base sincronizada e habilita o controle de faltantes e respostas por pessoa.
+                      <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
+                        <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
+                          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>3. Vinculo com a base central</div>
+                          <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
+                            {nPersonRole === "primary"
+                              ? "Este campo sera o principal do formulario: controla respondente, faltantes, resumo e filtro por grau."
+                              : "Este campo usa a mesma base central, mas funciona apenas como vinculo auxiliar no preenchimento."}
+                          </div>
+                        </div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                          <button onClick={() => setNPersonRole("primary")} style={{ border: `1px solid ${nPersonRole === "primary" ? COLORS.primary : COLORS.border}`, background: nPersonRole === "primary" ? COLORS.primaryLight : COLORS.surface, color: nPersonRole === "primary" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
+                            <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Campo principal</strong>
+                            <span style={{ fontSize: 11 }}>Libera resumo da base e filtros por grau.</span>
+                          </button>
+                          <button onClick={() => setNPersonRole("secondary")} style={{ border: `1px solid ${nPersonRole === "secondary" ? COLORS.primary : COLORS.border}`, background: nPersonRole === "secondary" ? COLORS.primaryLight : COLORS.surface, color: nPersonRole === "secondary" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}>
+                            <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Campo auxiliar</strong>
+                            <span style={{ fontSize: 11 }}>Usa a lista central sem controlar faltantes.</span>
+                          </button>
+                        </div>
+                        {hasPrimaryLinkedField && !editingFieldId && nPersonRole === "primary" && (
+                          <div style={{ fontSize: 11, color: COLORS.warning }}>
+                            Ja existe um campo principal neste formulario. Ao salvar, o principal atual vira auxiliar.
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
                   {(nType === "text" || nType === "number") && (
-                    <div className="create-form-validation-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                    <div className="create-form-validation-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
                       <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
                         {nType === "text" ? "Minimo de caracteres" : "Valor minimo"}
                         <input
@@ -682,12 +749,12 @@ export const CreateFormScreen = ({
                     </div>
                   )}
                   {nType === "grid" && nFieldMode === "catalog" && (
-                    <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 10 }}>
+                    <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
                       A matriz deste campo vem da biblioteca global. Para alterar linhas ou colunas, edite o campo base em Configuracoes &gt; Campos e tarefas.
                     </div>
                   )}
                   {nType === "grid" && nFieldMode === "local" && (
-                    <div style={{ display: "grid", gap: 10 }}>
+                    <div style={{ display: "grid", gap: 10, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
                       <div>
                         <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, marginBottom: 4 }}>Linhas (itens a avaliar)</div>
                         {nGridRows.map((row, index) => (
@@ -715,9 +782,11 @@ export const CreateFormScreen = ({
                       </div>
                     </div>
                   )}
-                  <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: COLORS.textSecondary, cursor: "pointer" }}>
-                    <input type="checkbox" checked={nRequired} onChange={event => setNRequired(event.target.checked)} /> Campo obrigatorio
-                  </label>
+                  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: COLORS.textSecondary, cursor: "pointer" }}>
+                      <input type="checkbox" checked={nRequired} onChange={event => setNRequired(event.target.checked)} /> Campo obrigatorio
+                    </label>
+                  </div>
                   <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
                     <Btn sz="sm" onClick={addField} disabled={isFieldSaveDisabled}>{editingFieldId ? "Salvar campo" : "Adicionar"}</Btn>
                     <Btn v="ghost" sz="sm" onClick={resetFieldDraft}>Cancelar</Btn>

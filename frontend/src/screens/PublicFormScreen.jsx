@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
-import { getPersonField, getVisibleFields, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
+import { getPersonField, getPersonOptionLabel, getVisibleFields, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
 export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people }) => {
   const fields = getVisibleFields(form);
@@ -30,8 +30,13 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
     : null;
   const duplicateResponseLocked = duplicateResponsesBlocked && Boolean(existingResponse);
 
+  const setFieldValue = (fieldId, value) => {
+    setValues(prev => ({ ...prev, [String(fieldId)]: value }));
+  };
+
   const handleSelectPerson = value => {
-    setValues(prev => ({ ...prev, [String(personField.id)]: value }));
+    if (!personField) return;
+    setFieldValue(personField.id, value);
     setEditing(false);
     setEditModal(false);
     setSubmitError("");
@@ -46,6 +51,15 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
       return;
     }
     setEditModal(true);
+  };
+
+  const handleSelectMemberField = (field, value) => {
+    if (!field) return;
+    if (isPrimaryPeopleBaseField(form, field)) {
+      handleSelectPerson(value);
+      return;
+    }
+    setFieldValue(field.id, value);
   };
 
   const confirmEdit = () => {
@@ -116,9 +130,16 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
               <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 10 }}>{field.label}{field.required ? " *" : ""}</label>
               {summarizeFieldValidation(field) && <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 8 }}>{summarizeFieldValidation(field)}</div>}
               {field.type === "person_select" && (
-                <select value={value} onChange={event => handleSelectPerson(event.target.value)} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}>
-                  <option value="">Selecione seu nome...</option>
-                  {people.map(person => <option key={`${person.grau}-${person.name}`} value={`${person.grau} - ${person.name}`}>{person.grau} - {person.name}</option>)}
+                <select
+                  value={value}
+                  onChange={event => handleSelectMemberField(field, event.target.value)}
+                  style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
+                >
+                  <option value="">{isPrimaryPeopleBaseField(form, field) ? "Selecione seu nome..." : "Selecione uma pessoa..."}</option>
+                  {people.map(person => {
+                    const optionLabel = getPersonOptionLabel(person);
+                    return <option key={optionLabel} value={optionLabel}>{optionLabel}</option>;
+                  })}
                 </select>
               )}
               {field.type === "yes_no" && (

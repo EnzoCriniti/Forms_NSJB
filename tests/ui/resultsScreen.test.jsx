@@ -175,6 +175,37 @@ describe("ResultsScreen", () => {
     expect(screen.getByText("Nao")).toBeInTheDocument();
   });
 
+  it("nao mostra filtro por grau sem campo principal vinculado a base", () => {
+    render(
+      <ResultsScreen
+        onNavigate={vi.fn()}
+        responses={[
+          { id: 20, respondentName: "Visitante", respondentGrau: "", values: { "2": "Sim" } },
+        ]}
+        form={{
+          ...form,
+          totalExpected: 0,
+          fieldDefinitions: [
+            { id: 2, type: "yes_no", label: "Vai?", required: true, show: true, total: true },
+          ],
+          resultsConfig: {
+            searchEnabled: true,
+            showLinkedRoster: true,
+            totalsLayout: [{ fieldId: 2, style: "bar" }],
+          },
+        }}
+        sections={[]}
+        people={people}
+        user={{ role: "admin" }}
+        labels={[]}
+        onSaveSections={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText("Filtrar por grau")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "QS" })).not.toBeInTheDocument();
+  });
+
   it("usa valores distintos para filtrar campo de opcoes", () => {
     render(
       <ResultsScreen

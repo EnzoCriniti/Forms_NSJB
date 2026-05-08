@@ -65,9 +65,31 @@ export const summarizeFieldValidation = field => {
 
 export const getVisibleFields = form => (form?.fieldDefinitions || []).filter(field => field.show !== false);
 
-export const getPersonField = form => (form?.fieldDefinitions || []).find(field => field.type === "person_select");
+export const getPeopleBaseFields = form => (form?.fieldDefinitions || []).filter(field => field.type === "person_select");
 
-export const hasLinkedPeopleField = form => Boolean(getPersonField(form));
+export const getPrimaryPeopleBaseField = form => {
+  const personFields = getPeopleBaseFields(form);
+  const explicitPrimary = personFields.find(field => field?.memberBinding?.role === "primary");
+  return explicitPrimary || personFields[0] || null;
+};
+
+export const getPersonField = form => getPrimaryPeopleBaseField(form);
+
+export const getPeopleBaseFieldRole = (form, field) => {
+  if (!field || field.type !== "person_select") return null;
+  if (field?.memberBinding?.role) return field.memberBinding.role;
+  const primaryField = getPrimaryPeopleBaseField(form);
+  return primaryField && String(primaryField.id) === String(field.id) ? "primary" : "secondary";
+};
+
+export const isPrimaryPeopleBaseField = (form, field) => getPeopleBaseFieldRole(form, field) === "primary";
+
+export const hasLinkedPeopleField = form => Boolean(getPrimaryPeopleBaseField(form));
+
+export const getPersonOptionLabel = person => {
+  if (!person) return "";
+  return person.grau ? `${person.grau} - ${person.name}` : person.name;
+};
 
 export const getFieldValue = (response, fieldId) => response?.values?.[String(fieldId)];
 

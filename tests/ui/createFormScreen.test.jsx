@@ -173,6 +173,28 @@ describe("CreateFormScreen", () => {
     ]));
   });
 
+  it("salva o campo principal da base central com papel explicito", async () => {
+    const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
+
+    render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
+
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+      target: { value: "Formulario Vinculado" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
+    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "person_select" } });
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+
+    await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        type: "person_select",
+        memberBinding: { source: "members", role: "primary" },
+      }),
+    ]));
+  });
+
   it("salva regras de validacao configuradas no campo", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 

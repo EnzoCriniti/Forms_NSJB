@@ -193,10 +193,11 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
   }, [columns.length, showLinkedRows]);
 
   const filterButtons = useMemo(() => {
-    const items = [
-      { id: "grau", label: "Grau", type: "select" },
-      { id: "name", label: "Nome", type: "text" },
-    ];
+    const items = [{ id: "name", label: "Nome", type: "text" }];
+
+    if (linkedPeople) {
+      items.unshift({ id: "grau", label: "Grau", type: "select" });
+    }
 
     if (showLinkedRows) {
       items.push({ id: "status", label: "Status", type: "select" });
@@ -211,7 +212,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
     }
 
     return items;
-  }, [columns, showLinkedRows]);
+  }, [columns, linkedPeople, showLinkedRows]);
 
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
@@ -305,7 +306,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
         onNavigate={onNavigate}
         form={form}
         labels={labels}
-        grauOptions={grauOptions}
+        grauOptions={linkedPeople ? grauOptions : []}
         selectedGrau={selectedGrau}
         onSelectGrau={setSelectedGrau}
         stats={stats}

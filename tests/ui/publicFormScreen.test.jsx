@@ -92,6 +92,41 @@ describe("PublicFormScreen", () => {
     expect(screen.queryByText(/outra resposta/i)).not.toBeInTheDocument();
   });
 
+  it("mantem campo auxiliar da base sem afetar o respondente principal", async () => {
+    const onSaveResponse = vi.fn().mockResolvedValue(undefined);
+    render(
+      <PublicFormScreen
+        form={{
+          ...form,
+          fieldDefinitions: [
+            { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false, memberBinding: { source: "members", role: "primary" } },
+            { id: 3, type: "person_select", label: "Acompanhante", required: false, show: true, total: false, memberBinding: { source: "members", role: "secondary" } },
+            { id: 2, type: "yes_no", label: "Vai comparecer?", required: true, show: true, total: true },
+          ],
+        }}
+        responses={[]}
+        onSaveResponse={onSaveResponse}
+        onBack={vi.fn()}
+        people={people}
+      />,
+    );
+
+    const selects = screen.getAllByRole("combobox");
+    fireEvent.change(selects[0], { target: { value: "QS - Maria" } });
+    fireEvent.change(selects[1], { target: { value: "QM - Joao" } });
+    fireEvent.click(screen.getByRole("button", { name: "Sim" }));
+    fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
+
+    expect(onSaveResponse).toHaveBeenCalledWith(expect.objectContaining({
+      respondentName: "Maria",
+      respondentGrau: "QS",
+      values: expect.objectContaining({
+        "1": "QS - Maria",
+        "3": "QM - Joao",
+      }),
+    }));
+  });
+
   it("bloqueia envio quando campos obrigatorios nao foram preenchidos", () => {
     const onSaveResponse = vi.fn();
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={onSaveResponse} onBack={vi.fn()} people={people} />);

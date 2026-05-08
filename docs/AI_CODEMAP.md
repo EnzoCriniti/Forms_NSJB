@@ -17,8 +17,10 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/CreateFormScreen.jsx`
   Configura campos do formulario e consome a biblioteca de campos. O tipo `person_select` e o elo com a base sincronizada.
+  Campos de pessoa agora podem ser `primary` ou `secondary` em `memberBinding.role`.
+  So o campo `primary` habilita respondente principal, faltantes, resumo e filtro por grau.
 - `frontend/src/lib/forms.js`
-  Helpers para detectar campo vinculado a pessoas e ajustar comportamentos de resultados.
+  Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 

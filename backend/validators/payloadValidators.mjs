@@ -23,6 +23,7 @@ const isOptionalNumberLike = value => value === undefined || value === null || v
 const isIdLike = value => value === undefined || value === null || Number.isInteger(Number(value));
 const isOptionalPositiveIntegerLike = value => value === undefined || value === null || value === "" || (Number.isInteger(Number(value)) && Number(value) > 0);
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
+const MEMBER_BINDING_ROLES = ["primary", "secondary"];
 
 const validateFieldDefinition = field => {
   assert(isObject(field), "Campo de formulario invalido.");
@@ -32,6 +33,12 @@ const validateFieldDefinition = field => {
   assert(typeof field.required === "boolean", "Campo de formulario precisa informar required.");
   assert(typeof field.show === "boolean", "Campo de formulario precisa informar show.");
   assert(typeof field.total === "boolean", "Campo de formulario precisa informar total.");
+  if (field.memberBinding !== undefined && field.memberBinding !== null) {
+    assert(isObject(field.memberBinding), "Vinculo de base do campo invalido.");
+    assert(field.type === "person_select", "Somente campos de pessoa podem usar vinculo com a base.");
+    assert(field.memberBinding.source === undefined || field.memberBinding.source === "members", "Origem do vinculo do campo invalida.");
+    assert(field.memberBinding.role === undefined || MEMBER_BINDING_ROLES.includes(field.memberBinding.role), "Papel do vinculo do campo invalido.");
+  }
   if (field.validation !== undefined && field.validation !== null) {
     assert(isObject(field.validation), "Regras de validacao invalidas.");
     const keys = Object.keys(field.validation);
