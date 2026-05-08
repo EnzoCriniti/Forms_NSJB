@@ -4,9 +4,9 @@ Codigo da interface do NSJB Forms.
 
 ## Estrutura
 
-- `index.html` - ponto de entrada do Vite.
+- `frontend/index.html` - ponto de entrada do Vite.
 - `frontend/vite.config.js` - configuracao de build, proxy e testes do frontend.
-- `frontend/src/App.jsx` - orquestracao da interface.
+- `frontend/src/App.jsx` - orquestra a interface e a navegacao.
 - `frontend/src/main.jsx` - bootstrap do React.
 - `frontend/src/screens/` - telas de nivel de pagina.
 - `frontend/src/features/` - modais e blocos de dominio.
@@ -29,12 +29,14 @@ O fluxo normal e:
 ## Entrada principal
 
 - `frontend/index.html`
+- `frontend/src/main.jsx`
 
 ## Leitura rapida
 
 - Interface, telas e componentes ficam em `frontend/src/`.
 - Regras compartilhadas de formularios ficam em `shared/formRules.mjs`.
 - Diagramas declarativos da arquitetura ficam em [`docs/DIAGRAMAS.md`](../docs/DIAGRAMAS.md).
+- O Vite usa `frontend/vite.config.js` para host, proxy da API e testes.
 
 ## Onde olhar primeiro
 
@@ -42,6 +44,7 @@ O fluxo normal e:
 - para mexer em uma pagina, comece em `frontend/src/screens/`
 - para mexer em blocos reutilizaveis, comece em `frontend/src/components/`
 - para ajustar chamadas de API, comece em `frontend/src/lib/api.js`
+- para alterar comportamento de boot e proxy, comece em `frontend/vite.config.js`
 
 ## Observacao
 

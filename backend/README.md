@@ -4,10 +4,10 @@ Codigo da API do NSJB Forms.
 
 ## Estrutura
 
-- `index.mjs` - inicializa o servidor HTTP e o orquestrador.
+- `index.mjs` - inicializa o servidor HTTP e o bootstrap.
 - `app.mjs` - cria a aplicacao HTTP.
 - `config.mjs` - portas, driver e intervalos.
-- `routes/` - roteamento HTTP.
+- `routes/` - roteamento HTTP por dominio.
 - `services/` - regra de negocio.
 - `repositories/` - acesso a persistencia.
 - `validators/` - validacao de payload.
@@ -26,7 +26,8 @@ O caminho normal e:
 3. o repository acessa o banco
 4. o layer de `database/` escolhe o driver oficial
 
-O driver oficial atual e PostgreSQL no Docker. O SQLite ficou apenas como compatibilidade historica e importacao unica do snapshot legado.
+O driver oficial atual e PostgreSQL no Docker.
+O SQLite ficou apenas como compatibilidade historica e importacao unica do snapshot legado.
 
 ## Entrada principal
 
@@ -38,6 +39,7 @@ O driver oficial atual e PostgreSQL no Docker. O SQLite ficou apenas como compat
 - `backend/services/` concentra as regras de negocio.
 - `backend/repositories/` concentra persistencia e consultas.
 - `backend/database/` concentra facade, drivers e importacao legado.
+- `backend/orchestrator/` cuida do ciclo de vida do bootstrap.
 - Diagramas declarativos da arquitetura ficam em [`docs/DIAGRAMAS.md`](../docs/DIAGRAMAS.md).
 
 ## Onde olhar primeiro
@@ -46,6 +48,7 @@ O driver oficial atual e PostgreSQL no Docker. O SQLite ficou apenas como compat
 - para mudar comportamento de negocio, comece em `backend/services/`
 - para mudar consultas, comece em `backend/repositories/`
 - para mudar banco ou driver, comece em `backend/database/`
+- para alterar boot e ciclo de vida, comece em `backend/orchestrator/`
 
 ## Observacao
 

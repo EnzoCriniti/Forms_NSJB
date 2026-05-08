@@ -16,6 +16,8 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 
 ## Interface
 
+- `frontend/index.html` - ponto de entrada do Vite.
+- `frontend/vite.config.js` - host, proxy e testes do frontend.
 - `frontend/src/App.jsx` - coordena navegacao, sessao e telas.
 - `frontend/src/main.jsx` - ponto de entrada do React.
 - `frontend/src/screens/` - telas de nivel de pagina.
