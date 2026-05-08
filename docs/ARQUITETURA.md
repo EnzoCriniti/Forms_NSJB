@@ -43,7 +43,7 @@ Este documento resume a arquitetura atual do NSJB Forms depois da separacao entr
 
 ## Visao visual
 
-![Arquitetura geral](diagramas/infra.svg)
+Veja a versao visual em [docs/diagramas/index.html](diagramas/index.html).
 
 ## Fluxo basico
 

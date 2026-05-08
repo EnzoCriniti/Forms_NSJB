@@ -13,7 +13,7 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 
 ## Visao rapida
 
-![Arquitetura geral](docs/diagramas/infra.svg)
+Veja a versao visual em [docs/diagramas/index.html](docs/diagramas/index.html).
 
 ## Fluxo oficial
 

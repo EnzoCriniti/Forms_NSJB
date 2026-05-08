@@ -4,14 +4,12 @@ Documento funcional completo do NSJB Forms.
 
 ## Visao visual
 
-![Fluxo funcional resumido](diagramas/funcional.svg)
-
-Para o mapa visual da arquitetura e dos fluxos, veja [docs/DIAGRAMAS.md](DIAGRAMAS.md).
+Veja a versao visual em [docs/diagramas/index.html](diagramas/index.html).
 
 ## Como ler
 
 - comece por esta pagina se voce quer entender o que a aplicacao faz
-- use [docs/DIAGRAMAS.md](DIAGRAMAS.md) para ver os fluxos sem abrir o codigo
+- use [docs/DIAGRAMAS.md](DIAGRAMAS.md) para abrir a pagina visual
 - use [README.md](../README.md) para a entrada mais curta do projeto
 
 ## Visao geral

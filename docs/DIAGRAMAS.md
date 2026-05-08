@@ -1,67 +1,20 @@
 # Diagramas
 
-Diagramas declarativos para ler a arquitetura e os fluxos sem precisar abrir o codigo.
+Pagina visual oficial dos fluxos do NSJB Forms.
 
 ## Como usar
 
-- veja a imagem primeiro para bater o olho na estrutura
-- use o bloco Mermaid logo abaixo quando quiser editar o fluxo
-- mantenha os desenhos curtos; se a regra ficar longa, mova para a documentacao funcional
+- Abra a versao HTML em [docs/diagramas/index.html](diagramas/index.html).
+- Use essa pagina como referencia visual principal.
+- Quando precisar do contexto de estrutura, consulte [docs/MAPA-CODIGO.md](MAPA-CODIGO.md).
 
-## Arquitetura geral
+## O que a pagina visual mostra
 
-![Arquitetura geral](diagramas/infra.svg)
+- arquitetura geral entre frontend, backend, PostgreSQL e legado SQLite
+- fluxo de inicializacao da stack Docker
+- fluxo funcional resumido da aplicacao
 
-```mermaid
-flowchart LR
-  subgraph UI[Frontend]
-    A[App.jsx]
-    B[Screens / Components]
-    C[lib/api.js]
-    A --> B --> C
-  end
+## Observacao
 
-  subgraph API[Backend]
-    D[apiRouter]
-    E[services]
-    F[repositories]
-    G[database facade]
-    D --> E --> F --> G
-  end
-
-  subgraph DB[Persistencia]
-    H[(PostgreSQL)]
-    I[(SQLite legado)]
-  end
-
-  C --> D
-  G --> H
-  I -. migracao unica .-> H
-```
-
-## Fluxo de inicializacao
-
-![Fluxo de inicializacao](diagramas/inicializacao.svg)
-
-```mermaid
-flowchart TD
-  A[Docker Compose] --> B[PostgreSQL healthy]
-  B --> C[Backend sobe]
-  C --> D{Snapshot legado existe?}
-  D -- sim --> E[Importa storage/nsjb-forms.sqlite uma unica vez]
-  D -- nao --> F[Segue com base atual]
-  E --> F
-  F --> G[Frontend sobe]
-```
-
-## Fluxo funcional resumido
-
-![Fluxo funcional resumido](diagramas/funcional.svg)
-
-```mermaid
-flowchart LR
-  U[Usuario] --> L[Login / Acesso publico]
-  L --> F1[Lista / Criacao / Resultados / Admin]
-  F1 --> API1[API]
-  API1 --> DB1[(PostgreSQL)]
-```
+- Os diagramas antigos em SVG foram substituidos por uma pagina HTML com layout mais legivel.
+- A documentacao tecnica continua em `README.md`, `docs/ARQUITETURA.md`, `docs/FUNCIONALIDADES.md` e `docs/MANUTENCAO.md`.
