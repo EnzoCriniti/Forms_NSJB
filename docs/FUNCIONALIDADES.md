@@ -189,3 +189,7 @@ Se voce so precisa de uma visao rapida, pense assim:
 - [README.md](../README.md)
 - [docs/ARQUITETURA.md](ARQUITETURA.md)
 - [docs/DIAGRAMAS.md](DIAGRAMAS.md)
+
+## Regra de evolucao
+
+Quando uma funcionalidade mudar de comportamento, ajuste esta pagina no mesmo ciclo para manter a leitura do produto atualizada.

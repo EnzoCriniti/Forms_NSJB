@@ -84,6 +84,11 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - API: `backend/routes/apiRouter.mjs`.
 - Bootstrap: `backend/services/bootstrapService.mjs`.
 
+## Regra de manutencao
+
+- Se a equipe mover uma responsabilidade, atualize este mapa no mesmo ciclo.
+- Se um caminho virar legado, marque isso aqui para evitar novas buscas desnecessarias.
+
 ## O que consultar primeiro
 
 - Para navegar a interface: `frontend/src/App.jsx`.

@@ -24,4 +24,5 @@ Mapa visual do NSJB Forms.
 ## Quando atualizar
 
 - Atualize o `.d2` e regenere o `.svg` quando a topologia, a stack Docker ou o fluxo funcional mudarem.
+- Trate esse ajuste como parte da entrega da mudanca, nao como tarefa separada.
 - A documentacao tecnica continua em `README.md`, `docs/ARQUITETURA.md`, `docs/FUNCIONALIDADES.md` e `docs/MANUTENCAO.md`.
