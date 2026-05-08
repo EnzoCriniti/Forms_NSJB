@@ -99,7 +99,7 @@ describe("App dashboard flow", () => {
     expect(screen.queryByText("Area administrativa principal do sistema.")).not.toBeInTheDocument();
   });
 
-  it("mostra apenas o botao Entrar no header quando nao ha sessao", async () => {
+  it("mostra a tela de login quando nao ha sessao", async () => {
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") return jsonResponse(bootstrap);
       if (url === "/api/security/form-delete-key/status") return jsonResponse({ configured: false });
@@ -109,14 +109,12 @@ describe("App dashboard flow", () => {
     render(<App />);
 
     expect(await screen.findByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Usu.*rio/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Senha")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Entrar" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Formulários" })).not.toBeInTheDocument();
     expect(document.querySelector(".form-card")).toBeNull();
-
-    fireEvent.click(screen.getByRole("button", { name: "Entrar" }));
-
-    expect(await screen.findByPlaceholderText("Usuário")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Fechar" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Fechar" })).not.toBeInTheDocument();
   });
 
   it("abre o card da listagem no primeiro clique apos o bootstrap", async () => {

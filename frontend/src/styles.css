@@ -595,10 +595,6 @@ input[type="radio"] {
   width: min(560px, 100%);
 }
 
-.login-modal-card {
-  background: var(--surface);
-}
-
 .auth-panel--sheet .auth-panel__input {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -766,6 +762,11 @@ button:not(.ui-btn):focus-visible {
 
   .app-main {
     padding: 16px 12px 28px !important;
+  }
+
+  .login-screen__header {
+    align-items: flex-start !important;
+    flex-direction: column;
   }
 
   .create-form-header {
@@ -955,17 +956,6 @@ button:not(.ui-btn):focus-visible {
     border-radius: 14px;
     padding: 18px;
     width: 100%;
-  }
-
-  .login-modal-header {
-    align-items: flex-start !important;
-    flex-direction: column;
-    gap: 8px !important;
-    margin-bottom: 12px !important;
-  }
-
-  .login-modal-header > button {
-    align-self: flex-start;
   }
 
   .settings-modal-header {

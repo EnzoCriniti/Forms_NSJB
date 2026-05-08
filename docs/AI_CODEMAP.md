@@ -13,6 +13,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/api.js`
   Cliente HTTP usado pelos CRUDs administrativos.
 
+## Autenticacao
+
+- `frontend/src/App.jsx`
+  Quando nao ha sessao, renderiza a tela de login diretamente com `AuthPanel` em modo `sheet`.
+- `frontend/src/features/auth/AuthPanel.jsx`
+  Formulario reutilizavel de login/logout. O modo `sheet` e usado na tela de login.
+
 ## Vinculo com base personalizada
 
 - `frontend/src/screens/CreateFormScreen.jsx`

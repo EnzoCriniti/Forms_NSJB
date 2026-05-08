@@ -5,10 +5,10 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Btn, ClosedPublicScreen } from "./components/ui";
+import { COLORS, ClosedPublicScreen } from "./components/ui";
 import { AppHeader } from "./components/AppHeader";
 import { AppStatusScreen } from "./components/AppStatusScreen";
-import { LoginModal } from "./components/LoginModal";
+import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
 import { loadStored, persist } from "./lib/storage";
@@ -86,7 +86,6 @@ export default function App() {
   const [theme, setTheme] = useState(() => loadStored(STORAGE_KEYS.theme, "light"));
   const [fontScale, setFontScale] = useState(() => Number(loadStored(STORAGE_KEYS.fontScale, 1)) || 1);
   const [pinnedFormsByUser, setPinnedFormsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedForms, {}));
-  const [showLogin, setShowLogin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [bootstrap, setBootstrap] = useState(EMPTY_BOOTSTRAP);
@@ -221,13 +220,7 @@ export default function App() {
     persist(STORAGE_KEYS.pinnedForms, pinnedFormsByUser);
   }, [pinnedFormsByUser]);
 
-  useEffect(() => {
-    if (currentUser) {
-      setShowLogin(false);
-    }
-  }, [currentUser]);
-
-  const invalidateSession = ({ promptLogin = false } = {}) => {
+  const invalidateSession = () => {
     setSession(null);
     setAuthToken(null);
     persist(STORAGE_KEYS.session, null);
@@ -235,7 +228,6 @@ export default function App() {
     setEditingFormId(null);
     setDraftForm(null);
     setScreen("list");
-    setShowLogin(promptLogin && !publicForm);
   };
 
   useEffect(() => {
@@ -295,7 +287,7 @@ export default function App() {
       } catch (error) {
         if (!mounted) return;
         if (error?.status === 401 || error?.status === 403) {
-          invalidateSession({ promptLogin: true });
+          invalidateSession();
         }
       }
     };
@@ -613,32 +605,29 @@ export default function App() {
 
   if (!currentUser) {
     return (
-      <>
-        <AppStatusScreen width={480} tone="info">
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+      <AppStatusScreen width={480} tone="info">
+        <div className="login-screen">
+          <div className="login-screen__header" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary, fontWeight: 800 }}>NF</div>
             <div>
               <h2 style={{ margin: 0, fontSize: 20 }}>Acesso restrito</h2>
               <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 13 }}>Entre com sua conta para acessar a pagina inicial e os formularios internos.</p>
             </div>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-            <Btn onClick={() => setShowLogin(true)}>Entrar</Btn>
-          </div>
-        </AppStatusScreen>
-        <LoginModal
-          open={showLogin && !currentUser}
-          onClose={() => setShowLogin(false)}
-          onLogin={login}
-          onLogout={logout}
-          theme={theme}
-          fontScale={fontScale}
-          onIncreaseTextSize={increaseFontScale}
-          onDecreaseTextSize={decreaseFontScale}
-          onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-          onOpenSettings={() => navigate("settings")}
-        />
-      </>
+          <AuthPanel
+            user={null}
+            onLogin={login}
+            onLogout={logout}
+            theme={theme}
+            fontScale={fontScale}
+            onIncreaseTextSize={increaseFontScale}
+            onDecreaseTextSize={decreaseFontScale}
+            onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onOpenSettings={() => navigate("settings")}
+            variant="sheet"
+          />
+        </div>
+      </AppStatusScreen>
     );
   }
 
@@ -718,18 +707,6 @@ export default function App() {
           />
         )}
       </main>
-      <LoginModal
-        open={showLogin && !currentUser}
-        onClose={() => setShowLogin(false)}
-        onLogin={login}
-        onLogout={logout}
-        theme={theme}
-        fontScale={fontScale}
-        onIncreaseTextSize={increaseFontScale}
-        onDecreaseTextSize={decreaseFontScale}
-        onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-        onOpenSettings={() => navigate("settings")}
-      />
     </div>
   );
 }
