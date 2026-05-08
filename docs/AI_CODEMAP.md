@@ -19,7 +19,9 @@ Mapa curto das areas mais mexidas por agentes.
   Configura campos do formulario e consome a biblioteca de campos. O tipo `person_select` e o elo com a base sincronizada.
   Campos de pessoa agora podem ser `primary` ou `secondary` em `memberBinding.role`.
   So o campo `primary` habilita respondente principal, faltantes, resumo e filtro por grau.
-  Campos de pessoa tambem podem apontar para `selectionSource.kind = external_base`, virando seletores sincronizados sem ativar regras de resumo da base central.
+  A origem `members` vs `external_base` agora vem definida no catalogo do campo, e o formulario apenas consome essa configuracao.
+- `frontend/src/features/admin/AdminSettingsModal.jsx`
+  CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.

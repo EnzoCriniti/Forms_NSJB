@@ -7,6 +7,18 @@
 import { nowIso, parseJson, stringifyJson } from "../database/shared.mjs";
 import { database } from "../database/index.mjs";
 
+const normalizeSelectionSource = (value, type) => {
+  if (type !== "person_select") return null;
+  const kind = value?.kind === "external_base" ? "external_base" : "members";
+  if (kind === "external_base") {
+    return {
+      kind,
+      externalBaseId: value.externalBaseId === undefined || value.externalBaseId === null ? null : Number(value.externalBaseId),
+    };
+  }
+  return { kind: "members" };
+};
+
 const toCatalogItem = row => ({
   id: row.id,
   key: row.key,
@@ -15,6 +27,7 @@ const toCatalogItem = row => ({
   category: row.category,
   defaultLabel: row.default_label,
   gridSchema: parseJson(row.grid_schema_json, {}),
+  selectionSource: normalizeSelectionSource(parseJson(row.selection_source_json, null), row.type),
   description: row.description || "",
   active: Boolean(row.active),
 });
@@ -30,7 +43,7 @@ const toTaskItem = row => ({
 });
 
 export const listFieldCatalog = async () => (await database.queryMany(`
-  SELECT id, key, name, type, category, default_label, grid_schema_json, description, active
+  SELECT id, key, name, type, category, default_label, grid_schema_json, selection_source_json, description, active
   FROM field_catalog
   ORDER BY active DESC, category ASC, name ASC
 `)).map(toCatalogItem);
@@ -53,20 +66,21 @@ export const findScaleTaskCatalogConflict = async (key, id) => {
 
 export const upsertFieldCatalogRecord = async item => {
   const now = nowIso();
+  const selectionSource = item.type === "person_select" ? normalizeSelectionSource(item.selectionSource, item.type) : null;
   if (item.id) {
     await database.execute(`
       UPDATE field_catalog
-      SET key = ?, name = ?, type = ?, category = ?, default_label = ?, grid_schema_json = ?, description = ?, active = ?, updated_at = ?
+      SET key = ?, name = ?, type = ?, category = ?, default_label = ?, grid_schema_json = ?, selection_source_json = ?, description = ?, active = ?, updated_at = ?
       WHERE id = ?
-    `, [item.key, item.name, item.type, item.category, item.defaultLabel, stringifyJson(item.gridSchema || {}), item.description, item.active ? 1 : 0, now, item.id]);
+    `, [item.key, item.name, item.type, item.category, item.defaultLabel, stringifyJson(item.gridSchema || {}), stringifyJson(selectionSource || {}), item.description, item.active ? 1 : 0, now, item.id]);
     return;
   }
 
   await database.execute(`
-    INSERT INTO field_catalog (key, name, type, category, default_label, grid_schema_json, description, active, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO field_catalog (key, name, type, category, default_label, grid_schema_json, selection_source_json, description, active, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING id
-  `, [item.key, item.name, item.type, item.category, item.defaultLabel, stringifyJson(item.gridSchema || {}), item.description, item.active ? 1 : 0, now, now]);
+  `, [item.key, item.name, item.type, item.category, item.defaultLabel, stringifyJson(item.gridSchema || {}), stringifyJson(selectionSource || {}), item.description, item.active ? 1 : 0, now, now]);
 };
 
 export const upsertScaleTaskCatalogRecord = async item => {

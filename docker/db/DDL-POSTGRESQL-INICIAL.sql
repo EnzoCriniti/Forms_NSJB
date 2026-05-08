@@ -122,6 +122,7 @@ CREATE TABLE field_catalog (
   category TEXT NOT NULL,
   default_label TEXT NOT NULL,
   grid_schema_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+  selection_source_json JSONB NOT NULL DEFAULT '{}'::jsonb,
   description TEXT,
   active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL,

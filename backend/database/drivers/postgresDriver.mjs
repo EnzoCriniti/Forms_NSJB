@@ -68,6 +68,7 @@ const ensureSchema = async pool => {
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS metadata_json JSONB NOT NULL DEFAULT '{}'::jsonb");
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS synced_at TIMESTAMPTZ");
     await client.query("CREATE INDEX IF NOT EXISTS idx_people_external_key ON people(external_key)");
+    await client.query("ALTER TABLE field_catalog ADD COLUMN IF NOT EXISTS selection_source_json JSONB NOT NULL DEFAULT '{}'::jsonb");
   } finally {
     client.release();
   }

@@ -74,6 +74,35 @@ describe("AdminSettingsModal catalogo", () => {
     }));
   });
 
+  it("cria campo base vinculado a base externa", () => {
+    const onSaveFieldCatalogItem = vi.fn();
+    render(
+      <AdminSettingsModal
+        {...baseProps}
+        externalBases={[
+          { id: 88, name: "Lista de Congregacoes", active: true, items: [] },
+        ]}
+        onSaveFieldCatalogItem={onSaveFieldCatalogItem}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
+    fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: presenca_sessao"), { target: { value: "congregacoes" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca em sessao"), { target: { value: "Congregacoes" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Sessao"), { target: { value: "Congregacao" } });
+    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "person_select" } });
+    fireEvent.click(screen.getByRole("button", { name: /Base externa/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Criar campo" }));
+
+    expect(onSaveFieldCatalogItem).toHaveBeenCalledWith(expect.objectContaining({
+      key: "congregacoes",
+      name: "Congregacoes",
+      defaultLabel: "Congregacao",
+      type: "person_select",
+      selectionSource: { kind: "external_base", externalBaseId: 88 },
+    }));
+  });
+
   it("cria tarefa base da escala", () => {
     const onSaveScaleTaskCatalogItem = vi.fn();
     render(<AdminSettingsModal {...baseProps} onSaveScaleTaskCatalogItem={onSaveScaleTaskCatalogItem} />);

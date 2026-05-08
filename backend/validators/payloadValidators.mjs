@@ -26,6 +26,16 @@ const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
 const MEMBER_BINDING_ROLES = ["primary", "secondary"];
 const SELECTION_SOURCE_KINDS = ["members", "external_base"];
 
+const validateSelectionSource = (type, selectionSource) => {
+  if (selectionSource === undefined || selectionSource === null) return;
+  assert(isObject(selectionSource), "Origem de selecao do campo invalida.");
+  assert(type === "person_select", "Somente campos de pessoa podem usar origem de selecao.");
+  assert(SELECTION_SOURCE_KINDS.includes(selectionSource.kind), "Tipo de origem de selecao invalido.");
+  if (selectionSource.kind === "external_base") {
+    assert(isIdLike(selectionSource.externalBaseId), "Base externa vinculada invalida.");
+  }
+};
+
 const validateFieldDefinition = field => {
   assert(isObject(field), "Campo de formulario invalido.");
   assert(isIdLike(field.id), "Campo de formulario precisa de id numerico.");
@@ -34,14 +44,7 @@ const validateFieldDefinition = field => {
   assert(typeof field.required === "boolean", "Campo de formulario precisa informar required.");
   assert(typeof field.show === "boolean", "Campo de formulario precisa informar show.");
   assert(typeof field.total === "boolean", "Campo de formulario precisa informar total.");
-  if (field.selectionSource !== undefined && field.selectionSource !== null) {
-    assert(isObject(field.selectionSource), "Origem de selecao do campo invalida.");
-    assert(field.type === "person_select", "Somente campos de pessoa podem usar origem de selecao.");
-    assert(SELECTION_SOURCE_KINDS.includes(field.selectionSource.kind), "Tipo de origem de selecao invalido.");
-    if (field.selectionSource.kind === "external_base") {
-      assert(isIdLike(field.selectionSource.externalBaseId), "Base externa vinculada invalida.");
-    }
-  }
+  validateSelectionSource(field.type, field.selectionSource);
   if (field.memberBinding !== undefined && field.memberBinding !== null) {
     assert(isObject(field.memberBinding), "Vinculo de base do campo invalido.");
     assert(field.type === "person_select", "Somente campos de pessoa podem usar vinculo com a base.");
@@ -225,6 +228,7 @@ export const validateFieldCatalogPayload = payload => {
   assert(FIELD_CATEGORIES.includes(payload.category), "Categoria do campo base invalida.");
   assert(isNonEmptyString(payload.defaultLabel), "Rotulo padrao do campo base e obrigatorio.");
   validateGridSchema(payload.gridSchema);
+  validateSelectionSource(payload.type, payload.selectionSource);
   assert(isOptionalString(payload.description), "Descricao do campo base invalida.");
   assert(payload.active === undefined || typeof payload.active === "boolean", "Status do campo base invalido.");
 };

@@ -33,7 +33,7 @@ const SCALE_PRESETS = [
 const emptyUser = { name: "", username: "", password: "", role: "viewer" };
 const emptyLabel = { name: "", color: "#2e7d32" };
 const emptyPreset = { name: "", type: "presenca", fieldDefinitions: [], scaleSections: [] };
-const emptyFieldCatalog = { key: "", name: "", type: "yes_no", category: "presenca", defaultLabel: "", gridSchema: { rows: DEFAULT_GRID_ROWS, cols: DEFAULT_GRID_COLS }, description: "", active: true };
+const emptyFieldCatalog = { key: "", name: "", type: "yes_no", category: "presenca", defaultLabel: "", gridSchema: { rows: DEFAULT_GRID_ROWS, cols: DEFAULT_GRID_COLS }, selectionSource: { kind: "members" }, description: "", active: true };
 const emptyScaleTaskCatalog = { key: "", name: "", category: "cozinha", defaultLabel: "", description: "", active: true };
 const emptyExternalBase = { name: "", description: "", sourceType: "google_sheets", sheetUrl: "", range: "Itens!A:B", valueColumn: "A", labelColumn: "B", descriptionColumn: "", activeColumn: "", syncEnabled: true, syncFrequencyHours: 24, active: true, items: [] };
 const emptySecurityDraft = { currentMasterKey: "", newMasterKey: "" };
@@ -53,11 +53,22 @@ const EMPTY_AUDIT_FILTERS = {
 const AUDIT_PAGE_SIZE = 10;
 
 const fieldTypeLabels = {
-  person_select: "Nome da base",
+  person_select: "Pessoa vinculada",
   yes_no: "Sim / Nao",
   number: "Numero",
   text: "Texto",
   grid: "Grade",
+};
+
+const normalizeFieldSelectionSource = field => {
+  if (field?.type !== "person_select") return undefined;
+  if (field.selectionSource?.kind === "external_base") {
+    return {
+      kind: "external_base",
+      externalBaseId: Number(field.selectionSource.externalBaseId || 0),
+    };
+  }
+  return { kind: "members" };
 };
 
 const fieldCategoryLabels = {
@@ -83,6 +94,8 @@ const normalizeIdentifier = value => String(value || "")
   .replace(/[\u0300-\u036f]/g, "")
   .replace(/[^a-z0-9]+/g, "_")
   .replace(/^_+|_+$/g, "");
+
+const getExternalBaseName = (externalBases, baseId) => (externalBases || []).find(base => String(base.id) === String(baseId || ""))?.name || "base externa";
 
 const PaginatedList = ({ items, emptyText, renderItem }) => {
   const [page, setPage] = useState(1);
@@ -112,10 +125,13 @@ const PaginatedList = ({ items, emptyText, renderItem }) => {
   );
 };
 
-const FieldCatalogPreview = ({ draft }) => {
+const FieldCatalogPreview = ({ draft, externalBases }) => {
   const label = draft.defaultLabel.trim() || draft.name.trim() || "Rotulo do campo";
   const gridRows = draft.gridSchema?.rows?.filter(Boolean)?.length ? draft.gridSchema.rows.filter(Boolean) : DEFAULT_GRID_ROWS;
   const gridCols = draft.gridSchema?.cols?.filter(Boolean)?.length ? draft.gridSchema.cols.filter(Boolean) : DEFAULT_GRID_COLS;
+  const externalBase = draft.selectionSource?.kind === "external_base"
+    ? (externalBases || []).find(base => String(base.id) === String(draft.selectionSource.externalBaseId || ""))
+    : null;
   return (
     <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center", marginBottom: 10 }}>
@@ -123,7 +139,18 @@ const FieldCatalogPreview = ({ draft }) => {
         <span style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: 800, textTransform: "uppercase" }}>{fieldTypeLabels[draft.type]}</span>
       </div>
       <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.text, marginBottom: 8 }}>{label}</div>
-      {draft.type === "person_select" && <select disabled style={inputStyle}><option>Selecione uma pessoa...</option></select>}
+      {draft.type === "person_select" && (
+        <>
+          <select disabled style={inputStyle}>
+            <option>{draft.selectionSource?.kind === "external_base" ? "Selecione uma opcao..." : "Selecione uma pessoa..."}</option>
+          </select>
+          <div style={{ marginTop: 8, fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
+            {draft.selectionSource?.kind === "external_base"
+              ? `Origem configurada: ${externalBase?.name || "base externa"}`
+              : "Origem configurada: base central de socios"}
+          </div>
+        </>
+      )}
       {draft.type === "yes_no" && (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <button disabled style={{ padding: 10, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text, fontWeight: 800 }}>Sim</button>
@@ -534,10 +561,12 @@ export const AdminSettingsModal = ({
     const resolvedKey = normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel);
     if (!resolvedKey || !fieldCatalogDraft.name.trim() || !fieldCatalogDraft.defaultLabel.trim()) return;
     const isEdit = Boolean(fieldCatalogDraft.id);
+    const selectionSource = normalizeFieldSelectionSource(fieldCatalogDraft);
+    if (fieldCatalogDraft.type === "person_select" && selectionSource?.kind === "external_base" && !selectionSource.externalBaseId) return;
     setBusyAction("fieldCatalog");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando campo base..." : "Criando campo base..." });
     try {
-      await onSaveFieldCatalogItem({ ...fieldCatalogDraft, key: resolvedKey });
+      await onSaveFieldCatalogItem({ ...fieldCatalogDraft, key: resolvedKey, ...(selectionSource ? { selectionSource } : {}) });
       setFieldCatalogDraft(emptyFieldCatalog);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -679,7 +708,7 @@ export const AdminSettingsModal = ({
                   Cadastre uma lista externa sincronizada para usar em campos do formulario. Essas bases nao substituem a base central de socios.
                 </div>
                 <AdminField>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome da base</label>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Pessoa vinculada</label>
                   <input value={externalBaseDraft.name} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, name: e.target.value })} placeholder="Ex: Congregacoes, Turnos, Equipes" style={inputStyle} />
                 </AdminField>
                 <AdminField>
@@ -859,7 +888,13 @@ export const AdminSettingsModal = ({
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                       <AdminField>
                         <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Tipo do campo</label>
-                        <select value={fieldCatalogDraft.type} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, type: e.target.value })} style={inputStyle}>
+                        <select value={fieldCatalogDraft.type} onChange={e => setFieldCatalogDraft({
+                          ...fieldCatalogDraft,
+                          type: e.target.value,
+                          selectionSource: e.target.value === "person_select"
+                            ? (fieldCatalogDraft.selectionSource || { kind: "members" })
+                            : fieldCatalogDraft.selectionSource,
+                        })} style={inputStyle}>
                           {Object.entries(fieldTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                         </select>
                       </AdminField>
@@ -876,6 +911,45 @@ export const AdminSettingsModal = ({
                         onChange={gridSchema => setFieldCatalogDraft({ ...fieldCatalogDraft, gridSchema })}
                       />
                     )}
+                    {fieldCatalogDraft.type === "person_select" && (
+                      <div style={{ display: "grid", gap: 10, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+                        <div>
+                          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Origem do vinculo</label>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
+                            <button
+                              onClick={() => setFieldCatalogDraft({ ...fieldCatalogDraft, selectionSource: { kind: "members" } })}
+                              style={{ border: `1px solid ${fieldCatalogDraft.selectionSource?.kind !== "external_base" ? COLORS.primary : COLORS.border}`, background: fieldCatalogDraft.selectionSource?.kind !== "external_base" ? COLORS.primaryLight : COLORS.surface, color: fieldCatalogDraft.selectionSource?.kind !== "external_base" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}
+                            >
+                              <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Base central</strong>
+                              <span style={{ fontSize: 11 }}>Usa a base central de socios.</span>
+                            </button>
+                            <button
+                              onClick={() => setFieldCatalogDraft({ ...fieldCatalogDraft, selectionSource: { kind: "external_base", externalBaseId: fieldCatalogDraft.selectionSource?.externalBaseId || (externalBases.find(base => base.active !== false)?.id || "") } })}
+                              style={{ border: `1px solid ${fieldCatalogDraft.selectionSource?.kind === "external_base" ? COLORS.primary : COLORS.border}`, background: fieldCatalogDraft.selectionSource?.kind === "external_base" ? COLORS.primaryLight : COLORS.surface, color: fieldCatalogDraft.selectionSource?.kind === "external_base" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}
+                            >
+                              <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Base externa</strong>
+                              <span style={{ fontSize: 11 }}>Aponta para uma lista sincronizada.</span>
+                            </button>
+                          </div>
+                          {fieldCatalogDraft.selectionSource?.kind === "external_base" && (
+                            <div style={{ display: "grid", gap: 6 }}>
+                              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Base externa vinculada</label>
+                              <select
+                                value={fieldCatalogDraft.selectionSource?.externalBaseId || ""}
+                                onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, selectionSource: { kind: "external_base", externalBaseId: e.target.value } })}
+                                style={inputStyle}
+                              >
+                                <option value="">Selecione uma base externa</option>
+                                {externalBases.filter(base => base.active !== false).map(base => <option key={base.id} value={base.id}>{base.name}</option>)}
+                              </select>
+                              <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+                                O campo vai usar as opcoes sincronizadas dessa base.
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     <AdminField>
                       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Observacoes internas</label>
                       <textarea value={fieldCatalogDraft.description} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, description: e.target.value })} placeholder="Quando usar este campo ou o que a equipe precisa lembrar" rows={3} style={inputStyle} />
@@ -883,7 +957,7 @@ export const AdminSettingsModal = ({
                     <div style={{ fontSize: 11, color: COLORS.textMuted }}>
                       Identificador previsto: <strong style={{ color: COLORS.text }}>{normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel) || "sera gerado ao preencher o nome"}</strong>
                     </div>
-                    <FieldCatalogPreview draft={fieldCatalogDraft} />
+                    <FieldCatalogPreview draft={fieldCatalogDraft} externalBases={externalBases} />
                     <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>
                       <input type="checkbox" checked={fieldCatalogDraft.active !== false} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, active: e.target.checked })} /> Ativo para novos formularios
                     </label>
@@ -904,9 +978,12 @@ export const AdminSettingsModal = ({
                           <strong>{item.name}</strong>
                           <div>{item.defaultLabel || item.name} • {fieldTypeLabels[item.type]} • {fieldCategoryLabels[item.category]} • {item.active ? "Ativo" : "Inativo"}</div>
                           <div>Id: {item.key}</div>
+                          {item.type === "person_select" && (
+                            <div>Origem: {item.selectionSource?.kind === "external_base" ? `Base externa ${getExternalBaseName(externalBases, item.selectionSource.externalBaseId)}` : "Base central"}</div>
+                          )}
                           {item.description && <div>{item.description}</div>}
                         </div>
-                        <Btn v="secondary" sz="sm" onClick={() => setFieldCatalogDraft({ ...emptyFieldCatalog, ...item, gridSchema: item.gridSchema || emptyFieldCatalog.gridSchema })}>Editar</Btn>
+                        <Btn v="secondary" sz="sm" onClick={() => setFieldCatalogDraft({ ...emptyFieldCatalog, ...item, gridSchema: item.gridSchema || emptyFieldCatalog.gridSchema, selectionSource: item.selectionSource || { kind: "members" } })}>Editar</Btn>
                         <Btn v="danger" sz="sm" onClick={() => requestDelete(
                           "Excluir campo base",
                           `Tem certeza que deseja excluir o campo base ${item.name}?`,

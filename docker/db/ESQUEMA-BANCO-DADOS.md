@@ -330,6 +330,7 @@ Catalogo de campos reutilizaveis.
 | `category` | TEXT | sim |
 | `default_label` | TEXT | sim |
 | `grid_schema_json` | TEXT | sim |
+| `selection_source_json` | TEXT | sim |
 | `description` | TEXT | nao |
 | `active` | INTEGER | sim |
 | `created_at` | TEXT | sim |
@@ -338,6 +339,7 @@ Catalogo de campos reutilizaveis.
 ### Alvo recomendado em Postgres
 
 - `grid_schema_json JSONB`
+- `selection_source_json JSONB`
 - `active BOOLEAN`
 
 ## Tabela `scale_task_catalog`

@@ -204,8 +204,20 @@ describe("CreateFormScreen", () => {
       <CreateFormScreen
         {...baseProps}
         onSaveForm={onSaveForm}
+        fieldCatalog={[
+          {
+            id: 77,
+            key: "congregacoes",
+            name: "Congregacoes",
+            type: "person_select",
+            category: "presenca",
+            defaultLabel: "Congregacao",
+            selectionSource: { kind: "external_base", externalBaseId: 88 },
+            active: true,
+          },
+        ]}
         externalBases={[
-          { id: 77, name: "Congregacoes", active: true, items: [] },
+          { id: 88, name: "Lista de Congregacoes", active: true, items: [] },
         ]}
       />,
     );
@@ -214,10 +226,8 @@ describe("CreateFormScreen", () => {
       target: { value: "Formulario com Base Externa" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "person_select" } });
-    fireEvent.click(screen.getByRole("button", { name: /Base externa/i }));
-    fireEvent.change(screen.getByDisplayValue("Selecione uma base externa"), { target: { value: "77" } });
-    fireEvent.change(screen.getByPlaceholderText("Nome"), { target: { value: "Congregacao" } });
+    fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
+    fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "77" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
 
@@ -226,7 +236,7 @@ describe("CreateFormScreen", () => {
       expect.objectContaining({
         type: "person_select",
         label: "Congregacao",
-        selectionSource: { kind: "external_base", externalBaseId: 77 },
+        selectionSource: { kind: "external_base", externalBaseId: 88 },
       }),
     ]));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).not.toEqual(expect.arrayContaining([

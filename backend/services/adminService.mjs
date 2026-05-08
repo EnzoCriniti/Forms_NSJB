@@ -153,6 +153,7 @@ export const saveFieldCatalogItem = async payload => {
     category: payload.category,
     defaultLabel: payload.defaultLabel.trim(),
     gridSchema: payload.type === "grid" ? normalizeGridSchema(payload.gridSchema) : {},
+    selectionSource: payload.selectionSource,
     description: String(payload.description || "").trim(),
     active: payload.active !== false,
   });

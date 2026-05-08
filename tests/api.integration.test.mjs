@@ -1209,6 +1209,22 @@ test("catalog endpoints persist field and scale task definitions", async () => {
     const fieldPayload = await fieldRes.json();
     assert.equal(fieldPayload.fieldCatalog[0].key, "presenca_sessao");
 
+    const linkedFieldRes = await authedJson(ctx.baseUrl, "/api/field-catalog", {
+        key: "congregacoes",
+        name: "Congregacoes",
+        type: "person_select",
+        category: "presenca",
+        defaultLabel: "Congregacao",
+        selectionSource: { kind: "external_base", externalBaseId: 88 },
+        gridSchema: {},
+        description: "Campo vinculado a uma base externa.",
+        active: true,
+      }, adminToken);
+    assert.equal(linkedFieldRes.status, 200);
+    const linkedFieldPayload = await linkedFieldRes.json();
+    assert.equal(linkedFieldPayload.fieldCatalog.find(item => item.key === "congregacoes").selectionSource.kind, "external_base");
+    assert.equal(linkedFieldPayload.fieldCatalog.find(item => item.key === "congregacoes").selectionSource.externalBaseId, 88);
+
     const gridRes = await authedJson(ctx.baseUrl, "/api/field-catalog", {
         key: "avaliacao matriz",
         name: "Avaliacao em matriz",
@@ -1237,6 +1253,7 @@ test("catalog endpoints persist field and scale task definitions", async () => {
     const bootstrapRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
     const bootstrap = await bootstrapRes.json();
     assert.equal(bootstrap.fieldCatalog.find(item => item.key === "presenca_sessao").name, "Presenca em sessao");
+    assert.equal(bootstrap.fieldCatalog.find(item => item.key === "congregacoes").selectionSource.kind, "external_base");
     assert.deepEqual(bootstrap.fieldCatalog.find(item => item.key === "avaliacao_matriz").gridSchema.cols, ["1", "2", "3"]);
     assert.equal(bootstrap.scaleTaskCatalog[0].name, "Preparo do jantar");
 
