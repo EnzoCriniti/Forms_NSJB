@@ -35,6 +35,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 
+## Resultados e planilha
+
+- `frontend/src/screens/ResultsScreen.jsx`
+  Renderiza a planilha de respostas, filtros, totalizacao e controles de zoom interno da tabela.
+- `frontend/src/styles.css`
+  Ajustes responsivos da planilha de resultados, incluindo barra de filtros e controles de zoom no mobile.
+
 ## Backend da base sincronizada
 
 - `backend/services/membersSyncService.mjs`

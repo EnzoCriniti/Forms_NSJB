@@ -69,6 +69,29 @@ describe("ResultsScreen", () => {
     expect(screen.queryByText("Preenchimento")).not.toBeInTheDocument();
   });
 
+  it("permite ajustar o zoom interno da planilha", () => {
+    render(
+      <ResultsScreen
+        onNavigate={vi.fn()}
+        responses={responses}
+        form={form}
+        sections={[]}
+        people={people}
+        user={{ role: "admin" }}
+        labels={[]}
+        onSaveSections={vi.fn()}
+      />,
+    );
+
+    expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "Aumentar zoom da planilha" }));
+    expect(screen.getByText("110%")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Diminuir zoom da planilha" }));
+    expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+  });
+
   it("remove nomes fora da base quando a planilha e vinculada", () => {
     render(
       <ResultsScreen

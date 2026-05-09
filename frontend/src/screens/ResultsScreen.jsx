@@ -12,6 +12,12 @@ import { formatDateTime, getExpectedResponses, getFieldValue, getResultsConfig, 
 
 const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
 
+const TABLE_ZOOM_MIN = 0.7;
+const TABLE_ZOOM_MAX = 1.4;
+const TABLE_ZOOM_STEP = 0.1;
+
+const clampTableZoom = value => Math.min(TABLE_ZOOM_MAX, Math.max(TABLE_ZOOM_MIN, Number(value.toFixed(2))));
+
 export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections }) => (
   form?.type === "escala_organ"
     ? <EscalaResultsScreen onNavigate={onNavigate} people={people} canEdit={canEditEscala(user)} form={form} sections={sections} labels={labels} onSaveSections={onSaveSections} />
@@ -27,6 +33,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
   const [activeSearchCol, setActiveSearchCol] = useState(null);
   const [selectedGrau, setSelectedGrau] = useState("todos");
   const [feedback, setFeedback] = useState(null);
+  const [tableZoom, setTableZoom] = useState(1);
 
   const linkedPeople = hasLinkedPeopleField(form);
   const showLinkedRows = linkedPeople && resultsConfig.showLinkedRoster && people.length > 0;
@@ -216,6 +223,10 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
 
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
+  const zoomPercent = Math.round(tableZoom * 100);
+  const updateTableZoom = direction => {
+    setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
+  };
 
   const activeFilterOptions = useMemo(() => {
     if (!activeFilter || activeFilter.type !== "select") {
@@ -444,8 +455,18 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
         </div>
       )}
 
-      <div className="results-table-shell" style={{ width: "100%", maxWidth: "100%", display: "block", overflowX: "auto", overflowY: "hidden", WebkitOverflowScrolling: "touch", touchAction: "pan-x", overscrollBehaviorX: "contain", borderRadius: 10, border: `1px solid ${COLORS.borderLight}` }}>
-        <div className="results-table-stage" style={{ width: "max-content", minWidth: `${tableMinWidth}px` }}>
+      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+        <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.textSecondary }}>Visualizacao da planilha</div>
+        <div className="results-zoom-controls" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(-1)} disabled={tableZoom <= TABLE_ZOOM_MIN} aria-label="Diminuir zoom da planilha">A-</Btn>
+          <span style={{ minWidth: 48, textAlign: "center", fontSize: 12, fontWeight: 800, color: COLORS.text }}>{zoomPercent}%</span>
+          <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(1)} disabled={tableZoom >= TABLE_ZOOM_MAX} aria-label="Aumentar zoom da planilha">A+</Btn>
+          <Btn v="ghost" sz="sm" onClick={() => setTableZoom(1)} disabled={tableZoom === 1}>100%</Btn>
+        </div>
+      </div>
+
+      <div className="results-table-shell" style={{ width: "100%", maxWidth: "100%", display: "block", overflow: "auto", WebkitOverflowScrolling: "touch", touchAction: "auto", overscrollBehavior: "contain", borderRadius: 10, border: `1px solid ${COLORS.borderLight}` }}>
+        <div className="results-table-stage" style={{ width: "max-content", minWidth: `${tableMinWidth}px`, zoom: tableZoom }}>
         <table className="results-table" style={{ width: "100%", minWidth: `${tableMinWidth}px`, borderCollapse: "collapse", fontSize: 12, tableLayout: "auto", userSelect: "text", WebkitUserSelect: "text" }}>
           <thead>
             <tr>

@@ -676,6 +676,7 @@ input[type="radio"] {
 }
 
 .results-table-shell {
+  max-height: min(68vh, 640px);
   scrollbar-width: thin;
 }
 
@@ -1029,8 +1030,23 @@ button:not(.ui-btn):focus-visible {
   }
 
   .results-table-shell {
+    max-height: 62vh;
     margin-inline: -4px;
     padding-inline: 4px;
+  }
+
+  .results-sheet-toolbar {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+
+  .results-zoom-controls {
+    width: 100%;
+  }
+
+  .results-zoom-controls > button {
+    flex: 1 1 0;
+    justify-content: center;
   }
 
   .results-table-stage,
