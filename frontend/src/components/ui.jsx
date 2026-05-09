@@ -6,6 +6,7 @@
 
 import React, { useState } from "react";
 import { formatDate, formatDateTime } from "../lib/forms";
+import { buildPublicFormPath } from "../lib/appShell";
 
 export const COLORS = {
   primary: "var(--primary)",
@@ -221,7 +222,7 @@ export const PublicTopCompact = ({ form, onBack }) => {
 
 export const PublicTop = ({ form, onBack }) => {
   const [copied, setCopied] = useState(false);
-  const publicPath = form?.slug ? `#/f/${form.slug}` : "";
+  const publicPath = buildPublicFormPath(form?.slug);
   const copyTarget = publicPath ? `${window.location.href.split("#")[0]}${publicPath}` : "";
 
   const handleCopy = async () => {

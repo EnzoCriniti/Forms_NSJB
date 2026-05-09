@@ -34,7 +34,7 @@ describe("App public data flow", () => {
   });
 
   it("carrega respostas do formulario publico sob demanda", async () => {
-    window.location.hash = "#/f/presenca-teste";
+    window.location.hash = "#/formularios/presenca-teste";
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([
@@ -75,7 +75,7 @@ describe("App public data flow", () => {
   });
 
   it("nao mostra voltar para visitante no link publico", async () => {
-    window.location.hash = "#/f/presenca-teste";
+    window.location.hash = "#/formularios/presenca-teste";
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([
@@ -109,7 +109,7 @@ describe("App public data flow", () => {
     expect(screen.queryByRole("button", { name: "Voltar" })).not.toBeInTheDocument();
   });
 
-  it("abre formulario publico usando caminho direto /f/slug", async () => {
+  it("abre formulario publico usando o caminho legado /f/slug", async () => {
     window.history.pushState(null, "", "/f/presenca-teste");
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
@@ -143,8 +143,42 @@ describe("App public data flow", () => {
     expect(await screen.findByText("Nome *")).toBeInTheDocument();
   });
 
+  it("abre formulario publico usando o novo caminho /formularios/slug", async () => {
+    window.history.pushState(null, "", "/formularios/presenca-teste");
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap([
+          {
+            id: 1,
+            slug: "presenca-teste",
+            type: "presenca",
+            status: "aberto",
+            title: "Formulario Publico",
+            sessionName: "Sessao Publica",
+            description: "",
+            closing: "2026-05-05T20:00",
+            fieldDefinitions: [
+              { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+              { id: 2, type: "yes_no", label: "Vai?", required: true, show: true, total: true },
+            ],
+            resultsConfig: {},
+            labels: [],
+          },
+        ]));
+      }
+      if (url === "/api/forms/1/responses") {
+        return jsonResponse({ responses: [] });
+      }
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    expect(await screen.findByText("Nome *")).toBeInTheDocument();
+  });
+
   it("carrega a escala publica sob demanda", async () => {
-    window.location.hash = "#/f/escala-teste";
+    window.location.hash = "#/formularios/escala-teste";
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([

@@ -8,6 +8,7 @@ import React from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge } from "./ui";
 import { canCreateForms, canViewForm } from "../lib/auth";
 import { formatDate, formatDateTime, hasLinkedPeopleField } from "../lib/forms";
+import { buildPublicFormPath } from "../lib/appShell";
 
 const LIST_ACTION_STYLE = {
   width: 42,
@@ -39,7 +40,7 @@ export const FormListCard = ({
 
   const openPublicForm = () => {
     if (!form?.slug) return;
-    window.location.hash = `/f/${form.slug}`;
+    window.location.hash = buildPublicFormPath(form.slug);
   };
 
   const openResults = () => {

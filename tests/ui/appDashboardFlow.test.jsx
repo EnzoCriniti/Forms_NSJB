@@ -136,7 +136,7 @@ describe("App dashboard flow", () => {
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
     fireEvent.click(document.querySelector(".form-card"));
 
-    expect(window.location.hash).toBe("#/f/presenca-dashboard");
+    expect(window.location.hash).toBe("#/formularios/presenca-dashboard");
   });
 
   it("derruba a sessao quando o validador encontra o token revogado", async () => {

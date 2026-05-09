@@ -172,7 +172,7 @@ describe("FormListScreen", () => {
 
     fireEvent.click(document.querySelector(".form-card"));
 
-    expect(window.location.hash).toBe("#/f/aberto-1");
+    expect(window.location.hash).toBe("#/formularios/aberto-1");
   });
 
   it("mantem resultados como acao explicita no card", () => {

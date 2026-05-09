@@ -568,7 +568,7 @@ export default function App() {
     : [];
 
   const backToPanel = () => {
-    if (window.location.pathname.startsWith("/f/")) {
+    if (window.location.pathname.startsWith("/f/") || window.location.pathname.startsWith("/formularios/")) {
       window.history.pushState(null, "", "/");
     }
     window.location.hash = "";
