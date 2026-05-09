@@ -9,7 +9,7 @@ import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
+import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
   { v: "person_select", l: "Seletor por base" },
@@ -30,8 +30,20 @@ const SCALE_PRESETS = [
   { label: "Discordo / Concordo", cols: ["Discordo totalmente", "Discordo", "Neutro", "Concordo", "Concordo totalmente"] },
 ];
 
-const createDefaultPresenceFields = () => [
-];
+const createDefaultMemberField = () => ({
+  id: Date.now(),
+  type: "person_select",
+  label: "Nome",
+  required: true,
+  show: true,
+  total: false,
+  selectionSource: { kind: "members" },
+  memberBinding: { source: "members", role: "primary" },
+});
+
+const createDefaultPresenceFields = formMode => formMode === FORM_MODES.NUCLEO
+  ? [createDefaultMemberField()]
+  : [];
 
 const createDefaultScaleSections = () => [
 ];
@@ -48,6 +60,14 @@ const stripMemberBinding = field => {
   return rest;
 };
 
+const removeMembersBaseFields = fields => (fields || []).filter(field => !isMembersSelectionField(field));
+
+const ensurePrimaryMembersField = fields => {
+  const nextFields = Array.isArray(fields) ? [...fields] : [];
+  if (nextFields.some(isMembersSelectionField)) return nextFields;
+  return [createDefaultMemberField(), ...nextFields];
+};
+
 const moveItem = (items, index, direction) => {
   const targetIndex = index + direction;
   if (targetIndex < 0 || targetIndex >= items.length) return items;
@@ -61,6 +81,7 @@ const createDefaultResultsConfig = fields => ({
   searchEnabled: true,
   showLinkedRoster: true,
   blockDuplicatePersonResponses: false,
+  formMode: fields.some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL,
   totalsLayout: (fields || []).filter(field => field.total).map(field => ({
     fieldId: field.id,
     style: field.type === "yes_no" ? "split" : "number",
@@ -98,6 +119,7 @@ const syncResultsConfigWithFields = (config, fields) => {
     searchEnabled: config?.searchEnabled ?? true,
     showLinkedRoster: config?.showLinkedRoster ?? true,
     blockDuplicatePersonResponses: config?.blockDuplicatePersonResponses ?? false,
+    formMode: config?.formMode || (fields.some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL),
     totalsLayout: currentLayout,
   };
 };
@@ -117,6 +139,7 @@ export const CreateFormScreen = ({
   isDuplicateMode = false,
 }) => {
   const [format, setFormat] = useState("presenca");
+  const [formMode, setFormMode] = useState(FORM_MODES.NUCLEO);
   const [preset, setPreset] = useState(null);
   const [presetName, setPresetName] = useState("");
   const [title, setTitle] = useState("");
@@ -127,8 +150,8 @@ export const CreateFormScreen = ({
   const [status, setStatus] = useState("rascunho");
   const [totalExpected, setTotalExpected] = useState("");
   const [closingText, setClosingText] = useState("Este formulario nao esta mais aceitando respostas.");
-  const [fields, setFields] = useState(createDefaultPresenceFields());
-  const [resultsConfig, setResultsConfig] = useState(() => createDefaultResultsConfig(createDefaultPresenceFields()));
+  const [fields, setFields] = useState(createDefaultPresenceFields(FORM_MODES.NUCLEO));
+  const [resultsConfig, setResultsConfig] = useState(() => createDefaultResultsConfig(createDefaultPresenceFields(FORM_MODES.NUCLEO)));
   const [scaleLimit, setScaleLimit] = useState(1);
   const [scaleDraft, setScaleDraft] = useState(createDefaultScaleSections());
   const [addOpen, setAddOpen] = useState(false);
@@ -150,8 +173,9 @@ export const CreateFormScreen = ({
 
   useEffect(() => {
     if (!form) {
-      const defaultFields = createDefaultPresenceFields();
+      const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
       setFormat("presenca");
+      setFormMode(FORM_MODES.NUCLEO);
       setPreset(null);
       setTitle("");
       setDesc("");
@@ -167,8 +191,10 @@ export const CreateFormScreen = ({
       setScaleDraft(createDefaultScaleSections());
       return;
     }
-    const nextFields = form.fieldDefinitions?.length ? form.fieldDefinitions : createDefaultPresenceFields();
+    const nextMode = getFormMode(form);
+    const nextFields = form.fieldDefinitions?.length ? form.fieldDefinitions : createDefaultPresenceFields(nextMode);
     setFormat(form.type);
+    setFormMode(nextMode);
     setPreset(null);
     setTitle(form.title || "");
     setDesc(form.description || "");
@@ -179,7 +205,10 @@ export const CreateFormScreen = ({
     setTotalExpected(form.totalExpected > 0 ? String(form.totalExpected) : "");
     setClosingText(form.closingText || "");
     setFields(nextFields);
-    setResultsConfig(syncResultsConfigWithFields(form.resultsConfig || createDefaultResultsConfig(nextFields), nextFields));
+    setResultsConfig(syncResultsConfigWithFields({
+      ...(form.resultsConfig || createDefaultResultsConfig(nextFields)),
+      formMode: nextMode,
+    }, nextFields));
     setScaleLimit(getScalePersonLimit(form));
     setScaleDraft(form.scaleSections?.length ? form.scaleSections : createDefaultScaleSections());
   }, [form]);
@@ -193,12 +222,45 @@ export const CreateFormScreen = ({
   const activeScaleTaskCatalog = useMemo(() => scaleTaskCatalog.filter(item => item.active !== false), [scaleTaskCatalog]);
   const externalBaseMap = useMemo(() => new Map((externalBases || []).map(base => [String(base.id), base])), [externalBases]);
   const availableTotals = useMemo(() => totalizableFields.filter(field => !resultsConfig.totalsLayout.some(item => String(item.fieldId) === String(field.id))), [resultsConfig.totalsLayout, totalizableFields]);
+  const canUseMembersBase = format === "presenca" && formMode === FORM_MODES.NUCLEO;
   const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId)
-    || (nType !== "person_select" && !nLabel.trim());
+    || (nType !== "person_select" && !nLabel.trim())
+    || (!canUseMembersBase && nFieldMode === "local" && nType === "person_select");
   const previewTitle = title.trim();
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();
   const hasPrimaryLinkedField = useMemo(() => fields.some(field => field.type === "person_select" && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"), [fields]);
+  const filteredFieldTypes = useMemo(() => canUseMembersBase ? FIELD_TYPES : FIELD_TYPES.filter(type => type.v !== "person_select"), [canUseMembersBase]);
+  const filteredFieldCatalog = useMemo(() => {
+    if (canUseMembersBase) return activeFieldCatalog;
+    return activeFieldCatalog.filter(item => item.type !== "person_select" || item?.selectionSource?.kind === "external_base");
+  }, [activeFieldCatalog, canUseMembersBase]);
+
+  const syncModeWithFields = (nextMode, nextFields) => {
+    const normalizedFields = nextMode === FORM_MODES.NUCLEO
+      ? normalizePeopleBaseBindings(ensurePrimaryMembersField(nextFields))
+      : normalizePeopleBaseBindings(removeMembersBaseFields(nextFields));
+    setFormMode(nextMode);
+    setFields(normalizedFields);
+    if (nextMode === FORM_MODES.GERAL && nFieldMode === "local" && nType === "person_select") {
+      setNType("yes_no");
+    }
+    if (nextMode === FORM_MODES.GERAL && nFieldMode === "catalog") {
+      const selectedCatalogItem = filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId));
+      if (selectedCatalogItem?.type === "person_select" && selectedCatalogItem?.selectionSource?.kind !== "external_base") {
+        setNCatalogId("");
+        setNType("yes_no");
+      }
+    }
+    setResultsConfig(current => syncResultsConfigWithFields({
+      ...current,
+      formMode: nextMode,
+      showLinkedRoster: nextMode === FORM_MODES.NUCLEO ? current.showLinkedRoster : false,
+    }, normalizedFields));
+    if (nextMode === FORM_MODES.GERAL) {
+      setTotalExpected("");
+    }
+  };
 
   const togLabel = id => setSelLabels(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   const updateScale = (index, patch) => setScaleDraft(scaleDraft.map((section, sectionIndex) => sectionIndex === index ? { ...section, ...patch } : section));
@@ -220,6 +282,9 @@ export const CreateFormScreen = ({
 
   const openNewFieldDraft = () => {
     resetFieldDraft();
+    if (!canUseMembersBase) {
+      setNType("yes_no");
+    }
     setAddOpen(true);
   };
 
@@ -238,7 +303,7 @@ export const CreateFormScreen = ({
   };
 
   const normalizePeopleBaseBindings = nextFields => {
-    const personFields = nextFields.filter(field => field.type === "person_select");
+    const personFields = nextFields.filter(isMembersSelectionField);
     if (personFields.length === 0) return nextFields.map(stripMemberBinding);
 
     const explicitPrimary = personFields.find(field => field?.memberBinding?.role === "primary");
@@ -257,7 +322,7 @@ export const CreateFormScreen = ({
   };
 
   const addField = () => {
-    const catalogItem = nFieldMode === "catalog" ? activeFieldCatalog.find(item => String(item.id) === String(nCatalogId)) : null;
+    const catalogItem = nFieldMode === "catalog" ? filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId)) : null;
     const resolvedType = catalogItem?.type || nType;
     const label = nLabel.trim() || (resolvedType === "person_select" ? "Nome" : "");
     if (!label) return;
@@ -313,7 +378,7 @@ export const CreateFormScreen = ({
 
   const applyFieldCatalog = catalogId => {
     setNCatalogId(catalogId);
-    const catalogItem = activeFieldCatalog.find(item => String(item.id) === String(catalogId));
+    const catalogItem = filteredFieldCatalog.find(item => String(item.id) === String(catalogId));
     if (!catalogItem) return;
     setNType(catalogItem.type);
     setNLabel(catalogItem.defaultLabel);
@@ -347,7 +412,7 @@ export const CreateFormScreen = ({
   const applyTemplate = templateId => {
     setPreset(templateId || null);
     if (!templateId) {
-      const defaultFields = createDefaultPresenceFields();
+      const defaultFields = createDefaultPresenceFields(formMode);
       if (format === "presenca") {
         setFields(defaultFields);
         setResultsConfig(createDefaultResultsConfig(defaultFields));
@@ -359,27 +424,34 @@ export const CreateFormScreen = ({
     }
     const found = presets.find(item => String(item.id) === String(templateId));
     if (!found) return;
-    const nextFields = found.fieldDefinitions?.length ? found.fieldDefinitions : createDefaultPresenceFields();
+    const nextMode = getFormMode(found);
+    const nextFields = found.fieldDefinitions?.length ? found.fieldDefinitions : createDefaultPresenceFields(nextMode);
     setFormat(found.type);
+    setFormMode(nextMode);
     if (found.fieldDefinitions?.length) setFields(found.fieldDefinitions);
     if (found.scaleSections?.length) setScaleDraft(found.scaleSections);
     if (found.desc !== undefined) setDesc(found.desc);
     if (found.closingText) setClosingText(found.closingText);
     if (found.labels?.length) setSelLabels(found.labels);
-    setResultsConfig(syncResultsConfigWithFields(found.resultsConfig || createDefaultResultsConfig(nextFields), nextFields));
+    setResultsConfig(syncResultsConfigWithFields({ ...(found.resultsConfig || createDefaultResultsConfig(nextFields)), formMode: nextMode }, nextFields));
     setScaleLimit(getScalePersonLimit(found));
   };
 
   const saveAsTemplate = async () => {
     if (!presetName.trim()) return;
+    const normalizedFields = formMode === FORM_MODES.NUCLEO
+      ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
+      : normalizePeopleBaseBindings(removeMembersBaseFields(fields));
     await onSavePreset({
       type: format,
       name: presetName.trim(),
       desc,
       closingText,
       labels: selLabels,
-      fieldDefinitions: format === "presenca" ? fields : [],
-      resultsConfig: format === "presenca" ? resultsConfig : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
+      fieldDefinitions: format === "presenca" ? normalizedFields : [],
+      resultsConfig: format === "presenca"
+        ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
+        : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
       scaleSections: format === "escala_organ" ? scaleDraft : [],
     });
     setPresetName("");
@@ -409,6 +481,9 @@ export const CreateFormScreen = ({
     setSaving(true);
     setSaveError("");
     try {
+      const normalizedFields = formMode === FORM_MODES.NUCLEO
+        ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
+        : normalizePeopleBaseBindings(removeMembersBaseFields(fields));
       await onSaveForm({
         id: form?.id,
         slug: form?.slug,
@@ -422,8 +497,10 @@ export const CreateFormScreen = ({
         closing: closingDate,
         closingText,
         totalExpected: format === "presenca" && linkedPeopleField ? Number(totalExpected || 0) : 0,
-        fieldDefinitions: format === "presenca" ? fields : [],
-        resultsConfig: format === "presenca" ? syncResultsConfigWithFields(resultsConfig, fields) : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
+        fieldDefinitions: format === "presenca" ? normalizedFields : [],
+        resultsConfig: format === "presenca"
+          ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
+          : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
         scaleSections: format === "escala_organ" ? scaleDraft : [],
       });
       setSaveSuccess({
@@ -455,7 +532,25 @@ export const CreateFormScreen = ({
           { id: "presenca", title: "Presenca", desc: "Perguntas, acompanhantes, totalizacao e controle de envio." },
           { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsaveis e auxiliares." },
         ].map(option => (
-          <button className="create-form-type-card" key={option.id} onClick={() => { setFormat(option.id); applyTemplate(null); }} style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `2px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}>
+          <button
+            className="create-form-type-card"
+            key={option.id}
+            onClick={() => {
+              setFormat(option.id);
+              setPreset(null);
+              if (option.id === "presenca") {
+                const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
+                setFormMode(FORM_MODES.NUCLEO);
+                setFields(defaultFields);
+                setResultsConfig(createDefaultResultsConfig(defaultFields));
+              } else {
+                setFormMode(FORM_MODES.GERAL);
+                setScaleDraft(createDefaultScaleSections());
+                setScaleLimit(1);
+              }
+            }}
+            style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `2px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
+          >
             <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
               <strong style={{ fontSize: 14 }}>{option.title}</strong>
               {format === option.id && <Icon name="check" size={16} />}
@@ -464,6 +559,38 @@ export const CreateFormScreen = ({
           </button>
         ))}
       </div>
+
+      {format === "presenca" && (
+        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 8 }}>Modo do formulario</div>
+          <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
+            {[
+              {
+                id: FORM_MODES.NUCLEO,
+                title: "Presenca do nucleo",
+                desc: "Ja nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
+              },
+              {
+                id: FORM_MODES.GERAL,
+                title: "Formulario geral",
+                desc: "Nao usa a base central de socios. Permite campos livres e bases externas.",
+              },
+            ].map(option => (
+              <button
+                key={option.id}
+                onClick={() => syncModeWithFields(option.id, fields)}
+                style={{ textAlign: "left", padding: 14, borderRadius: 12, border: `2px solid ${formMode === option.id ? COLORS.primary : COLORS.borderLight}`, background: formMode === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+                  <strong style={{ fontSize: 14 }}>{option.title}</strong>
+                  {formMode === option.id && <Icon name="check" size={16} />}
+                </div>
+                <p style={{ margin: "7px 0 0", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.45 }}>{option.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <CreateFormTemplateBar
         format={format}
@@ -530,7 +657,9 @@ export const CreateFormScreen = ({
             <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
               {linkedPeopleField
                 ? `Se deixar em branco, o total sera assumido pela base carregada (${people.length} pessoas).`
-                : "Sem vinculo com a base completa, o sistema nao controla faltantes esperados."}
+                : formMode === FORM_MODES.GERAL
+                  ? "Formulario geral nao usa a base central, entao o sistema nao controla faltantes esperados."
+                  : "Sem vinculo com a base completa, o sistema nao controla faltantes esperados."}
             </div>
           </div>
           <div>
@@ -552,7 +681,7 @@ export const CreateFormScreen = ({
       <div className="create-form-people-bar" style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
         <Icon name="user" size={14} />
         <span style={{ fontSize: 12, color: COLORS.textMuted }}>
-          <strong style={{ color: COLORS.text }}>{people.length} pessoas</strong> carregadas. {membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios."}
+          <strong style={{ color: COLORS.text }}>{people.length} pessoas</strong> carregadas. {formMode === FORM_MODES.NUCLEO ? (membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios.") : "Base central bloqueada neste formulario geral."}
         </span>
       </div>
 
@@ -660,7 +789,14 @@ export const CreateFormScreen = ({
                     <input type="checkbox" checked={field.show} onChange={() => setFields(fields.map(item => item.id === field.id ? { ...item, show: !item.show } : item))} /> Exibir
                   </label>
                   <button aria-label={`Editar ${field.label}`} onClick={() => startEditField(field)} style={{ background: "none", border: "none", color: COLORS.textSecondary, cursor: "pointer", padding: 2 }}><Icon name="edit" size={14} /></button>
-                  <button aria-label={`Remover ${field.label}`} onClick={() => setFields(fields.filter(item => item.id !== field.id))} style={{ background: "none", border: "none", color: COLORS.textMuted, cursor: "pointer", padding: 2 }}><Icon name="trash" size={14} /></button>
+                  <button
+                    aria-label={`Remover ${field.label}`}
+                    disabled={formMode === FORM_MODES.NUCLEO && isMembersSelectionField(field) && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"}
+                    onClick={() => setFields(fields.filter(item => item.id !== field.id))}
+                    style={{ background: "none", border: "none", color: COLORS.textMuted, cursor: "pointer", padding: 2, opacity: formMode === FORM_MODES.NUCLEO && isMembersSelectionField(field) && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? 0.35 : 1 }}
+                  >
+                    <Icon name="trash" size={14} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -680,18 +816,20 @@ export const CreateFormScreen = ({
                     <div style={{ marginBottom: 10 }}>
                       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>1. Origem do campo</label>
                       <div className="create-form-segmented" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
-                        <button disabled={activeFieldCatalog.length === 0} onClick={() => setFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: activeFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: activeFieldCatalog.length === 0 ? 0.55 : 1 }}>Da biblioteca</button>
+                        <button disabled={filteredFieldCatalog.length === 0} onClick={() => setFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: filteredFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: filteredFieldCatalog.length === 0 ? 0.55 : 1 }}>Da biblioteca</button>
                         <button onClick={() => setFieldMode("local")} style={{ border: `1px solid ${nFieldMode === "local" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "local" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "local" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>Somente neste formulario</button>
                       </div>
                       {nFieldMode === "catalog" && (
                         <select value={nCatalogId} onChange={event => applyFieldCatalog(event.target.value)} style={inp}>
                           <option value="">Selecione um campo base</option>
-                          {activeFieldCatalog.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+                          {filteredFieldCatalog.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
                         </select>
                       )}
                       {nFieldMode === "local" && (
                         <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
-                          Este campo fica apenas neste formulario e nao entra no catalogo global.
+                          {formMode === FORM_MODES.NUCLEO
+                            ? "Este campo fica apenas neste formulario e nao entra no catalogo global."
+                            : "No formulario geral, campos locais nao usam a base central de socios."}
                         </div>
                       )}
                     </div>
@@ -704,7 +842,7 @@ export const CreateFormScreen = ({
                       setNGridCols(DEFAULT_GRID_COLS);
                       setNValidation({});
                     }} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
-                      {FIELD_TYPES.map(type => <option key={type.v} value={type.v}>{type.l}</option>)}
+                      {filteredFieldTypes.map(type => <option key={type.v} value={type.v}>{type.l}</option>)}
                     </select>
                     {nFieldMode === "catalog" && (
                       <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
@@ -722,7 +860,9 @@ export const CreateFormScreen = ({
                         <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
                           <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Origem configurada no campo</div>
                           <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
-                            Campos locais usam a base central de socios. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base.
+                            {formMode === FORM_MODES.NUCLEO
+                              ? "Campos locais usam a base central de socios. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base."
+                              : "Formulario geral nao usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa."}
                           </div>
                         </div>
                         <div style={{ display: "grid", gap: 6 }}>
@@ -730,7 +870,7 @@ export const CreateFormScreen = ({
                           <div style={{ padding: 10, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surface }}>
                             {(() => {
                               const selectedCatalogItem = nFieldMode === "catalog"
-                                ? activeFieldCatalog.find(item => String(item.id) === String(nCatalogId))
+                                ? filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId))
                                 : null;
                               const selectionSource = selectedCatalogItem?.selectionSource?.kind === "external_base"
                                 ? selectedCatalogItem.selectionSource
@@ -742,7 +882,9 @@ export const CreateFormScreen = ({
                           </div>
                         </div>
                         <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
-                          Se a lista vier da biblioteca, a origem ja foi definida na configuracao do campo.
+                          {formMode === FORM_MODES.NUCLEO
+                            ? "Se a lista vier da biblioteca, a origem ja foi definida na configuracao do campo."
+                            : "Campos gerais so aceitam seletores ligados a bases externas configuradas na biblioteca."}
                         </div>
                       </div>
                     )}

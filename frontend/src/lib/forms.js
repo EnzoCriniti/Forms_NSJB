@@ -6,6 +6,11 @@
 
 import { getScalePersonLimit, validateResponseValuesAgainstForm } from "../../../shared/formRules.mjs";
 
+export const FORM_MODES = {
+  NUCLEO: "nucleo",
+  GERAL: "geral",
+};
+
 export const formatDate = value => {
   if (!value) return "";
   const [year, month, day] = value.split("T")[0].split("-");
@@ -32,11 +37,13 @@ export const buildFormSearchIndex = (form, labels = []) => {
     .map(labelId => labels.find(label => label.id === labelId)?.name || "")
     .filter(Boolean)
     .join(" ");
+  const modeText = getFormMode(form) === FORM_MODES.NUCLEO ? "presenca do nucleo nucleo" : "formulario geral geral";
   return normalizeSearchText([
     form?.title,
     form?.description,
     form?.status,
     form?.type === "escala_organ" ? "escala da organ" : "presenca",
+    modeText,
     labelText,
     form?.closing,
     form?.date,
@@ -77,11 +84,25 @@ export const getFieldSelectionSource = field => {
   return { kind: "members" };
 };
 
+export const getStoredFormMode = form => {
+  const mode = form?.resultsConfig?.formMode;
+  return Object.values(FORM_MODES).includes(mode) ? mode : null;
+};
+
 export const isMembersSelectionField = field => getFieldSelectionSource(field)?.kind === "members";
 
 export const isExternalBaseSelectionField = field => getFieldSelectionSource(field)?.kind === "external_base";
 
 export const getPeopleBaseFields = form => (form?.fieldDefinitions || []).filter(field => field.type === "person_select" && isMembersSelectionField(field));
+
+export const getFormMode = form => {
+  if (form?.type !== "presenca") return FORM_MODES.GERAL;
+  const stored = getStoredFormMode(form);
+  if (stored) return stored;
+  return getPeopleBaseFields(form).length > 0 ? FORM_MODES.NUCLEO : FORM_MODES.GERAL;
+};
+
+export const getFormModeLabel = form => getFormMode(form) === FORM_MODES.NUCLEO ? "Presenca do nucleo" : "Formulario geral";
 
 export const getPrimaryPeopleBaseField = form => {
   const personFields = getPeopleBaseFields(form);

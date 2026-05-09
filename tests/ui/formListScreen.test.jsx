@@ -19,6 +19,7 @@ const forms = [
     id: 1,
     slug: "aberto-1",
     type: "presenca",
+    resultsConfig: { formMode: "nucleo" },
     status: "aberto",
     title: "Presenca Sessao de Escala",
     labels: [1],
@@ -30,6 +31,7 @@ const forms = [
     id: 2,
     slug: "fechado-1",
     type: "presenca",
+    resultsConfig: { formMode: "geral" },
     status: "fechado",
     title: "Presenca Evento Beneficente",
     labels: [2],
@@ -41,6 +43,7 @@ const forms = [
     id: 3,
     slug: "arquivado-1",
     type: "presenca",
+    resultsConfig: { formMode: "geral" },
     status: "arquivado",
     title: "Formulario Arquivado",
     labels: [],
@@ -72,6 +75,13 @@ describe("FormListScreen", () => {
     expect(filterRow).toBeInTheDocument();
     expect(filterRow.querySelectorAll("select").length).toBeGreaterThan(2);
     expect(screen.getByDisplayValue("Mais recentes")).toBeInTheDocument();
+  });
+
+  it("organiza a listagem entre presenca do nucleo e formularios gerais", () => {
+    render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
+
+    expect(screen.getAllByText("Presenca do nucleo").length).toBeGreaterThan(0);
+    expect(screen.getByText("Formularios gerais")).toBeInTheDocument();
   });
 
   it("filtra formularios pelo campo de busca", () => {

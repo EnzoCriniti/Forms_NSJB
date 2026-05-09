@@ -7,7 +7,7 @@
 import React from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge } from "./ui";
 import { canCreateForms, canViewForm } from "../lib/auth";
-import { formatDate, formatDateTime, hasLinkedPeopleField } from "../lib/forms";
+import { formatDate, formatDateTime, getFormMode, getFormModeLabel, hasLinkedPeopleField } from "../lib/forms";
 import { buildPublicFormPath } from "../lib/appShell";
 
 const LIST_ACTION_STYLE = {
@@ -37,6 +37,7 @@ export const FormListCard = ({
   const canOpenResults = canViewForm(user, form);
   const showFillSummary = Boolean(user) && (form.type === "escala_organ" || hasLinkedPeopleField(form));
   const fillPercent = total ? Math.min(100, (responses / total) * 100) : 0;
+  const formMode = getFormMode(form);
 
   const openPublicForm = () => {
     if (!form?.slug) return;
@@ -90,6 +91,11 @@ export const FormListCard = ({
         <div className="form-card-badges" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
           <StatusBadge status={form.status} />
           {canCreateForms(user) && <TypeBadge type={form.type} />}
+          {form.type === "presenca" && (
+            <span className="ui-badge" style={{ background: formMode === "nucleo" ? COLORS.primaryLight : COLORS.surfaceAlt, color: formMode === "nucleo" ? COLORS.primary : COLORS.textSecondary }}>
+              {getFormModeLabel(form)}
+            </span>
+          )}
           {[...new Set(form.labels || [])].map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
         </div>
         <div className="form-card-meta" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>

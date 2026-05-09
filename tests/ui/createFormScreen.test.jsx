@@ -26,17 +26,19 @@ describe("CreateFormScreen", () => {
 
     expect(screen.getByText("Selecao de template:")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
-    expect(screen.getByText("0 campos configurados")).toBeInTheDocument();
+    expect(screen.getByText("1 campo configurado")).toBeInTheDocument();
+    expect(screen.getByText("Presenca do nucleo")).toBeInTheDocument();
     expect(container.querySelector(".create-form-mobile-hero")).toBeInTheDocument();
   });
 
-  it("inicia com controle de socios desabilitado no template vazio", () => {
+  it("inicia no modo nucleo com campo da base central ativo", () => {
     render(<CreateFormScreen {...baseProps} />);
 
-    expect(screen.getByRole("spinbutton")).toBeDisabled();
+    expect(screen.getByRole("spinbutton")).not.toBeDisabled();
     expect(screen.getByText("Configuracao dos Resultados")).toBeInTheDocument();
     expect(screen.getByLabelText("Habilitar pesquisa na planilha de respostas")).toBeInTheDocument();
-    expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).toBeDisabled();
+    expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).not.toBeDisabled();
+    expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
   });
 
   it("abre a pre-visualizacao e reflete o rascunho atual", () => {
@@ -55,7 +57,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Pre-visualizacao do formulario")).toBeInTheDocument();
     expect(screen.getByText("Formulario Preview")).toBeInTheDocument();
     expect(screen.getAllByText("Descricao da previa")).toHaveLength(2);
-    expect(screen.getByText("Nenhum campo visivel adicionado ainda.")).toBeInTheDocument();
+    expect(screen.getAllByText("Nome")).not.toHaveLength(0);
     expect(screen.getByRole("button", { name: "Ocultar visualizacao" })).toBeInTheDocument();
   });
 
@@ -85,6 +87,22 @@ describe("CreateFormScreen", () => {
 
     expect(screen.getByRole("spinbutton")).toBeDisabled();
     expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).toBeDisabled();
+  });
+
+  it("troca para formulario geral e remove a base central do payload", async () => {
+    const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
+
+    render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+      target: { value: "Formulario Geral" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+
+    await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual([]);
+    expect(onSaveForm.mock.calls[0][0].resultsConfig.formMode).toBe("geral");
   });
 
   it("salva alteracoes da totalizacao no submit", async () => {
@@ -128,6 +146,7 @@ describe("CreateFormScreen", () => {
       searchEnabled: true,
       showLinkedRoster: true,
       blockDuplicatePersonResponses: false,
+      formMode: "nucleo",
       totalsLayout: [
         { fieldId: 3, style: "number" },
         { fieldId: 2, style: "split" },
@@ -175,7 +194,7 @@ describe("CreateFormScreen", () => {
     ]));
   });
 
-  it("salva o campo principal da base central com papel explicito", async () => {
+  it("salva o campo principal da base central com papel explicito no modo nucleo", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
     render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
@@ -183,9 +202,6 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Vinculado" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "person_select" } });
-    fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
@@ -265,7 +281,7 @@ describe("CreateFormScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
-    expect(onSaveForm.mock.calls[0][0].fieldDefinitions[0].validation).toEqual({
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions.find(field => field.label === "Observacao")?.validation).toEqual({
       minLength: 3,
       maxLength: 10,
     });

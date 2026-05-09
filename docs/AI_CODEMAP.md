@@ -33,6 +33,9 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/FormListScreen.jsx`
   Tela de listagem dos formularios com paginacao e filtros.
+  Em formularios de presenca, separa visualmente `Presenca do nucleo` e `Formularios gerais`.
+- `frontend/src/components/FormListCard.jsx`
+  Card da listagem com metadados do formulario, incluindo badge do modo estrutural nos formularios de presenca.
 - `frontend/src/components/FormListToolbar.jsx`
   Barra de busca, filtros e ordenacao da listagem. No mobile, os filtros ficam em faixa horizontal rolavel.
 
@@ -44,11 +47,14 @@ Mapa curto das areas mais mexidas por agentes.
   Campos de pessoa agora podem ser `primary` ou `secondary` em `memberBinding.role`.
   So o campo `primary` habilita respondente principal, faltantes, resumo e filtro por grau.
   A origem `members` vs `external_base` agora vem definida no catalogo do campo, e o formulario apenas consome essa configuracao.
+  Formularios de presenca agora tem modo estrutural `nucleo` ou `geral`, salvo em `resultsConfig.formMode`.
+  No modo `nucleo`, o campo principal da base central de socios entra como base obrigatoria; no modo `geral`, essa base central fica bloqueada.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.
+  Tambem resolve o modo estrutural com `FORM_MODES`, `getFormMode` e `getFormModeLabel`.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 
@@ -69,6 +75,10 @@ Mapa curto das areas mais mexidas por agentes.
   CRUD e sincronizacao de bases externas reutilizaveis para campos de formulario.
 - `backend/services/adminService.mjs`
   Orquestra os CRUDs administrativos e os catalogos globais.
+- `backend/services/formsService.mjs`
+  Valida o modo estrutural dos formularios de presenca: `geral` nao aceita base central de socios e `nucleo` exige campo principal dessa base.
+- `backend/validators/payloadValidators.mjs`
+  Aceita `resultsConfig.formMode` com os valores `nucleo` e `geral`.
 
 ## Testes ligados a essa area
 

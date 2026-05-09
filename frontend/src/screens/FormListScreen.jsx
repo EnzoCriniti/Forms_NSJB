@@ -9,9 +9,13 @@ import { COLORS, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } 
 import { FormListToolbar } from "../components/FormListToolbar";
 import { FormListCard } from "../components/FormListCard";
 import { ROLES, canCreateForms, canViewForm, visibleFormsFor } from "../lib/auth";
-import { buildFormSearchIndex, normalizeSearchText } from "../lib/forms";
+import { buildFormSearchIndex, FORM_MODES, getFormMode, normalizeSearchText } from "../lib/forms";
 
 const PAGE_SIZE = 6;
+const FORM_MODE_SECTIONS = [
+  { id: FORM_MODES.NUCLEO, title: "Presenca do nucleo" },
+  { id: FORM_MODES.GERAL, title: "Formularios gerais" },
+];
 
 export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onTogglePinnedForm, pinnedFormIds = [], user, labels = [], forms = [], onDeleteForm, formDeleteKeyConfigured = null }) => {
   const [search, setSearch] = useState("");
@@ -42,6 +46,9 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
     const aPinned = canPinForms ? pinnedSet.has(a.id) : false;
     const bPinned = canPinForms ? pinnedSet.has(b.id) : false;
     if (aPinned !== bPinned) return aPinned ? -1 : 1;
+    const aMode = getFormMode(a);
+    const bMode = getFormMode(b);
+    if (aMode !== bMode) return aMode === FORM_MODES.NUCLEO ? -1 : 1;
     if (sortBy === "title") return a.title.localeCompare(b.title, "pt-BR");
     if (sortBy === "status") return a.status.localeCompare(b.status, "pt-BR");
     if (sortBy === "responses") return (b.metrics?.responses || 0) - (a.metrics?.responses || 0);
@@ -51,6 +58,17 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pagedForms = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const groupedPagedForms = pagedForms.reduce((sections, form) => {
+    const mode = getFormMode(form);
+    const existing = sections.find(section => section.id === mode);
+    if (existing) {
+      existing.forms.push(form);
+      return sections;
+    }
+    const meta = FORM_MODE_SECTIONS.find(section => section.id === mode) || { id: mode, title: mode };
+    sections.push({ ...meta, forms: [form] });
+    return sections;
+  }, []);
 
   const updateFilters = setter => value => {
     setPage(1);
@@ -131,27 +149,37 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
         showAdminFilters={Boolean(user)}
         labels={labels}
       />
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {pagedForms.map(form => {
-          const archiveBusy = archiveAction === `${form.id}:${form.status === "arquivado" ? "rascunho" : "arquivado"}`;
-          const isPinned = pinnedSet.has(form.id);
-          return (
-            <FormListCard
-              key={form.id}
-              form={form}
-              user={user}
-              labels={labels}
-              isPinned={isPinned}
-              canPinForms={canPinForms}
-              archiveBusy={archiveBusy}
-              onNavigate={onNavigate}
-              onDuplicateForm={onDuplicateForm}
-              onTogglePinnedForm={onTogglePinnedForm}
-              onArchiveForm={toggleArchive}
-              onDeleteForm={openDeleteModal}
-            />
-          );
-        })}
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        {groupedPagedForms.map(section => (
+          <div key={section.id} style={{ display: "grid", gap: 10 }}>
+            {groupedPagedForms.length > 1 && (
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+                <strong style={{ fontSize: 13, color: COLORS.text, textTransform: "uppercase", letterSpacing: 0.4 }}>{section.title}</strong>
+                <span style={{ fontSize: 11, color: COLORS.textMuted }}>{section.forms.length} formulario{section.forms.length !== 1 ? "s" : ""}</span>
+              </div>
+            )}
+            {section.forms.map(form => {
+              const archiveBusy = archiveAction === `${form.id}:${form.status === "arquivado" ? "rascunho" : "arquivado"}`;
+              const isPinned = pinnedSet.has(form.id);
+              return (
+                <FormListCard
+                  key={form.id}
+                  form={form}
+                  user={user}
+                  labels={labels}
+                  isPinned={isPinned}
+                  canPinForms={canPinForms}
+                  archiveBusy={archiveBusy}
+                  onNavigate={onNavigate}
+                  onDuplicateForm={onDuplicateForm}
+                  onTogglePinnedForm={onTogglePinnedForm}
+                  onArchiveForm={toggleArchive}
+                  onDeleteForm={openDeleteModal}
+                />
+              );
+            })}
+          </div>
+        ))}
       </div>
       {filtered.length > PAGE_SIZE && (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>

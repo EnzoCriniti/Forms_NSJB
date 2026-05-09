@@ -25,6 +25,7 @@ const isOptionalPositiveIntegerLike = value => value === undefined || value === 
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
 const MEMBER_BINDING_ROLES = ["primary", "secondary"];
 const SELECTION_SOURCE_KINDS = ["members", "external_base"];
+const FORM_MODES = ["nucleo", "geral"];
 
 const validateSelectionSource = (type, selectionSource) => {
   if (selectionSource === undefined || selectionSource === null) return;
@@ -91,6 +92,7 @@ const validateResultsConfig = config => {
   assert(config.searchEnabled === undefined || typeof config.searchEnabled === "boolean", "searchEnabled invalido.");
   assert(config.showLinkedRoster === undefined || typeof config.showLinkedRoster === "boolean", "showLinkedRoster invalido.");
   assert(config.blockDuplicatePersonResponses === undefined || typeof config.blockDuplicatePersonResponses === "boolean", "blockDuplicatePersonResponses invalido.");
+  assert(config.formMode === undefined || FORM_MODES.includes(config.formMode), "formMode invalido.");
   assert(config.maxAssignmentsPerPerson === undefined || isOptionalPositiveIntegerLike(config.maxAssignmentsPerPerson), "maxAssignmentsPerPerson invalido.");
   if (config.totalsLayout !== undefined) {
     assert(Array.isArray(config.totalsLayout), "totalsLayout invalido.");
