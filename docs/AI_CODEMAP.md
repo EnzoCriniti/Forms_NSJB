@@ -27,6 +27,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao e controles de sessao. No mobile some nas telas de trabalho.
 
+## Listagem
+
+- `frontend/src/screens/FormListScreen.jsx`
+  Tela de listagem dos formularios com paginacao e filtros.
+- `frontend/src/components/FormListToolbar.jsx`
+  Barra de busca, filtros e ordenacao da listagem. No mobile, os filtros ficam em faixa horizontal rolavel.
+
 ## Vinculo com base personalizada
 
 - `frontend/src/screens/CreateFormScreen.jsx`

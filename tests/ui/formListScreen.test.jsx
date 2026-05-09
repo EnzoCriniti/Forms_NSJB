@@ -65,6 +65,15 @@ describe("FormListScreen", () => {
     expect(screen.queryByText("18/04/2026")).not.toBeInTheDocument();
   });
 
+  it("mantem os filtros administrativos em uma faixa propria", () => {
+    const { container } = render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
+
+    const filterRow = container.querySelector(".form-list-toolbar__filters");
+    expect(filterRow).toBeInTheDocument();
+    expect(filterRow.querySelectorAll("select").length).toBeGreaterThan(2);
+    expect(screen.getByDisplayValue("Mais recentes")).toBeInTheDocument();
+  });
+
   it("filtra formularios pelo campo de busca", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
 
