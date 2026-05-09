@@ -30,6 +30,23 @@ const SCALE_PRESETS = [
   { label: "Discordo / Concordo", cols: ["Discordo totalmente", "Discordo", "Neutro", "Concordo", "Concordo totalmente"] },
 ];
 
+const FORM_MODE_OPTIONS = [
+  {
+    id: FORM_MODES.NUCLEO,
+    title: "Presenca do nucleo",
+    desc: "Ja nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
+    badge: "Base central ativa",
+    bullets: ["Campo Nome obrigatorio", "Resumo e faltantes liberados", "Filtro por grau nos resultados"],
+  },
+  {
+    id: FORM_MODES.GERAL,
+    title: "Formulario geral",
+    desc: "Nao usa a base central de socios. Permite campos livres e bases externas.",
+    badge: "Fluxo livre",
+    bullets: ["Sem nome fixo da base central", "Aceita bases externas no catalogo", "Sem logica de faltantes do nucleo"],
+  },
+];
+
 const createDefaultMemberField = () => ({
   id: Date.now(),
   type: "person_select",
@@ -235,6 +252,14 @@ export const CreateFormScreen = ({
     if (canUseMembersBase) return activeFieldCatalog;
     return activeFieldCatalog.filter(item => item.type !== "person_select" || item?.selectionSource?.kind === "external_base");
   }, [activeFieldCatalog, canUseMembersBase]);
+  const activeModeOption = useMemo(
+    () => FORM_MODE_OPTIONS.find(option => option.id === formMode) || FORM_MODE_OPTIONS[0],
+    [formMode],
+  );
+  const membersFieldsCount = useMemo(
+    () => fields.filter(isMembersSelectionField).length,
+    [fields],
+  );
 
   const syncModeWithFields = (nextMode, nextFields) => {
     const normalizedFields = nextMode === FORM_MODES.NUCLEO
@@ -562,32 +587,61 @@ export const CreateFormScreen = ({
 
       {format === "presenca" && (
         <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 8 }}>Modo do formulario</div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>Modo do formulario</div>
+              <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>Escolha a estrutura antes de continuar montando os campos.</div>
+            </div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.primary, background: COLORS.primaryLight, borderRadius: 999, padding: "6px 10px" }}>
+              {activeModeOption.badge}
+            </div>
+          </div>
           <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10 }}>
-            {[
-              {
-                id: FORM_MODES.NUCLEO,
-                title: "Presenca do nucleo",
-                desc: "Ja nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
-              },
-              {
-                id: FORM_MODES.GERAL,
-                title: "Formulario geral",
-                desc: "Nao usa a base central de socios. Permite campos livres e bases externas.",
-              },
-            ].map(option => (
+            {FORM_MODE_OPTIONS.map(option => (
               <button
                 key={option.id}
                 onClick={() => syncModeWithFields(option.id, fields)}
-                style={{ textAlign: "left", padding: 14, borderRadius: 12, border: `2px solid ${formMode === option.id ? COLORS.primary : COLORS.borderLight}`, background: formMode === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
+                style={{ textAlign: "left", padding: 14, borderRadius: 12, border: `2px solid ${formMode === option.id ? COLORS.primary : COLORS.borderLight}`, background: formMode === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer", display: "grid", gap: 10 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-                  <strong style={{ fontSize: 14 }}>{option.title}</strong>
+                  <div>
+                    <strong style={{ fontSize: 14 }}>{option.title}</strong>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: COLORS.textMuted, marginTop: 4, textTransform: "uppercase", letterSpacing: 0.4 }}>{option.badge}</div>
+                  </div>
                   {formMode === option.id && <Icon name="check" size={16} />}
                 </div>
                 <p style={{ margin: "7px 0 0", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.45 }}>{option.desc}</p>
+                <div style={{ display: "grid", gap: 5 }}>
+                  {option.bullets.map(item => (
+                    <div key={item} style={{ fontSize: 11, color: COLORS.textSecondary, display: "flex", alignItems: "center", gap: 6 }}>
+                      <span aria-hidden="true" style={{ width: 5, height: 5, borderRadius: 999, background: formMode === option.id ? COLORS.primary : COLORS.textMuted, flex: "0 0 auto" }} />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
               </button>
             ))}
+          </div>
+          <div style={{ marginTop: 12, borderRadius: 12, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt, padding: 14 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>Modo ativo: {activeModeOption.title}</div>
+                <div style={{ fontSize: 11, color: COLORS.textSecondary, marginTop: 3 }}>{activeModeOption.desc}</div>
+              </div>
+              <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+                {formMode === FORM_MODES.NUCLEO ? `${membersFieldsCount} campo(s) ligado(s) a base central` : "Base central desativada neste formulario"}
+              </div>
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 10 }}>
+              {(formMode === FORM_MODES.NUCLEO
+                ? ["Nome da base central incluso", "Resumo final habilitavel", "Controle por grau disponivel"]
+                : ["Campos livres sem vinculo central", "Seletores apenas por bases externas", "Resultados sem faltantes do nucleo"]
+              ).map(item => (
+                <span key={item} style={{ fontSize: 11, color: COLORS.textSecondary, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 999, padding: "6px 10px" }}>
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       )}

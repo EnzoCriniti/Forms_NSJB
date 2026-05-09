@@ -86,5 +86,7 @@ Mapa curto das areas mais mexidas por agentes.
   Cobertura da tela administrativa, catalogos, seguranca, base de socios, bases externas e auditoria.
 - `tests/ui/createFormScreen.test.jsx`
   Cobertura do editor de campos e do vinculo com a base sincronizada ou bases externas.
+- `tests/ui/createFormModes.test.jsx`
+  Suite focada no modo estrutural da criacao de formularios de presenca, incluindo nucleo, geral e filtros de catalogo.
 - `tests/ui/appSaveFlow.test.jsx`
   Fluxo salvo do app com configuracao de resultados ligada a base vinculada.
