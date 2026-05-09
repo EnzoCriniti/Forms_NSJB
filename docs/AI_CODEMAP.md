@@ -38,7 +38,7 @@ Mapa curto das areas mais mexidas por agentes.
 ## Resultados e planilha
 
 - `frontend/src/screens/ResultsScreen.jsx`
-  Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes no desktop e pinch no mobile.
+  Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
 

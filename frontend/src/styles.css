@@ -1035,10 +1035,6 @@ button:not(.ui-btn):focus-visible {
     padding-inline: 4px;
   }
 
-  .results-zoom-controls {
-    display: none !important;
-  }
-
   .results-table-stage,
   .results-table {
     min-width: max-content !important;
