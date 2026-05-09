@@ -27,7 +27,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao e controles de sessao. No mobile some nas telas de trabalho.
 - `frontend/src/lib/appShell.js`
-  Centraliza helpers do shell, inclusive o novo caminho publico de formularios `#/formularios/<slug>` com compatibilidade para o legado `#/f/<slug>`.
+  Centraliza helpers do shell, inclusive o caminho publico de formularios `#/formularios/<slug>`.
 
 ## Listagem
 

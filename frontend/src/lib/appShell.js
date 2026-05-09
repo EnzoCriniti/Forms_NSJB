@@ -49,7 +49,6 @@ export const buildSaveFormPayloadFromExisting = (form, status = form?.status) =>
 export const clampFontScale = value => Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, Number(value.toFixed(2))));
 
 export const PUBLIC_FORM_PATH_PREFIX = "/formularios/";
-export const LEGACY_PUBLIC_FORM_PATH_PREFIX = "/f/";
 
 export const buildPublicFormPath = slug => {
   if (!slug) return "";
@@ -80,14 +79,8 @@ export const getPublicSlugFromLocation = () => {
   if (window.location.hash.startsWith(`#${PUBLIC_FORM_PATH_PREFIX}`)) {
     return decodePublicSlug(window.location.hash.replace(`#${PUBLIC_FORM_PATH_PREFIX}`, ""));
   }
-  if (window.location.hash.startsWith(`#${LEGACY_PUBLIC_FORM_PATH_PREFIX}`)) {
-    return decodePublicSlug(window.location.hash.replace(`#${LEGACY_PUBLIC_FORM_PATH_PREFIX}`, ""));
-  }
   if (window.location.pathname.startsWith(PUBLIC_FORM_PATH_PREFIX)) {
     return decodePublicSlug(window.location.pathname.replace(PUBLIC_FORM_PATH_PREFIX, ""));
-  }
-  if (window.location.pathname.startsWith(LEGACY_PUBLIC_FORM_PATH_PREFIX)) {
-    return decodePublicSlug(window.location.pathname.replace(LEGACY_PUBLIC_FORM_PATH_PREFIX, ""));
   }
   return null;
 };

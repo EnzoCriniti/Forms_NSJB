@@ -52,7 +52,6 @@ Atualmente, o controle de presença é feito manualmente com Google Forms para c
 **Link compartilhável:**
 - Cada formulário recebe um link único (slug ou UUID)
 - Formato sugerido: `sistema.com/formularios/{slug-ou-id}`
-- Links antigos em `sistema.com/f/{slug-ou-id}` continuam aceitos por compatibilidade
 - Respondente acessa sem necessidade de login/cadastro
 
 ### 3.2 Presets de Formulário
