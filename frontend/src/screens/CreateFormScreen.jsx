@@ -441,8 +441,9 @@ export const CreateFormScreen = ({
 
   return (
     <div>
-      <div className="create-form-header" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+      <div className="create-form-header create-form-mobile-hero" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
         <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />
+        <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
         <div>
           <h2 style={{ margin: 0, fontSize: 22 }}>{form && !isDuplicateMode ? "Editar Formulario" : "Novo Formulario"}</h2>
           <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>Configure o formulario e salve na base local</p>

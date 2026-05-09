@@ -19,7 +19,7 @@ export const ResultsPresenceHeader = ({
   onExport,
 }) => (
   <div>
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
+    <div className="screen-top-card results-top-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
         <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />
         <div style={{ minWidth: 0 }}>

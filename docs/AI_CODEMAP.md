@@ -30,7 +30,8 @@ Mapa curto das areas mais mexidas por agentes.
 ## Vinculo com base personalizada
 
 - `frontend/src/screens/CreateFormScreen.jsx`
-  Configura campos do formulario e consome a biblioteca de campos. O tipo `person_select` e o elo com a base sincronizada.
+  Configura campos do formulario e consome a biblioteca de campos. No mobile, o topo do formulario usa uma caixa de contexto com acento visual.
+  O tipo `person_select` e o elo com a base sincronizada.
   Campos de pessoa agora podem ser `primary` ou `secondary` em `memberBinding.role`.
   So o campo `primary` habilita respondente principal, faltantes, resumo e filtro por grau.
   A origem `members` vs `external_base` agora vem definida no catalogo do campo, e o formulario apenas consome essa configuracao.

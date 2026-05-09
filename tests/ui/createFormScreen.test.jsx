@@ -22,11 +22,12 @@ const baseProps = {
 
 describe("CreateFormScreen", () => {
   it("inicia novo formulario sem template selecionado", () => {
-    render(<CreateFormScreen {...baseProps} presets={[{ id: 1, type: "presenca", name: "Template A" }]} />);
+    const { container } = render(<CreateFormScreen {...baseProps} presets={[{ id: 1, type: "presenca", name: "Template A" }]} />);
 
     expect(screen.getByText("Selecao de template:")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
     expect(screen.getByText("0 campos configurados")).toBeInTheDocument();
+    expect(container.querySelector(".create-form-mobile-hero")).toBeInTheDocument();
   });
 
   it("inicia com controle de socios desabilitado no template vazio", () => {
