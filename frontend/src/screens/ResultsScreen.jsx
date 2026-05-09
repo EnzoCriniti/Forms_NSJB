@@ -18,6 +18,30 @@ const TABLE_ZOOM_STEP = 0.1;
 
 const clampTableZoom = value => Math.min(TABLE_ZOOM_MAX, Math.max(TABLE_ZOOM_MIN, Number(value.toFixed(2))));
 
+const normalizeGrauToken = value => String(value || "")
+  .trim()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toUpperCase();
+
+const getGrauPriority = grau => {
+  const normalized = normalizeGrauToken(grau);
+  if (normalized === "QM") return 0;
+  if (normalized === "CDC") return 1;
+  if (normalized === "CI") return 2;
+  if (normalized === "QS") return 3;
+  return 4;
+};
+
+const compareGrauOptions = (left, right) => {
+  const leftPriority = getGrauPriority(left);
+  const rightPriority = getGrauPriority(right);
+  if (leftPriority !== rightPriority) {
+    return leftPriority - rightPriority;
+  }
+  return String(left || "").localeCompare(String(right || ""), "pt-BR");
+};
+
 export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections }) => (
   form?.type === "escala_organ"
     ? <EscalaResultsScreen onNavigate={onNavigate} people={people} canEdit={canEditEscala(user)} form={form} sections={sections} labels={labels} onSaveSections={onSaveSections} />
@@ -87,7 +111,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
 
   const grauOptions = useMemo(() => {
     const values = [...new Set(tableRows.map(row => String(row.grau || "").trim()).filter(Boolean))];
-    return values.sort((a, b) => a.localeCompare(b, "pt-BR"));
+    return values.sort(compareGrauOptions);
   }, [tableRows]);
 
   const filteredRows = useMemo(() => {

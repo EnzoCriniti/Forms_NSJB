@@ -158,6 +158,35 @@ describe("ResultsScreen", () => {
     expect(respostasCard).toHaveTextContent("0");
   });
 
+  it("ordena os filtros de grau na sequencia configurada", () => {
+    render(
+      <ResultsScreen
+        onNavigate={vi.fn()}
+        responses={[
+          { id: 10, respondentName: "Maria", respondentGrau: "QS", values: { "1": "QS - Maria", "2": "Sim" } },
+          { id: 11, respondentName: "Carlos", respondentGrau: "CDC", values: { "1": "CDC - Carlos", "2": "Sim" } },
+          { id: 12, respondentName: "Laura", respondentGrau: "CI", values: { "1": "CI - Laura", "2": "Sim" } },
+          { id: 13, respondentName: "Joao", respondentGrau: "QM", values: { "1": "QM - Joao", "2": "Sim" } },
+        ]}
+        form={form}
+        sections={[]}
+        people={[
+          { name: "Maria", grau: "QS" },
+          { name: "Carlos", grau: "CDC" },
+          { name: "Laura", grau: "CI" },
+          { name: "Joao", grau: "QM" },
+        ]}
+        user={{ role: "admin" }}
+        labels={[]}
+        onSaveSections={vi.fn()}
+      />,
+    );
+
+    const labels = screen.getAllByRole("button").map(button => button.textContent?.trim()).filter(Boolean);
+    const grauLabels = labels.filter(label => ["Todos", "QM", "CDC", "CI", "QS"].includes(label));
+    expect(grauLabels.slice(0, 5)).toEqual(["Todos", "QM", "CDC", "CI", "QS"]);
+  });
+
   it("filtra usando o cabecalho de filtros da planilha", () => {
     render(
       <ResultsScreen
