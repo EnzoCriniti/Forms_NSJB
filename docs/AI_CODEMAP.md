@@ -20,6 +20,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/auth/AuthPanel.jsx`
   Formulario reutilizavel de login/logout. O modo `sheet` e usado na tela de login.
 
+## App shell
+
+- `frontend/src/App.jsx`
+  Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile.
+- `frontend/src/components/AppHeader.jsx`
+  Cabecalho global com navegacao e controles de sessao. No mobile some nas telas de trabalho.
+
 ## Vinculo com base personalizada
 
 - `frontend/src/screens/CreateFormScreen.jsx`

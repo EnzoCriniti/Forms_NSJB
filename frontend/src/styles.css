@@ -734,6 +734,12 @@ button:not(.ui-btn):focus-visible {
     padding: 10px 12px !important;
   }
 
+  .app-header[data-screen="create"],
+  .app-header[data-screen="settings"],
+  .app-header[data-screen="results"] {
+    display: none !important;
+  }
+
   .app-header > div:first-child {
     min-width: 0;
     gap: 8px !important;

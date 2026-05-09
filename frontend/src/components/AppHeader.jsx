@@ -23,7 +23,7 @@ export const AppHeader = ({
   onLogin,
   onLogout,
 }) => (
-  <header className="app-header" style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+  <header className="app-header" data-screen={screen} style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
       <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, color: "#fff" }}>NF</div>
       <span title={`Dados base JSON v${appData.version}`} style={{ fontWeight: 700, fontSize: 16, color: "#fff", letterSpacing: 0 }}>NSJB Forms</span>
