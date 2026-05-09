@@ -83,17 +83,17 @@ describe("ResultsScreen", () => {
       />,
     );
 
-    expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
     const tableShell = document.querySelector(".results-table-shell");
+    const zoomResetButton = screen.getByRole("button", { name: "100%" });
 
     fireEvent.wheel(tableShell, { ctrlKey: true, deltaY: -140 });
-    expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
+    expect(zoomResetButton).toBeDisabled();
 
     fireEvent.click(screen.getByRole("button", { name: "Aumentar zoom da planilha" }));
-    expect(screen.getByText("Zoom 110%")).toBeInTheDocument();
+    expect(zoomResetButton).not.toBeDisabled();
 
     fireEvent.click(screen.getByRole("button", { name: "Diminuir zoom da planilha" }));
-    expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
+    expect(zoomResetButton).toBeDisabled();
   });
 
   it("remove nomes fora da base quando a planilha e vinculada", () => {

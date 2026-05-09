@@ -16,7 +16,6 @@ export const ResultsPresenceHeader = ({
   selectedGrau = "todos",
   onSelectGrau,
   stats = [],
-  onExport,
 }) => (
   <div>
     <div className="screen-top-card results-top-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
@@ -68,10 +67,6 @@ export const ResultsPresenceHeader = ({
           <div style={{ fontSize: 11, color: COLORS.textMuted }}>{card.s}</div>
         </div>
       ))}
-    </div>
-
-    <div style={{ display: "flex", justifyContent: "flex-end", margin: "0 0 12px" }}>
-      <Btn v="secondary" sz="sm" icon="download" onClick={onExport}>Exportar</Btn>
     </div>
   </div>
 );

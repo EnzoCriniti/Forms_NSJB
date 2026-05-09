@@ -248,7 +248,6 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
 
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
-  const zoomPercent = Math.round(tableZoom * 100);
   const updateTableZoom = direction => {
     setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
   };
@@ -366,7 +365,6 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
         selectedGrau={selectedGrau}
         onSelectGrau={setSelectedGrau}
         stats={stats}
-        onExport={exportCsv}
       />
       {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
       <div className="totals-panel" style={{ background: COLORS.surface, borderRadius: 10, padding: 16, marginBottom: 12, border: `1px solid ${COLORS.borderLight}` }}>
@@ -501,14 +499,12 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
       )}
 
       <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
-        <div className="results-zoom-indicator" style={{ fontSize: 12, fontWeight: 800, color: COLORS.textSecondary }}>
-          Zoom {zoomPercent}%
-        </div>
         <div className="results-zoom-controls" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(-1)} disabled={tableZoom <= TABLE_ZOOM_MIN} aria-label="Diminuir zoom da planilha">A-</Btn>
           <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(1)} disabled={tableZoom >= TABLE_ZOOM_MAX} aria-label="Aumentar zoom da planilha">A+</Btn>
           <Btn v="ghost" sz="sm" onClick={() => setTableZoom(1)} disabled={tableZoom === 1}>100%</Btn>
         </div>
+        <Btn v="secondary" sz="sm" icon="download" onClick={exportCsv}>Exportar</Btn>
       </div>
 
       <div
