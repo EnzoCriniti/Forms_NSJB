@@ -787,8 +787,8 @@ button:not(.ui-btn):focus-visible {
 
   .screen-top-card,
   .create-form-mobile-hero {
-    background: linear-gradient(135deg, rgba(26, 107, 60, 0.14), rgba(26, 107, 60, 0.06));
-    border: 1px solid rgba(26, 107, 60, 0.18);
+    background: linear-gradient(135deg, rgba(26, 107, 60, 0.05), rgba(26, 107, 60, 0.02));
+    border: 1px solid rgba(26, 107, 60, 0.08);
     border-radius: 16px;
     box-shadow: var(--shadow-sm);
     padding: 12px;
@@ -805,7 +805,7 @@ button:not(.ui-btn):focus-visible {
     align-self: stretch;
     width: 10px;
     border-radius: 999px;
-    background: linear-gradient(180deg, var(--primary), rgba(26, 107, 60, 0.2));
+    background: linear-gradient(180deg, rgba(26, 107, 60, 0.38), rgba(26, 107, 60, 0.08));
     flex: 0 0 auto;
   }
 
