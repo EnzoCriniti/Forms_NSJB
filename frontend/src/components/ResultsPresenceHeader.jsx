@@ -27,7 +27,7 @@ export const ResultsPresenceHeader = ({
           <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
             <StatusBadge status={form.status} />
             {(form.labels || []).map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
-            <span style={{ fontSize: 11, color: COLORS.textMuted }}>Fecha: {formatDateTime(form.closing)}</span>
+            <span className="results-top-card__meta-note" style={{ fontSize: 11, color: COLORS.textMuted }}>Fecha: {formatDateTime(form.closing)}</span>
           </div>
         </div>
       </div>

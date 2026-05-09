@@ -787,11 +787,12 @@ button:not(.ui-btn):focus-visible {
 
   .screen-top-card,
   .create-form-mobile-hero {
-    background: linear-gradient(135deg, rgba(26, 107, 60, 0.05), rgba(26, 107, 60, 0.02));
-    border: 1px solid rgba(26, 107, 60, 0.08);
+    background: var(--primary);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
     box-shadow: var(--shadow-sm);
     padding: 12px;
+    color: #fff;
   }
 
   .create-form-mobile-hero {
@@ -800,12 +801,34 @@ button:not(.ui-btn):focus-visible {
     position: relative;
   }
 
+  .screen-top-card h2,
+  .screen-top-card p,
+  .screen-top-card strong,
+  .screen-top-card .results-top-card__meta-note,
+  .create-form-mobile-hero h2,
+  .create-form-mobile-hero p {
+    color: #fff !important;
+  }
+
+  .screen-top-card p,
+  .screen-top-card .results-top-card__meta-note,
+  .create-form-mobile-hero p {
+    color: rgba(255, 255, 255, 0.82) !important;
+  }
+
+  .screen-top-card .ui-btn[data-variant="ghost"],
+  .create-form-mobile-hero .ui-btn[data-variant="ghost"] {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    color: #fff !important;
+  }
+
   .create-form-mobile-hero__swatch {
     display: block;
     align-self: stretch;
     width: 10px;
     border-radius: 999px;
-    background: linear-gradient(180deg, rgba(26, 107, 60, 0.38), rgba(26, 107, 60, 0.08));
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.22));
     flex: 0 0 auto;
   }
 
