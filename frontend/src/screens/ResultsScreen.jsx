@@ -14,6 +14,7 @@ const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
 
 const TABLE_ZOOM_MIN = 0.4;
 const TABLE_ZOOM_MAX = 2.5;
+const TABLE_ZOOM_STEP = 0.1;
 
 const clampTableZoom = value => Math.min(TABLE_ZOOM_MAX, Math.max(TABLE_ZOOM_MIN, Number(value.toFixed(2))));
 
@@ -224,16 +225,13 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
   const zoomPercent = Math.round(tableZoom * 100);
+  const updateTableZoom = direction => {
+    setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
+  };
   const getTouchDistance = touches => {
     if (touches.length < 2) return 0;
     const [first, second] = touches;
     return Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY);
-  };
-  const handleTableWheel = event => {
-    if (!event.ctrlKey && !event.metaKey) return;
-    event.preventDefault();
-    const zoomFactor = Math.exp(-event.deltaY * 0.0015);
-    setTableZoom(current => clampTableZoom(current * zoomFactor));
   };
   const handleTableTouchStart = event => {
     if (event.touches.length !== 2) return;
@@ -478,15 +476,19 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
         </div>
       )}
 
-      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
         <div className="results-zoom-indicator" style={{ fontSize: 12, fontWeight: 800, color: COLORS.textSecondary }}>
           Zoom {zoomPercent}%
+        </div>
+        <div className="results-zoom-controls" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(-1)} disabled={tableZoom <= TABLE_ZOOM_MIN} aria-label="Diminuir zoom da planilha">A-</Btn>
+          <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(1)} disabled={tableZoom >= TABLE_ZOOM_MAX} aria-label="Aumentar zoom da planilha">A+</Btn>
+          <Btn v="ghost" sz="sm" onClick={() => setTableZoom(1)} disabled={tableZoom === 1}>100%</Btn>
         </div>
       </div>
 
       <div
         className="results-table-shell"
-        onWheel={handleTableWheel}
         onTouchStart={handleTableTouchStart}
         onTouchMove={handleTableTouchMove}
         onTouchEnd={handleTableTouchEnd}

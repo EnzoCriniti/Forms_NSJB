@@ -69,7 +69,7 @@ describe("ResultsScreen", () => {
     expect(screen.queryByText("Preenchimento")).not.toBeInTheDocument();
   });
 
-  it("permite ajustar o zoom interno da planilha por gesto", () => {
+  it("permite ajustar o zoom interno da planilha por botoes no desktop", () => {
     render(
       <ResultsScreen
         onNavigate={vi.fn()}
@@ -84,12 +84,15 @@ describe("ResultsScreen", () => {
     );
 
     expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Aumentar zoom da planilha" })).not.toBeInTheDocument();
+    const tableShell = document.querySelector(".results-table-shell");
 
-    fireEvent.wheel(document.querySelector(".results-table-shell"), { ctrlKey: true, deltaY: -140 });
-    expect(screen.getByText(/Zoom 12\d%/)).toBeInTheDocument();
+    fireEvent.wheel(tableShell, { ctrlKey: true, deltaY: -140 });
+    expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
 
-    fireEvent.wheel(document.querySelector(".results-table-shell"), { ctrlKey: true, deltaY: 140 });
+    fireEvent.click(screen.getByRole("button", { name: "Aumentar zoom da planilha" }));
+    expect(screen.getByText("Zoom 110%")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Diminuir zoom da planilha" }));
     expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
   });
 
