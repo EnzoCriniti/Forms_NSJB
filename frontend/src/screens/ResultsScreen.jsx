@@ -4,7 +4,7 @@
  * @responsibility Exibir respostas de presenca e edicao/resultados da escala.
  */
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
 import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
 import { canEditEscala } from "../lib/auth";
@@ -12,9 +12,8 @@ import { formatDateTime, getExpectedResponses, getFieldValue, getResultsConfig, 
 
 const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
 
-const TABLE_ZOOM_MIN = 0.7;
-const TABLE_ZOOM_MAX = 1.4;
-const TABLE_ZOOM_STEP = 0.1;
+const TABLE_ZOOM_MIN = 0.4;
+const TABLE_ZOOM_MAX = 2.5;
 
 const clampTableZoom = value => Math.min(TABLE_ZOOM_MAX, Math.max(TABLE_ZOOM_MIN, Number(value.toFixed(2))));
 
@@ -34,6 +33,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
   const [selectedGrau, setSelectedGrau] = useState("todos");
   const [feedback, setFeedback] = useState(null);
   const [tableZoom, setTableZoom] = useState(1);
+  const touchZoomRef = useRef({ distance: 0, zoom: 1 });
 
   const linkedPeople = hasLinkedPeopleField(form);
   const showLinkedRows = linkedPeople && resultsConfig.showLinkedRoster && people.length > 0;
@@ -224,8 +224,31 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
   const zoomPercent = Math.round(tableZoom * 100);
-  const updateTableZoom = direction => {
-    setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
+  const getTouchDistance = touches => {
+    if (touches.length < 2) return 0;
+    const [first, second] = touches;
+    return Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY);
+  };
+  const handleTableWheel = event => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    const zoomFactor = Math.exp(-event.deltaY * 0.0015);
+    setTableZoom(current => clampTableZoom(current * zoomFactor));
+  };
+  const handleTableTouchStart = event => {
+    if (event.touches.length !== 2) return;
+    touchZoomRef.current = { distance: getTouchDistance(event.touches), zoom: tableZoom };
+  };
+  const handleTableTouchMove = event => {
+    if (event.touches.length !== 2 || !touchZoomRef.current.distance) return;
+    event.preventDefault();
+    const nextDistance = getTouchDistance(event.touches);
+    setTableZoom(clampTableZoom(touchZoomRef.current.zoom * (nextDistance / touchZoomRef.current.distance)));
+  };
+  const handleTableTouchEnd = event => {
+    if (event.touches.length < 2) {
+      touchZoomRef.current = { distance: 0, zoom: tableZoom };
+    }
   };
 
   const activeFilterOptions = useMemo(() => {
@@ -455,17 +478,21 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
         </div>
       )}
 
-      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.textSecondary }}>Visualizacao da planilha</div>
-        <div className="results-zoom-controls" style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-          <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(-1)} disabled={tableZoom <= TABLE_ZOOM_MIN} aria-label="Diminuir zoom da planilha">A-</Btn>
-          <span style={{ minWidth: 48, textAlign: "center", fontSize: 12, fontWeight: 800, color: COLORS.text }}>{zoomPercent}%</span>
-          <Btn v="secondary" sz="sm" onClick={() => updateTableZoom(1)} disabled={tableZoom >= TABLE_ZOOM_MAX} aria-label="Aumentar zoom da planilha">A+</Btn>
-          <Btn v="ghost" sz="sm" onClick={() => setTableZoom(1)} disabled={tableZoom === 1}>100%</Btn>
+      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 8 }}>
+        <div className="results-zoom-indicator" style={{ fontSize: 12, fontWeight: 800, color: COLORS.textSecondary }}>
+          Zoom {zoomPercent}%
         </div>
       </div>
 
-      <div className="results-table-shell" style={{ width: "100%", maxWidth: "100%", display: "block", overflow: "auto", WebkitOverflowScrolling: "touch", touchAction: "auto", overscrollBehavior: "contain", borderRadius: 10, border: `1px solid ${COLORS.borderLight}` }}>
+      <div
+        className="results-table-shell"
+        onWheel={handleTableWheel}
+        onTouchStart={handleTableTouchStart}
+        onTouchMove={handleTableTouchMove}
+        onTouchEnd={handleTableTouchEnd}
+        onTouchCancel={handleTableTouchEnd}
+        style={{ width: "100%", maxWidth: "100%", display: "block", overflow: "auto", WebkitOverflowScrolling: "touch", touchAction: "auto", overscrollBehavior: "contain", borderRadius: 10, border: `1px solid ${COLORS.borderLight}` }}
+      >
         <div className="results-table-stage" style={{ width: "max-content", minWidth: `${tableMinWidth}px`, zoom: tableZoom }}>
         <table className="results-table" style={{ width: "100%", minWidth: `${tableMinWidth}px`, borderCollapse: "collapse", fontSize: 12, tableLayout: "auto", userSelect: "text", WebkitUserSelect: "text" }}>
           <thead>

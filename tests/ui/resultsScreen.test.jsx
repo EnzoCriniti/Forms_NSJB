@@ -69,7 +69,7 @@ describe("ResultsScreen", () => {
     expect(screen.queryByText("Preenchimento")).not.toBeInTheDocument();
   });
 
-  it("permite ajustar o zoom interno da planilha", () => {
+  it("permite ajustar o zoom interno da planilha por gesto", () => {
     render(
       <ResultsScreen
         onNavigate={vi.fn()}
@@ -83,13 +83,14 @@ describe("ResultsScreen", () => {
       />,
     );
 
-    expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+    expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Aumentar zoom da planilha" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Aumentar zoom da planilha" }));
-    expect(screen.getByText("110%")).toBeInTheDocument();
+    fireEvent.wheel(document.querySelector(".results-table-shell"), { ctrlKey: true, deltaY: -140 });
+    expect(screen.getByText(/Zoom 12\d%/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Diminuir zoom da planilha" }));
-    expect(screen.getAllByText("100%").length).toBeGreaterThan(0);
+    fireEvent.wheel(document.querySelector(".results-table-shell"), { ctrlKey: true, deltaY: 140 });
+    expect(screen.getByText("Zoom 100%")).toBeInTheDocument();
   });
 
   it("remove nomes fora da base quando a planilha e vinculada", () => {
