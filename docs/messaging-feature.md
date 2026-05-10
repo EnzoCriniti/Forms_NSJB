@@ -265,14 +265,18 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] `dispatchers/logOnlyDispatcher.mjs` — adapter atual, grava em `message_dispatch_log`
 - [x] Tipos 2 e 3 bloqueados quando `membersConfig.phoneColumn` esta vazia
 
-### Fase 5 — rotas e validadores
-- [ ] `/api/message-templates` (CRUD)
-- [ ] `/api/person-presets` (CRUD)
-- [ ] `/api/events/:id/messages` (CRUD)
-- [ ] `/api/events/:eventId/messages/:id/dispatch` (manual)
-- [ ] `/api/events/:eventId/messages/:id/cancel`
-- [ ] Validadores de payload
-- [ ] Testes API cobrindo elegibilidade, render, dispatch log, agendamento, transições proibidas
+### Fase 5 — rotas e validadores ✅
+- [x] `GET/POST /api/message-templates` e `DELETE /api/message-templates/:id`
+- [x] `GET/POST /api/person-presets` e `DELETE /api/person-presets/:id`
+- [x] `GET/PUT /api/messaging-config`
+- [x] `GET/POST /api/events/:eventId/messages`
+- [x] `GET/DELETE /api/events/:eventId/messages/:id`
+- [x] `GET /api/events/:eventId/messages/:id/preview`
+- [x] `POST /api/events/:eventId/messages/:id/dispatch` (manual)
+- [x] `POST /api/events/:eventId/messages/:id/cancel`
+- [x] `GET /api/events/:eventId/messages/:id/logs`
+- [x] Validadores: `validateMessageTemplatePayload`, `validatePersonPresetPayload`, `validateMessagingConfigPayload`, `validateEventMessagePayload`
+- [x] 5 testes API cobrindo CRUD de templates/presets, config global, elegibilidade, dispatch (log gravado, status disparada) e bloqueio por phoneColumn
 
 ### Fase 6 — bootstrap e api.js
 - [ ] Bootstrap expõe `messageTemplates`, `personPresets`, `messagingConfig`

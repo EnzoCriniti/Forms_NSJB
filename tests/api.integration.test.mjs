@@ -1403,3 +1403,194 @@ test("external bases endpoint persists CRUD data and exposes it on bootstrap", a
     await ctx.cleanup();
   }
 });
+
+test("messaging templates and presets CRUD", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+
+    const listSeedRes = await authedFetch(ctx.baseUrl, "/api/message-templates", adminToken);
+    assert.equal(listSeedRes.status, 200);
+    const seedPayload = await listSeedRes.json();
+    assert.ok(seedPayload.templates.length >= 3);
+
+    const createRes = await authedJson(ctx.baseUrl, "/api/message-templates", {
+      name: "Template teste",
+      type: "fill_reminder",
+      body: "Ola {{person.name}}",
+    }, adminToken);
+    assert.equal(createRes.status, 200);
+    const created = await createRes.json();
+    assert.ok(created.template.id);
+
+    const updateRes = await authedJson(ctx.baseUrl, "/api/message-templates", {
+      id: created.template.id,
+      name: "Template atualizado",
+      type: "fill_reminder",
+      body: "Ola novamente {{person.name}}",
+    }, adminToken);
+    assert.equal(updateRes.status, 200);
+    const updated = await updateRes.json();
+    assert.equal(updated.template.name, "Template atualizado");
+
+    const presetCreateRes = await authedJson(ctx.baseUrl, "/api/person-presets", {
+      name: "Preset principal",
+      personKeys: ["1", "2"],
+    }, adminToken);
+    assert.equal(presetCreateRes.status, 200);
+    const preset = (await presetCreateRes.json()).preset;
+    assert.deepEqual(preset.personKeys, ["1", "2"]);
+
+    const deletePresetRes = await authedFetch(ctx.baseUrl, `/api/person-presets/${preset.id}`, adminToken, { method: "DELETE" });
+    assert.equal(deletePresetRes.status, 200);
+
+    const deleteTemplateRes = await authedFetch(ctx.baseUrl, `/api/message-templates/${created.template.id}`, adminToken, { method: "DELETE" });
+    assert.equal(deleteTemplateRes.status, 200);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("messaging-config GET and PUT", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const getRes = await authedFetch(ctx.baseUrl, "/api/messaging-config", adminToken);
+    assert.equal(getRes.status, 200);
+    const initial = (await getRes.json()).config;
+    assert.equal(initial.autoDispatchEnabled, true);
+
+    const updateRes = await authedJson(ctx.baseUrl, "/api/messaging-config", {
+      whatsappGroupName: "Grupo Teste",
+      autoDispatchEnabled: false,
+      publicBaseUrl: "https://app.example.com",
+    }, adminToken, "PUT");
+    assert.equal(updateRes.status, 200);
+    const updated = (await updateRes.json()).config;
+    assert.equal(updated.whatsappGroupName, "Grupo Teste");
+    assert.equal(updated.autoDispatchEnabled, false);
+    assert.equal(updated.publicBaseUrl, "https://app.example.com");
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("event message create blocks events without eligible forms", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+
+    const createEventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento Vazio",
+      formIds: [],
+    }, adminToken);
+    assert.equal(createEventRes.status, 200);
+    const event = (await createEventRes.json()).event;
+
+    const createMsgRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "new_scale",
+      body: "Mensagem qualquer",
+    }, adminToken);
+    assert.equal(createMsgRes.status, 400);
+    const error = await createMsgRes.json();
+    assert.equal(error.code, "EVENT_NOT_ELIGIBLE_FOR_MESSAGES");
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("event message type 1 dispatch grava log e marca disparada", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const bootstrap = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    const presenca = bootstrap.forms.find(form => form.type === "presenca");
+    assert.ok(presenca);
+
+    const eventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento com mensagem",
+      date: "2026-06-01",
+      formIds: [presenca.id],
+    }, adminToken);
+    assert.equal(eventRes.status, 200);
+    const event = (await eventRes.json()).event;
+
+    const createRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "new_scale",
+      body: "Confiram em {{event.title}} ({{event.date}})\n{{forms.list}}",
+    }, adminToken);
+    assert.equal(createRes.status, 200);
+    const message = (await createRes.json()).message;
+    assert.equal(message.status, "rascunho");
+
+    const previewRes = await authedFetch(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/preview`, adminToken);
+    assert.equal(previewRes.status, 200);
+    const preview = (await previewRes.json()).preview;
+    assert.equal(preview.kind, "group");
+    assert.ok(preview.renderedBody.includes("Evento com mensagem"));
+
+    const dispatchRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/dispatch`, {}, adminToken);
+    assert.equal(dispatchRes.status, 200);
+    const dispatch = await dispatchRes.json();
+    assert.equal(dispatch.message.status, "disparada");
+    assert.equal(dispatch.dispatch.status, "logged_only");
+    assert.ok(dispatch.dispatch.logId);
+
+    const logsRes = await authedFetch(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/logs`, adminToken);
+    assert.equal(logsRes.status, 200);
+    const logs = (await logsRes.json()).logs;
+    assert.equal(logs.length, 1);
+    assert.equal(logs[0].mode, "manual");
+    assert.equal(logs[0].dispatcherVersion, "log-only-1");
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("event message type 2 bloqueia sem phoneColumn e libera ao configurar", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const bootstrap = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    const presenca = bootstrap.forms.find(form => form.type === "presenca");
+    assert.ok(presenca);
+
+    const eventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento DM",
+      date: "2026-06-10",
+      formIds: [presenca.id],
+    }, adminToken);
+    const event = (await eventRes.json()).event;
+
+    const blockedRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "fill_reminder",
+      body: "Ola {{person.name}}",
+      config: { formId: presenca.id, recipients: { mode: "auto" } },
+    }, adminToken);
+    assert.equal(blockedRes.status, 400);
+    assert.equal((await blockedRes.json()).code, "PHONE_COLUMN_NOT_CONFIGURED");
+
+    const updateMembersRes = await authedJson(ctx.baseUrl, "/api/members-config", {
+      sourceType: "google_sheets",
+      nameColumn: "B",
+      grauColumn: "A",
+      phoneColumn: "C",
+      range: "Socios!A:C",
+      syncEnabled: true,
+      syncFrequencyHours: 24,
+    }, adminToken, "PUT");
+    assert.equal(updateMembersRes.status, 200);
+
+    const okRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "fill_reminder",
+      body: "Ola {{person.name}}",
+      config: { formId: presenca.id, recipients: { mode: "auto" } },
+    }, adminToken);
+    assert.equal(okRes.status, 200);
+    const message = (await okRes.json()).message;
+    assert.equal(message.type, "fill_reminder");
+    assert.equal(message.status, "rascunho");
+  } finally {
+    await ctx.cleanup();
+  }
+});
