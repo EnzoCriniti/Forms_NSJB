@@ -413,7 +413,7 @@ const AuditLogsPanel = ({ currentUser }) => {
 };
 
 const AdminField = ({ children, style }) => (
-  <div style={{ display: "grid", gap: 6, ...style }}>
+  <div className="admin-field" style={{ display: "grid", gap: 6, ...style }}>
     {children}
   </div>
 );
@@ -596,7 +596,7 @@ export const AdminSettingsModal = ({
 
   const content = (
       <div
-        className={isScreen ? "settings-screen-card" : "modal-card modal-card-wide"}
+        className={isScreen ? "settings-screen-card admin-settings-shell" : "modal-card modal-card-wide admin-settings-shell"}
         style={isScreen ? { width: "100%", maxWidth: "100%", margin: 0 } : undefined}
       >
         {!isScreen && (
@@ -611,12 +611,32 @@ export const AdminSettingsModal = ({
               key={item.key}
               v={tab === item.key ? "primary" : "secondary"}
               sz="sm"
+              className="settings-tab"
               onClick={() => setTab(item.key)}
-              style={{ borderRadius: 999, padding: "8px 12px", fontWeight: 800 }}
+              style={{
+                alignItems: "flex-start",
+                border: tab === item.key ? "1px solid rgba(26, 107, 60, 0.28)" : `1px solid ${COLORS.borderLight}`,
+                borderRadius: 12,
+                boxShadow: tab === item.key ? "0 10px 24px rgba(26, 107, 60, 0.14)" : "none",
+                flexDirection: "column",
+                gap: 2,
+                minHeight: 54,
+                padding: "9px 12px",
+                textAlign: "left",
+              }}
             >
-              {item.label}
+              <span className="settings-tab__label">{item.label}</span>
+              <span className="settings-tab__description" aria-hidden="true">{item.description}</span>
             </Btn>
           ))}
+        </div>
+
+        <div className="settings-active-panel">
+          <div className="settings-active-panel__eyebrow">Modulo administrativo</div>
+          <div>
+            <strong>{activeTab.label}</strong>
+            <span>{activeTab.description}</span>
+          </div>
         </div>
 
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
