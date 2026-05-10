@@ -208,6 +208,7 @@ export const PublicReadingToolbar = ({
   onToggleTheme,
   onIncreaseFontScale,
   onDecreaseFontScale,
+  onBack,
   backHref,
 }) => {
   const resolveInitialTheme = () => {
@@ -310,12 +311,16 @@ export const PublicReadingToolbar = ({
   return (
     <div className="public-reading-toolbar" data-theme={localTheme} aria-label="Ajustes de leitura">
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        {backHref && (
+        {(onBack || backHref) && (
           <Btn
             v="ghost"
             sz="sm"
             icon="back"
             onClick={() => {
+              if (onBack) {
+                onBack();
+                return;
+              }
               window.location.hash = backHref.startsWith("#") ? backHref : `#${backHref}`;
             }}
             title="Voltar"
