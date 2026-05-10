@@ -118,6 +118,7 @@ export default function App() {
   const escalaByForm = { ...(bootstrap.escalaByForm || {}), ...escalaDetails };
   const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events } = bootstrap;
   const activeForm = useMemo(() => forms.find(form => form.id === activeFormId) || null, [forms, activeFormId]);
+  const activeEvent = useMemo(() => events.find(event => event.id === activeEventId) || null, [events, activeEventId]);
   const editingForm = useMemo(() => draftForm || forms.find(form => form.id === editingFormId) || null, [draftForm, forms, editingFormId]);
   const publicForm = useMemo(() => {
     const identifier = publicRoute?.identifier;
@@ -836,7 +837,7 @@ export default function App() {
           />
         )}
         {screen === "list" && <FormListScreen onNavigate={navigate} onDuplicateForm={handleDuplicateForm} onArchiveForm={handleArchiveForm} onTogglePinnedForm={handleTogglePinnedForm} pinnedFormIds={pinnedFormIds} user={currentUser} labels={labels} forms={forms} onDeleteForm={handleDeleteForm} formDeleteKeyConfigured={formDeleteKeyConfigured} />}
-        {screen === "create" && <CreateFormScreen onNavigate={navigate} people={people} membersConfig={membersConfig} externalBases={externalBases} labels={labels} presets={presets} fieldCatalog={fieldCatalog} scaleTaskCatalog={scaleTaskCatalog} onSavePreset={handleSavePreset} onSaveForm={handleSaveForm} form={editingForm} isDuplicateMode={Boolean(draftForm)} />}
+        {screen === "create" && <CreateFormScreen onNavigate={navigate} people={people} membersConfig={membersConfig} externalBases={externalBases} labels={labels} presets={presets} fieldCatalog={fieldCatalog} scaleTaskCatalog={scaleTaskCatalog} onSavePreset={handleSavePreset} onSaveForm={handleSaveForm} form={editingForm} event={activeEvent} isDuplicateMode={Boolean(draftForm)} />}
         {screen === "settings" && canCreateForms(currentUser) && (
           <SettingsScreen
             onNavigate={navigate}

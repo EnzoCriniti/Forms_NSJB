@@ -51,6 +51,49 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
   });
 
+  it("preset o nome do formulario quando e criado dentro de um evento", async () => {
+    const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
+
+    renderNewForm({
+      onSaveForm,
+      event: {
+        id: 99,
+        title: "Sessao de Maio",
+        date: "2026-05-20",
+      },
+    });
+
+    const titleInput = screen.getByDisplayValue("Presenca Sessao de Maio - 20/05/2026");
+    expect(titleInput).toHaveAttribute("readonly");
+
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+
+    await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
+    expect(onSaveForm.mock.calls[0][0].title).toBe("Presenca Sessao de Maio - 20/05/2026");
+  });
+
+  it("preset o nome da escala quando e criada dentro de um evento", async () => {
+    const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
+
+    renderNewForm({
+      setupType: "escala_organ",
+      onSaveForm,
+      event: {
+        id: 88,
+        title: "Sessao de Escala",
+        date: "2026-05-20",
+      },
+    });
+
+    const titleInput = screen.getByDisplayValue("Escala da Organ - 20/05/2026");
+    expect(titleInput).toHaveAttribute("readonly");
+
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Escala" }));
+
+    await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
+    expect(onSaveForm.mock.calls[0][0].title).toBe("Escala da Organ - 20/05/2026");
+  });
+
   it("abre a pre-visualizacao e reflete o rascunho atual", () => {
     renderNewForm();
 

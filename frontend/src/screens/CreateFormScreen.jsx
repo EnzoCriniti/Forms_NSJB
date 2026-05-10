@@ -9,7 +9,7 @@ import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
+import { FORM_MODES, formatDate, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 
 const FIELD_TYPES = [
   { v: "person_select", l: "Seletor por base" },
@@ -66,6 +66,18 @@ const createDefaultScaleSections = () => [
 ];
 
 const createLocalScaleSection = () => ({ source: "local", title: "Nova secao", responsaveis: 1, auxiliares: 2 });
+
+const buildPresetTitle = (format, event) => {
+  const eventDate = event?.date ? ` - ${formatDate(event.date)}` : "";
+  if (format === "presenca") {
+    const eventTitle = String(event?.title || "").trim();
+    return `Presenca${eventTitle ? ` ${eventTitle}` : ""}${eventDate}`;
+  }
+  if (format === "escala_organ") {
+    return `Escala da Organ${eventDate}`;
+  }
+  return "";
+};
 
 const getCatalogGridSchema = item => ({
   rows: item?.gridSchema?.rows?.length ? item.gridSchema.rows : DEFAULT_GRID_ROWS,
@@ -155,6 +167,7 @@ export const CreateFormScreen = ({
   onSavePreset = () => {},
   onSaveForm = () => {},
   form,
+  event = null,
   isDuplicateMode = false,
 }) => {
   const [format, setFormat] = useState("presenca");
@@ -256,6 +269,9 @@ export const CreateFormScreen = ({
     () => fields.find(field => String(field.id) === String(editingFieldId)) || null,
     [editingFieldId, fields],
   );
+  const shouldPresetTitle = Boolean(event) && !form && (format === "presenca" || format === "escala_organ");
+  const presetTitle = shouldPresetTitle ? buildPresetTitle(format, event) : "";
+  const formTitle = shouldPresetTitle ? presetTitle : title;
   const canOfferMembersSelector = canUseMembersBase && !hasPrimaryLinkedField;
   const filteredFieldTypes = useMemo(() => {
     const shouldKeepCurrentPersonType = editingField?.type === "person_select";
@@ -553,7 +569,7 @@ export const CreateFormScreen = ({
         slug: form?.slug,
         type: format,
         status: nextStatus,
-        title,
+        title: formTitle,
         sessionName: "",
         description: desc,
         labels: selLabels,
@@ -742,7 +758,27 @@ export const CreateFormScreen = ({
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
           <div>
             <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Titulo *</label>
-            <input value={title} onChange={event => setTitle(event.target.value)} placeholder="Ex: Presenca Sessao de Escala - 02/05/2026" style={{ ...inp, fontSize: 14 }} />
+            <input
+              value={formTitle}
+              onChange={event => {
+                if (shouldPresetTitle) return;
+                setTitle(event.target.value);
+              }}
+              readOnly={shouldPresetTitle}
+              placeholder={shouldPresetTitle ? "Titulo padronizado pelo evento" : "Ex: Presenca Sessao de Escala - 02/05/2026"}
+              aria-readonly={shouldPresetTitle}
+              style={{
+                ...inp,
+                fontSize: 14,
+                background: shouldPresetTitle ? COLORS.surfaceAlt : COLORS.surface,
+                cursor: shouldPresetTitle ? "not-allowed" : "text",
+              }}
+            />
+            <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
+              {shouldPresetTitle
+                ? "O nome deste formulario e padronizado pelo evento."
+                : "O nome pode ser editado nesta tela."}
+            </div>
           </div>
         </div>
         <div>
@@ -1221,7 +1257,7 @@ export const CreateFormScreen = ({
         {!isEditingExistingForm && (
           <Btn v="secondary" icon="save" onClick={() => setPresetModal(true)}>Salvar como Template</Btn>
         )}
-        <Btn icon="check" onClick={() => submitForm(status)} disabled={!title.trim()} loading={saving}>{saving ? "Salvando..." : `${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulario"}`}</Btn>
+        <Btn icon="check" onClick={() => submitForm(status)} disabled={!formTitle.trim()} loading={saving}>{saving ? "Salvando..." : `${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulario"}`}</Btn>
       </div>
       {saveError && (
         <div style={{ marginTop: 12, background: COLORS.dangerLight, border: `1px solid ${COLORS.danger}`, borderRadius: 10, padding: "10px 14px", fontSize: 12, color: COLORS.danger }}>

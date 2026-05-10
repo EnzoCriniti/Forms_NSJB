@@ -77,7 +77,7 @@ export const saveForm = async payload => {
   if (!slug) throw new Error("Slug ou titulo invalido.");
 
   const duplicate = await findConflictingFormBySlug(slug, payload.id);
-  if (duplicate) throw new Error("Ja existe um formulario com este slug.");
+  if (duplicate) throw new Error("Ja existe um formulario com este identificador. Escolha outro nome ou ajuste o link.");
 
   const existingForm = payload.id ? await findFormById(payload.id) : null;
 

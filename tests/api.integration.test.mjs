@@ -661,6 +661,36 @@ test("forms endpoint updates an existing form", async () => {
   }
 });
 
+test("forms endpoint rejects duplicated slugs with a clearer message", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const bootstrapRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
+    const bootstrap = await bootstrapRes.json();
+    const existing = bootstrap.forms.find(form => form.slug);
+    assert.ok(existing);
+
+    const createRes = await authedJson(ctx.baseUrl, "/api/forms", {
+      slug: existing.slug,
+      type: existing.type,
+      status: "rascunho",
+      title: "Formulario duplicado",
+      sessionName: "",
+      description: "",
+      labels: [],
+      totalExpected: 0,
+      fieldDefinitions: existing.fieldDefinitions || [],
+      resultsConfig: existing.resultsConfig || {},
+      scaleSections: existing.scaleSections || [],
+    }, adminToken);
+    assert.equal(createRes.status, 400);
+    const body = await createRes.json();
+    assert.match(body.error, /identificador/i);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("forms endpoint clears expired closing when manually reopening a form", async () => {
   const ctx = await startServer();
   try {
@@ -1215,9 +1245,6 @@ test("public escala claim endpoint persists a slot and rejects conflicts", async
     const duplicatePayload = await duplicateRes.json();
     assert.equal(duplicatePayload.code, "ESCALA_LIMIT_REACHED");
 
-    const conflictLogs = await readAuditLogs(ctx.db, "WHERE action = ? AND status = ?", ["claim_escala_slot", "conflict"]);
-    assert.ok(conflictLogs.length >= 1);
-
     const conflictRes = await postJson(ctx.baseUrl, `/api/forms/${created.form.id}/escala/claim`, {
       sectionIndex: 0,
       slotIndex: 0,
@@ -1226,6 +1253,9 @@ test("public escala claim endpoint persists a slot and rejects conflicts", async
     assert.equal(conflictRes.status, 409);
     const conflictPayload = await conflictRes.json();
     assert.equal(conflictPayload.code, "ESCALA_CONFLICT");
+
+    const conflictLogs = await readAuditLogs(ctx.db, "WHERE action = ? AND status = ?", ["claim_escala_slot", "conflict"]);
+    assert.ok(conflictLogs.length >= 1);
 
     const missingRes = await postJson(ctx.baseUrl, "/api/forms/999999/escala/claim", {
       sectionIndex: 0,
