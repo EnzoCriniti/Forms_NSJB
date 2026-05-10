@@ -1629,3 +1629,41 @@ test("event message type 2 bloqueia sem phoneColumn e libera ao configurar", asy
     await ctx.cleanup();
   }
 });
+
+test("event message cancel e delete via API", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const bootstrap = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    const presenca = bootstrap.forms.find(form => form.type === "presenca");
+
+    const eventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento Cancel",
+      formIds: [presenca.id],
+    }, adminToken);
+    const event = (await eventRes.json()).event;
+
+    const createRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "new_scale",
+      body: "Anuncio em {{event.title}}",
+    }, adminToken);
+    const message = (await createRes.json()).message;
+
+    const cancelRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/cancel`, {}, adminToken);
+    assert.equal(cancelRes.status, 200);
+    assert.equal((await cancelRes.json()).message.status, "cancelada");
+
+    const cancelAgainRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/cancel`, {}, adminToken);
+    assert.equal(cancelAgainRes.status, 400);
+    assert.equal((await cancelAgainRes.json()).code, "MESSAGE_NOT_CANCELLABLE");
+
+    const deleteRes = await authedFetch(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}`, adminToken, { method: "DELETE" });
+    assert.equal(deleteRes.status, 200);
+
+    const refreshed = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    const refreshedEvent = refreshed.events.find(item => item.id === event.id);
+    assert.equal((refreshedEvent.messages || []).length, 0);
+  } finally {
+    await ctx.cleanup();
+  }
+});

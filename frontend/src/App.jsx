@@ -57,6 +57,7 @@ import { FormListScreen } from "./screens/FormListScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
 import { EventMessageEditorScreen } from "./screens/EventMessageEditorScreen";
+import { EventMessageDetailScreen } from "./screens/EventMessageDetailScreen";
 import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { ResultsScreen } from "./screens/ResultsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
@@ -717,6 +718,35 @@ export default function App() {
     setScreen("eventMessageEditor");
   };
 
+  const openEventMessageDetail = (event, message) => {
+    setActiveEventId(event.id);
+    setActiveMessageId(message.id);
+    setScreen("eventMessageDetail");
+  };
+
+  const applyMessageUpdate = updated => {
+    setBootstrap(prev => ({
+      ...prev,
+      events: (prev.events || []).map(event => {
+        if (event.id !== updated.eventId) return event;
+        return {
+          ...event,
+          messages: (event.messages || []).map(item => item.id === updated.id ? updated : item),
+        };
+      }),
+    }));
+  };
+
+  const applyMessageDeletion = messageId => {
+    setBootstrap(prev => ({
+      ...prev,
+      events: (prev.events || []).map(event => ({
+        ...event,
+        messages: (event.messages || []).filter(item => item.id !== messageId),
+      })),
+    }));
+  };
+
   const handleSyncMembersConfig = async () => {
     const result = await syncMembersConfig();
     setBootstrap(prev => ({
@@ -914,7 +944,7 @@ export default function App() {
             onTogglePinnedForm={handleTogglePinnedForm}
             onDeleteForm={handleDeleteForm}
             onCreateEventMessage={event => openEventMessageEditor(event, null)}
-            onOpenEventMessage={(event, message) => openEventMessageEditor(event, message)}
+            onOpenEventMessage={(event, message) => openEventMessageDetail(event, message)}
             onNavigate={navigate}
           />
         )}
@@ -928,7 +958,25 @@ export default function App() {
             people={people}
             messagingConfig={messagingConfig}
             onSave={payload => handleSaveEventMessage(activeEvent.id, payload)}
-            onCancel={() => { setActiveMessageId(null); setScreen("events"); }}
+            onCancel={saved => {
+              if (saved?.id) {
+                setActiveMessageId(saved.id);
+                setScreen("eventMessageDetail");
+              } else {
+                setActiveMessageId(null);
+                setScreen("events");
+              }
+            }}
+          />
+        )}
+        {screen === "eventMessageDetail" && currentUser && activeEvent && activeMessageId && (
+          <EventMessageDetailScreen
+            event={activeEvent}
+            message={(activeEvent.messages || []).find(item => item.id === activeMessageId) || null}
+            onMessageUpdated={applyMessageUpdate}
+            onMessageDeleted={id => { applyMessageDeletion(id); setActiveMessageId(null); setScreen("events"); }}
+            onEdit={() => setScreen("eventMessageEditor")}
+            onBack={() => { setActiveMessageId(null); setScreen("events"); }}
           />
         )}
         {screen === "list" && <FormListScreen onNavigate={navigate} onDuplicateForm={handleDuplicateForm} onArchiveForm={handleArchiveForm} onTogglePinnedForm={handleTogglePinnedForm} pinnedFormIds={pinnedFormIds} user={currentUser} labels={labels} forms={forms} onDeleteForm={handleDeleteForm} formDeleteKeyConfigured={formDeleteKeyConfigured} />}

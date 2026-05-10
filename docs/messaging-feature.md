@@ -308,11 +308,17 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Aviso quando `publicBaseUrl` esta vazia (links wa.me ficarao relativos)
 - [ ] Bloqueio explicito de tipo 3 quando escala nao tem slot vago (validacao virá no preview/dispatch da fase 9)
 
-### Fase 9 — detalhe da mensagem
-- [ ] Tela com preview, lista de destinatários e `wa.me/...` por pessoa
-- [ ] Botão "Disparar agora" (manual)
-- [ ] Histórico de logs de dispatch (caso precise reenviar log no futuro)
-- [ ] Editar / cancelar (respeitando estados permitidos)
+### Fase 9 — detalhe da mensagem ✅
+- [x] `EventMessageDetailScreen` carrega preview e logs sob demanda
+- [x] Mostra corpo renderizado + botao "Copiar texto"
+- [x] Tipo 1: bloco indicando o grupo do WhatsApp configurado
+- [x] Tipos 2/3: lista de destinatarios com `wa.me/...` por pessoa, contadores ativos vs sem telefone
+- [x] Botao "Disparar agora" com confirmacao (gera log, marca como disparada)
+- [x] Botao "Cancelar" respeitando estados (rascunho, agendada, pronta)
+- [x] Botao "Excluir" para mensagens canceladas (limpa logs em cascata via DDL)
+- [x] Botao "Editar" so para rascunho/agendada
+- [x] Historico completo de logs com `dispatcherVersion` e contadores de destinatarios
+- [x] Teste de API novo cobrindo cancel + cancel novamente (400) + delete + verifica no bootstrap
 
 ### Fase 10 — orquestrador
 - [ ] Hook em `formLifecycleOrchestrator` processa agendadas
