@@ -242,11 +242,12 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 ### Fase 1 — documentação ✅
 - [x] Estrutura, decisões e escopo definidos neste documento
 
-### Fase 2 — schema e migration
-- [ ] Migration nova com as 4 tabelas (postgres)
-- [ ] Atualizar `docker/db/DDL-POSTGRESQL-INICIAL.sql`
-- [ ] Seed de 3 templates de exemplo (um por tipo)
-- [ ] Seed de 1 preset de pessoas vazio (exemplo)
+### Fase 2 — schema e migration ✅
+- [x] `ensureSchema` em `postgresDriver.mjs` cria as 4 tabelas com `IF NOT EXISTS` (DBs existentes)
+- [x] `docker/db/DDL-POSTGRESQL-INICIAL.sql` atualizado (DBs novos)
+- [x] Seed de 3 templates de exemplo (um por tipo) em `MESSAGE_TEMPLATES`
+- [x] Seed de `messagingConfig` em `settings` com `whatsappGroupName=""` e `autoDispatchEnabled=true`
+- [x] `ensureMessageTemplatesSeed` e `ensureMessagingConfigSeed` chamados em `ensureSeedData`
 
 ### Fase 3 — repositories
 - [ ] `messageTemplatesRepository.mjs`

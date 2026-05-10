@@ -6,9 +6,11 @@
 
 import {
   DEFAULT_MEMBERS_CONFIG,
+  DEFAULT_MESSAGING_CONFIG,
   DEFAULT_USERS,
   ESCALA_SECTIONS,
   LABELS,
+  MESSAGE_TEMPLATES,
   MOCK_EVENTS,
   MOCK_FORMS,
   MOCK_RESPONSES,
@@ -205,6 +207,29 @@ const ensureMembersConfigSeed = async () => {
   );
 };
 
+const ensureMessagingConfigSeed = async () => {
+  const found = await database.queryOne("SELECT key FROM settings WHERE key = ?", ["messagingConfig"]);
+  if (found) return;
+  await database.execute(
+    "INSERT INTO settings (key, value_json, updated_at) VALUES (?, ?, ?)",
+    ["messagingConfig", stringifyJson(DEFAULT_MESSAGING_CONFIG), nowIso()],
+  );
+};
+
+const ensureMessageTemplatesSeed = async () => {
+  const count = (await database.queryOne("SELECT COUNT(*) AS total FROM message_templates"))?.total || 0;
+  if (count) return;
+  const now = nowIso();
+  await database.withTransaction(async tx => {
+    for (const template of MESSAGE_TEMPLATES) {
+      await tx.execute(
+        "INSERT INTO message_templates (name, type, body, created_at, updated_at) VALUES (?, ?, ?, ?, ?)",
+        [template.name, template.type, template.body, now, now],
+      );
+    }
+  });
+};
+
 export const ensureSeedData = async () => {
   await ensureFormsSeed();
   await ensureEventsSeed();
@@ -212,4 +237,6 @@ export const ensureSeedData = async () => {
   await ensureLabelsSeed();
   await ensurePresetsSeed();
   await ensureMembersConfigSeed();
+  await ensureMessagingConfigSeed();
+  await ensureMessageTemplatesSeed();
 };

@@ -447,3 +447,26 @@ export const ESCALA_SECTIONS = [
 ];
 
 export const DEFAULT_PEOPLE = [];
+
+export const DEFAULT_MESSAGING_CONFIG = {
+  whatsappGroupName: "",
+  autoDispatchEnabled: true,
+};
+
+export const MESSAGE_TEMPLATES = [
+  {
+    type: "new_scale",
+    name: "Anuncio de nova escala/presenca",
+    body: "Prezada Irmandade,\n\nO evento {{event.title}} ({{event.date}}) ja esta com formularios abertos.\n\n{{forms.list}}\n\nPor favor preencham ate {{event.closing}}.",
+  },
+  {
+    type: "fill_reminder",
+    name: "Lembrete de preenchimento da presenca",
+    body: "Ola {{person.name}},\n\nLembrete: o formulario de presenca de {{event.title}} fecha em {{form.closing}}.\n\nPreenche por favor: {{form.publicLink}}",
+  },
+  {
+    type: "open_slots",
+    name: "Lembrete de vagas em aberto da escala",
+    body: "Ola {{person.name}},\n\nA escala de {{event.title}} ainda tem vagas em aberto. Caso queira participar, escolha um horario: {{form.publicLink}}",
+  },
+];

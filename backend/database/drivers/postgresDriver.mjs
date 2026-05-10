@@ -88,6 +88,60 @@ const ensureSchema = async pool => {
     await client.query("CREATE INDEX IF NOT EXISTS idx_events_status ON events(status)");
     await client.query("CREATE INDEX IF NOT EXISTS idx_events_date ON events(date)");
     await client.query("ALTER TABLE events ADD COLUMN IF NOT EXISTS opening TIMESTAMPTZ");
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS message_templates (
+        id BIGSERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL,
+        body TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL
+      )
+    `);
+    await client.query("CREATE INDEX IF NOT EXISTS idx_message_templates_type ON message_templates(type)");
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS person_selection_presets (
+        id BIGSERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        person_keys_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+        created_at TIMESTAMPTZ NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL
+      )
+    `);
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS event_messages (
+        id BIGSERIAL PRIMARY KEY,
+        event_id BIGINT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+        type TEXT NOT NULL,
+        template_id BIGINT REFERENCES message_templates(id) ON DELETE SET NULL,
+        body TEXT NOT NULL,
+        config_json JSONB NOT NULL DEFAULT '{}'::jsonb,
+        scheduled_for TIMESTAMPTZ,
+        window_option TEXT,
+        auto_dispatch_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+        status TEXT NOT NULL DEFAULT 'rascunho',
+        sent_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL
+      )
+    `);
+    await client.query("CREATE INDEX IF NOT EXISTS idx_event_messages_event_id ON event_messages(event_id)");
+    await client.query("CREATE INDEX IF NOT EXISTS idx_event_messages_status_scheduled ON event_messages(status, scheduled_for)");
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS message_dispatch_log (
+        id BIGSERIAL PRIMARY KEY,
+        message_id BIGINT NOT NULL REFERENCES event_messages(id) ON DELETE CASCADE,
+        dispatched_at TIMESTAMPTZ NOT NULL,
+        mode TEXT NOT NULL,
+        rendered_body TEXT NOT NULL,
+        recipients_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+        group_name TEXT,
+        status TEXT NOT NULL DEFAULT 'logged_only',
+        dispatcher_version TEXT NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL
+      )
+    `);
+    await client.query("CREATE INDEX IF NOT EXISTS idx_message_dispatch_log_message_id ON message_dispatch_log(message_id)");
   } finally {
     client.release();
   }
