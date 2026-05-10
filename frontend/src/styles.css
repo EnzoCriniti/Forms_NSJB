@@ -974,6 +974,12 @@ input[type="radio"] {
   background: var(--primary-light) !important;
 }
 
+.results-top-card {
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 34%),
+    linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 68%, rgba(26, 107, 60, 0.78) 100%) !important;
+}
+
 .public-top {
   background:
     radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 34%),
