@@ -302,7 +302,6 @@ export const PublicReadingToolbar = ({
 
   return (
     <div className="public-reading-toolbar" aria-label="Ajustes de leitura">
-      <span className="public-reading-toolbar__label">Leitura</span>
       <div className="public-reading-toolbar__actions">
         <Btn
           v="ghost"
@@ -350,11 +349,12 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
   };
 
   return (
-    <div className="public-top" style={{ background: COLORS.primary, borderRadius: "16px 16px 0 0", padding: "24px", color: "#fff" }}>
+    <div>
       <PublicReadingToolbar {...readingControls} />
+      <div className="public-top" style={{ background: COLORS.primary, borderRadius: "16px 16px 0 0", padding: "24px", color: "#fff" }}>
       <div className="public-top-compact-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 18, alignItems: "start" }}>
         <div className="public-top-compact-main" style={{ minWidth: 0 }}>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, lineHeight: 1.15 }}>{displayTitle}</h1>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.02em" }}>{displayTitle}</h1>
           <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.84)", fontSize: 13 }}>{form?.type === "escala_organ" ? "Escala da Organ" : "Formulário de Presença"}</p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12, alignItems: "center" }}>
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", fontSize: 11, fontWeight: 700 }}>
@@ -373,6 +373,7 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
       {descriptionText && (
         <p className="public-top-description">{descriptionText}</p>
       )}
+      </div>
     </div>
   );
 };
@@ -401,7 +402,7 @@ export const PublicTop = ({ form, onBack }) => {
             <Icon name="link" size={12} />
             Link público
           </div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, lineHeight: 1.15 }}>{form?.title || "NSJB Forms"}</h1>
+          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.02em" }}>{form?.title || "NSJB Forms"}</h1>
           <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.84)", fontSize: 13 }}>{form?.type === "escala_organ" ? "Escala da Organ" : "Formulário de Presença"}</p>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12, alignItems: "center" }}>
             {publicPath && (
