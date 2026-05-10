@@ -8,7 +8,7 @@ import React, { useMemo, useState } from "react";
 import { COLORS, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
 import { FormListToolbar } from "../components/FormListToolbar";
 import { FormListCard } from "../components/FormListCard";
-import { ROLES, canCreateForms, canViewForm, visibleFormsFor } from "../lib/auth";
+import { canCreateForms, canViewForm, visibleFormsFor } from "../lib/auth";
 import { buildFormSearchIndex, normalizeSearchText } from "../lib/forms";
 
 const PAGE_SIZE = 6;
@@ -111,7 +111,6 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
       {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 12, flexWrap: "wrap" }}>
         <div aria-hidden="true" />
-        {canCreateForms(user) && <Btn icon="plus" aria-label="Novo formulario" title="Novo formulario" onClick={() => onNavigate("create")} />}
       </div>
       <FormListToolbar
         search={search}

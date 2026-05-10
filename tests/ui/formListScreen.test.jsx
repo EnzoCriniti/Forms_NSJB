@@ -77,6 +77,12 @@ describe("FormListScreen", () => {
     expect(screen.getByDisplayValue("Mais recentes")).toBeInTheDocument();
   });
 
+  it("nao exibe o botao de criar no topo da listagem", () => {
+    render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
+
+    expect(screen.queryByRole("button", { name: "Novo formulario" })).not.toBeInTheDocument();
+  });
+
   it("mantem a listagem em bloco unico sem divisorias por modo", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
 
