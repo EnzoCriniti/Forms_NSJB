@@ -77,11 +77,11 @@ describe("FormListScreen", () => {
     expect(screen.getByDisplayValue("Mais recentes")).toBeInTheDocument();
   });
 
-  it("organiza a listagem entre presenca do nucleo e formularios gerais", () => {
+  it("mantem a listagem em bloco unico sem divisorias por modo", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
 
     expect(screen.getAllByText("Presenca do nucleo").length).toBeGreaterThan(0);
-    expect(screen.getByText("Formularios gerais")).toBeInTheDocument();
+    expect(screen.queryByText("Formularios gerais")).not.toBeInTheDocument();
   });
 
   it("filtra formularios pelo campo de busca", () => {
