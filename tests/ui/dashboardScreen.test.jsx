@@ -58,7 +58,7 @@ describe("DashboardScreen", () => {
     expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByText("Proximos fechamentos")).toBeInTheDocument();
     expect(screen.getByText("Presenca da Semana")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Novo Formulario" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Novo formulario" })).toBeInTheDocument();
 
     fireEvent.click(screen.getAllByRole("button", { name: "Abrir resultados" })[0]);
     expect(onNavigate).toHaveBeenCalledWith("results", forms[1] ? forms[1] : forms[0]);

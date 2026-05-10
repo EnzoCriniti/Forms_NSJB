@@ -67,6 +67,24 @@ describe("PublicFormScreen", () => {
     expect(window.location.hash).toBe("#/formularios/1/resultados");
   });
 
+  it("usa um topo leve quando a tela interna de resposta esta ativa", () => {
+    render(
+      <PublicFormScreen
+        form={form}
+        responses={[]}
+        onSaveResponse={vi.fn()}
+        onBack={vi.fn()}
+        people={people}
+        resultsHref="#/formularios/1/resultados"
+        variant="internal"
+      />,
+    );
+
+    expect(screen.getByText("Formulario Publico")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Resultados" })).toBeInTheDocument();
+    expect(screen.queryByText("NSJB Forms")).not.toBeInTheDocument();
+  });
+
   it("abre modal de edicao quando a pessoa ja respondeu", () => {
     render(
       <PublicFormScreen

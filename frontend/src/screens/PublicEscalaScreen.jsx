@@ -55,12 +55,15 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
-      {!isInternal && <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />}
-      {isInternal && (
-        <div className="screen-top-card internal-response-header" style={{ marginBottom: 14 }}>
-          <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Escala"}</h2>
-          <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>Escolha uma vaga pendente para preencher seu nome.</p>
+      {isInternal ? (
+        <div className="screen-top-card internal-response-header" style={{ marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ minWidth: 0 }}>
+            <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Escala"}</h2>
+            <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>Escolha uma vaga pendente para preencher seu nome.</p>
+          </div>
         </div>
+      ) : (
+        <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />
       )}
       <div className={isInternal ? "internal-response-card" : "public-response-card public-scale-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : undefined, border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: 18 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>

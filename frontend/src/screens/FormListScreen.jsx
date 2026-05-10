@@ -111,10 +111,10 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
       {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, gap: 12, flexWrap: "wrap" }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>Formularios</h2>
-          <p style={{ margin: "4px 0 0", fontSize: 14, color: COLORS.textMuted }}>{availableForms.length} formularios disponiveis {user ? `para ${ROLES[user.role]?.label}` : "sem login"}</p>
+          <div style={{ margin: 0, fontSize: 22, fontWeight: 800, color: COLORS.text, lineHeight: 1 }}>{availableForms.length}</div>
+          <p style={{ margin: "4px 0 0", fontSize: 14, color: COLORS.textMuted }}>disponiveis {user ? `para ${ROLES[user.role]?.label}` : "sem login"}</p>
         </div>
-        {canCreateForms(user) && <Btn icon="plus" onClick={() => onNavigate("create")}>Novo Formulario</Btn>}
+        {canCreateForms(user) && <Btn icon="plus" aria-label="Novo formulario" title="Novo formulario" onClick={() => onNavigate("create")} />}
       </div>
       <FormListToolbar
         search={search}

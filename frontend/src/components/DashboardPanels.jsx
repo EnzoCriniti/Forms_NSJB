@@ -14,8 +14,8 @@ export const DashboardHeader = ({ onNavigate, user }) => (
       <p style={{ margin: "6px 0 0", fontSize: 13, color: COLORS.textMuted }}>Resumo operacional da aplicacao sem entrar nas Configuracoes.</p>
     </div>
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-      <Btn v="secondary" icon="list" onClick={() => onNavigate("list")}>Formularios</Btn>
-      {user?.role === "admin" && <Btn icon="plus" onClick={() => onNavigate("create")}>Novo Formulario</Btn>}
+      <Btn v="secondary" icon="list" aria-label="Listagem" title="Listagem" onClick={() => onNavigate("list")} />
+      {user?.role === "admin" && <Btn icon="plus" aria-label="Novo formulario" title="Novo formulario" onClick={() => onNavigate("create")} />}
     </div>
   </div>
 );
@@ -29,7 +29,7 @@ export const DashboardEmptyState = ({ onNavigate, user }) => (
     <p style={{ margin: "0 auto 16px", maxWidth: 520, color: COLORS.textSecondary, fontSize: 13, lineHeight: 1.5 }}>
       Quando houver formularios, este painel mostra o volume aberto, o andamento das respostas e os prazos mais proximos.
     </p>
-    {user?.role === "admin" && <Btn icon="plus" onClick={() => onNavigate("create")}>Criar formulario</Btn>}
+    {user?.role === "admin" && <Btn icon="plus" aria-label="Criar formulario" title="Criar formulario" onClick={() => onNavigate("create")} />}
   </div>
 );
 

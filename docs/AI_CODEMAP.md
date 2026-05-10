@@ -26,6 +26,7 @@ Mapa curto das areas mais mexidas por agentes.
   Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile. Contas logadas respondem formularios pela tela interna `respond`; links publicos continuam em `#/formularios/<id>`.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
+  No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive o caminho publico canônico de formularios `#/formularios/<id>` e a leitura de links legados por slug.
 
