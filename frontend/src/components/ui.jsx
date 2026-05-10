@@ -4,9 +4,10 @@
  * @responsibility Reunir cores, icones, badges e elementos de UI compartilhados.
  */
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatDate, formatDateTime } from "../lib/forms";
 import { buildPublicFormPath } from "../lib/appShell";
+import { STORAGE_KEYS } from "../lib/appConstants";
 
 export const COLORS = {
   primary: "var(--primary)",
@@ -195,7 +196,152 @@ export const TypeBadge = ({ type }) => (
   </span>
 );
 
-export const PublicTopCompact = ({ form, onBack, description, actionLabel, actionHref, actionIcon = "eye" }) => {
+export const PublicReadingToolbar = ({
+  theme,
+  fontScale = 1,
+  onToggleTheme,
+  onIncreaseFontScale,
+  onDecreaseFontScale,
+}) => {
+  const resolveInitialTheme = () => {
+    if (theme) return theme;
+    if (typeof document !== "undefined" && document.documentElement.dataset.theme) {
+      return document.documentElement.dataset.theme;
+    }
+    if (typeof window !== "undefined") {
+      return window.localStorage?.getItem(STORAGE_KEYS.theme) || "light";
+    }
+    return "light";
+  };
+
+  const resolveInitialFontScale = () => {
+    if (fontScale) return Number(fontScale) || 1;
+    if (typeof window !== "undefined") {
+      const stored = Number(window.localStorage?.getItem(STORAGE_KEYS.fontScale));
+      if (!Number.isNaN(stored) && stored > 0) {
+        return stored;
+      }
+    }
+    return 1;
+  };
+
+  const [localTheme, setLocalTheme] = useState(resolveInitialTheme);
+  const [localFontScale, setLocalFontScale] = useState(resolveInitialFontScale);
+
+  useEffect(() => {
+    if (theme) {
+      setLocalTheme(theme);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    if (fontScale) {
+      setLocalFontScale(Number(fontScale) || 1);
+    }
+  }, [fontScale]);
+
+  const applyTheme = nextTheme => {
+    if (typeof document !== "undefined") {
+      document.documentElement.dataset.theme = nextTheme;
+    }
+    if (typeof window !== "undefined") {
+      window.localStorage?.setItem(STORAGE_KEYS.theme, nextTheme);
+      window.dispatchEvent(new CustomEvent("nsjb-preferences-change", { detail: { theme: nextTheme } }));
+    }
+    setLocalTheme(nextTheme);
+  };
+
+  const applyFontScale = nextScale => {
+    const normalized = Math.min(1.3, Math.max(0.9, Number(nextScale) || 1));
+    if (typeof document !== "undefined") {
+      document.documentElement.style.setProperty("--app-font-scale", String(normalized));
+      document.documentElement.dataset.fontScale = normalized > 1 ? "large" : "normal";
+    }
+    if (typeof window !== "undefined") {
+      window.localStorage?.setItem(STORAGE_KEYS.fontScale, String(normalized));
+      window.dispatchEvent(new CustomEvent("nsjb-preferences-change", { detail: { fontScale: normalized } }));
+    }
+    setLocalFontScale(normalized);
+  };
+
+  const handleDecrease = () => {
+    if (onDecreaseFontScale) {
+      onDecreaseFontScale();
+    } else {
+      applyFontScale(localFontScale - 0.1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (onIncreaseFontScale) {
+      onIncreaseFontScale();
+    } else {
+      applyFontScale(localFontScale + 0.1);
+    }
+  };
+
+  const handleThemeToggle = () => {
+    const nextTheme = localTheme === "dark" ? "light" : "dark";
+    if (onToggleTheme) {
+      onToggleTheme();
+    } else {
+      applyTheme(nextTheme);
+    }
+  };
+
+  const fontControlStyle = {
+    minHeight: 34,
+    padding: "6px 10px",
+    border: "1px solid rgba(255,255,255,0.26)",
+    background: "rgba(255,255,255,0.08)",
+    color: "#fff",
+    fontWeight: 800,
+    borderRadius: 10,
+    boxShadow: "none",
+  };
+
+  return (
+    <div className="public-reading-toolbar" aria-label="Ajustes de leitura">
+      <span className="public-reading-toolbar__label">Leitura</span>
+      <div className="public-reading-toolbar__actions">
+        <Btn
+          v="ghost"
+          sz="sm"
+          onClick={handleDecrease}
+          title="Diminuir fonte"
+          aria-label="Diminuir fonte"
+          disabled={localFontScale <= 0.9}
+          style={fontControlStyle}
+        >
+          A-
+        </Btn>
+        <Btn
+          v="ghost"
+          sz="sm"
+          onClick={handleIncrease}
+          title="Aumentar fonte"
+          aria-label="Aumentar fonte"
+          disabled={localFontScale >= 1.3}
+          style={fontControlStyle}
+        >
+          A+
+        </Btn>
+        <Btn
+          v="ghost"
+          sz="sm"
+          onClick={handleThemeToggle}
+          title={localTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+          aria-label={localTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+          style={{ ...fontControlStyle, minWidth: 80 }}
+        >
+          {localTheme === "dark" ? "Claro" : "Escuro"}
+        </Btn>
+      </div>
+    </div>
+  );
+};
+
+export const PublicTopCompact = ({ form, onBack, description, actionLabel, actionHref, actionIcon = "eye", readingControls }) => {
   const displayTitle = form?.date ? `${form.title} - ${formatDate(form.date)}` : form?.title || "NSJB Forms";
   const descriptionText = String(description || "").trim();
   const handleAction = () => {
@@ -205,6 +351,7 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
 
   return (
     <div className="public-top" style={{ background: COLORS.primary, borderRadius: "16px 16px 0 0", padding: "24px", color: "#fff" }}>
+      <PublicReadingToolbar {...readingControls} />
       <div className="public-top-compact-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 18, alignItems: "start" }}>
         <div className="public-top-compact-main" style={{ minWidth: 0 }}>
           <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, lineHeight: 1.15 }}>{displayTitle}</h1>
@@ -283,9 +430,9 @@ export const PublicTop = ({ form, onBack }) => {
   );
 };
 
-export const ClosedPublicScreen = ({ form, onBack, actionLabel, actionHref, message, title = "Formulário fechado" }) => (
+export const ClosedPublicScreen = ({ form, onBack, actionLabel, actionHref, message, title = "Formulário fechado", readingControls }) => (
   <div style={{ maxWidth: 620, margin: "0 auto" }}>
-    <PublicTopCompact form={form} onBack={onBack} actionLabel={actionLabel} actionHref={actionHref} />
+    <PublicTopCompact form={form} onBack={onBack} actionLabel={actionLabel} actionHref={actionHref} readingControls={readingControls} />
     <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", borderRadius: "0 0 16px 16px", padding: "36px 24px", textAlign: "center" }}>
       <div style={{ width: 56, height: 56, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", background: COLORS.dangerLight, color: COLORS.danger }}><Icon name="warning" size={28} /></div>
       <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>{title}</h2>

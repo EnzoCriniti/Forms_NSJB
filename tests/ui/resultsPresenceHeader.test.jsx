@@ -1,7 +1,13 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { ResultsPresenceHeader } from "../../frontend/src/components/ResultsPresenceHeader.jsx";
+
+afterEach(() => {
+  window.localStorage.clear();
+  document.documentElement.dataset.theme = "light";
+  document.documentElement.style.removeProperty("--app-font-scale");
+});
 
 describe("ResultsPresenceHeader", () => {
   it("renderiza titulo, filtros de grau e exportacao", () => {
@@ -37,5 +43,30 @@ describe("ResultsPresenceHeader", () => {
     expect(onNavigate).toHaveBeenCalledWith("list");
     expect(screen.getByText("Respostas")).toBeInTheDocument();
     expect(screen.getByText("Faltam")).toBeInTheDocument();
+  });
+
+  it("mostra o toolbar de leitura quando o resultado e publico", () => {
+    render(
+      <ResultsPresenceHeader
+        onNavigate={vi.fn()}
+        publicActionHref="#/formularios/1"
+        form={{
+          title: "Presenca Completa",
+          status: "aberto",
+          closing: "2026-05-05T20:00",
+          labels: [],
+        }}
+        labels={[]}
+        grauOptions={[]}
+        selectedGrau="todos"
+        onSelectGrau={vi.fn()}
+        stats={[]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Aumentar fonte" }));
+    expect(document.documentElement.style.getPropertyValue("--app-font-scale")).toBe("1.1");
+    fireEvent.click(screen.getByRole("button", { name: "Mudar para modo escuro" }));
+    expect(document.documentElement.dataset.theme).toBe("dark");
   });
 });

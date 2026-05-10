@@ -42,13 +42,13 @@ const compareGrauOptions = (left, right) => {
   return String(left || "").localeCompare(String(right || ""), "pt-BR");
 };
 
-export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections, publicFormHref }) => (
+export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
     ? <EscalaResultsScreen onNavigate={onNavigate} people={people} canEdit={canEditEscala(user)} form={form} sections={sections} labels={labels} onSaveSections={onSaveSections} />
-    : <PresenceResultsScreen onNavigate={onNavigate} responses={responses} form={form} labels={labels} people={people} publicFormHref={publicFormHref} />
+    : <PresenceResultsScreen onNavigate={onNavigate} responses={responses} form={form} labels={labels} people={people} publicFormHref={publicFormHref} readingControls={readingControls} />
 );
 
-const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people, publicFormHref }) => {
+const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people, publicFormHref, readingControls }) => {
   const columns = useMemo(() => getVisibleFields(form).filter(field => !(field.type === "person_select" && isPrimaryPeopleBaseField(form, field))), [form]);
   const resultsConfig = getResultsConfig(form);
   const [sortCol, setSortCol] = useState(null);
@@ -360,6 +360,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people, pu
       <ResultsPresenceHeader
         onNavigate={onNavigate}
         publicActionHref={publicFormHref}
+        readingControls={readingControls}
         form={form}
         labels={labels}
         grauOptions={linkedPeople ? grauOptions : []}

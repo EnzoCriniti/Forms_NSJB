@@ -8,7 +8,7 @@ import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
 import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, resolvePersonBySelectionValue, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
-export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "" }) => {
+export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "", readingControls }) => {
   const fields = getVisibleFields(form);
   const personField = getPersonField(form);
   const [values, setValues] = useState({});
@@ -106,7 +106,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   if (submitted) {
     return (
       <div style={{ maxWidth: 680, margin: "0 auto" }}>
-        <PublicTopCompact form={form} onBack={onBack} actionLabel="Resultados" actionHref={resultsHref} />
+        <PublicTopCompact form={form} onBack={onBack} actionLabel="Resultados" actionHref={resultsHref} readingControls={readingControls} />
         <div className="public-response-card" style={{ background: COLORS.surface, borderRadius: "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "40px 24px", textAlign: "center" }}>
           <div style={{ width: 56, height: 56, borderRadius: "50%", background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: COLORS.primary }}><Icon name="check" size={28} /></div>
           <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>{editing ? "Resposta atualizada!" : "Resposta enviada!"}</h2>
@@ -118,7 +118,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
 
   return (
     <div style={{ maxWidth: 680, margin: "0 auto" }}>
-      <PublicTopCompact form={form} onBack={onBack} description={form.description || "Preencha o formulário abaixo."} actionLabel={resultsHref ? "Resultados" : ""} actionHref={resultsHref} />
+      <PublicTopCompact form={form} onBack={onBack} description={form.description || "Preencha o formulário abaixo."} actionLabel={resultsHref ? "Resultados" : ""} actionHref={resultsHref} readingControls={readingControls} />
       {submitError && <div style={{ padding: "10px 24px 0" }}><FeedbackBanner tone="error" message={submitError} /></div>}
       {editing && <div style={{ background: COLORS.warningLight, border: `1px solid ${COLORS.warning}`, padding: "10px 24px", display: "flex", alignItems: "center", gap: 8 }}><Icon name="edit" size={14} /><span style={{ fontSize: 12, fontWeight: 600, color: "#b86e00" }}>Modo de edição - atualizando resposta já enviada</span></div>}
       <div className="public-response-card" style={{ background: COLORS.surface, borderBottomLeftRadius: 16, borderBottomRightRadius: 16, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "0 0 24px" }}>

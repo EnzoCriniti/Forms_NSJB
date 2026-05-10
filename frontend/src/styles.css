@@ -996,6 +996,35 @@ input[type="radio"] {
   line-height: 1.55;
 }
 
+.public-reading-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+.public-reading-toolbar__label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.public-reading-toolbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .public-form-field {
   transition: background-color 0.12s ease;
 }
@@ -1803,6 +1832,20 @@ button:not(.ui-btn):focus-visible {
     margin-top: 14px;
     padding-top: 12px;
     font-size: 12px;
+  }
+
+  .public-reading-toolbar {
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    gap: 8px;
+  }
+
+  .public-reading-toolbar__label {
+    font-size: 10px;
+  }
+
+  .public-reading-toolbar__actions {
+    gap: 6px;
   }
 
   .results-table-stage,

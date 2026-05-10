@@ -62,6 +62,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/ResultsScreen.jsx`
   Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
+- `frontend/src/components/ui.jsx`
+  Toolbar de leitura nas telas publicas, com ajuste de fonte e troca de tema persistidos no navegador.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
 - `frontend/src/App.jsx`

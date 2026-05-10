@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { COLORS, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
 import { getScalePersonLimit } from "../lib/forms";
 
-export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot }) => {
+export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls }) => {
   const [selSlot, setSelSlot] = useState(null);
   const [signName, setSignName] = useState("");
   const [error, setError] = useState("");
@@ -54,7 +54,7 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
-      <PublicTopCompact form={form} onBack={onBack} />
+      <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />
       <div className="public-response-card public-scale-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: 18 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>
           <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div><strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong></div>

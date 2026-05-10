@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { PublicFormScreen } from "../../frontend/src/screens/PublicFormScreen.jsx";
 
 const form = {
@@ -27,6 +27,12 @@ const people = [
   { name: "Joao", grau: "QM" },
 ];
 
+afterEach(() => {
+  window.localStorage.clear();
+  document.documentElement.dataset.theme = "light";
+  document.documentElement.style.removeProperty("--app-font-scale");
+});
+
 describe("PublicFormScreen", () => {
   it("renderiza campos dinamicos do formulario", () => {
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/1/resultados" />);
@@ -37,6 +43,17 @@ describe("PublicFormScreen", () => {
     expect(screen.getByText("Nome *")).toBeInTheDocument();
     expect(screen.getByText("Vai comparecer? *")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Enviar Resposta" })).toBeInTheDocument();
+  });
+
+  it("expõe controles de leitura e persiste as preferencias no navegador", () => {
+    render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/1/resultados" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Aumentar fonte" }));
+    expect(document.documentElement.style.getPropertyValue("--app-font-scale")).toBe("1.1");
+
+    fireEvent.click(screen.getByRole("button", { name: "Mudar para modo escuro" }));
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(window.localStorage.getItem("nsjb_forms_mvp_theme")).toBe("dark");
   });
 
   it("abre a rota publica de resultados pelo header", () => {

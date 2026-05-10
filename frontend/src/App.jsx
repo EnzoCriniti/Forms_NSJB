@@ -221,6 +221,22 @@ export default function App() {
     persist(STORAGE_KEYS.fontScale, fontScale);
   }, [fontScale]);
 
+  useEffect(() => {
+    const syncPreferences = event => {
+      const nextTheme = event?.detail?.theme;
+      const nextFontScale = event?.detail?.fontScale;
+      if (nextTheme === "light" || nextTheme === "dark") {
+        setTheme(nextTheme);
+      }
+      if (typeof nextFontScale === "number" && !Number.isNaN(nextFontScale)) {
+        setFontScale(clampFontScale(nextFontScale));
+      }
+    };
+
+    window.addEventListener("nsjb-preferences-change", syncPreferences);
+    return () => window.removeEventListener("nsjb-preferences-change", syncPreferences);
+  }, []);
+
   const increaseFontScale = () => setFontScale(current => clampFontScale(current + FONT_SCALE_STEP));
   const decreaseFontScale = () => setFontScale(current => clampFontScale(current - FONT_SCALE_STEP));
 
