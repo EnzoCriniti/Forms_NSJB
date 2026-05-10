@@ -32,6 +32,18 @@ const bootstrap = {
       metrics: { responses: 3, total: 5 },
     },
   ],
+  events: [
+    {
+      id: 10,
+      title: "Evento Dashboard",
+      date: "2026-05-10",
+      opening: "2026-05-01T08:00",
+      closing: "2026-05-10T20:00",
+      status: "pronto",
+      description: "",
+      formIds: [1],
+    },
+  ],
   responsesByForm: {},
   escalaByForm: {},
   users: [admin],
@@ -117,7 +129,7 @@ describe("App dashboard flow", () => {
     expect(screen.queryByRole("button", { name: "Fechar" })).not.toBeInTheDocument();
   });
 
-  it("abre o card da listagem no primeiro clique apos o bootstrap", async () => {
+  it("abre eventos como fluxo principal apos o bootstrap", async () => {
     window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({
       user: admin,
       token: "token-admin",
@@ -133,8 +145,11 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
+    expect(await screen.findByText("Evento Dashboard - 10/05/2026")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Novo" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Evento Dashboard - 10/05/2026"));
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Novo" })).toBeInTheDocument();
   });
 
   it("derruba a sessao quando o validador encontra o token revogado", async () => {

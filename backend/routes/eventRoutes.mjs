@@ -5,7 +5,7 @@
  */
 
 import { sendJson } from "../core/http.mjs";
-import { saveEvent, publishEvent } from "../services/eventsService.mjs";
+import { deleteEvent, saveEvent, publishEvent } from "../services/eventsService.mjs";
 import { validateDeleteId, validateEventPayload } from "../validators/payloadValidators.mjs";
 import {
   auditLevelFromError,
@@ -91,6 +91,45 @@ export const handleEventRoutes = async (req, res, url) => {
         level: auditLevelFromError(error),
         category: "events",
         action: "publish_event",
+        status: auditStatusFromError(error),
+        screen: "eventos",
+        entityType: "event",
+        entityId: eventId,
+        entityLabel: null,
+        message: error.message,
+        metadata: { eventId },
+      });
+      if (!sendKnownError(res, error)) {
+        sendJson(res, error.statusCode || 400, { error: error.message, code: error.code || undefined });
+      }
+    }
+    return true;
+  }
+
+  if (req.method === "DELETE" && url.pathname.startsWith("/api/events/")) {
+    const auth = await requireAdmin(req, res);
+    if (!auth) return true;
+    const eventId = validateDeleteId(url.pathname.split("/").pop(), "Id do evento");
+    try {
+      const result = await deleteEvent(eventId);
+      sendJson(res, 200, { ok: true });
+      writeAudit(req, auth, {
+        level: "info",
+        category: "events",
+        action: "delete_event",
+        status: "success",
+        screen: "eventos",
+        entityType: "event",
+        entityId: eventId,
+        entityLabel: result.event.title,
+        message: "Evento excluido.",
+        metadata: { eventId },
+      });
+    } catch (error) {
+      writeAudit(req, auth, {
+        level: auditLevelFromError(error),
+        category: "events",
+        action: "delete_event",
         status: auditStatusFromError(error),
         screen: "eventos",
         entityType: "event",

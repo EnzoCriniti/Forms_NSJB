@@ -81,3 +81,7 @@ export const upsertEventRecord = async payload => {
   ]);
   return Number(result.lastInsertId);
 };
+
+export const deleteEventRecord = async eventId => {
+  await database.execute("DELETE FROM events WHERE id = ?", [eventId]);
+};

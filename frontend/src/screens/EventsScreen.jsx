@@ -1,12 +1,12 @@
 /**
  * @file frontend/src/screens/EventsScreen.jsx
  * @summary Tela administrativa de eventos.
- * @responsibility Agrupar formularios e controlar publicacao manual.
+ * @responsibility Criar eventos e listar os formularios vinculados a cada evento.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Btn, FeedbackBanner, StatusBadge, TypeBadge, resolveActionErrorMessage } from "../components/ui";
-import { buildPublicEventFormPath } from "../lib/appShell";
+import React, { useMemo, useState } from "react";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, Icon, StatusBadge, resolveActionErrorMessage } from "../components/ui";
+import { FormListCard } from "../components/FormListCard";
 import { formatDate, formatDateTime } from "../lib/forms";
 
 const emptyDraft = {
@@ -29,70 +29,80 @@ const toDraft = event => ({
   closing: event?.closing || "",
 });
 
-const getFormTypeLabel = form => form?.type === "escala_organ" ? "Escala da organizacao" : "Presenca do nucleo";
-
-const getFormUrl = (event, form) => {
-  const eventIdentifier = event?.id || event?.title;
-  const path = buildPublicEventFormPath(eventIdentifier, form);
-  if (typeof window === "undefined") return path;
-  return `${window.location.origin}${path}`;
+const LIST_ACTION_STYLE = {
+  width: 42,
+  height: 42,
+  minWidth: 42,
+  padding: 0,
+  justifyContent: "center",
+  borderRadius: 12,
 };
 
-const buildEventMessage = (event, forms) => {
-  const linkedForms = (event.formIds || [])
-    .map(id => forms.find(form => Number(form.id) === Number(id)))
-    .filter(Boolean);
-  const lines = [
-    `Evento: ${event.title}`,
-    event.date ? `Data: ${formatDate(event.date)}` : "",
-    event.opening ? `Abertura: ${formatDateTime(event.opening)}` : "",
-    event.closing ? `Fechamento: ${formatDateTime(event.closing)}` : "",
-    "",
-    "Links para preenchimento:",
-    ...linkedForms.map(form => `- ${getFormTypeLabel(form)}: ${getFormUrl(event, form)}`),
-  ].filter(line => line !== "");
-  return lines.join("\n");
-};
+const sortEvents = (events, pinnedSet) => [...events].sort((a, b) => {
+  const aPinned = pinnedSet.has(a.id);
+  const bPinned = pinnedSet.has(b.id);
+  if (aPinned !== bPinned) return aPinned ? -1 : 1;
+  return String(b.date || "").localeCompare(String(a.date || "")) || Number(b.id || 0) - Number(a.id || 0);
+});
 
-export const EventsScreen = ({ events = [], forms = [], onSaveEvent, onPublishEvent, onNavigate }) => {
-  const [draft, setDraft] = useState(() => toDraft(events[0]));
-  const [activeId, setActiveId] = useState(events[0]?.id || null);
+export const EventsScreen = ({
+  events = [],
+  forms = [],
+  labels = [],
+  user,
+  pinnedEventIds = [],
+  pinnedFormIds = [],
+  initialSelectedEventId = null,
+  onSaveEvent,
+  onDeleteEvent,
+  onTogglePinnedEvent,
+  onCreateFormInEvent,
+  onDuplicateForm,
+  onArchiveForm,
+  onTogglePinnedForm,
+  onDeleteForm,
+  onNavigate,
+}) => {
+  const [mode, setMode] = useState(initialSelectedEventId ? "detail" : "list");
+  const [selectedEventId, setSelectedEventId] = useState(initialSelectedEventId);
+  const [draft, setDraft] = useState(() => ({ ...emptyDraft }));
   const [feedback, setFeedback] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [publishing, setPublishing] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
-  const activeEvent = useMemo(() => events.find(event => event.id === activeId) || null, [events, activeId]);
-  const linkedForms = useMemo(() => (draft.formIds || [])
-    .map(id => forms.find(form => Number(form.id) === Number(id)))
-    .filter(Boolean), [draft.formIds, forms]);
-  const message = draft.title ? buildEventMessage(draft, forms) : "";
+  const pinnedEventSet = useMemo(() => new Set(pinnedEventIds), [pinnedEventIds]);
+  const pinnedFormSet = useMemo(() => new Set(pinnedFormIds), [pinnedFormIds]);
+  const sortedEvents = useMemo(() => sortEvents(events, pinnedEventSet), [events, pinnedEventSet]);
+  const selectedEvent = useMemo(() => events.find(event => event.id === selectedEventId) || null, [events, selectedEventId]);
+  const eventForms = useMemo(() => {
+    const ids = new Set(selectedEvent?.formIds || []);
+    return forms.filter(form => ids.has(form.id));
+  }, [forms, selectedEvent]);
 
-  useEffect(() => {
-    if (activeId || !events[0]) return;
-    loadEvent(events[0]);
-  }, [activeId, events]);
-
-  const loadEvent = event => {
-    setActiveId(event.id);
-    setDraft({
-      ...toDraft(event),
-    });
+  const openEvent = event => {
+    setSelectedEventId(event.id);
+    setMode("detail");
     setFeedback(null);
   };
 
   const startNew = () => {
-    setActiveId(null);
     setDraft({ ...emptyDraft });
+    setSelectedEventId(null);
+    setMode("edit");
     setFeedback(null);
   };
 
-  const toggleForm = formId => {
-    setDraft(current => {
-      const formIds = current.formIds.includes(formId)
-        ? current.formIds.filter(id => id !== formId)
-        : [...current.formIds, formId];
-      return { ...current, formIds };
-    });
+  const editEvent = event => {
+    setDraft(toDraft(event));
+    setSelectedEventId(event.id);
+    setMode("edit");
+    setFeedback(null);
+  };
+
+  const cancelEdit = () => {
+    setDraft({ ...emptyDraft });
+    setMode(selectedEventId ? "detail" : "list");
   };
 
   const save = async () => {
@@ -100,10 +110,9 @@ export const EventsScreen = ({ events = [], forms = [], onSaveEvent, onPublishEv
     setFeedback(null);
     try {
       const saved = await onSaveEvent(draft);
-      setDraft({
-        ...toDraft(saved),
-      });
-      setActiveId(saved.id);
+      setSelectedEventId(saved.id);
+      setDraft(toDraft(saved));
+      setMode("detail");
       setFeedback({ tone: "success", message: "Evento salvo." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -112,85 +121,91 @@ export const EventsScreen = ({ events = [], forms = [], onSaveEvent, onPublishEv
     }
   };
 
-  const publish = async () => {
-    if (!draft.id) return;
-    setPublishing(true);
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
     setFeedback(null);
     try {
-      const published = await onPublishEvent(draft.id);
-      setDraft({
-        ...toDraft(published),
-      });
-      setActiveId(published.id);
-      setFeedback({ tone: "success", message: "Evento publicado. A mensagem ja pode ser copiada." });
+      await onDeleteEvent(pendingDelete.id);
+      setPendingDelete(null);
+      setSelectedEventId(current => current === pendingDelete.id ? null : current);
+      setMode("list");
+      setFeedback({ tone: "success", message: "Evento excluido." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
     } finally {
-      setPublishing(false);
+      setDeleting(false);
     }
   };
 
-  const copyMessage = async () => {
-    if (!message) return;
-    try {
-      await navigator.clipboard?.writeText(message);
-      setFeedback({ tone: "success", message: "Mensagem copiada." });
-    } catch {
-      setFeedback({ tone: "info", message: "Selecione a mensagem e copie manualmente." });
-    }
-  };
+  const renderShellHeader = children => (
+    <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+      {children}
+    </div>
+  );
 
-  return (
-    <div>
-      {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-      <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} aria-label="Voltar" />
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <h2 style={{ margin: 0, fontSize: 20 }}>Eventos</h2>
-          <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 13 }}>Agrupe formularios e publique a divulgacao inicial.</p>
+  const renderEventCard = event => {
+    const isPinned = pinnedEventSet.has(event.id);
+    return (
+      <div
+        key={event.id}
+        className="form-card form-card--interactive elevated"
+        role="button"
+        tabIndex={0}
+        onClick={() => openEvent(event)}
+        onKeyDown={keyboardEvent => {
+          if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+            keyboardEvent.preventDefault();
+            openEvent(event);
+          }
+        }}
+        style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer" }}
+      >
+        <div style={{ width: 46, height: 46, borderRadius: 12, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary, flexShrink: 0 }}>
+          <Icon name="calendar" size={20} />
         </div>
-        <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" />
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+            <strong style={{ fontSize: 16 }}>{event.date ? `${event.title} - ${formatDate(event.date)}` : event.title}</strong>
+            {isPinned && (
+              <span title="Evento fixado" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: 999, background: COLORS.warningLight, color: COLORS.warning }}>
+                <Icon name="pin" size={12} />
+              </span>
+            )}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+            <StatusBadge status={event.status} />
+            <span className="ui-badge" style={{ background: COLORS.surfaceAlt, color: COLORS.textSecondary }}>{event.formIds?.length || 0} forms</span>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
+            {event.opening && <span>Abertura: {formatDateTime(event.opening)}</span>}
+            {event.closing && <span>Fechamento: {formatDateTime(event.closing)}</span>}
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 6 }} onClick={eventClick => eventClick.stopPropagation()}>
+          <Btn v={isPinned ? "warning" : "ghost"} icon="pin" sz="sm" style={LIST_ACTION_STYLE} title={isPinned ? "Desfixar evento" : "Fixar evento"} aria-label={isPinned ? "Desfixar evento" : "Fixar evento"} onClick={() => onTogglePinnedEvent?.(event.id)} />
+          <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar evento" aria-label="Editar evento" onClick={() => editEvent(event)} />
+          <Btn v="danger" icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir evento" aria-label="Excluir evento" onClick={() => setPendingDelete(event)} />
+        </div>
       </div>
+    );
+  };
 
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(240px, 0.9fr) minmax(0, 1.6fr)", gap: 18 }} className="events-layout">
-        <section style={{ display: "grid", gap: 10, alignContent: "start" }}>
-          {events.length === 0 && (
-            <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-              Nenhum evento criado.
+  if (mode === "edit") {
+    return (
+      <div>
+        {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
+        {renderShellHeader(
+          <>
+            <Btn v="ghost" icon="back" onClick={cancelEdit} aria-label="Voltar" />
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <h2 style={{ margin: 0, fontSize: 20 }}>{draft.id ? "Editar evento" : "Novo evento"}</h2>
             </div>
-          )}
-          {events.map(event => (
-            <button
-              key={event.id}
-              type="button"
-              onClick={() => loadEvent(event)}
-              style={{
-                textAlign: "left",
-                border: `1px solid ${activeId === event.id ? COLORS.primary : COLORS.borderLight}`,
-                background: COLORS.surface,
-                borderRadius: 8,
-                padding: 14,
-                cursor: "pointer",
-                color: COLORS.text,
-                fontFamily: "inherit",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
-                <strong style={{ fontSize: 14 }}>{event.date ? `${event.title} - ${formatDate(event.date)}` : event.title}</strong>
-                <StatusBadge status={event.status} />
-              </div>
-              <div style={{ display: "flex", gap: 10, marginTop: 8, color: COLORS.textMuted, fontSize: 12, flexWrap: "wrap" }}>
-                {event.opening && <span>Abre {formatDateTime(event.opening)}</span>}
-                {event.closing && <span>Fecha {formatDateTime(event.closing)}</span>}
-                <span>{event.formIds?.length || 0} forms</span>
-              </div>
-            </button>
-          ))}
-        </section>
-
+          </>,
+        )}
         <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18 }}>
           <div style={{ display: "grid", gap: 14 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 12 }} className="events-form-grid">
+            <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 12 }}>
               <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
                 Nome do evento
                 <input value={draft.title} onChange={event => setDraft(current => ({ ...current, title: event.target.value }))} placeholder="Ex: Reuniao mensal - Maio" style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
@@ -200,7 +215,7 @@ export const EventsScreen = ({ events = [], forms = [], onSaveEvent, onPublishEv
                 <input type="date" value={draft.date || ""} onChange={event => setDraft(current => ({ ...current, date: event.target.value }))} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
               </label>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }} className="events-form-grid">
+            <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
                 Abertura
                 <input type="datetime-local" value={draft.opening || ""} onChange={event => setDraft(current => ({ ...current, opening: event.target.value }))} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
@@ -212,47 +227,90 @@ export const EventsScreen = ({ events = [], forms = [], onSaveEvent, onPublishEv
             </div>
             <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
               Descricao
-              <textarea value={draft.description || ""} onChange={event => setDraft(current => ({ ...current, description: event.target.value }))} rows={2} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text, resize: "vertical" }} />
+              <textarea value={draft.description || ""} onChange={event => setDraft(current => ({ ...current, description: event.target.value }))} rows={3} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text, resize: "vertical" }} />
             </label>
-
-            <div style={{ borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 14 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", marginBottom: 10 }}>
-                <strong style={{ fontSize: 14 }}>Formularios do evento</strong>
-                <span style={{ color: COLORS.textMuted, fontSize: 12 }}>{linkedForms.length} vinculados</span>
-              </div>
-              <div style={{ display: "grid", gap: 8, maxHeight: 280, overflow: "auto", paddingRight: 4 }}>
-                {forms.map(form => (
-                  <label key={form.id} style={{ display: "flex", alignItems: "center", gap: 10, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 10, cursor: "pointer" }}>
-                    <input type="checkbox" checked={draft.formIds.includes(form.id)} onChange={() => toggleForm(form.id)} />
-                    <span style={{ minWidth: 0, flex: 1 }}>
-                      <strong style={{ display: "block", fontSize: 13 }}>{getFormTypeLabel(form)}</strong>
-                      <small style={{ color: COLORS.textMuted }}>{form.title} · {form.status}</small>
-                    </span>
-                    <TypeBadge type={form.type} />
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div style={{ borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 14, display: "grid", gap: 10 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-                <strong style={{ fontSize: 14 }}>Divulgacao inicial</strong>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <Btn v="secondary" icon="clipboard" onClick={copyMessage} disabled={!message}>Copiar</Btn>
-                  <Btn icon="share" onClick={publish} loading={publishing} disabled={!draft.id || !draft.formIds.length || draft.status === "publicado"}>Publicar</Btn>
-                </div>
-              </div>
-              <textarea value={message} readOnly rows={Math.max(6, linkedForms.length + 4)} style={{ width: "100%", boxSizing: "border-box", padding: 12, border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surfaceAlt, color: COLORS.text, resize: "vertical", fontFamily: "inherit" }} />
-              {activeEvent?.publishedAt && <small style={{ color: COLORS.textMuted }}>Publicado em {formatDateTime(activeEvent.publishedAt)}.</small>}
-            </div>
-
             <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <Btn v="secondary" onClick={() => activeEvent ? loadEvent(activeEvent) : startNew()}>Cancelar</Btn>
+              <Btn v="secondary" onClick={cancelEdit}>Cancelar</Btn>
               <Btn icon="save" onClick={save} loading={saving} disabled={!draft.title.trim()}>Salvar evento</Btn>
             </div>
           </div>
         </section>
       </div>
+    );
+  }
+
+  if (mode === "detail" && selectedEvent) {
+    return (
+      <div>
+        {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
+        {renderShellHeader(
+          <>
+            <Btn v="ghost" icon="back" onClick={() => setMode("list")} aria-label="Voltar" />
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <h2 style={{ margin: 0, fontSize: 20 }}>{selectedEvent.date ? `${selectedEvent.title} - ${formatDate(selectedEvent.date)}` : selectedEvent.title}</h2>
+            </div>
+            <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>
+            <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />
+          </>,
+        )}
+        {eventForms.length === 0 ? (
+          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+            Nenhum formulario criado neste evento.
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: 18 }}>
+            {eventForms.map(form => (
+              <FormListCard
+                key={form.id}
+                form={form}
+                user={user}
+                labels={labels}
+                isPinned={pinnedFormSet.has(form.id)}
+                canPinForms
+                onNavigate={onNavigate}
+                onDuplicateForm={onDuplicateForm}
+                onTogglePinnedForm={onTogglePinnedForm}
+                onArchiveForm={onArchiveForm}
+                onDeleteForm={onDeleteForm}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
+      {renderShellHeader(
+        <>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <h2 style={{ margin: 0, fontSize: 20 }}>Eventos</h2>
+          </div>
+          <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" />
+        </>,
+      )}
+      <div style={{ display: "grid", gap: 18 }}>
+        {sortedEvents.length === 0 ? (
+          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+            Nenhum evento criado.
+          </div>
+        ) : sortedEvents.map(renderEventCard)}
+      </div>
+      <ConfirmModal
+        open={Boolean(pendingDelete)}
+        title="Excluir evento"
+        message={`Excluir o evento "${pendingDelete?.title || ""}" remove apenas o agrupamento. Os formularios continuam salvos.`}
+        confirmLabel="Excluir"
+        tone="danger"
+        busy={deleting}
+        onCancel={() => {
+          if (deleting) return;
+          setPendingDelete(null);
+        }}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 };

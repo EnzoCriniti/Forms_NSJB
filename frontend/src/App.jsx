@@ -24,6 +24,7 @@ import {
   saveForm,
   saveEvent,
   publishEvent,
+  deleteEvent,
   saveResponse,
   claimEscalaSlot,
   saveEscala,
@@ -85,6 +86,7 @@ const EMPTY_BOOTSTRAP = {
 export default function App() {
   const [screen, setScreen] = useState("list");
   const [activeFormId, setActiveFormId] = useState(null);
+  const [activeEventId, setActiveEventId] = useState(null);
   const [editingFormId, setEditingFormId] = useState(null);
   const [draftForm, setDraftForm] = useState(null);
   const [publicRoute, setPublicRoute] = useState(() => getPublicRouteFromLocation());
@@ -92,6 +94,7 @@ export default function App() {
   const [theme, setTheme] = useState(() => loadStored(STORAGE_KEYS.theme, "light"));
   const [fontScale, setFontScale] = useState(() => Number(loadStored(STORAGE_KEYS.fontScale, 1)) || 1);
   const [pinnedFormsByUser, setPinnedFormsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedForms, {}));
+  const [pinnedEventsByUser, setPinnedEventsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedEvents, {}));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [bootstrap, setBootstrap] = useState(EMPTY_BOOTSTRAP);
@@ -105,6 +108,10 @@ export default function App() {
     if (!currentUser?.id) return [];
     return Array.isArray(pinnedFormsByUser[String(currentUser.id)]) ? pinnedFormsByUser[String(currentUser.id)] : [];
   }, [currentUser?.id, pinnedFormsByUser]);
+  const pinnedEventIds = useMemo(() => {
+    if (!currentUser?.id) return [];
+    return Array.isArray(pinnedEventsByUser[String(currentUser.id)]) ? pinnedEventsByUser[String(currentUser.id)] : [];
+  }, [currentUser?.id, pinnedEventsByUser]);
 
   const forms = bootstrap.forms;
   const responsesByForm = { ...(bootstrap.responsesByForm || {}), ...responseDetails };
@@ -248,6 +255,16 @@ export default function App() {
     persist(STORAGE_KEYS.pinnedForms, pinnedFormsByUser);
   }, [pinnedFormsByUser]);
 
+  useEffect(() => {
+    persist(STORAGE_KEYS.pinnedEvents, pinnedEventsByUser);
+  }, [pinnedEventsByUser]);
+
+  useEffect(() => {
+    if (currentUser && canCreateForms(currentUser) && screen === "list") {
+      setScreen("events");
+    }
+  }, [currentUser?.id, currentUser?.role, screen]);
+
   const invalidateSession = () => {
     setSession(null);
     setAuthToken(null);
@@ -364,6 +381,10 @@ export default function App() {
       setScreen("list");
       return;
     }
+    if (nextScreen === "list" && canCreateForms(currentUser)) {
+      setScreen("events");
+      return;
+    }
     const targetForm = form || activeForm;
     if (nextScreen === "create") {
       setDraftForm(null);
@@ -384,7 +405,20 @@ export default function App() {
 
   const handleSaveForm = async payload => {
     const response = await saveForm(payload);
-    await refreshBootstrap({ silent: true, rethrow: true });
+    const refreshed = await refreshBootstrap({ silent: true, rethrow: true });
+    if (activeEventId) {
+      const targetEvent = (refreshed?.events || events).find(event => event.id === activeEventId);
+      if (targetEvent && !targetEvent.formIds.includes(response.form.id)) {
+        const eventResponse = await saveEvent({
+          ...targetEvent,
+          formIds: [...targetEvent.formIds, response.form.id],
+        });
+        setBootstrap(prev => ({
+          ...prev,
+          events: (prev.events || []).map(event => event.id === eventResponse.event.id ? eventResponse.event : event),
+        }));
+      }
+    }
     setDraftForm(null);
     setEditingFormId(response.form.id);
     setActiveFormId(response.form.id);
@@ -410,6 +444,41 @@ export default function App() {
       events: (prev.events || []).map(event => event.id === response.event.id ? response.event : event),
     }));
     return response.event;
+  };
+
+  const handleDeleteEvent = async id => {
+    await deleteEvent(id);
+    setPinnedEventsByUser(prev => {
+      if (!currentUser?.id) return prev;
+      const userKey = String(currentUser.id);
+      const current = Array.isArray(prev[userKey]) ? prev[userKey] : [];
+      return { ...prev, [userKey]: current.filter(eventId => eventId !== id) };
+    });
+    setBootstrap(prev => ({
+      ...prev,
+      events: (prev.events || []).filter(event => event.id !== id),
+    }));
+    if (activeEventId === id) setActiveEventId(null);
+  };
+
+  const handleTogglePinnedEvent = eventId => {
+    if (!currentUser?.id || !eventId) return;
+    const userKey = String(currentUser.id);
+    setPinnedEventsByUser(prev => {
+      const current = Array.isArray(prev[userKey]) ? prev[userKey] : [];
+      const next = current.includes(eventId)
+        ? current.filter(id => id !== eventId)
+        : [eventId, ...current];
+      return { ...prev, [userKey]: next };
+    });
+  };
+
+  const handleCreateFormInEvent = event => {
+    if (!event || !canCreateForms(currentUser)) return;
+    setActiveEventId(event.id);
+    setDraftForm(null);
+    setEditingFormId(null);
+    setScreen("create");
   };
 
   const handleDuplicateForm = form => {
@@ -461,6 +530,13 @@ export default function App() {
       return next;
     });
     await refreshBootstrap({ silent: true, rethrow: true });
+    setBootstrap(prev => ({
+      ...prev,
+      events: (prev.events || []).map(event => ({
+        ...event,
+        formIds: (event.formIds || []).filter(id => id !== formId),
+      })),
+    }));
     return result;
   };
 
@@ -617,8 +693,6 @@ export default function App() {
     ? [
         { key: "dashboard", icon: "chart", label: "Dashboard" },
         { key: "events", icon: "calendar", label: "Eventos" },
-        { key: "list", icon: "list", label: "Formulários" },
-        { key: "create", icon: "plus", label: "Novo" },
       ]
     : [];
 
@@ -628,7 +702,7 @@ export default function App() {
     }
     window.location.hash = "";
     setPublicRoute(null);
-    setScreen("list");
+    setScreen(canCreateForms(currentUser) ? "events" : "list");
   };
 
   if (loading) {
@@ -749,8 +823,19 @@ export default function App() {
           <EventsScreen
             events={events}
             forms={forms}
+            labels={labels}
+            user={currentUser}
+            pinnedEventIds={pinnedEventIds}
+            pinnedFormIds={pinnedFormIds}
+            initialSelectedEventId={activeEventId}
             onSaveEvent={handleSaveEvent}
-            onPublishEvent={handlePublishEvent}
+            onDeleteEvent={handleDeleteEvent}
+            onTogglePinnedEvent={handleTogglePinnedEvent}
+            onCreateFormInEvent={handleCreateFormInEvent}
+            onDuplicateForm={handleDuplicateForm}
+            onArchiveForm={handleArchiveForm}
+            onTogglePinnedForm={handleTogglePinnedForm}
+            onDeleteForm={handleDeleteForm}
             onNavigate={navigate}
           />
         )}

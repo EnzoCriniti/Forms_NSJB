@@ -58,7 +58,7 @@ describe("DashboardScreen", () => {
     expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByText("Proximos fechamentos")).toBeInTheDocument();
     expect(screen.getByText("Presenca da Semana")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Novo formulario" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Eventos" }).length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getAllByRole("button", { name: "Abrir resultados" })[0]);
     expect(onNavigate).toHaveBeenCalledWith("results", forms[1] ? forms[1] : forms[0]);
@@ -79,6 +79,6 @@ describe("DashboardScreen", () => {
     );
 
     expect(screen.getByText("Nenhum formulario cadastrado")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Criar formulario" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Eventos" }).length).toBeGreaterThan(0);
   });
 });

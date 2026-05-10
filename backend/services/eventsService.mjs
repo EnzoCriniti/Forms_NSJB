@@ -6,7 +6,7 @@
 
 import { nowIso } from "../database/shared.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
-import { findEventById, listEvents, upsertEventRecord } from "../repositories/eventsRepository.mjs";
+import { deleteEventRecord, findEventById, listEvents, upsertEventRecord } from "../repositories/eventsRepository.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
@@ -76,4 +76,11 @@ export const publishEvent = async eventId => {
     publishedAt,
   });
   return findEventById(event.id);
+};
+
+export const deleteEvent = async eventId => {
+  const event = await findEventById(Number(eventId));
+  if (!event) throw makeError("Evento nao encontrado.", 404, "EVENT_NOT_FOUND");
+  await deleteEventRecord(event.id);
+  return { ok: true, event };
 };

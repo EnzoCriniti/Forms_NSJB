@@ -1,7 +1,7 @@
 /**
  * @file tests/ui/eventsScreen.test.jsx
  * @summary Testes da tela administrativa de eventos.
- * @responsibility Cobrir vinculo de formularios, publicacao manual e mensagem inicial.
+ * @responsibility Cobrir fluxo evento-primeiro e listagem de formularios vinculados.
  */
 
 import React from "react";
@@ -9,120 +9,150 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { EventsScreen } from "../../frontend/src/screens/EventsScreen.jsx";
 
+const admin = { role: "admin", name: "Admin" };
+
 const forms = [
   {
     id: 1,
     slug: "presenca-maio",
     type: "presenca",
     status: "aberto",
-    title: "Formulario tecnico de presenca",
+    title: "Presenca Maio",
     date: "2026-05-20",
+    closing: "2026-05-18T18:00",
     labels: [],
+    fieldDefinitions: [],
+    resultsConfig: { formMode: "nucleo" },
+    metrics: { responses: 1, total: 5 },
   },
   {
     id: 2,
     slug: "escala-maio",
     type: "escala_organ",
     status: "rascunho",
-    title: "Formulario tecnico de escala",
+    title: "Escala Maio",
     date: "2026-05-20",
+    closing: "2026-05-18T18:00",
     labels: [],
+    metrics: { responses: 0, total: 3 },
+  },
+];
+
+const events = [
+  {
+    id: 10,
+    title: "Evento Maio",
+    date: "2026-05-20",
+    opening: "2026-05-10T08:00",
+    closing: "2026-05-18T18:00",
+    status: "pronto",
+    description: "Organizacao da reuniao",
+    formIds: [1],
   },
 ];
 
 describe("EventsScreen", () => {
-  it("salva evento com abertura, fechamento, descricao e formularios vinculados", async () => {
-    const onSaveEvent = vi.fn(async payload => ({ ...payload, id: 10, status: "pronto", publishedAt: null }));
+  it("salva evento com abertura, fechamento e descricao", async () => {
+    const onSaveEvent = vi.fn(async payload => ({ ...payload, id: 11, status: "rascunho", formIds: [] }));
 
     render(
       <EventsScreen
         events={[]}
         forms={forms}
+        user={admin}
         onSaveEvent={onSaveEvent}
-        onPublishEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
         onNavigate={vi.fn()}
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Nome do evento"), { target: { value: "Evento Maio" } });
-    fireEvent.change(screen.getByLabelText("Data"), { target: { value: "2026-05-20" } });
-    fireEvent.change(screen.getByLabelText("Abertura"), { target: { value: "2026-05-10T08:00" } });
-    fireEvent.change(screen.getByLabelText("Fechamento"), { target: { value: "2026-05-18T18:00" } });
-    fireEvent.change(screen.getByLabelText("Descricao"), { target: { value: "Organizacao da reuniao" } });
-    fireEvent.click(screen.getByLabelText(/Formulario tecnico de presenca/i));
-    fireEvent.click(screen.getByLabelText(/Formulario tecnico de escala/i));
+    fireEvent.click(screen.getByRole("button", { name: "Novo evento" }));
+    fireEvent.change(screen.getByLabelText("Nome do evento"), { target: { value: "Evento Junho" } });
+    fireEvent.change(screen.getByLabelText("Data"), { target: { value: "2026-06-20" } });
+    fireEvent.change(screen.getByLabelText("Abertura"), { target: { value: "2026-06-10T08:00" } });
+    fireEvent.change(screen.getByLabelText("Fechamento"), { target: { value: "2026-06-18T18:00" } });
+    fireEvent.change(screen.getByLabelText("Descricao"), { target: { value: "Evento operacional" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar evento" }));
 
-    await waitFor(() => expect(onSaveEvent).toHaveBeenCalledTimes(1));
-    expect(onSaveEvent).toHaveBeenCalledWith(expect.objectContaining({
-      title: "Evento Maio",
-      date: "2026-05-20",
-      opening: "2026-05-10T08:00",
-      closing: "2026-05-18T18:00",
-      description: "Organizacao da reuniao",
-      formIds: [1, 2],
-    }));
+    await waitFor(() => expect(onSaveEvent).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Evento Junho",
+      date: "2026-06-20",
+      opening: "2026-06-10T08:00",
+      closing: "2026-06-18T18:00",
+      description: "Evento operacional",
+      formIds: [],
+    })));
   });
 
-  it("usa nomes padronizados na mensagem de divulgacao", () => {
+  it("abre o evento e lista apenas os formularios vinculados", () => {
     render(
       <EventsScreen
-        events={[]}
+        events={events}
         forms={forms}
+        user={admin}
+        labels={[]}
         onSaveEvent={vi.fn()}
-        onPublishEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
         onNavigate={vi.fn()}
       />,
     );
 
-    fireEvent.change(screen.getByLabelText("Nome do evento"), { target: { value: "Evento Maio" } });
-    fireEvent.change(screen.getByLabelText("Data"), { target: { value: "2026-05-20" } });
-    fireEvent.click(screen.getByLabelText(/Formulario tecnico de presenca/i));
-    fireEvent.click(screen.getByLabelText(/Formulario tecnico de escala/i));
+    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
 
-    const message = screen.getByDisplayValue(/Evento: Evento Maio/i);
-    expect(message.value).toContain("Presenca do nucleo");
-    expect(message.value).toContain("Escala da organizacao");
-    expect(message.value).toContain("#/eventos/Evento%20Maio/1");
-    expect(message.value).toContain("#/eventos/Evento%20Maio/2");
-    expect(message.value).not.toContain("- Formulario tecnico de presenca:");
+    expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
+    expect(screen.queryByText("Escala Maio")).not.toBeInTheDocument();
   });
 
-  it("lista evento com nome e data e publica somente depois de salvo", async () => {
-    const onPublishEvent = vi.fn(async id => ({
-      id,
-      title: "Evento Maio",
-      date: "2026-05-20",
-      opening: "2026-05-10T08:00",
-      closing: "2026-05-18T18:00",
-      status: "publicado",
-      formIds: [1],
-      publishedAt: "2026-05-10T12:00:00.000Z",
-    }));
+  it("cria formulario a partir do evento selecionado", () => {
+    const onCreateFormInEvent = vi.fn();
 
     render(
       <EventsScreen
-        events={[{
-          id: 10,
-          title: "Evento Maio",
-          date: "2026-05-20",
-          opening: "2026-05-10T08:00",
-          closing: "2026-05-18T18:00",
-          status: "pronto",
-          formIds: [1],
-          publishedAt: null,
-        }]}
+        events={events}
         forms={forms}
+        user={admin}
+        labels={[]}
         onSaveEvent={vi.fn()}
-        onPublishEvent={onPublishEvent}
+        onDeleteEvent={vi.fn()}
+        onCreateFormInEvent={onCreateFormInEvent}
         onNavigate={vi.fn()}
       />,
     );
 
-    expect(screen.getByText(/Evento Maio - 20\/05\/2026/)).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Publicar" }));
+    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByRole("button", { name: "Novo formulario" }));
 
-    await waitFor(() => expect(onPublishEvent).toHaveBeenCalledWith(10));
-    expect(await screen.findByText("Evento publicado. A mensagem ja pode ser copiada.")).toBeInTheDocument();
+    expect(onCreateFormInEvent).toHaveBeenCalledWith(events[0]);
+  });
+
+  it("permite fixar, editar e excluir eventos pela listagem", async () => {
+    const onTogglePinnedEvent = vi.fn();
+    const onDeleteEvent = vi.fn(async () => {});
+
+    render(
+      <EventsScreen
+        events={events}
+        forms={forms}
+        user={admin}
+        pinnedEventIds={[10]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={onDeleteEvent}
+        onTogglePinnedEvent={onTogglePinnedEvent}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Desfixar evento" }));
+    expect(onTogglePinnedEvent).toHaveBeenCalledWith(10);
+
+    fireEvent.click(screen.getByRole("button", { name: "Editar evento" }));
+    expect(screen.getByRole("heading", { name: "Editar evento" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
+    fireEvent.click(screen.getByRole("button", { name: "Excluir evento" }));
+    fireEvent.click(screen.getByRole("button", { name: "Excluir" }));
+
+    await waitFor(() => expect(onDeleteEvent).toHaveBeenCalledWith(10));
   });
 });

@@ -75,6 +75,8 @@ export const publishEvent = id => requestJson(`/api/events/${id}/publish`, {
   body: JSON.stringify({}),
 });
 
+export const deleteEvent = id => requestJson(`/api/events/${id}`, { method: "DELETE" });
+
 export const saveFormDeleteKey = payload => requestJson("/api/security/form-delete-key", {
   method: "PUT",
   body: JSON.stringify(payload),

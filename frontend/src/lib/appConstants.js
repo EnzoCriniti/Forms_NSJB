@@ -12,6 +12,7 @@ export const STORAGE_KEYS = {
   theme: "nsjb_forms_mvp_theme",
   fontScale: "nsjb_forms_mvp_font_scale",
   pinnedForms: "nsjb_forms_mvp_pinned_forms",
+  pinnedEvents: "nsjb_forms_mvp_pinned_events",
   people: "nsjb_forms_mvp_people",
   membersConfig: "nsjb_forms_mvp_members_config",
   labels: "nsjb_forms_mvp_labels",

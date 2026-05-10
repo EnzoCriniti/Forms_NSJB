@@ -100,7 +100,7 @@ Cadastro central de formularios.
 
 ### Papel
 
-Agrupador operacional de formularios com publicacao manual da divulgacao inicial.
+Agrupador operacional de formularios. A configuracao de mensagens fica reservada para evolucao posterior.
 
 ### Colunas atuais
 
