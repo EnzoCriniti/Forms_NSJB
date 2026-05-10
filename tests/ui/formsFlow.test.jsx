@@ -25,6 +25,7 @@ describe("Forms flow", () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
     render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
+    fireEvent.click(screen.getByRole("button", { name: "Continuar para o editor" }));
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Completo" },

@@ -187,6 +187,7 @@ export const CreateFormScreen = ({
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [setupStep, setSetupStep] = useState("type");
 
   useEffect(() => {
     if (!form) {
@@ -206,6 +207,7 @@ export const CreateFormScreen = ({
       setResultsConfig(createDefaultResultsConfig(defaultFields));
       setScaleLimit(1);
       setScaleDraft(createDefaultScaleSections());
+      setSetupStep("type");
       return;
     }
     const nextMode = getFormMode(form);
@@ -228,6 +230,7 @@ export const CreateFormScreen = ({
     }, nextFields));
     setScaleLimit(getScalePersonLimit(form));
     setScaleDraft(form.scaleSections?.length ? form.scaleSections : createDefaultScaleSections());
+    setSetupStep("editor");
   }, [form]);
 
   const inp = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };
@@ -274,6 +277,7 @@ export const CreateFormScreen = ({
     [formMode],
   );
   const isEditingExistingForm = Boolean(form) && !isDuplicateMode;
+  const showTypeSetup = !form && !isDuplicateMode && setupStep === "type";
   const membersFieldsCount = useMemo(
     () => fields.filter(isMembersSelectionField).length,
     [fields],
@@ -581,11 +585,21 @@ export const CreateFormScreen = ({
         <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
         <div>
           <h2 style={{ margin: 0, fontSize: 22 }}>{form && !isDuplicateMode ? "Editar Formulario" : "Novo Formulario"}</h2>
-          <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>Configure o formulario e salve na base local</p>
+          <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>{showTypeSetup ? "Escolha o tipo antes de abrir o editor" : "Configure o formulario e salve na base local"}</p>
         </div>
       </div>
 
-      {!isEditingExistingForm && (
+      {showTypeSetup && (
+        <div className="create-form-start-card">
+          <div style={{ fontSize: 11, fontWeight: 900, color: COLORS.primary, textTransform: "uppercase", letterSpacing: 0.6 }}>Etapa inicial</div>
+          <h3 style={{ margin: "4px 0 4px", fontSize: 20, color: COLORS.text }}>Qual estrutura voce vai criar?</h3>
+          <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>
+            A escolha define o editor correto e evita carregar configuracoes que nao pertencem ao tipo do formulario.
+          </p>
+        </div>
+      )}
+
+      {showTypeSetup && (
         <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
           {[
             { id: "presenca", title: "Presenca", desc: "Perguntas, acompanhantes, totalizacao e controle de envio." },
@@ -620,6 +634,14 @@ export const CreateFormScreen = ({
         </div>
       )}
 
+      {showTypeSetup && (
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+          <Btn icon="check" onClick={() => setSetupStep("editor")}>Continuar para o editor</Btn>
+        </div>
+      )}
+
+      {!showTypeSetup && (
+      <>
       {isEditingExistingForm && (
         <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 4 }}>Tipo do formulario</div>
@@ -1238,6 +1260,8 @@ export const CreateFormScreen = ({
             </div>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

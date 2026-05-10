@@ -20,9 +20,18 @@ const baseProps = {
   onSaveForm: vi.fn(),
 };
 
+const renderNewForm = ({ setupType = "presenca", ...props } = {}) => {
+  const result = render(<CreateFormScreen {...baseProps} {...props} />);
+  if (setupType === "escala_organ") {
+    fireEvent.click(screen.getByRole("button", { name: /Escala da Organ/ }));
+  }
+  fireEvent.click(screen.getByRole("button", { name: "Continuar para o editor" }));
+  return result;
+};
+
 describe("CreateFormScreen", () => {
   it("inicia novo formulario sem template selecionado", () => {
-    const { container } = render(<CreateFormScreen {...baseProps} presets={[{ id: 1, type: "presenca", name: "Template A" }]} />);
+    const { container } = renderNewForm({ presets: [{ id: 1, type: "presenca", name: "Template A" }] });
 
     expect(screen.getByText("Templates de formulario")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
@@ -32,7 +41,7 @@ describe("CreateFormScreen", () => {
   });
 
   it("inicia no modo nucleo com campo da base central ativo", () => {
-    render(<CreateFormScreen {...baseProps} />);
+    renderNewForm();
 
     expect(screen.getByRole("spinbutton")).not.toBeDisabled();
     expect(screen.getByText("Configuracao dos Resultados")).toBeInTheDocument();
@@ -42,7 +51,7 @@ describe("CreateFormScreen", () => {
   });
 
   it("abre a pre-visualizacao e reflete o rascunho atual", () => {
-    render(<CreateFormScreen {...baseProps} />);
+    renderNewForm();
 
     expect(screen.queryByText("Pre-visualizacao do formulario")).not.toBeInTheDocument();
 
@@ -92,7 +101,7 @@ describe("CreateFormScreen", () => {
   it("troca para formulario geral e remove a base central do payload", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
+    renderNewForm({ onSaveForm });
 
     fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
@@ -157,11 +166,9 @@ describe("CreateFormScreen", () => {
   it("salva metadados do campo base normalizado no formulario", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        onSaveForm={onSaveForm}
-        fieldCatalog={[{
+    renderNewForm({
+      onSaveForm,
+      fieldCatalog: [{
           id: 11,
           key: "presenca_sessao",
           name: "Presenca em sessao",
@@ -169,9 +176,8 @@ describe("CreateFormScreen", () => {
           category: "presenca",
           defaultLabel: "Sessao",
           active: true,
-        }]}
-      />,
-    );
+      }],
+    });
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Catalogado" },
@@ -197,7 +203,7 @@ describe("CreateFormScreen", () => {
   it("salva o campo principal da base central com papel explicito no modo nucleo", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
+    renderNewForm({ onSaveForm });
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Vinculado" },
@@ -217,11 +223,9 @@ describe("CreateFormScreen", () => {
   it("salva campo vinculado a base externa", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        onSaveForm={onSaveForm}
-        fieldCatalog={[
+    renderNewForm({
+      onSaveForm,
+      fieldCatalog: [
           {
             id: 77,
             key: "congregacoes",
@@ -232,12 +236,11 @@ describe("CreateFormScreen", () => {
             selectionSource: { kind: "external_base", externalBaseId: 88 },
             active: true,
           },
-        ]}
-        externalBases={[
+      ],
+      externalBases: [
           { id: 88, name: "Lista de Congregacoes", active: true, items: [] },
-        ]}
-      />,
-    );
+      ],
+    });
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario com Base Externa" },
@@ -267,7 +270,7 @@ describe("CreateFormScreen", () => {
   it("salva regras de validacao configuradas no campo", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
+    renderNewForm({ onSaveForm });
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Validado" },
@@ -290,11 +293,9 @@ describe("CreateFormScreen", () => {
   it("mantem o tipo do campo existente definido pelo catalogo", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        onSaveForm={onSaveForm}
-        fieldCatalog={[{
+    renderNewForm({
+      onSaveForm,
+      fieldCatalog: [{
           id: 11,
           key: "presenca_sessao",
           name: "Presenca em sessao",
@@ -302,9 +303,8 @@ describe("CreateFormScreen", () => {
           category: "presenca",
           defaultLabel: "Sessao",
           active: true,
-        }]}
-      />,
-    );
+      }],
+    });
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Catalogado" },
@@ -417,11 +417,9 @@ describe("CreateFormScreen", () => {
   it("usa schema de matriz do catalogo sem editar linhas no formulario", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        onSaveForm={onSaveForm}
-        fieldCatalog={[{
+    renderNewForm({
+      onSaveForm,
+      fieldCatalog: [{
           id: 20,
           key: "avaliacao_matriz",
           name: "Avaliacao em matriz",
@@ -430,9 +428,8 @@ describe("CreateFormScreen", () => {
           defaultLabel: "Avaliacao",
           gridSchema: { rows: ["Audio", "Limpeza"], cols: ["Ruim", "Bom"] },
           active: true,
-        }]}
-      />,
-    );
+      }],
+    });
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario com matriz" },
@@ -492,22 +489,19 @@ describe("CreateFormScreen", () => {
   it("salva secao de escala com tarefa existente ou local", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        onSaveForm={onSaveForm}
-        scaleTaskCatalog={[{
+    renderNewForm({
+      setupType: "escala_organ",
+      onSaveForm,
+      scaleTaskCatalog: [{
           id: 31,
           key: "preparo_jantar",
           name: "Preparo do jantar",
           category: "cozinha",
           defaultLabel: "Preparacao do jantar",
           active: true,
-        }]}
-      />,
-    );
+      }],
+    });
 
-    fireEvent.click(screen.getByRole("button", { name: /Escala da Organ/ }));
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Escala Teste" },
     });

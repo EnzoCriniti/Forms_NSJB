@@ -798,6 +798,7 @@ input[type="radio"] {
 .results-filter-toolbar,
 .dashboard-panel,
 .dashboard-empty-state,
+.create-form-start-card,
 .public-response-card {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0)),
@@ -813,10 +814,62 @@ input[type="radio"] {
 :root[data-theme="dark"] .results-filter-toolbar,
 :root[data-theme="dark"] .dashboard-panel,
 :root[data-theme="dark"] .dashboard-empty-state,
+:root[data-theme="dark"] .create-form-start-card,
 :root[data-theme="dark"] .public-response-card {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
     var(--surface) !important;
+}
+
+.create-form-header,
+.screen-top-card,
+.settings-top-card,
+.results-top-card {
+  background:
+    radial-gradient(circle at top right, rgba(26, 107, 60, 0.18), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(232, 245, 233, 0.58)),
+    var(--surface) !important;
+  border: 1px solid var(--border-light) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--shadow-sm);
+  padding: 14px !important;
+}
+
+:root[data-theme="dark"] .create-form-header,
+:root[data-theme="dark"] .screen-top-card,
+:root[data-theme="dark"] .settings-top-card,
+:root[data-theme="dark"] .results-top-card {
+  background:
+    radial-gradient(circle at top right, rgba(85, 183, 122, 0.22), transparent 34%),
+    linear-gradient(135deg, var(--primary-dark), #050806) !important;
+}
+
+.create-form-start-card {
+  margin-bottom: 14px;
+  overflow: hidden;
+  padding: 18px;
+  position: relative;
+}
+
+.create-form-start-card::after {
+  background: radial-gradient(circle, rgba(26, 107, 60, 0.12), transparent 62%);
+  content: "";
+  height: 180px;
+  pointer-events: none;
+  position: absolute;
+  right: -54px;
+  top: -80px;
+  width: 240px;
+}
+
+.create-form-type-card {
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
+}
+
+.create-form-type-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .dashboard-hero {
@@ -1346,12 +1399,15 @@ button:not(.ui-btn):focus-visible {
 
   .screen-top-card,
   .create-form-mobile-hero {
-    background: var(--primary);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+      radial-gradient(circle at top right, rgba(26, 107, 60, 0.18), transparent 34%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(232, 245, 233, 0.58)),
+      var(--surface) !important;
+    border: 1px solid var(--border-light);
     border-radius: 16px;
     box-shadow: var(--shadow-sm);
     padding: 12px;
-    color: #fff;
+    color: var(--text);
   }
 
   .create-form-mobile-hero {
@@ -1360,26 +1416,48 @@ button:not(.ui-btn):focus-visible {
     position: relative;
   }
 
+  :root[data-theme="dark"] .screen-top-card,
+  :root[data-theme="dark"] .create-form-mobile-hero {
+    background:
+      radial-gradient(circle at top right, rgba(85, 183, 122, 0.22), transparent 34%),
+      linear-gradient(135deg, var(--primary-dark), #050806) !important;
+  }
+
+  :root[data-theme="dark"] .screen-top-card h2,
+  :root[data-theme="dark"] .screen-top-card p,
+  :root[data-theme="dark"] .screen-top-card strong,
+  :root[data-theme="dark"] .screen-top-card .results-top-card__meta-note,
+  :root[data-theme="dark"] .create-form-mobile-hero h2,
+  :root[data-theme="dark"] .create-form-mobile-hero p {
+    color: #fff !important;
+  }
+
+  :root[data-theme="dark"] .screen-top-card p,
+  :root[data-theme="dark"] .screen-top-card .results-top-card__meta-note,
+  :root[data-theme="dark"] .create-form-mobile-hero p {
+    color: rgba(255, 255, 255, 0.82) !important;
+  }
+
   .screen-top-card h2,
   .screen-top-card p,
   .screen-top-card strong,
   .screen-top-card .results-top-card__meta-note,
   .create-form-mobile-hero h2,
   .create-form-mobile-hero p {
-    color: #fff !important;
+    color: var(--text) !important;
   }
 
   .screen-top-card p,
   .screen-top-card .results-top-card__meta-note,
   .create-form-mobile-hero p {
-    color: rgba(255, 255, 255, 0.82) !important;
+    color: var(--text-muted) !important;
   }
 
   .screen-top-card .ui-btn[data-variant="ghost"],
   .create-form-mobile-hero .ui-btn[data-variant="ghost"] {
-    background: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
-    color: #fff !important;
+    background: var(--surface) !important;
+    box-shadow: inset 0 0 0 1px var(--border-light);
+    color: var(--text) !important;
   }
 
   .settings-top-card {

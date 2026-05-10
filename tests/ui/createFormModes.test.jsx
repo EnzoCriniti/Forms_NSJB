@@ -16,9 +16,15 @@ const baseProps = {
   onSaveForm: vi.fn(),
 };
 
+const renderNewForm = (props = {}) => {
+  const result = render(<CreateFormScreen {...baseProps} {...props} />);
+  fireEvent.click(screen.getByRole("button", { name: "Continuar para o editor" }));
+  return result;
+};
+
 describe("CreateFormScreen form modes", () => {
   it("destaca o resumo do modo nucleo por padrao", () => {
-    render(<CreateFormScreen {...baseProps} />);
+    renderNewForm();
 
     expect(screen.getByText("Modo ativo: Presenca do nucleo")).toBeInTheDocument();
     expect(screen.getAllByText("Base central ativa").length).toBeGreaterThan(0);
@@ -27,7 +33,7 @@ describe("CreateFormScreen form modes", () => {
   });
 
   it("atualiza o resumo ao trocar para formulario geral", () => {
-    render(<CreateFormScreen {...baseProps} />);
+    renderNewForm();
 
     fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
 
@@ -39,7 +45,7 @@ describe("CreateFormScreen form modes", () => {
   });
 
   it("remove o seletor por base local no formulario geral", () => {
-    render(<CreateFormScreen {...baseProps} />);
+    renderNewForm();
 
     fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
@@ -51,10 +57,8 @@ describe("CreateFormScreen form modes", () => {
   });
 
   it("filtra a biblioteca no formulario geral para manter apenas bases externas", () => {
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        fieldCatalog={[
+    renderNewForm({
+      fieldCatalog: [
           {
             id: 10,
             key: "nome_socio",
@@ -84,10 +88,9 @@ describe("CreateFormScreen form modes", () => {
             defaultLabel: "Vai ao jantar?",
             active: true,
           },
-        ]}
-        externalBases={[{ id: 7, name: "Congregacoes", active: true, items: [] }]}
-      />,
-    );
+      ],
+      externalBases: [{ id: 7, name: "Congregacoes", active: true, items: [] }],
+    });
 
     fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
@@ -99,7 +102,7 @@ describe("CreateFormScreen form modes", () => {
   });
 
   it("mostra o editor de campo em etapas mais curtas", () => {
-    render(<CreateFormScreen {...baseProps} />);
+    renderNewForm();
 
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
 
@@ -111,10 +114,8 @@ describe("CreateFormScreen form modes", () => {
   });
 
   it("nao oferece outro seletor da base central quando o nome principal ja existe", () => {
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        fieldCatalog={[
+    renderNewForm({
+      fieldCatalog: [
           {
             id: 10,
             key: "nome_socio",
@@ -135,10 +136,9 @@ describe("CreateFormScreen form modes", () => {
             selectionSource: { kind: "external_base", externalBaseId: 7 },
             active: true,
           },
-        ]}
-        externalBases={[{ id: 7, name: "Congregacoes", active: true, items: [] }]}
-      />,
-    );
+      ],
+      externalBases: [{ id: 7, name: "Congregacoes", active: true, items: [] }],
+    });
 
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
 
@@ -151,10 +151,8 @@ describe("CreateFormScreen form modes", () => {
   });
 
   it("filtra templates de presenca pelo modo atual", () => {
-    render(
-      <CreateFormScreen
-        {...baseProps}
-        presets={[
+    renderNewForm({
+      presets: [
           {
             id: 1,
             type: "presenca",
@@ -169,9 +167,8 @@ describe("CreateFormScreen form modes", () => {
             fieldDefinitions: [{ id: 2, type: "text", label: "Nome livre", required: true, show: true, total: false }],
             resultsConfig: { formMode: "geral" },
           },
-        ]}
-      />,
-    );
+      ],
+    });
 
     expect(screen.getByRole("option", { name: "Template Nucleo (Presenca)" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Template Geral (Presenca)" })).not.toBeInTheDocument();
