@@ -51,6 +51,7 @@ describe("Forms flow", () => {
     const payload = onSaveForm.mock.calls[0][0];
 
     expect(payload.fieldDefinitions.map(field => field.type)).toEqual([
+      "person_select",
       "number",
       "text",
       "grid",

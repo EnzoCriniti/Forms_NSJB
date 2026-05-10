@@ -301,6 +301,37 @@ describe("AdminSettingsModal catalogo", () => {
       active: true,
     }));
   });
+
+  it("mostra o modo do template na lista de presets", () => {
+    render(
+      <AdminSettingsModal
+        {...baseProps}
+        presets={[
+          {
+            id: 1,
+            name: "Template Nucleo",
+            type: "presenca",
+            resultsConfig: { formMode: "nucleo" },
+            fieldDefinitions: [{ id: 1 }, { id: 2 }],
+            createdBy: "Admin",
+          },
+          {
+            id: 2,
+            name: "Template Geral",
+            type: "presenca",
+            resultsConfig: { formMode: "geral" },
+            fieldDefinitions: [{ id: 1 }],
+            createdBy: "Admin",
+          },
+        ]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Templates" }));
+    expect(screen.getByText("Templates de formulario existentes")).toBeInTheDocument();
+    expect(screen.getByText("Presenca do nucleo - 2 campos - Criado por Admin")).toBeInTheDocument();
+    expect(screen.getByText("Formulario geral - 1 campos - Criado por Admin")).toBeInTheDocument();
+  });
 });
 
 describe("AdminSettingsModal auditoria", () => {

@@ -24,7 +24,7 @@ describe("CreateFormScreen", () => {
   it("inicia novo formulario sem template selecionado", () => {
     const { container } = render(<CreateFormScreen {...baseProps} presets={[{ id: 1, type: "presenca", name: "Template A" }]} />);
 
-    expect(screen.getByText("Selecao de template:")).toBeInTheDocument();
+    expect(screen.getByText("Templates de formulario")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
     expect(screen.getByText("1 campo configurado")).toBeInTheDocument();
     expect(screen.getByText("Presenca do nucleo")).toBeInTheDocument();

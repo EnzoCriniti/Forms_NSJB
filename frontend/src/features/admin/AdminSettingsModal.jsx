@@ -468,7 +468,7 @@ export const AdminSettingsModal = ({
     { key: "external-bases", label: "Bases externas", description: "Listas sincronizadas para campos do formulario" },
     { key: "catalog", label: "Campos e tarefas", description: "Biblioteca reutilizavel" },
     { key: "labels", label: "Classificacoes", description: "Etiquetas dos formularios" },
-    { key: "presets", label: "Templates", description: "Modelos prontos" },
+    { key: "presets", label: "Templates", description: "Templates de formulario" },
     { key: "security", label: "Exclusao segura", description: "Chave mestra" },
     ...(currentUser?.role === "admin" ? [{ key: "audit", label: "Historico", description: "Auditoria do sistema" }] : []),
   ];
@@ -1119,7 +1119,7 @@ export const AdminSettingsModal = ({
               </div>
             </div>
             <div>
-              <h4 style={{ margin: "0 0 10px" }}>Templates existentes</h4>
+              <h4 style={{ margin: "0 0 10px" }}>Templates de formulario existentes</h4>
               <PaginatedList
                 items={presets}
                 emptyText="Nenhum template cadastrado."
@@ -1127,11 +1127,14 @@ export const AdminSettingsModal = ({
                   const count = preset.type === "escala_organ"
                     ? `${preset.scaleSections?.length ?? 0} secoes`
                     : `${preset.fieldDefinitions?.length ?? 0} campos`;
+                  const modeLabel = preset.type === "escala_organ"
+                    ? "Escala da Organ"
+                    : (preset.resultsConfig?.formMode === "nucleo" ? "Presenca do nucleo" : "Formulario geral");
                   return (
                     <div key={preset.id} className="settings-row">
                       <div>
                         <strong>{preset.name}</strong>
-                        <div>{preset.type === "escala_organ" ? "Escala da Organ" : "Presenca"} - {count} - Criado por {preset.createdBy || "Sistema"}</div>
+                        <div>{modeLabel} - {count} - Criado por {preset.createdBy || "Sistema"}</div>
                       </div>
                       <Btn v="secondary" sz="sm" onClick={() => setPresetDraft(preset)}>Editar</Btn>
                       <Btn v="danger" sz="sm" onClick={() => requestDelete(

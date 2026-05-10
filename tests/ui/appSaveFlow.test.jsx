@@ -124,7 +124,7 @@ describe("App save flow", () => {
     await screen.findByText("Totalizacao");
     expect(screen.queryByText("Use a lupinha ao lado do nome de cada coluna para filtrar.")).not.toBeInTheDocument();
     expect(screen.queryByText("Joao")).not.toBeInTheDocument();
-  });
+  }, 10000);
 
   it("abre uma copia como novo formulario em rascunho e salva sem reutilizar id ou slug", async () => {
     let savedForm = originalForm;

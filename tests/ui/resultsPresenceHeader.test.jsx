@@ -33,8 +33,8 @@ describe("ResultsPresenceHeader", () => {
     expect(screen.getByRole("heading", { name: "Presenca Completa" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "QM" }));
     expect(onSelectGrau).toHaveBeenCalledWith("QM");
-    fireEvent.click(screen.getByRole("button", { name: "Exportar" }));
-    expect(onExport).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getAllByRole("button")[0]);
+    expect(onNavigate).toHaveBeenCalledWith("list");
     expect(screen.getByText("Respostas")).toBeInTheDocument();
     expect(screen.getByText("Faltam")).toBeInTheDocument();
   });

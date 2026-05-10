@@ -11,18 +11,25 @@ describe("CreateFormTemplateBar", () => {
     render(
       <CreateFormTemplateBar
         format="presenca"
+        formMode="nucleo"
         preset="2"
         presets={[
-          { id: 1, type: "escala_organ", name: "Escala" },
-          { id: 2, type: "presenca", name: "Presenca base" },
+          { id: 1, type: "escala_organ", name: "Escala", scaleSections: [{ title: "A" }] },
+          {
+            id: 2,
+            type: "presenca",
+            name: "Presenca base",
+            fieldDefinitions: [{ id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false }],
+            resultsConfig: { formMode: "nucleo" },
+          },
         ]}
         onApplyTemplate={onApplyTemplate}
         onClearTemplate={onClearTemplate}
       />,
     );
 
-    expect(screen.getByRole("combobox")).toHaveValue("2");
-    expect(screen.getByRole("option", { name: "Presenca base" })).toBeInTheDocument();
+    expect(screen.getByText("Templates de formulario")).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Presenca base (Presenca)" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Escala" })).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });
