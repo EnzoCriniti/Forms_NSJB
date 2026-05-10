@@ -73,4 +73,29 @@ describe("AppHeader", () => {
     expect(screen.getByText("Conta")).toBeInTheDocument();
     expect(screen.getByText("Viewer")).toBeInTheDocument();
   });
+
+  it("exibe voltar na barra mobile quando esta na tela de resultados", () => {
+    const onNavigate = vi.fn();
+
+    render(
+      <AppHeader
+        nav={[]}
+        screen="results"
+        currentUser={{ id: 3, name: "Editor", role: "admin" }}
+        theme="light"
+        fontScale={1}
+        onNavigate={onNavigate}
+        onIncreaseFontScale={vi.fn()}
+        onDecreaseFontScale={vi.fn()}
+        onToggleTheme={vi.fn()}
+        onOpenSettings={vi.fn()}
+        onLogin={vi.fn()}
+        onLogout={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Voltar para listagem" }));
+
+    expect(onNavigate).toHaveBeenCalledWith("list");
+  });
 });

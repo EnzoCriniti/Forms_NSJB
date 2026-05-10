@@ -37,10 +37,9 @@ describe("ResultsPresenceHeader", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Presenca Completa" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Voltar" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "QM" }));
     expect(onSelectGrau).toHaveBeenCalledWith("QM");
-    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
-    expect(onNavigate).toHaveBeenCalledWith("list");
     expect(screen.getByText("Respostas")).toBeInTheDocument();
     expect(screen.getByText("Faltam")).toBeInTheDocument();
   });

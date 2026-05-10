@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { COLORS, Icon, Badge, StatusBadge, Btn, PublicReadingToolbar } from "./ui";
+import { COLORS, Badge, StatusBadge, Btn, PublicReadingToolbar } from "./ui";
 import { formatDateTime } from "../lib/forms";
 
 export const ResultsPresenceHeader = ({
@@ -21,24 +21,14 @@ export const ResultsPresenceHeader = ({
   stats = [],
 }) => (
   <div>
-    <PublicReadingToolbar
-      {...readingControls}
-      onBack={onNavigate ? () => onNavigate("list") : undefined}
-      backHref={publicActionHref}
-    />
+    {publicActionHref && <PublicReadingToolbar {...readingControls} backHref={publicActionHref} />}
     {!publicActionHref && (
-      <div className="screen-top-card results-top-card" style={{ marginBottom: 6, color: "#fff" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
-            <div style={{ minWidth: 0 }}>
-              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1.08, letterSpacing: "-0.02em" }}>{form.title}</h2>
-              <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
-                <StatusBadge status={form.status} />
-                {(form.labels || []).map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
-                <span className="results-top-card__meta-note" style={{ fontSize: 11, color: "rgba(255,255,255,0.86)" }}>Fecha: {formatDateTime(form.closing)}</span>
-              </div>
-            </div>
-          </div>
+      <div className="results-inline-header" style={{ display: "grid", gap: 4, marginBottom: 12 }}>
+        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 900, color: "var(--text)", lineHeight: 1.1, letterSpacing: "-0.02em" }}>{form.title}</h2>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <StatusBadge status={form.status} />
+          {(form.labels || []).map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
+          <span className="results-top-card__meta-note" style={{ fontSize: 11, color: "var(--text-muted)" }}>Fecha: {formatDateTime(form.closing)}</span>
         </div>
       </div>
     )}

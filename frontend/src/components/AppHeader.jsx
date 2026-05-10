@@ -91,6 +91,17 @@ export const AppHeader = ({
         </nav>
         {currentUser && (
           <div className="app-header__mobile-tools" aria-label="Ajustes de leitura">
+            {screen === "results" && (
+              <button
+                type="button"
+                className="app-header__mobile-font-button"
+                onClick={() => onNavigate("list")}
+                aria-label="Voltar para listagem"
+                title="Voltar para listagem"
+              >
+                <Icon name="back" size={16} />
+              </button>
+            )}
             <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= 0.9} aria-label="Diminuir fonte">
               A-
             </button>
