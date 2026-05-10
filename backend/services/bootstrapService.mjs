@@ -12,6 +12,7 @@ import { listUsers } from "../repositories/usersRepository.mjs";
 import { listLabels } from "../repositories/labelsRepository.mjs";
 import { listPresets } from "../repositories/presetsRepository.mjs";
 import { listPeople } from "../repositories/peopleRepository.mjs";
+import { listEvents } from "../repositories/eventsRepository.mjs";
 import { getJsonSetting } from "../repositories/settingsRepository.mjs";
 import { listFieldCatalog, listScaleTaskCatalog } from "../repositories/catalogRepository.mjs";
 import { refreshFormLifecycle } from "../orchestrator/formLifecycleOrchestrator.mjs";
@@ -34,6 +35,7 @@ export const getBootstrap = async () => {
 
   return {
     forms: mappedForms,
+    events: await listEvents(),
     responsesByForm: {},
     escalaByForm: {},
     users: await listUsers(),

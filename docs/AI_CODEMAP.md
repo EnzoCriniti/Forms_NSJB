@@ -28,7 +28,7 @@ Mapa curto das areas mais mexidas por agentes.
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
 - `frontend/src/lib/appShell.js`
-  Centraliza helpers do shell, inclusive o caminho publico canônico de formularios `#/formularios/<id>` e a leitura de links legados por slug.
+  Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 
 ## Listagem
 
@@ -40,6 +40,19 @@ Mapa curto das areas mais mexidas por agentes.
   Card da listagem com metadados do formulario, incluindo badge do modo estrutural nos formularios de presenca.
 - `frontend/src/components/FormListToolbar.jsx`
   Barra de busca, filtros e ordenacao da listagem. No mobile, os filtros ficam em faixa horizontal rolavel.
+
+## Eventos
+
+- `frontend/src/screens/EventsScreen.jsx`
+  Tela administrativa de eventos. Agrupa N formularios, controla data de abertura/fechamento e publica a divulgacao inicial com links.
+- `frontend/src/App.jsx`
+  Inclui o menu `Eventos`, guarda `events` no bootstrap e conecta salvar/publicar evento com a API.
+- `backend/routes/eventRoutes.mjs`
+  Rotas administrativas `POST /api/events` e `POST /api/events/:id/publish`.
+- `backend/services/eventsService.mjs`
+  Normaliza evento, valida formularios vinculados e faz a publicacao manual.
+- `backend/repositories/eventsRepository.mjs`
+  Persistencia da tabela `events`.
 
 ## Vinculo com base personalizada
 

@@ -65,6 +65,16 @@ export const saveForm = form => requestJson("/api/forms", {
   body: JSON.stringify(form),
 });
 
+export const saveEvent = event => requestJson("/api/events", {
+  method: "POST",
+  body: JSON.stringify(event),
+});
+
+export const publishEvent = id => requestJson(`/api/events/${id}/publish`, {
+  method: "POST",
+  body: JSON.stringify({}),
+});
+
 export const saveFormDeleteKey = payload => requestJson("/api/security/form-delete-key", {
   method: "PUT",
   body: JSON.stringify(payload),

@@ -528,6 +528,48 @@ test("forms endpoint persists a valid draft form", async () => {
   }
 });
 
+test("events endpoint persists linked forms and publishes manually", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const bootstrapRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
+    const bootstrap = await bootstrapRes.json();
+    const form = bootstrap.forms.find(item => item.type === "presenca");
+    assert.ok(form);
+
+    const createRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento API",
+      description: "Descricao do evento",
+      date: "2026-05-20",
+      opening: "2026-05-10T08:00",
+      closing: "2026-05-18T18:00",
+      formIds: [form.id],
+      messageConfig: {},
+    }, adminToken);
+    assert.equal(createRes.status, 200);
+    const created = await createRes.json();
+    assert.equal(created.event.status, "pronto");
+    assert.deepEqual(created.event.formIds, [form.id]);
+
+    const publishRes = await authedJson(ctx.baseUrl, `/api/events/${created.event.id}/publish`, {}, adminToken);
+    assert.equal(publishRes.status, 200);
+    const published = await publishRes.json();
+    assert.equal(published.event.status, "publicado");
+    assert.ok(published.event.publishedAt);
+
+    const refreshedRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
+    const refreshed = await refreshedRes.json();
+    const savedEvent = refreshed.events.find(event => event.id === created.event.id);
+    assert.ok(savedEvent);
+    assert.equal(savedEvent.title, "Evento API");
+    assert.equal(savedEvent.opening, "2026-05-10T08:00:00.000Z");
+    assert.equal(savedEvent.closing, "2026-05-18T18:00:00.000Z");
+    assert.equal(savedEvent.status, "publicado");
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("forms endpoint accepts archived status and keeps the form out of the public listing", async () => {
   const ctx = await startServer();
   try {

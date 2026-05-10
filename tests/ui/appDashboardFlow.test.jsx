@@ -134,7 +134,7 @@ describe("App dashboard flow", () => {
     render(<App />);
 
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Novo formulario" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Novo" })).toBeInTheDocument();
   });
 
   it("derruba a sessao quando o validador encontra o token revogado", async () => {

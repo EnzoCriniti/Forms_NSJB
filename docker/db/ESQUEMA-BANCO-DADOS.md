@@ -27,6 +27,7 @@ Origem do schema:
 ## Visao Geral das Tabelas
 
 - `forms`
+- `events`
 - `responses`
 - `response_values`
 - `escala_assignments`
@@ -48,6 +49,8 @@ Origem do schema:
 - `response_values.form_id -> forms.id`
 - `escala_assignments.form_id -> forms.id`
 - `auth_sessions.user_id -> users.id`
+
+Observacao: `events.form_ids_json` guarda os formularios vinculados em JSON para manter o evento como agrupador simples nesta fase.
 
 ## Tabela `forms`
 
@@ -92,6 +95,34 @@ Cadastro central de formularios.
 - `scale_sections_json JSONB`
 - `results_config_json JSONB`
 - datas operacionais preferencialmente em `TIMESTAMPTZ` ou `DATE`, conforme coluna
+
+## Tabela `events`
+
+### Papel
+
+Agrupador operacional de formularios com publicacao manual da divulgacao inicial.
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGINT PK | sim | identificador |
+| `title` | TEXT | sim | nome do evento |
+| `description` | TEXT | sim | descricao |
+| `date` | DATE | nao | data do evento |
+| `opening` | TIMESTAMPTZ | nao | abertura operacional |
+| `closing` | TIMESTAMPTZ | nao | fechamento operacional |
+| `status` | TEXT | sim | `rascunho`, `pronto`, `publicado`, `encerrado` |
+| `form_ids_json` | JSONB | sim | ids dos formularios vinculados |
+| `message_config_json` | JSONB | sim | reservado para templates e disparos futuros |
+| `published_at` | TIMESTAMPTZ | nao | data da publicacao |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+| `updated_at` | TIMESTAMPTZ | sim | atualizacao |
+
+### Indices
+
+- `idx_events_status`
+- `idx_events_date`
 
 ## Tabela `responses`
 

@@ -22,6 +22,8 @@ import {
   logoutAuth,
   setAuthToken,
   saveForm,
+  saveEvent,
+  publishEvent,
   saveResponse,
   claimEscalaSlot,
   saveEscala,
@@ -46,6 +48,7 @@ import {
 } from "./lib/api";
 import { FormListScreen } from "./screens/FormListScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
+import { EventsScreen } from "./screens/EventsScreen";
 import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { ResultsScreen } from "./screens/ResultsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
@@ -66,6 +69,7 @@ import {
 
 const EMPTY_BOOTSTRAP = {
   forms: [],
+  events: [],
   responsesByForm: {},
   escalaByForm: {},
   users: [],
@@ -105,7 +109,7 @@ export default function App() {
   const forms = bootstrap.forms;
   const responsesByForm = { ...(bootstrap.responsesByForm || {}), ...responseDetails };
   const escalaByForm = { ...(bootstrap.escalaByForm || {}), ...escalaDetails };
-  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases } = bootstrap;
+  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events } = bootstrap;
   const activeForm = useMemo(() => forms.find(form => form.id === activeFormId) || null, [forms, activeFormId]);
   const editingForm = useMemo(() => draftForm || forms.find(form => form.id === editingFormId) || null, [draftForm, forms, editingFormId]);
   const publicForm = useMemo(() => {
@@ -356,6 +360,10 @@ export default function App() {
       setScreen("list");
       return;
     }
+    if (nextScreen === "events" && !canCreateForms(currentUser)) {
+      setScreen("list");
+      return;
+    }
     const targetForm = form || activeForm;
     if (nextScreen === "create") {
       setDraftForm(null);
@@ -381,6 +389,27 @@ export default function App() {
     setEditingFormId(response.form.id);
     setActiveFormId(response.form.id);
     return response.form;
+  };
+
+  const handleSaveEvent = async payload => {
+    const response = await saveEvent(payload);
+    setBootstrap(prev => ({
+      ...prev,
+      events: [
+        response.event,
+        ...(prev.events || []).filter(event => event.id !== response.event.id),
+      ].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || Number(b.id || 0) - Number(a.id || 0)),
+    }));
+    return response.event;
+  };
+
+  const handlePublishEvent = async id => {
+    const response = await publishEvent(id);
+    setBootstrap(prev => ({
+      ...prev,
+      events: (prev.events || []).map(event => event.id === response.event.id ? response.event : event),
+    }));
+    return response.event;
   };
 
   const handleDuplicateForm = form => {
@@ -587,6 +616,7 @@ export default function App() {
   const nav = canCreateForms(currentUser)
     ? [
         { key: "dashboard", icon: "chart", label: "Dashboard" },
+        { key: "events", icon: "calendar", label: "Eventos" },
         { key: "list", icon: "list", label: "Formulários" },
         { key: "create", icon: "plus", label: "Novo" },
       ]
@@ -713,6 +743,15 @@ export default function App() {
             fieldCatalog={fieldCatalog}
             scaleTaskCatalog={scaleTaskCatalog}
             user={currentUser}
+          />
+        )}
+        {screen === "events" && canCreateForms(currentUser) && (
+          <EventsScreen
+            events={events}
+            forms={forms}
+            onSaveEvent={handleSaveEvent}
+            onPublishEvent={handlePublishEvent}
+            onNavigate={navigate}
           />
         )}
         {screen === "list" && <FormListScreen onNavigate={navigate} onDuplicateForm={handleDuplicateForm} onArchiveForm={handleArchiveForm} onTogglePinnedForm={handleTogglePinnedForm} pinnedFormIds={pinnedFormIds} user={currentUser} labels={labels} forms={forms} onDeleteForm={handleDeleteForm} formDeleteKeyConfigured={formDeleteKeyConfigured} />}

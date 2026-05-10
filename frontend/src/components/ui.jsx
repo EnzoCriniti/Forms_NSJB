@@ -57,6 +57,7 @@ export const Icon = ({ name, size = 18 }) => {
     share: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg>,
     pin: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 4l6 6" /><path d="M18 2l4 4-5 5-4-4z" /><path d="M9 11 2 22" /><path d="M12.5 8.5 15.5 11.5" /><path d="M5 18l4-4 7-1-5-5-1 7z" /></svg>,
     archive: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="5" rx="1" /><path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9" /><path d="M10 13h4" /></svg>,
+    calendar: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>,
   };
   return icons[name] || null;
 };
@@ -98,6 +99,9 @@ export const StatusBadge = ({ status }) => {
     aberto: { bg: COLORS.primaryLight, c: COLORS.accent, t: "Aberto" },
     fechado: { bg: COLORS.dangerLight, c: COLORS.danger, t: "Fechado" },
     rascunho: { bg: COLORS.warningLight, c: COLORS.warning, t: "Rascunho" },
+    pronto: { bg: COLORS.primaryLight, c: COLORS.primary, t: "Pronto" },
+    publicado: { bg: COLORS.primaryLight, c: COLORS.accent, t: "Publicado" },
+    encerrado: { bg: COLORS.surfaceAlt, c: COLORS.textSecondary, t: "Encerrado" },
     arquivado: { bg: COLORS.surfaceAlt, c: COLORS.textSecondary, t: "Arquivado" },
   };
   const item = map[status] || map.rascunho;
