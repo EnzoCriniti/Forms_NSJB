@@ -706,6 +706,10 @@ input[type="radio"] {
   display: none;
 }
 
+.app-header__session {
+  justify-self: end;
+}
+
 .app-header-drawer {
   position: fixed;
   inset: 0;
@@ -761,6 +765,56 @@ input[type="radio"] {
 .app-header-drawer__nav {
   display: grid;
   gap: 8px;
+}
+
+.app-header-drawer__section {
+  border-top: 1px solid var(--border-light);
+  padding-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.app-header-drawer__section-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+}
+
+.app-header-drawer__account {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border-light);
+}
+
+.app-header-drawer__account strong {
+  font-size: 13px;
+}
+
+.app-header-drawer__account small {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.app-header-drawer__actions {
+  display: grid;
+  gap: 8px;
+}
+
+.app-header-drawer__action {
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  min-height: 46px;
 }
 
 .app-header-drawer__nav-item {
@@ -865,9 +919,8 @@ button:not(.ui-btn):focus-visible {
     display: inline-flex !important;
   }
 
-  .app-header .auth-panel,
-  .app-header > div:last-child {
-    justify-self: end;
+  .app-header__session {
+    display: none !important;
   }
 
   .app-header .ui-btn,

@@ -34,6 +34,20 @@ export const AppHeader = ({
     onNavigate(nextScreen);
   };
 
+  const openSettingsAndClose = () => {
+    setDrawerOpen(false);
+    onOpenSettings();
+  };
+
+  const logoutAndClose = () => {
+    setDrawerOpen(false);
+    onLogout();
+  };
+
+  const toggleThemeAndClose = () => {
+    onToggleTheme();
+  };
+
   return (
     <>
       <header className="app-header" data-screen={screen} style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
@@ -69,10 +83,11 @@ export const AppHeader = ({
             </button>
           ))}
         </nav>
-        <AuthPanel
-          user={currentUser}
-          onLogin={onLogin}
-          onLogout={onLogout}
+        <div className="app-header__session">
+          <AuthPanel
+            user={currentUser}
+            onLogin={onLogin}
+            onLogout={onLogout}
           theme={theme}
           fontScale={fontScale}
           onIncreaseTextSize={onIncreaseFontScale}
@@ -80,6 +95,7 @@ export const AppHeader = ({
           onToggleTheme={onToggleTheme}
           onOpenSettings={onOpenSettings}
         />
+        </div>
       </header>
       {nav.length > 0 && drawerOpen && (
         <div className="app-header-drawer" role="dialog" aria-modal="true" aria-label="Menu principal">
@@ -116,6 +132,32 @@ export const AppHeader = ({
                   </span>
                 </button>
               ))}
+            </div>
+            <div className="app-header-drawer__section">
+              <div className="app-header-drawer__section-label">Conta</div>
+              <div className="app-header-drawer__account">
+                <strong>{currentUser?.name || "Usuario"}</strong>
+                <small>{currentUser?.role === "admin" ? "Administrador" : "Visualizacao"}</small>
+              </div>
+              <div className="app-header-drawer__actions">
+                <button type="button" className="app-header-drawer__action" onClick={toggleThemeAndClose}>
+                  <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
+                </button>
+                <button type="button" className="app-header-drawer__action" onClick={onDecreaseFontScale} disabled={fontScale <= 0.9}>
+                  <span>Diminuir fonte</span>
+                </button>
+                <button type="button" className="app-header-drawer__action" onClick={onIncreaseFontScale} disabled={fontScale >= 1.3}>
+                  <span>Aumentar fonte</span>
+                </button>
+                {currentUser?.role === "admin" && (
+                  <button type="button" className="app-header-drawer__action" onClick={openSettingsAndClose}>
+                    <span>Configuracoes</span>
+                  </button>
+                )}
+                <button type="button" className="app-header-drawer__action" onClick={logoutAndClose}>
+                  <span>Sair</span>
+                </button>
+              </div>
             </div>
           </aside>
         </div>

@@ -10,6 +10,7 @@ vi.mock("../../frontend/src/features/auth/AuthPanel.jsx", () => ({
 describe("AppHeader", () => {
   it("abre o menu lateral no mobile e navega a partir dele", () => {
     const onNavigate = vi.fn();
+    const onOpenSettings = vi.fn();
 
     render(
       <AppHeader
@@ -18,14 +19,14 @@ describe("AppHeader", () => {
           { key: "list", icon: "list", label: "Formulários" },
         ]}
         screen="list"
-        currentUser={{ id: 1, name: "Admin" }}
+        currentUser={{ id: 1, name: "Admin", role: "admin" }}
         theme="light"
         fontScale={1}
         onNavigate={onNavigate}
         onIncreaseFontScale={vi.fn()}
         onDecreaseFontScale={vi.fn()}
         onToggleTheme={vi.fn()}
-        onOpenSettings={vi.fn()}
+        onOpenSettings={onOpenSettings}
         onLogin={vi.fn()}
         onLogout={vi.fn()}
       />,
@@ -34,6 +35,12 @@ describe("AppHeader", () => {
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
 
     expect(screen.getByRole("dialog", { name: "Menu principal" })).toBeInTheDocument();
+    expect(screen.getByText("Conta")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
+
+    expect(onOpenSettings).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     fireEvent.click(screen.getByRole("button", { name: "Formulários" }));
 
     expect(onNavigate).toHaveBeenCalledWith("list");
