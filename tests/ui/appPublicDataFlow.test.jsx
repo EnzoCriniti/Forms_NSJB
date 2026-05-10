@@ -69,7 +69,7 @@ describe("App public data flow", () => {
     render(<App />);
 
     await screen.findByText("Nome *");
-    fireEvent.change(screen.getByRole("combobox"), { target: { value: "QS - Maria" } });
+    fireEvent.change(screen.getByRole("combobox"), { target: { value: "Maria" } });
 
     expect(await screen.findByRole("heading", { name: /resposta/i })).toBeInTheDocument();
   });

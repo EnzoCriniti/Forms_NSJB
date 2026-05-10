@@ -50,7 +50,7 @@ describe("PublicFormScreen", () => {
     );
 
     fireEvent.change(screen.getByRole("combobox"), {
-      target: { value: "QS - Maria" },
+      target: { value: "Maria" },
     });
 
     expect(screen.getByRole("heading", { name: /resposta/i })).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe("PublicFormScreen", () => {
     );
 
     fireEvent.change(screen.getByRole("combobox"), {
-      target: { value: "QS - Maria" },
+      target: { value: "Maria" },
     });
 
     expect(screen.getByText("Esta pessoa ja respondeu e novas respostas estao bloqueadas para este formulario.")).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe("PublicFormScreen", () => {
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={onSaveResponse} onBack={vi.fn()} people={people} />);
 
     fireEvent.change(screen.getByRole("combobox"), {
-      target: { value: "QS - Maria" },
+      target: { value: "Maria" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Sim" }));
     fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
@@ -112,8 +112,8 @@ describe("PublicFormScreen", () => {
     );
 
     const selects = screen.getAllByRole("combobox");
-    fireEvent.change(selects[0], { target: { value: "QS - Maria" } });
-    fireEvent.change(selects[1], { target: { value: "QM - Joao" } });
+    fireEvent.change(selects[0], { target: { value: "Maria" } });
+    fireEvent.change(selects[1], { target: { value: "Joao" } });
     fireEvent.click(screen.getByRole("button", { name: "Sim" }));
     fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
 
@@ -121,8 +121,8 @@ describe("PublicFormScreen", () => {
       respondentName: "Maria",
       respondentGrau: "QS",
       values: expect.objectContaining({
-        "1": "QS - Maria",
-        "3": "QM - Joao",
+        "1": "Maria",
+        "3": "Joao",
       }),
     }));
   });
@@ -158,7 +158,7 @@ describe("PublicFormScreen", () => {
     );
 
     const selects = screen.getAllByRole("combobox");
-    fireEvent.change(selects[0], { target: { value: "QS - Maria" } });
+    fireEvent.change(selects[0], { target: { value: "Maria" } });
     fireEvent.change(selects[1], { target: { value: "JARDINS" } });
     fireEvent.click(screen.getByRole("button", { name: "Sim" }));
     fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
@@ -167,7 +167,7 @@ describe("PublicFormScreen", () => {
       respondentName: "Maria",
       respondentGrau: "QS",
       values: expect.objectContaining({
-        "1": "QS - Maria",
+        "1": "Maria",
         "3": "JARDINS",
       }),
     }));
@@ -178,7 +178,7 @@ describe("PublicFormScreen", () => {
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={onSaveResponse} onBack={vi.fn()} people={people} />);
 
     fireEvent.change(screen.getByRole("combobox"), {
-      target: { value: "QS - Maria" },
+      target: { value: "Maria" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
 

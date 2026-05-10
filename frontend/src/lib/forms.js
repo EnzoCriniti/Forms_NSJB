@@ -125,7 +125,17 @@ export const hasLinkedPeopleField = form => Boolean(getPrimaryPeopleBaseField(fo
 
 export const getPersonOptionLabel = person => {
   if (!person) return "";
-  return person.grau ? `${person.grau} - ${person.name}` : person.name;
+  return String(person.name || "").trim();
+};
+
+export const resolvePersonBySelectionValue = (people = [], value) => {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return null;
+  return people.find(person => {
+    const name = String(person?.name || "").trim().toLowerCase();
+    const grauName = person?.grau ? `${String(person.grau).trim().toLowerCase()} - ${name}` : "";
+    return raw === name || raw === grauName;
+  }) || null;
 };
 
 export const getFieldValue = (response, fieldId) => response?.values?.[String(fieldId)];

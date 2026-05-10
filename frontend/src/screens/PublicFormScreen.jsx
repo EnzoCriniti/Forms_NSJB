@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
-import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
+import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, resolvePersonBySelectionValue, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
 export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [] }) => {
   const fields = getVisibleFields(form);
@@ -20,7 +20,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
 
   const selectedPerson = useMemo(() => {
     const raw = personField ? values[String(personField.id)] : "";
-    const found = people.find(person => `${person.grau} - ${person.name}` === raw);
+    const found = resolvePersonBySelectionValue(people, raw);
     return found ? { name: found.name, grau: found.grau, display: raw } : null;
   }, [people, personField, values]);
 
@@ -42,7 +42,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
     setEditModal(false);
     setSubmitError("");
     if (!value) return;
-    const found = people.find(person => `${person.grau} - ${person.name}` === value);
+    const found = resolvePersonBySelectionValue(people, value);
     if (!found) return;
     const matchedResponse = responses.find(response => String(response.respondentName || "").trim().toLowerCase() === found.name.trim().toLowerCase());
     if (!matchedResponse) return;
