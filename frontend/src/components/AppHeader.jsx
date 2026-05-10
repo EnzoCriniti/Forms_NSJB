@@ -59,7 +59,7 @@ export const AppHeader = ({
     <>
       <header className="app-header" data-screen={screen} style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          {currentUser && screen === "results" && (
+          {currentUser && ["respond", "results"].includes(screen) && (
             <button
               type="button"
               className="app-header__back-button"

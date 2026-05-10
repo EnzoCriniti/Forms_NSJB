@@ -8,7 +8,8 @@ import React, { useMemo, useState } from "react";
 import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
 import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, resolvePersonBySelectionValue, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
-export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "", readingControls }) => {
+export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "", readingControls, variant = "public" }) => {
+  const isInternal = variant === "internal";
   const fields = getVisibleFields(form);
   const personField = getPersonField(form);
   const [values, setValues] = useState({});
@@ -106,8 +107,8 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   if (submitted) {
     return (
       <div style={{ maxWidth: 680, margin: "0 auto" }}>
-        <PublicTopCompact form={form} onBack={onBack} actionLabel="Resultados" actionHref={resultsHref} readingControls={readingControls} />
-        <div className="public-response-card" style={{ background: COLORS.surface, borderRadius: "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "40px 24px", textAlign: "center" }}>
+        {!isInternal && <PublicTopCompact form={form} onBack={onBack} actionLabel="Resultados" actionHref={resultsHref} readingControls={readingControls} />}
+        <div className={isInternal ? "internal-response-card" : "public-response-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: "40px 24px", textAlign: "center" }}>
           <div style={{ width: 56, height: 56, borderRadius: "50%", background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: COLORS.primary }}><Icon name="check" size={28} /></div>
           <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>{editing ? "Resposta atualizada!" : "Resposta enviada!"}</h2>
           <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary }}>{editing ? "Sua resposta anterior foi substituída com sucesso." : "Obrigado pelo preenchimento."} Se precisar alterar, acesse este mesmo link novamente.</p>
@@ -118,10 +119,16 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
 
   return (
     <div style={{ maxWidth: 680, margin: "0 auto" }}>
+      {isInternal && (
+        <div className="screen-top-card internal-response-header" style={{ marginBottom: 14 }}>
+          <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Formulario"}</h2>
+          <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>{form.description || "Preencha o formulario abaixo."}</p>
+        </div>
+      )}
       <PublicTopCompact form={form} onBack={onBack} description={form.description || "Preencha o formulário abaixo."} actionLabel={resultsHref ? "Resultados" : ""} actionHref={resultsHref} readingControls={readingControls} />
       {submitError && <div style={{ padding: "10px 24px 0" }}><FeedbackBanner tone="error" message={submitError} /></div>}
       {editing && <div style={{ background: COLORS.warningLight, border: `1px solid ${COLORS.warning}`, padding: "10px 24px", display: "flex", alignItems: "center", gap: 8 }}><Icon name="edit" size={14} /><span style={{ fontSize: 12, fontWeight: 600, color: "#b86e00" }}>Modo de edição - atualizando resposta já enviada</span></div>}
-      <div className="public-response-card" style={{ background: COLORS.surface, borderBottomLeftRadius: 16, borderBottomRightRadius: 16, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "0 0 24px" }}>
+      <div className={isInternal ? "internal-response-card" : "public-response-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: "0 0 24px" }}>
         {fields.map(field => {
           const key = String(field.id);
           const value = values[key] ?? "";

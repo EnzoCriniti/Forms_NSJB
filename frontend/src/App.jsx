@@ -266,7 +266,7 @@ export default function App() {
 
   useEffect(() => {
     if (error) return undefined;
-    const targetForm = publicForm || (screen === "results" ? activeForm : null);
+    const targetForm = publicForm || (["respond", "results"].includes(screen) ? activeForm : null);
     if (!targetForm || (publicForm && isFormClosedForPublic(publicForm) && !publicResultsView)) return undefined;
 
     if (targetForm.type === "escala_organ") {
@@ -609,7 +609,7 @@ export default function App() {
     return <AppStatusScreen tone="error" title="Erro ao iniciar" message={error} actionLabel="Tentar novamente" onAction={() => refreshBootstrap({ preserveSelection: false })} />;
   }
 
-  const targetForm = publicForm || (screen === "results" ? activeForm : null);
+  const targetForm = publicForm || (["respond", "results"].includes(screen) ? activeForm : null);
   const waitingForTarget = Boolean(targetForm) && !(publicForm && isFormClosedForPublic(publicForm) && !publicResultsView) && (targetForm.type === "escala_organ" ? !hasLoadedEscala(targetForm.id) : !hasLoadedResponses(targetForm.id));
   if (waitingForTarget) {
     return <AppStatusScreen loading tone="loading" message="Carregando dados do formulario..." />;
@@ -759,6 +759,29 @@ export default function App() {
             user={currentUser}
             labels={labels}
             onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
+          />
+        )}
+        {screen === "respond" && activeForm && activeForm.type === "presenca" && (
+          <PublicFormScreen
+            form={activeForm}
+            responses={responsesByForm[activeForm.id] || []}
+            onSaveResponse={handleSaveResponse}
+            onBack={() => navigate("list")}
+            people={people}
+            externalBases={externalBases}
+            resultsHref={activeForm.resultsConfig?.publicResultsEnabled ? buildPublicFormResultsPath(activeForm) : ""}
+            variant="internal"
+          />
+        )}
+        {screen === "respond" && activeForm && activeForm.type === "escala_organ" && (
+          <PublicEscalaScreen
+            form={activeForm}
+            onBack={() => navigate("list")}
+            people={people}
+            sections={escalaByForm[activeForm.id] || []}
+            onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
+            onClaimSlot={(sectionIndex, slotIndex, person) => handleClaimEscalaSlot(activeForm.id, sectionIndex, slotIndex, person)}
+            variant="internal"
           />
         )}
       </main>

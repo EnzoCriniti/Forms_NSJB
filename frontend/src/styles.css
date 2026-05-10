@@ -1381,6 +1381,11 @@ input[type="radio"] {
   width: 100%;
 }
 
+.app-root:not(.public-root) .public-reading-toolbar,
+.app-root:not(.public-root) .public-top {
+  display: none;
+}
+
 button {
   touch-action: manipulation;
 }

@@ -174,6 +174,35 @@ describe("App save flow", () => {
 
     await waitFor(() => expect(screen.getByText("Formulario salvo com sucesso")).toBeInTheDocument());
   });
+
+  it("abre resposta pelo fluxo interno quando usuario esta logado", async () => {
+    const fetchMock = vi.fn(async url => {
+      if (url === "/api/auth/me") {
+        return jsonResponse({ user: admin.user, expiresAt: admin.expiresAt });
+      }
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap(originalForm));
+      }
+      if (url === "/api/security/form-delete-key/status") {
+        return jsonResponse({ configured: false });
+      }
+      if (url === `/api/forms/${originalForm.id}/responses`) {
+        return jsonResponse({ responses: [] });
+      }
+      return jsonResponse({}, false);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const { container } = render(<App />);
+
+    await screen.findByText(/Presenca Edicao/i);
+    fireEvent.click(screen.getByRole("button", { name: "Responder" }));
+
+    await screen.findByText("Nome *");
+    expect(container.querySelector(".internal-response-card")).toBeInTheDocument();
+    expect(container.querySelector(".app-root.public-root")).toBeNull();
+    expect(window.location.hash).toBe("");
+  });
 });
 
 const jsonResponse = (payload, ok = true) => ({

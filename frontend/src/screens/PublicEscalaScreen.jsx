@@ -8,7 +8,8 @@ import React, { useState } from "react";
 import { COLORS, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
 import { getScalePersonLimit } from "../lib/forms";
 
-export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls }) => {
+export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
+  const isInternal = variant === "internal";
   const [selSlot, setSelSlot] = useState(null);
   const [signName, setSignName] = useState("");
   const [error, setError] = useState("");
@@ -54,8 +55,14 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
 
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
-      <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />
-      <div className="public-response-card public-scale-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: 18 }}>
+      {!isInternal && <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />}
+      {isInternal && (
+        <div className="screen-top-card internal-response-header" style={{ marginBottom: 14 }}>
+          <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Escala"}</h2>
+          <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>Escolha uma vaga pendente para preencher seu nome.</p>
+        </div>
+      )}
+      <div className={isInternal ? "internal-response-card" : "public-response-card public-scale-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : undefined, border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: 18 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>
           <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div><strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong></div>
           <div className="public-scale-metric" style={{ background: COLORS.dangerLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Pendentes</div><strong style={{ fontSize: 24, color: COLORS.danger }}>{total - filled}</strong></div>

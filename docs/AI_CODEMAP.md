@@ -23,7 +23,7 @@ Mapa curto das areas mais mexidas por agentes.
 ## App shell
 
 - `frontend/src/App.jsx`
-  Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile.
+  Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile. Contas logadas respondem formularios pela tela interna `respond`; links publicos continuam em `#/formularios/<id>`.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
 - `frontend/src/lib/appShell.js`
@@ -62,6 +62,10 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/ResultsScreen.jsx`
   Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
+- `frontend/src/screens/PublicFormScreen.jsx`
+  Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
+- `frontend/src/screens/PublicEscalaScreen.jsx`
+  Renderiza a escala publica e tambem o modo interno `variant="internal"` para contas logadas.
 - `frontend/src/components/ui.jsx`
   Toolbar de leitura das telas publicas, com ajuste de fonte, troca de tema persistidos no navegador e botao de voltar reutilizavel.
 - `frontend/src/styles.css`

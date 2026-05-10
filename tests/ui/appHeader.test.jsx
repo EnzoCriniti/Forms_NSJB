@@ -74,7 +74,7 @@ describe("AppHeader", () => {
     expect(screen.getByText("Viewer")).toBeInTheDocument();
   });
 
-  it("exibe voltar na barra mobile quando esta na tela de resultados", () => {
+  it("exibe voltar na barra mobile quando esta em tela de detalhe", () => {
     const onNavigate = vi.fn();
 
     render(
@@ -95,6 +95,29 @@ describe("AppHeader", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Voltar para listagem" }));
+
+    expect(onNavigate).toHaveBeenCalledWith("list");
+
+    onNavigate.mockClear();
+
+    render(
+      <AppHeader
+        nav={[]}
+        screen="respond"
+        currentUser={{ id: 3, name: "Editor", role: "admin" }}
+        theme="light"
+        fontScale={1}
+        onNavigate={onNavigate}
+        onIncreaseFontScale={vi.fn()}
+        onDecreaseFontScale={vi.fn()}
+        onToggleTheme={vi.fn()}
+        onOpenSettings={vi.fn()}
+        onLogin={vi.fn()}
+        onLogout={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Voltar para listagem" })[1]);
 
     expect(onNavigate).toHaveBeenCalledWith("list");
   });

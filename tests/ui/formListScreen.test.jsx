@@ -182,7 +182,7 @@ describe("FormListScreen", () => {
 
     fireEvent.click(document.querySelector(".form-card"));
 
-    expect(window.location.hash).toBe("#/formularios/aberto-1");
+    expect(window.location.hash).toBe("#/formularios/1");
   });
 
   it("mantem resultados como acao explicita no card", () => {
@@ -193,6 +193,17 @@ describe("FormListScreen", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Ver resultados" })[0]);
 
     expect(onNavigate).toHaveBeenCalledWith("results", forms[0]);
+    expect(window.location.hash).toBe("");
+  });
+
+  it("abre resposta interna para usuario autenticado", () => {
+    const onNavigate = vi.fn();
+    render(<FormListScreen onNavigate={onNavigate} user={{ role: "viewer", name: "Viewer" }} labels={labels} forms={forms} />);
+
+    window.location.hash = "";
+    fireEvent.click(screen.getAllByRole("button", { name: "Responder" })[0]);
+
+    expect(onNavigate).toHaveBeenCalledWith("respond", forms[0]);
     expect(window.location.hash).toBe("");
   });
 

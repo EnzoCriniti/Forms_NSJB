@@ -41,6 +41,10 @@ export const FormListCard = ({
 
   const openPublicForm = () => {
     if (!form?.id) return;
+    if (user) {
+      onNavigate("respond", form);
+      return;
+    }
     window.location.hash = buildPublicFormPath(form);
   };
 
