@@ -44,6 +44,9 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 
 ## Backlog de refatoracao
 
+- Fechar a evolucao dos `presets` para deixar claro quando eles sao template de formulario e quando viram catalogo reutilizavel da operacao.
+- Evoluir o frontend para suportar campos vinculados a fontes diferentes da base central de socios, sem acoplar a UI a uma origem unica.
+- Organizar o editor de campos para exibir origem, vinculo e comportamento esperado antes de salvar.
 - Reduzir ainda mais `frontend/src/App.jsx` para ficar so como orquestrador.
 - Extrair o restante do fluxo de carregamento e selecao de tela para helpers puros.
 - Quebrar `frontend/src/screens/FormListScreen.jsx` em componentes menores de item, filtros e acoes.
