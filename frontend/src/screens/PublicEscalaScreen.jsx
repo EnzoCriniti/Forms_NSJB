@@ -55,17 +55,17 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
       <PublicTopCompact form={form} onBack={onBack} />
-      <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: 18 }}>
+      <div className="public-response-card public-scale-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: 18 }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>
-          <div style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div><strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong></div>
-          <div style={{ background: COLORS.dangerLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Pendentes</div><strong style={{ fontSize: 24, color: COLORS.danger }}>{total - filled}</strong></div>
-          <div style={{ background: COLORS.surfaceAlt, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Total</div><strong style={{ fontSize: 24, color: COLORS.textSecondary }}>{total}</strong></div>
+          <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div><strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong></div>
+          <div className="public-scale-metric" style={{ background: COLORS.dangerLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Pendentes</div><strong style={{ fontSize: 24, color: COLORS.danger }}>{total - filled}</strong></div>
+          <div className="public-scale-metric" style={{ background: COLORS.surfaceAlt, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Total</div><strong style={{ fontSize: 24, color: COLORS.textSecondary }}>{total}</strong></div>
         </div>
         <p style={{ margin: "0 0 14px", color: COLORS.textSecondary, fontSize: 13 }}>Escolha uma vaga pendente para preencher seu nome. Cada nome pode ocupar ate {scaleLimit} vaga{scaleLimit !== 1 ? "s" : ""} nesta escala.</p>
         {error && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="error" message={error} /></div>}
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {sections.map((section, sectionIndex) => (
-            <div key={sectionIndex} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden" }}>
+            <div key={sectionIndex} className="public-scale-section" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden" }}>
               <div style={{ background: section.color, padding: "9px 14px", fontWeight: 800, fontSize: 13 }}>{section.title}</div>
               {section.slots.map((slot, slotIndex) => (
                 <button key={slotIndex} disabled={!!slot.person} onClick={() => setSelSlot({ si: sectionIndex, sli: slotIndex })} style={{ width: "100%", border: "none", borderBottom: `1px solid ${COLORS.borderLight}`, background: slot.person ? COLORS.surfaceAlt : COLORS.surface, padding: "10px 14px", display: "flex", justifyContent: "space-between", gap: 10, cursor: slot.person ? "not-allowed" : "pointer", color: COLORS.text, textAlign: "left" }}>

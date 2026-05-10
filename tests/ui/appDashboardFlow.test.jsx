@@ -95,8 +95,8 @@ describe("App dashboard flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
 
     expect(await screen.findByRole("button", { name: "Acessos" })).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "Configuracoes" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Area administrativa principal do sistema.")).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Configuracoes" })).toBeInTheDocument();
+    expect(screen.getByText("Gerencie usuarios, seguranca, bases e catalogos do sistema")).toBeInTheDocument();
   });
 
   it("mostra a tela de login quando nao ha sessao", async () => {

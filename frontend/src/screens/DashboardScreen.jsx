@@ -85,9 +85,9 @@ export const DashboardScreen = ({ onNavigate, forms = [], labels = [], people = 
         <>
           <DashboardStatsGrid cards={quickStats} />
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 18 }}>
+          <div className="dashboard-base-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 18 }}>
             {baseCards.map(card => (
-              <div key={card.label} style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "16px 18px" }}>
+              <div key={card.label} className="dashboard-base-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "16px 18px" }}>
                 <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{card.label}</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: COLORS.text }}>{card.value}</div>
                 <div style={{ fontSize: 11, color: COLORS.textMuted }}>{card.note}</div>
@@ -95,11 +95,11 @@ export const DashboardScreen = ({ onNavigate, forms = [], labels = [], people = 
             ))}
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)", gap: 14, alignItems: "start" }}>
+          <div className="dashboard-main-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)", gap: 14, alignItems: "start" }}>
             <DashboardUpcomingClosings forms={upcomingClosings} onNavigate={onNavigate} formatClosing={formatDateTime} />
 
             <div style={{ display: "grid", gap: 10 }}>
-              <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
+              <div className="dashboard-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Distribuicao</div>
                 <div style={{ display: "grid", gap: 10 }}>
                   <DashboardMiniRow label="Presenca" value={presenceForms.length} note={`${totalPresenceResponses} respostas`} />
@@ -108,7 +108,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], labels = [], people = 
                 </div>
               </div>
 
-              <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
+              <div className="dashboard-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Atalhos</div>
                 <div style={{ display: "grid", gap: 8 }}>
                   <Btn v="secondary" icon="list" onClick={() => onNavigate("list")}>Ver formularios</Btn>

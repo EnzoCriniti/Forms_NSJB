@@ -8,7 +8,7 @@ import React from "react";
 import { COLORS, Icon, Btn, StatusBadge, TypeBadge } from "./ui";
 
 export const DashboardHeader = ({ onNavigate, user }) => (
-  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
+  <div className="dashboard-hero" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
     <div>
       <h2 style={{ margin: 0, fontSize: 24, color: COLORS.text }}>Dashboard</h2>
       <p style={{ margin: "6px 0 0", fontSize: 13, color: COLORS.textMuted }}>Resumo operacional da aplicacao sem entrar nas Configuracoes.</p>
@@ -21,7 +21,7 @@ export const DashboardHeader = ({ onNavigate, user }) => (
 );
 
 export const DashboardEmptyState = ({ onNavigate, user }) => (
-  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 24, textAlign: "center" }}>
+  <div className="dashboard-empty-state" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 24, textAlign: "center" }}>
     <div style={{ width: 56, height: 56, borderRadius: "50%", margin: "0 auto 14px", display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.primaryLight, color: COLORS.primary }}>
       <Icon name="chart" size={26} />
     </div>
@@ -56,7 +56,7 @@ export const DashboardMiniRow = ({ label, value, note }) => (
 );
 
 export const DashboardUpcomingClosings = ({ forms, onNavigate, formatClosing = value => value }) => (
-  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
+  <div className="dashboard-panel dashboard-upcoming" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
       <div>
         <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Proximos fechamentos</div>
@@ -69,7 +69,7 @@ export const DashboardUpcomingClosings = ({ forms, onNavigate, formatClosing = v
     ) : (
       <div style={{ display: "grid", gap: 10 }}>
         {forms.map(form => (
-          <div key={form.id} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div key={form.id} className="dashboard-upcoming-row" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
             <div style={{ minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                 <strong style={{ fontSize: 14 }}>{form.title}</strong>

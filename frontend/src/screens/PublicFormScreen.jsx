@@ -107,7 +107,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
     return (
       <div style={{ maxWidth: 680, margin: "0 auto" }}>
         <PublicTopCompact form={form} onBack={onBack} />
-        <div style={{ background: COLORS.surface, borderRadius: "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "40px 24px", textAlign: "center" }}>
+        <div className="public-response-card" style={{ background: COLORS.surface, borderRadius: "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "40px 24px", textAlign: "center" }}>
           <div style={{ width: 56, height: 56, borderRadius: "50%", background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: COLORS.primary }}><Icon name="check" size={28} /></div>
           <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>{editing ? "Resposta atualizada!" : "Resposta enviada!"}</h2>
           <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary }}>{editing ? "Sua resposta anterior foi substituída com sucesso." : "Obrigado pelo preenchimento."} Se precisar alterar, acesse este mesmo link novamente.</p>
@@ -119,15 +119,15 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   return (
     <div style={{ maxWidth: 680, margin: "0 auto" }}>
       <PublicTopCompact form={form} onBack={onBack} />
-      <div style={{ background: COLORS.primaryDark, padding: "10px 24px", color: "rgba(255,255,255,0.86)", fontSize: 12, lineHeight: 1.5 }}>{form.description || "Preencha o formulário abaixo."}</div>
+      <div className="public-description-strip" style={{ background: COLORS.primaryDark, padding: "10px 24px", color: "rgba(255,255,255,0.86)", fontSize: 12, lineHeight: 1.5 }}>{form.description || "Preencha o formulário abaixo."}</div>
       {submitError && <div style={{ padding: "10px 24px 0" }}><FeedbackBanner tone="error" message={submitError} /></div>}
       {editing && <div style={{ background: COLORS.warningLight, border: `1px solid ${COLORS.warning}`, padding: "10px 24px", display: "flex", alignItems: "center", gap: 8 }}><Icon name="edit" size={14} /><span style={{ fontSize: 12, fontWeight: 600, color: "#b86e00" }}>Modo de edição - atualizando resposta já enviada</span></div>}
-      <div style={{ background: COLORS.surface, borderBottomLeftRadius: 16, borderBottomRightRadius: 16, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "0 0 24px" }}>
+      <div className="public-response-card" style={{ background: COLORS.surface, borderBottomLeftRadius: 16, borderBottomRightRadius: 16, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "0 0 24px" }}>
         {fields.map(field => {
           const key = String(field.id);
           const value = values[key] ?? "";
           return (
-            <div key={field.id} style={{ padding: "16px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
+            <div key={field.id} className="public-form-field" style={{ padding: "16px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
               <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 10 }}>{field.label}{field.required ? " *" : ""}</label>
               {summarizeFieldValidation(field) && <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 8 }}>{summarizeFieldValidation(field)}</div>}
               {field.type === "person_select" && (
