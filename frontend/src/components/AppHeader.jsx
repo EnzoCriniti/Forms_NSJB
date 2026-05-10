@@ -24,6 +24,7 @@ export const AppHeader = ({
   onLogout,
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const canOpenDrawer = Boolean(currentUser);
 
   useEffect(() => {
     setDrawerOpen(false);
@@ -52,7 +53,7 @@ export const AppHeader = ({
     <>
       <header className="app-header" data-screen={screen} style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          {nav.length > 0 && (
+          {canOpenDrawer && (
             <button
               type="button"
               className="app-header__menu-toggle"
@@ -97,7 +98,7 @@ export const AppHeader = ({
         />
         </div>
       </header>
-      {nav.length > 0 && drawerOpen && (
+      {canOpenDrawer && drawerOpen && (
         <div className="app-header-drawer" role="dialog" aria-modal="true" aria-label="Menu principal">
           <button
             type="button"
@@ -115,24 +116,26 @@ export const AppHeader = ({
                 <Icon name="close" size={18} />
               </button>
             </div>
-            <div className="app-header-drawer__nav">
-              {nav.map(n => (
-                <button
-                  key={n.key}
-                  onClick={() => navigateAndClose(n.key)}
-                  className="app-header-drawer__nav-item"
-                  data-active={screen === n.key}
-                >
-                  <span className="app-header-drawer__nav-icon">
-                    <Icon name={n.icon} size={16} />
-                  </span>
-                  <span>
-                    <strong>{n.label}</strong>
-                    <small>{n.key === "dashboard" ? "Visao geral" : n.key === "list" ? "Formularios e filtros" : "Criar e publicar"}</small>
-                  </span>
-                </button>
-              ))}
-            </div>
+            {nav.length > 0 && (
+              <div className="app-header-drawer__nav">
+                {nav.map(n => (
+                  <button
+                    key={n.key}
+                    onClick={() => navigateAndClose(n.key)}
+                    className="app-header-drawer__nav-item"
+                    data-active={screen === n.key}
+                  >
+                    <span className="app-header-drawer__nav-icon">
+                      <Icon name={n.icon} size={16} />
+                    </span>
+                    <span>
+                      <strong>{n.label}</strong>
+                      <small>{n.key === "dashboard" ? "Visao geral" : n.key === "list" ? "Formularios e filtros" : "Criar e publicar"}</small>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="app-header-drawer__section">
               <div className="app-header-drawer__section-label">Conta</div>
               <div className="app-header-drawer__account">

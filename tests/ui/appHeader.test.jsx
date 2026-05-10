@@ -45,4 +45,29 @@ describe("AppHeader", () => {
 
     expect(onNavigate).toHaveBeenCalledWith("list");
   });
+
+  it("mantem o hamburger disponivel para conta sem navegacao principal", () => {
+    render(
+      <AppHeader
+        nav={[]}
+        screen="list"
+        currentUser={{ id: 2, name: "Viewer", role: "viewer" }}
+        theme="light"
+        fontScale={1}
+        onNavigate={vi.fn()}
+        onIncreaseFontScale={vi.fn()}
+        onDecreaseFontScale={vi.fn()}
+        onToggleTheme={vi.fn()}
+        onOpenSettings={vi.fn()}
+        onLogin={vi.fn()}
+        onLogout={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+
+    expect(screen.getByRole("dialog", { name: "Menu principal" })).toBeInTheDocument();
+    expect(screen.getByText("Conta")).toBeInTheDocument();
+    expect(screen.getByText("Viewer")).toBeInTheDocument();
+  });
 });
