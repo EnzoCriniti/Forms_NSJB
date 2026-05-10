@@ -35,6 +35,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/FormListScreen.jsx`
   Tela de listagem dos formularios com paginacao e filtros.
   Formularios de presenca ficam em lista unica; a separacao entre nucleo e geral deve acontecer pelos filtros.
+  O topo da listagem ficou compacto, sem contador textual e sem botao de criar exposto ali.
 - `frontend/src/components/FormListCard.jsx`
   Card da listagem com metadados do formulario, incluindo badge do modo estrutural nos formularios de presenca.
 - `frontend/src/components/FormListToolbar.jsx`
