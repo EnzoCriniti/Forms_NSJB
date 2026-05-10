@@ -10,6 +10,8 @@ import { formatDateTime } from "../lib/forms";
 
 export const ResultsPresenceHeader = ({
   onNavigate,
+  publicActionHref,
+  publicActionLabel = "Ver formulário",
   form,
   labels = [],
   grauOptions = [],
@@ -20,7 +22,7 @@ export const ResultsPresenceHeader = ({
   <div>
     <div className="screen-top-card results-top-card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6, flexWrap: "wrap" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
-        <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />
+        {onNavigate && <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />}
         <div style={{ minWidth: 0 }}>
           <h2 style={{ margin: 0, fontSize: 20 }}>{form.title}</h2>
           <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
@@ -30,6 +32,20 @@ export const ResultsPresenceHeader = ({
           </div>
         </div>
       </div>
+      {publicActionHref && (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Btn
+            v="secondary"
+            sz="sm"
+            icon="link"
+            onClick={() => {
+              window.location.hash = publicActionHref.startsWith("#") ? publicActionHref : `#${publicActionHref}`;
+            }}
+          >
+            {publicActionLabel}
+          </Btn>
+        </div>
+      )}
     </div>
 
     {grauOptions.length > 0 && (

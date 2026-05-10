@@ -195,9 +195,13 @@ export const TypeBadge = ({ type }) => (
   </span>
 );
 
-export const PublicTopCompact = ({ form, onBack, description }) => {
+export const PublicTopCompact = ({ form, onBack, description, actionLabel, actionHref, actionIcon = "eye" }) => {
   const displayTitle = form?.date ? `${form.title} - ${formatDate(form.date)}` : form?.title || "NSJB Forms";
   const descriptionText = String(description || "").trim();
+  const handleAction = () => {
+    if (!actionHref) return;
+    window.location.hash = actionHref.startsWith("#") ? actionHref : `#${actionHref}`;
+  };
 
   return (
     <div className="public-top" style={{ background: COLORS.primary, borderRadius: "16px 16px 0 0", padding: "24px", color: "#fff" }}>
@@ -214,6 +218,7 @@ export const PublicTopCompact = ({ form, onBack, description }) => {
         </div>
         <div className="public-top-compact-side" style={{ display: "grid", gap: 10 }}>
           <div className="public-top-compact-actions" style={{ display: "grid", gridTemplateColumns: onBack ? "auto" : "1fr", gap: 10, justifyContent: onBack ? "end" : "stretch" }}>
+            {actionHref && <button onClick={handleAction} style={{ border: "1px solid rgba(255,255,255,0.35)", color: "#fff", background: "rgba(255,255,255,0.08)", borderRadius: 10, padding: "10px 13px", cursor: "pointer", fontWeight: 700, whiteSpace: "nowrap" }}><Icon name={actionIcon} size={14} /> {actionLabel || "Resultados"}</button>}
             {onBack && <button onClick={onBack} style={{ border: "1px solid rgba(255,255,255,0.35)", color: "#fff", background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "10px 13px", cursor: "pointer", fontWeight: 700 }}>Voltar</button>}
           </div>
         </div>
@@ -278,13 +283,13 @@ export const PublicTop = ({ form, onBack }) => {
   );
 };
 
-export const ClosedPublicScreen = ({ form, onBack }) => (
+export const ClosedPublicScreen = ({ form, onBack, actionLabel, actionHref, message, title = "Formulário fechado" }) => (
   <div style={{ maxWidth: 620, margin: "0 auto" }}>
-    <PublicTopCompact form={form} onBack={onBack} />
+    <PublicTopCompact form={form} onBack={onBack} actionLabel={actionLabel} actionHref={actionHref} />
     <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", borderRadius: "0 0 16px 16px", padding: "36px 24px", textAlign: "center" }}>
       <div style={{ width: 56, height: 56, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", background: COLORS.dangerLight, color: COLORS.danger }}><Icon name="warning" size={28} /></div>
-      <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>Formulário fechado</h2>
-      <p style={{ margin: "0 auto", maxWidth: 460, fontSize: 13, lineHeight: 1.55, color: COLORS.textSecondary }}>{form?.closingText || "Este formulário não está mais aceitando respostas."}</p>
+      <h2 style={{ margin: "0 0 8px", fontSize: 18 }}>{title}</h2>
+      <p style={{ margin: "0 auto", maxWidth: 460, fontSize: 13, lineHeight: 1.55, color: COLORS.textSecondary }}>{message || form?.closingText || "Este formulário não está mais aceitando respostas."}</p>
       <p style={{ margin: "14px 0 0", fontSize: 12, color: COLORS.textMuted }}>Fechamento: {formatDateTime(form?.closing)}</p>
     </div>
   </div>

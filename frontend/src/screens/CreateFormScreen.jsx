@@ -98,6 +98,7 @@ const createDefaultResultsConfig = fields => ({
   searchEnabled: true,
   showLinkedRoster: true,
   blockDuplicatePersonResponses: false,
+  publicResultsEnabled: false,
   formMode: fields.some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL,
   totalsLayout: (fields || []).filter(field => field.total).map(field => ({
     fieldId: field.id,
@@ -136,6 +137,7 @@ const syncResultsConfigWithFields = (config, fields) => {
     searchEnabled: config?.searchEnabled ?? true,
     showLinkedRoster: config?.showLinkedRoster ?? true,
     blockDuplicatePersonResponses: config?.blockDuplicatePersonResponses ?? false,
+    publicResultsEnabled: config?.publicResultsEnabled ?? false,
     formMode: config?.formMode || (fields.some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL),
     totalsLayout: currentLayout,
   };
@@ -1157,6 +1159,14 @@ export const CreateFormScreen = ({
                   onChange={event => setResultsConfig({ ...resultsConfig, blockDuplicatePersonResponses: event.target.checked })}
                 />
                 Bloquear nova resposta quando a pessoa ja respondeu
+              </label>
+              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: COLORS.textSecondary, cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={resultsConfig.publicResultsEnabled === true}
+                  onChange={event => setResultsConfig({ ...resultsConfig, publicResultsEnabled: event.target.checked })}
+                />
+                Permitir visualizacao publica dos resultados
               </label>
             </div>
 

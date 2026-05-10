@@ -47,6 +47,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Configuracao dos Resultados")).toBeInTheDocument();
     expect(screen.getByLabelText("Habilitar pesquisa na planilha de respostas")).toBeInTheDocument();
     expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).not.toBeDisabled();
+    expect(screen.getByLabelText("Permitir visualizacao publica dos resultados")).toBeInTheDocument();
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
   });
 
@@ -155,6 +156,7 @@ describe("CreateFormScreen", () => {
       searchEnabled: true,
       showLinkedRoster: true,
       blockDuplicatePersonResponses: false,
+      publicResultsEnabled: false,
       formMode: "nucleo",
       totalsLayout: [
         { fieldId: 3, style: "number" },

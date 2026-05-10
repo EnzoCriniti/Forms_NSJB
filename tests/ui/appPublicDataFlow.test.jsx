@@ -143,6 +143,45 @@ describe("App public data flow", () => {
     expect(await screen.findByText("Nome *")).toBeInTheDocument();
   });
 
+  it("abre a tela publica de resultados pelo caminho /formularios/slug/resultados", async () => {
+    window.history.pushState(null, "", "/formularios/presenca-teste/resultados");
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap([
+          {
+            id: 1,
+            slug: "presenca-teste",
+            type: "presenca",
+            status: "aberto",
+            title: "Formulario Publico",
+            sessionName: "Sessao Publica",
+            description: "",
+            closing: "2026-05-05T20:00",
+            fieldDefinitions: [
+              { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+              { id: 2, type: "yes_no", label: "Vai?", required: true, show: true, total: true },
+            ],
+            resultsConfig: { publicResultsEnabled: true },
+            labels: [],
+          },
+        ]));
+      }
+      if (url === "/api/forms/1/responses") {
+        return jsonResponse({
+          responses: [
+            { id: 10, respondentName: "Maria", respondentGrau: "QS", values: { "1": "Maria", "2": "Sim" } },
+          ],
+        });
+      }
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    expect(await screen.findByRole("button", { name: "Ver formulário" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Todos" })).toBeInTheDocument();
+  });
+
   it("carrega a escala publica sob demanda", async () => {
     window.location.hash = "#/formularios/escala-teste";
     vi.stubGlobal("fetch", vi.fn(async url => {

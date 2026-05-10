@@ -55,6 +55,11 @@ export const buildPublicFormPath = slug => {
   return `#${PUBLIC_FORM_PATH_PREFIX}${encodeURIComponent(slug)}`;
 };
 
+export const buildPublicFormResultsPath = slug => {
+  if (!slug) return "";
+  return `#${PUBLIC_FORM_PATH_PREFIX}${encodeURIComponent(slug)}/resultados`;
+};
+
 export const normalizeStoredSession = stored => {
   if (!stored) return null;
   const token = typeof stored.token === "string" && stored.token.trim() ? stored.token : null;
@@ -76,11 +81,22 @@ const decodePublicSlug = slug => {
 };
 
 export const getPublicSlugFromLocation = () => {
-  if (window.location.hash.startsWith(`#${PUBLIC_FORM_PATH_PREFIX}`)) {
-    return decodePublicSlug(window.location.hash.replace(`#${PUBLIC_FORM_PATH_PREFIX}`, ""));
-  }
-  if (window.location.pathname.startsWith(PUBLIC_FORM_PATH_PREFIX)) {
-    return decodePublicSlug(window.location.pathname.replace(PUBLIC_FORM_PATH_PREFIX, ""));
-  }
-  return null;
+  return getPublicRouteFromLocation()?.slug || null;
+};
+
+export const getPublicRouteFromLocation = () => {
+  const hashPath = window.location.hash.startsWith(`#${PUBLIC_FORM_PATH_PREFIX}`)
+    ? window.location.hash.replace("#", "")
+    : "";
+  const pathname = window.location.pathname.startsWith(PUBLIC_FORM_PATH_PREFIX)
+    ? window.location.pathname
+    : "";
+  const rawPath = hashPath || pathname;
+  if (!rawPath.startsWith(PUBLIC_FORM_PATH_PREFIX)) return null;
+
+  const withoutPrefix = rawPath.replace(PUBLIC_FORM_PATH_PREFIX, "");
+  const view = withoutPrefix.endsWith("/resultados") ? "results" : "form";
+  const slugPart = view === "results" ? withoutPrefix.replace(/\/resultados$/, "") : withoutPrefix;
+  const slug = decodePublicSlug(slugPart);
+  return slug ? { slug, view } : null;
 };

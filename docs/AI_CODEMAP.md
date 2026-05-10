@@ -64,6 +64,8 @@ Mapa curto das areas mais mexidas por agentes.
   Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
+- `frontend/src/App.jsx`
+  Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<slug>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 
 ## Backend da base sincronizada
 

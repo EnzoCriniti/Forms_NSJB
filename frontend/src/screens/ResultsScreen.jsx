@@ -42,13 +42,13 @@ const compareGrauOptions = (left, right) => {
   return String(left || "").localeCompare(String(right || ""), "pt-BR");
 };
 
-export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections }) => (
+export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections, publicFormHref }) => (
   form?.type === "escala_organ"
     ? <EscalaResultsScreen onNavigate={onNavigate} people={people} canEdit={canEditEscala(user)} form={form} sections={sections} labels={labels} onSaveSections={onSaveSections} />
-    : <PresenceResultsScreen onNavigate={onNavigate} responses={responses} form={form} labels={labels} people={people} />
+    : <PresenceResultsScreen onNavigate={onNavigate} responses={responses} form={form} labels={labels} people={people} publicFormHref={publicFormHref} />
 );
 
-const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) => {
+const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people, publicFormHref }) => {
   const columns = useMemo(() => getVisibleFields(form).filter(field => !(field.type === "person_select" && isPrimaryPeopleBaseField(form, field))), [form]);
   const resultsConfig = getResultsConfig(form);
   const [sortCol, setSortCol] = useState(null);
@@ -359,6 +359,7 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people }) 
     <div>
       <ResultsPresenceHeader
         onNavigate={onNavigate}
+        publicActionHref={publicFormHref}
         form={form}
         labels={labels}
         grauOptions={linkedPeople ? grauOptions : []}
@@ -685,7 +686,7 @@ const EscalaResultsScreen = ({ onNavigate, people, canEdit, form, sections, labe
     <div>
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />
+          {onNavigate && <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />}
           <div style={{ flex: 1 }}>
             <h2 style={{ margin: 0, fontSize: 22 }}>{form.title}</h2>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6, flexWrap: "wrap" }}>

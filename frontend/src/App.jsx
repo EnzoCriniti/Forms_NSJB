@@ -55,9 +55,11 @@ import { isFormClosedForPublic } from "./lib/forms";
 import {
   buildDuplicateFormDraft,
   buildSaveFormPayloadFromExisting,
+  buildPublicFormPath,
+  buildPublicFormResultsPath,
   clampFontScale,
   FONT_SCALE_STEP,
-  getPublicSlugFromLocation,
+  getPublicRouteFromLocation,
   normalizeStoredSession,
   sanitizeUser,
 } from "./lib/appShell";
@@ -81,7 +83,7 @@ export default function App() {
   const [activeFormId, setActiveFormId] = useState(null);
   const [editingFormId, setEditingFormId] = useState(null);
   const [draftForm, setDraftForm] = useState(null);
-  const [publicSlug, setPublicSlug] = useState(() => getPublicSlugFromLocation());
+  const [publicRoute, setPublicRoute] = useState(() => getPublicRouteFromLocation());
   const [session, setSession] = useState(() => normalizeStoredSession(loadStored(STORAGE_KEYS.session, null)));
   const [theme, setTheme] = useState(() => loadStored(STORAGE_KEYS.theme, "light"));
   const [fontScale, setFontScale] = useState(() => Number(loadStored(STORAGE_KEYS.fontScale, 1)) || 1);
@@ -106,7 +108,9 @@ export default function App() {
   const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases } = bootstrap;
   const activeForm = useMemo(() => forms.find(form => form.id === activeFormId) || null, [forms, activeFormId]);
   const editingForm = useMemo(() => draftForm || forms.find(form => form.id === editingFormId) || null, [draftForm, forms, editingFormId]);
-  const publicForm = useMemo(() => forms.find(form => form.slug === publicSlug) || null, [forms, publicSlug]);
+  const publicForm = useMemo(() => forms.find(form => form.slug === publicRoute?.slug) || null, [forms, publicRoute?.slug]);
+  const publicResultsEnabled = publicForm?.type === "presenca" && publicForm?.resultsConfig?.publicResultsEnabled === true;
+  const publicResultsView = publicRoute?.view === "results";
   const hasLoadedResponses = formId => Object.prototype.hasOwnProperty.call(bootstrap.responsesByForm || {}, formId) || Object.prototype.hasOwnProperty.call(responseDetails, formId);
   const hasLoadedEscala = formId => Object.prototype.hasOwnProperty.call(bootstrap.escalaByForm || {}, formId) || Object.prototype.hasOwnProperty.call(escalaDetails, formId);
 
@@ -231,19 +235,19 @@ export default function App() {
   };
 
   useEffect(() => {
-    const syncPublicSlug = () => setPublicSlug(getPublicSlugFromLocation());
-    window.addEventListener("hashchange", syncPublicSlug);
-    window.addEventListener("popstate", syncPublicSlug);
+    const syncPublicRoute = () => setPublicRoute(getPublicRouteFromLocation());
+    window.addEventListener("hashchange", syncPublicRoute);
+    window.addEventListener("popstate", syncPublicRoute);
     return () => {
-      window.removeEventListener("hashchange", syncPublicSlug);
-      window.removeEventListener("popstate", syncPublicSlug);
+      window.removeEventListener("hashchange", syncPublicRoute);
+      window.removeEventListener("popstate", syncPublicRoute);
     };
   }, []);
 
   useEffect(() => {
     if (error) return undefined;
     const targetForm = publicForm || (screen === "results" ? activeForm : null);
-    if (!targetForm || (publicForm && isFormClosedForPublic(publicForm))) return undefined;
+    if (!targetForm || (publicForm && isFormClosedForPublic(publicForm) && !publicResultsView)) return undefined;
 
     if (targetForm.type === "escala_organ") {
       if (hasLoadedEscala(targetForm.id)) return undefined;
@@ -260,6 +264,7 @@ export default function App() {
     error,
     publicForm?.id,
     publicForm?.type,
+    publicResultsView,
     activeForm?.id,
     activeForm?.type,
     screen,
@@ -572,7 +577,7 @@ export default function App() {
       window.history.pushState(null, "", "/");
     }
     window.location.hash = "";
-    setPublicSlug(null);
+    setPublicRoute(null);
     setScreen("list");
   };
 
@@ -585,9 +590,39 @@ export default function App() {
   }
 
   const targetForm = publicForm || (screen === "results" ? activeForm : null);
-  const waitingForTarget = Boolean(targetForm) && !(publicForm && isFormClosedForPublic(publicForm)) && (targetForm.type === "escala_organ" ? !hasLoadedEscala(targetForm.id) : !hasLoadedResponses(targetForm.id));
+  const waitingForTarget = Boolean(targetForm) && !(publicForm && isFormClosedForPublic(publicForm) && !publicResultsView) && (targetForm.type === "escala_organ" ? !hasLoadedEscala(targetForm.id) : !hasLoadedResponses(targetForm.id));
   if (waitingForTarget) {
     return <AppStatusScreen loading tone="loading" message="Carregando dados do formulario..." />;
+  }
+
+  if (publicForm && publicResultsView) {
+    if (!publicResultsEnabled) {
+      return (
+        <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+          <ClosedPublicScreen
+            form={publicForm}
+            onBack={currentUser ? backToPanel : null}
+            title="Resultados públicos indisponíveis"
+            message="Este formulário não está configurado para exibir resultados publicamente."
+          />
+        </div>
+      );
+    }
+    return (
+      <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+        <ResultsScreen
+          onNavigate={currentUser ? backToPanel : null}
+          form={publicForm}
+          responses={responsesByForm[publicForm.id] || []}
+          sections={escalaByForm[publicForm.id] || []}
+          people={people}
+          user={null}
+          labels={labels}
+          onSaveSections={() => {}}
+          publicFormHref={buildPublicFormPath(publicForm.slug)}
+        />
+      </div>
+    );
   }
 
   if (publicForm) {
@@ -595,10 +630,10 @@ export default function App() {
     return (
       <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
         {isFormClosedForPublic(publicForm)
-          ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} />
+          ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} actionLabel={publicResultsEnabled ? "Resultados" : ""} actionHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm.slug) : ""} title={publicResultsEnabled ? "Formulário fechado" : "Formulário fechado"} message={publicResultsEnabled ? undefined : "Este formulário não está mais aceitando respostas."} />
           : publicForm.type === "escala_organ"
             ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
-            : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} />}
+            : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} resultsHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm.slug) : ""} />}
       </div>
     );
   }
