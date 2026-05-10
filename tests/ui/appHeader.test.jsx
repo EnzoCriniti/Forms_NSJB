@@ -1,24 +1,27 @@
-/**
- * @file tests/ui/appHeader.test.jsx
- * @summary Testes do cabecalho global do frontend.
- * @responsibility Garantir que a tela ativa chega ao header para regras responsivas.
- */
-
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { AppHeader } from "../../frontend/src/components/AppHeader.jsx";
 
+vi.mock("../../frontend/src/features/auth/AuthPanel.jsx", () => ({
+  AuthPanel: () => <div data-testid="auth-panel" />,
+}));
+
 describe("AppHeader", () => {
-  it("expõe a tela atual no atributo data-screen", () => {
+  it("abre o menu lateral no mobile e navega a partir dele", () => {
+    const onNavigate = vi.fn();
+
     render(
       <AppHeader
-        nav={[]}
-        screen="create"
-        currentUser={{ name: "Admin", role: "admin" }}
+        nav={[
+          { key: "dashboard", icon: "chart", label: "Dashboard" },
+          { key: "list", icon: "list", label: "Formulários" },
+        ]}
+        screen="list"
+        currentUser={{ id: 1, name: "Admin" }}
         theme="light"
         fontScale={1}
-        onNavigate={vi.fn()}
+        onNavigate={onNavigate}
         onIncreaseFontScale={vi.fn()}
         onDecreaseFontScale={vi.fn()}
         onToggleTheme={vi.fn()}
@@ -28,6 +31,11 @@ describe("AppHeader", () => {
       />,
     );
 
-    expect(screen.getByRole("banner")).toHaveAttribute("data-screen", "create");
+    fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
+
+    expect(screen.getByRole("dialog", { name: "Menu principal" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Formulários" }));
+
+    expect(onNavigate).toHaveBeenCalledWith("list");
   });
 });

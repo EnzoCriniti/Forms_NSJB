@@ -25,7 +25,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/App.jsx`
   Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile.
 - `frontend/src/components/AppHeader.jsx`
-  Cabecalho global com navegacao e controles de sessao. No mobile some nas telas de trabalho.
+  Cabecalho global com navegacao e controles de sessao. No mobile mostra menu lateral expansivo nas telas de navegacao.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive o caminho publico de formularios `#/formularios/<slug>`.
 
