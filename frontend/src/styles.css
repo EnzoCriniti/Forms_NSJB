@@ -981,11 +981,13 @@ input[type="radio"] {
   box-shadow: 0 18px 42px rgba(15, 38, 24, 0.1);
 }
 
-.public-description-strip {
-  background:
-    linear-gradient(180deg, rgba(26, 107, 60, 0.88), rgba(26, 107, 60, 0.18)) !important;
-  border-left: 1px solid var(--border-light);
-  border-right: 1px solid var(--border-light);
+.public-top-description {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .public-form-field {
@@ -1791,8 +1793,10 @@ button:not(.ui-btn):focus-visible {
     padding: 14px 16px !important;
   }
 
-  .public-description-strip {
-    padding: 10px 16px !important;
+  .public-top-description {
+    margin-top: 14px;
+    padding-top: 12px;
+    font-size: 12px;
   }
 
   .results-table-stage,

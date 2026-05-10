@@ -195,8 +195,9 @@ export const TypeBadge = ({ type }) => (
   </span>
 );
 
-export const PublicTopCompact = ({ form, onBack }) => {
+export const PublicTopCompact = ({ form, onBack, description }) => {
   const displayTitle = form?.date ? `${form.title} - ${formatDate(form.date)}` : form?.title || "NSJB Forms";
+  const descriptionText = String(description || "").trim();
 
   return (
     <div className="public-top" style={{ background: COLORS.primary, borderRadius: "16px 16px 0 0", padding: "24px", color: "#fff" }}>
@@ -217,6 +218,9 @@ export const PublicTopCompact = ({ form, onBack }) => {
           </div>
         </div>
       </div>
+      {descriptionText && (
+        <p className="public-top-description">{descriptionText}</p>
+      )}
     </div>
   );
 };

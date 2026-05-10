@@ -118,8 +118,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
 
   return (
     <div style={{ maxWidth: 680, margin: "0 auto" }}>
-      <PublicTopCompact form={form} onBack={onBack} />
-      <div className="public-description-strip" style={{ background: COLORS.primaryDark, padding: "10px 24px", color: "rgba(255,255,255,0.86)", fontSize: 12, lineHeight: 1.5 }}>{form.description || "Preencha o formulário abaixo."}</div>
+      <PublicTopCompact form={form} onBack={onBack} description={form.description || "Preencha o formulário abaixo."} />
       {submitError && <div style={{ padding: "10px 24px 0" }}><FeedbackBanner tone="error" message={submitError} /></div>}
       {editing && <div style={{ background: COLORS.warningLight, border: `1px solid ${COLORS.warning}`, padding: "10px 24px", display: "flex", alignItems: "center", gap: 8 }}><Icon name="edit" size={14} /><span style={{ fontSize: 12, fontWeight: 600, color: "#b86e00" }}>Modo de edição - atualizando resposta já enviada</span></div>}
       <div className="public-response-card" style={{ background: COLORS.surface, borderBottomLeftRadius: 16, borderBottomRightRadius: 16, border: `1px solid ${COLORS.borderLight}`, borderTop: "none", padding: "0 0 24px" }}>
