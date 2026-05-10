@@ -59,6 +59,18 @@ export const AppHeader = ({
     <>
       <header className="app-header" data-screen={screen} style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+          {currentUser && screen === "results" && (
+            <button
+              type="button"
+              className="app-header__back-button"
+              onClick={() => onNavigate("list")}
+              aria-label="Voltar para listagem"
+              title="Voltar para listagem"
+              style={{ width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.12)", color: "#fff", cursor: "pointer", flex: "0 0 auto" }}
+            >
+              <Icon name="back" size={18} />
+            </button>
+          )}
           {canOpenDrawer && (
             <button
               type="button"
@@ -91,17 +103,6 @@ export const AppHeader = ({
         </nav>
         {currentUser && (
           <div className="app-header__mobile-tools" aria-label="Ajustes de leitura">
-            {screen === "results" && (
-              <button
-                type="button"
-                className="app-header__mobile-font-button"
-                onClick={() => onNavigate("list")}
-                aria-label="Voltar para listagem"
-                title="Voltar para listagem"
-              >
-                <Icon name="back" size={16} />
-              </button>
-            )}
             <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= 0.9} aria-label="Diminuir fonte">
               A-
             </button>

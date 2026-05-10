@@ -25,7 +25,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/App.jsx`
   Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile.
 - `frontend/src/components/AppHeader.jsx`
-  Cabecalho global com navegacao e controles de sessao. No mobile mostra menu lateral expansivo nas telas de navegacao e botao de voltar na tela de resultados.
+  Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive o caminho publico canônico de formularios `#/formularios/<id>` e a leitura de links legados por slug.
 
@@ -63,7 +63,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/ResultsScreen.jsx`
   Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
 - `frontend/src/components/ui.jsx`
-  Toolbar de leitura compartilhada nas telas publicas e internas, com ajuste de fonte, troca de tema persistidos no navegador e botao de voltar reutilizavel.
+  Toolbar de leitura das telas publicas, com ajuste de fonte, troca de tema persistidos no navegador e botao de voltar reutilizavel.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
 - `frontend/src/App.jsx`

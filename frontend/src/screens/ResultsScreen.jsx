@@ -5,10 +5,10 @@
  */
 
 import React, { useMemo, useRef, useState } from "react";
-import { COLORS, Icon, Badge, StatusBadge, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
 import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
 import { canEditEscala } from "../lib/auth";
-import { formatDateTime, getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
+import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 
 const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
 
@@ -42,13 +42,13 @@ const compareGrauOptions = (left, right) => {
   return String(left || "").localeCompare(String(right || ""), "pt-BR");
 };
 
-export const ResultsScreen = ({ onNavigate, responses, form, sections, people, user, labels, onSaveSections, publicFormHref, readingControls }) => (
+export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
-    ? <EscalaResultsScreen onNavigate={onNavigate} people={people} canEdit={canEditEscala(user)} form={form} sections={sections} labels={labels} onSaveSections={onSaveSections} />
-    : <PresenceResultsScreen onNavigate={onNavigate} responses={responses} form={form} labels={labels} people={people} publicFormHref={publicFormHref} readingControls={readingControls} />
+    ? <EscalaResultsScreen people={people} canEdit={canEditEscala(user)} form={form} sections={sections} onSaveSections={onSaveSections} />
+    : <PresenceResultsScreen responses={responses} form={form} people={people} publicFormHref={publicFormHref} readingControls={readingControls} />
 );
 
-const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people, publicFormHref, readingControls }) => {
+const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readingControls }) => {
   const columns = useMemo(() => getVisibleFields(form).filter(field => !(field.type === "person_select" && isPrimaryPeopleBaseField(form, field))), [form]);
   const resultsConfig = getResultsConfig(form);
   const [sortCol, setSortCol] = useState(null);
@@ -358,11 +358,8 @@ const PresenceResultsScreen = ({ onNavigate, responses, form, labels, people, pu
   return (
     <div>
       <ResultsPresenceHeader
-        onNavigate={onNavigate}
         publicActionHref={publicFormHref}
         readingControls={readingControls}
-        form={form}
-        labels={labels}
         grauOptions={linkedPeople ? grauOptions : []}
         selectedGrau={selectedGrau}
         onSelectGrau={setSelectedGrau}
@@ -574,7 +571,7 @@ const ColumnHeader = ({ label, sortIndicator }) => (
   </div>
 );
 
-const EscalaResultsScreen = ({ onNavigate, people, canEdit, form, sections, labels, onSaveSections }) => {
+const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }) => {
   const [showSignup, setShowSignup] = useState(false);
   const [selSlot, setSelSlot] = useState(null);
   const [signName, setSignName] = useState("");
@@ -685,21 +682,10 @@ const EscalaResultsScreen = ({ onNavigate, people, canEdit, form, sections, labe
 
   return (
     <div>
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {onNavigate && <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />}
-          <div style={{ flex: 1 }}>
-            <h2 style={{ margin: 0, fontSize: 22 }}>{form.title}</h2>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6, flexWrap: "wrap" }}>
-              <StatusBadge status={form.status} />
-              {form.labels.map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
-              <span style={{ fontSize: 11, color: COLORS.textMuted }}>Fecha: {formatDateTime(form.closing)}</span>
-            </div>
-          </div>
-          <Btn v="secondary" icon="download" sz="sm" onClick={exportCsv}>Exportar</Btn>
-        </div>
-        {feedback && <div style={{ marginTop: 10 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
+      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+        <Btn v="secondary" icon="download" sz="sm" onClick={exportCsv}>Exportar</Btn>
       </div>
+      {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
       {!canEdit && (
         <div style={{ background: "#fff8e1", border: "1px solid #ffe082", borderRadius: 10, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#795548", display: "flex", alignItems: "center", gap: 8 }}>
           <Icon name="lock" size={14} />

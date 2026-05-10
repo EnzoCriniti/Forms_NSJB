@@ -10,7 +10,7 @@ afterEach(() => {
 });
 
 describe("ResultsPresenceHeader", () => {
-  it("renderiza titulo, filtros de grau e exportacao", () => {
+  it("renderiza filtros de grau e metricas sem cabecalho do formulario interno", () => {
     const onNavigate = vi.fn();
     const onSelectGrau = vi.fn();
     const onExport = vi.fn();
@@ -36,7 +36,7 @@ describe("ResultsPresenceHeader", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Presenca Completa" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Presenca Completa" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Voltar" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "QM" }));
     expect(onSelectGrau).toHaveBeenCalledWith("QM");
