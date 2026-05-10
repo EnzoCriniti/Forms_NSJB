@@ -967,18 +967,18 @@ export const CreateFormScreen = ({
                     {nType === "person_select" && (
                       <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
                         <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
-                          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Origem configurada no campo</div>
+                          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Vinculo configurado no campo</div>
                           <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
                             {formMode === FORM_MODES.NUCLEO
-                              ? "Campos locais usam a base central de socios. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base."
-                              : "Formulario geral nao usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa."}
+                              ? "Campos locais usam a base central de socios como origem. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base."
+                              : "Formulario geral nao usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
                           </div>
                         </div>
                         <div style={{ display: "grid", gap: 6 }}>
-                          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Origem ativa</label>
+                          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Vinculo ativo do campo</label>
                           <div style={{ padding: 10, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surface }}>
                             {activeSelectionSource?.kind === "external_base"
-                              ? `Base externa: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
+                              ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
                               : "Base central de socios"}
                           </div>
                         </div>

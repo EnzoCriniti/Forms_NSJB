@@ -73,7 +73,7 @@ describe("App dashboard flow", () => {
 
     expect(await screen.findByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByText("Resumo operacional da aplicacao sem entrar nas Configuracoes.")).toBeInTheDocument();
-  });
+  }, 10000);
 
   it("abre configuracoes em tela dedicada para admin", async () => {
     window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({

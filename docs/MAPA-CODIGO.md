@@ -33,7 +33,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/components/CreateFormLivePreview.jsx` - previa do formulario completo durante a criacao.
 - `frontend/src/components/CreateFormTemplateBar.jsx` - barra de selecao de template na criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
-- `frontend/src/features/members/MemberListConfigModal.jsx` - configuracao da base central de socios e origem externa.
+- `frontend/src/features/members/MemberListConfigModal.jsx` - configuracao da base central de socios e origem externa sincronizada.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
 - `frontend/src/lib/forms.js` - funcoes de apoio para formularios.
@@ -81,7 +81,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 
 - Fluxo publico por link: `frontend/src/App.jsx` + `frontend/src/screens/PublicFormScreen.jsx` ou `PublicEscalaScreen.jsx`.
 - Listagem interna: `frontend/src/screens/FormListScreen.jsx`.
-- Criacao e edicao: `frontend/src/screens/CreateFormScreen.jsx`.
+- Criacao e edicao: `frontend/src/screens/CreateFormScreen.jsx` - vinculo de campos a base central ou bases externas.
 - Configuracoes: `frontend/src/screens/SettingsScreen.jsx`.
 - Resultados: `frontend/src/screens/ResultsScreen.jsx`.
 - Admin: `frontend/src/features/admin/AdminSettingsModal.jsx`.
