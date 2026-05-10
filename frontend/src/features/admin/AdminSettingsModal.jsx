@@ -9,6 +9,7 @@ import { COLORS, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } 
 import { fetchAuditLogs } from "../../lib/api";
 import { ROLES } from "../../lib/auth";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
+import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 
 const inputStyle = {
   width: "100%",
@@ -445,6 +446,14 @@ export const AdminSettingsModal = ({
   onSyncMembersConfig,
   formDeleteKeyConfigured = null,
   onSaveFormDeleteKey,
+  messagingConfig,
+  messageTemplates = [],
+  personPresets = [],
+  onSaveMessagingConfig,
+  onSaveMessageTemplate,
+  onDeleteMessageTemplate,
+  onSavePersonPreset,
+  onDeletePersonPreset,
   onClose,
   mode = "modal",
 }) => {
@@ -466,6 +475,7 @@ export const AdminSettingsModal = ({
     { key: "catalog", label: "Campos e tarefas", description: "Biblioteca reutilizavel" },
     { key: "labels", label: "Classificacoes", description: "Etiquetas dos formularios" },
     { key: "presets", label: "Templates", description: "Templates de formulario" },
+    { key: "messages", label: "Mensagens", description: "Modelos, presets e disparo" },
     { key: "security", label: "Exclusao segura", description: "Chave mestra" },
     ...(currentUser?.role === "admin" ? [{ key: "audit", label: "Historico", description: "Auditoria do sistema" }] : []),
   ];
@@ -1157,6 +1167,20 @@ export const AdminSettingsModal = ({
               />
             </div>
           </section>
+        )}
+
+        {tab === "messages" && (
+          <MessagingSettingsPanel
+            messagingConfig={messagingConfig}
+            messageTemplates={messageTemplates}
+            personPresets={personPresets}
+            people={people}
+            onSaveMessagingConfig={onSaveMessagingConfig}
+            onSaveMessageTemplate={onSaveMessageTemplate}
+            onDeleteMessageTemplate={onDeleteMessageTemplate}
+            onSavePersonPreset={onSavePersonPreset}
+            onDeletePersonPreset={onDeletePersonPreset}
+          />
         )}
 
         {tab === "audit" && currentUser?.role === "admin" && <AuditLogsPanel currentUser={currentUser} />}

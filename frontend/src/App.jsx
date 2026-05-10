@@ -46,6 +46,11 @@ import {
   saveScaleTaskCatalogItem,
   deleteScaleTaskCatalogItem,
   deleteForm,
+  saveMessagingConfig,
+  saveMessageTemplate,
+  deleteMessageTemplate,
+  savePersonPreset,
+  deletePersonPreset,
 } from "./lib/api";
 import { FormListScreen } from "./screens/FormListScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
@@ -119,7 +124,7 @@ export default function App() {
   const forms = bootstrap.forms;
   const responsesByForm = { ...(bootstrap.responsesByForm || {}), ...responseDetails };
   const escalaByForm = { ...(bootstrap.escalaByForm || {}), ...escalaDetails };
-  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events } = bootstrap;
+  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events, messageTemplates = [], personPresets = [], messagingConfig = { whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" } } = bootstrap;
   const activeForm = useMemo(() => forms.find(form => form.id === activeFormId) || null, [forms, activeFormId]);
   const activeEvent = useMemo(() => events.find(event => event.id === activeEventId) || null, [events, activeEventId]);
   const editingForm = useMemo(() => draftForm || forms.find(form => form.id === editingFormId) || null, [draftForm, forms, editingFormId]);
@@ -641,6 +646,52 @@ export default function App() {
     return result;
   };
 
+  const handleSaveMessagingConfig = async nextConfig => {
+    const result = await saveMessagingConfig(nextConfig);
+    setBootstrap(prev => ({ ...prev, messagingConfig: result.config }));
+    return result.config;
+  };
+
+  const handleSaveMessageTemplate = async template => {
+    const result = await saveMessageTemplate(template);
+    setBootstrap(prev => {
+      const list = prev.messageTemplates || [];
+      const next = template?.id
+        ? list.map(item => item.id === result.template.id ? result.template : item)
+        : [...list, result.template];
+      return { ...prev, messageTemplates: next };
+    });
+    return result.template;
+  };
+
+  const handleDeleteMessageTemplate = async id => {
+    await deleteMessageTemplate(id);
+    setBootstrap(prev => ({
+      ...prev,
+      messageTemplates: (prev.messageTemplates || []).filter(item => item.id !== id),
+    }));
+  };
+
+  const handleSavePersonPreset = async preset => {
+    const result = await savePersonPreset(preset);
+    setBootstrap(prev => {
+      const list = prev.personPresets || [];
+      const next = preset?.id
+        ? list.map(item => item.id === result.preset.id ? result.preset : item)
+        : [...list, result.preset];
+      return { ...prev, personPresets: next };
+    });
+    return result.preset;
+  };
+
+  const handleDeletePersonPreset = async id => {
+    await deletePersonPreset(id);
+    setBootstrap(prev => ({
+      ...prev,
+      personPresets: (prev.personPresets || []).filter(item => item.id !== id),
+    }));
+  };
+
   const handleSyncMembersConfig = async () => {
     const result = await syncMembersConfig();
     setBootstrap(prev => ({
@@ -872,6 +923,14 @@ export default function App() {
             onDeleteScaleTaskCatalogItem={handleDeleteScaleTaskCatalogItem}
             formDeleteKeyConfigured={formDeleteKeyConfigured}
             onSaveFormDeleteKey={handleSaveFormDeleteKey}
+            messageTemplates={messageTemplates}
+            personPresets={personPresets}
+            messagingConfig={messagingConfig}
+            onSaveMessagingConfig={handleSaveMessagingConfig}
+            onSaveMessageTemplate={handleSaveMessageTemplate}
+            onDeleteMessageTemplate={handleDeleteMessageTemplate}
+            onSavePersonPreset={handleSavePersonPreset}
+            onDeletePersonPreset={handleDeletePersonPreset}
           />
         )}
         {screen === "results" && activeForm && (

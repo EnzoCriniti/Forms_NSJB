@@ -285,11 +285,13 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] 14 helpers novos em `frontend/src/lib/api.js`: `fetchMessagingConfig`, `saveMessagingConfig`, `fetchMessageTemplates`, `saveMessageTemplate`, `deleteMessageTemplate`, `fetchPersonPresets`, `savePersonPreset`, `deletePersonPreset`, `fetchEventMessages`, `saveEventMessage`, `fetchEventMessage`, `fetchEventMessagePreview`, `dispatchEventMessage`, `cancelEventMessage`, `deleteEventMessage`, `fetchEventMessageLogs`
 - [x] Teste validando bootstrap.messageTemplates, bootstrap.messagingConfig e event.messages
 
-### Fase 7 — admin (Configurações > Mensagens)
-- [ ] CRUD templates com preview e lista de placeholders
-- [ ] CRUD presets de pessoas
-- [ ] Toggle global `autoDispatchEnabled`
-- [ ] Campo `whatsappGroupName`
+### Fase 7 — admin (Configuracoes > Mensagens) ✅
+- [x] Nova aba "Mensagens" no `AdminSettingsModal` com 3 blocos
+- [x] Bloco config global: `whatsappGroupName`, `publicBaseUrl`, toggle `autoDispatchEnabled`
+- [x] Bloco CRUD de modelos com lista de placeholders disponiveis no rodape
+- [x] Bloco CRUD de presets de pessoas com busca, multi-selecao e flag "sem telefone"
+- [x] Componente extraido em `features/admin/MessagingSettingsPanel.jsx` para nao inflar o modal
+- [x] Handlers em `App.jsx` propagam mudancas para o `bootstrap` sem reload
 
 ### Fase 8 — aba Mensagens no evento
 - [ ] Listagem com `MessageStatusBadge`
