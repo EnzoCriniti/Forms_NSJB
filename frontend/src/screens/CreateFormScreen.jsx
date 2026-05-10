@@ -247,11 +247,28 @@ export const CreateFormScreen = ({
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();
   const hasPrimaryLinkedField = useMemo(() => fields.some(field => field.type === "person_select" && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"), [fields]);
-  const filteredFieldTypes = useMemo(() => canUseMembersBase ? FIELD_TYPES : FIELD_TYPES.filter(type => type.v !== "person_select"), [canUseMembersBase]);
+  const editingField = useMemo(
+    () => fields.find(field => String(field.id) === String(editingFieldId)) || null,
+    [editingFieldId, fields],
+  );
+  const canOfferMembersSelector = canUseMembersBase && !hasPrimaryLinkedField;
+  const filteredFieldTypes = useMemo(() => {
+    const shouldKeepCurrentPersonType = editingField?.type === "person_select";
+    if (canUseMembersBase && (canOfferMembersSelector || shouldKeepCurrentPersonType)) return FIELD_TYPES;
+    return FIELD_TYPES.filter(type => type.v !== "person_select" || shouldKeepCurrentPersonType);
+  }, [canOfferMembersSelector, canUseMembersBase, editingField]);
   const filteredFieldCatalog = useMemo(() => {
-    if (canUseMembersBase) return activeFieldCatalog;
-    return activeFieldCatalog.filter(item => item.type !== "person_select" || item?.selectionSource?.kind === "external_base");
-  }, [activeFieldCatalog, canUseMembersBase]);
+    const isEditingCatalogMembersField = editingField?.catalogFieldId
+      && editingField?.type === "person_select"
+      && isMembersSelectionField(editingField);
+    return activeFieldCatalog.filter(item => {
+      if (item.type !== "person_select") return true;
+      if (item?.selectionSource?.kind === "external_base") return true;
+      if (!canUseMembersBase) return false;
+      if (canOfferMembersSelector) return true;
+      return isEditingCatalogMembersField && String(item.id) === String(editingField.catalogFieldId);
+    });
+  }, [activeFieldCatalog, canOfferMembersSelector, canUseMembersBase, editingField]);
   const activeModeOption = useMemo(
     () => FORM_MODE_OPTIONS.find(option => option.id === formMode) || FORM_MODE_OPTIONS[0],
     [formMode],
@@ -279,6 +296,7 @@ export const CreateFormScreen = ({
     const normalizedFields = nextMode === FORM_MODES.NUCLEO
       ? normalizePeopleBaseBindings(ensurePrimaryMembersField(nextFields))
       : normalizePeopleBaseBindings(removeMembersBaseFields(nextFields));
+    setPreset(null);
     setFormMode(nextMode);
     setFields(normalizedFields);
     if (nextMode === FORM_MODES.GERAL && nFieldMode === "local" && nType === "person_select") {
@@ -664,6 +682,7 @@ export const CreateFormScreen = ({
         format={format}
         preset={preset}
         presets={presets}
+        formMode={formMode}
         onApplyTemplate={applyTemplate}
         onClearTemplate={() => applyTemplate(null)}
       />

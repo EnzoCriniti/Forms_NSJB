@@ -109,4 +109,76 @@ describe("CreateFormScreen form modes", () => {
     expect(screen.getByText("Campo local deste formulario")).toBeInTheDocument();
     expect(screen.getByText("Esse campo nao precisa de configuracao extra. Se o texto ja estiver certo, ele pode ser adicionado agora.")).toBeInTheDocument();
   });
+
+  it("nao oferece outro seletor da base central quando o nome principal ja existe", () => {
+    render(
+      <CreateFormScreen
+        {...baseProps}
+        fieldCatalog={[
+          {
+            id: 10,
+            key: "nome_socio",
+            name: "Nome de socio",
+            type: "person_select",
+            category: "presenca",
+            defaultLabel: "Nome",
+            selectionSource: { kind: "members" },
+            active: true,
+          },
+          {
+            id: 11,
+            key: "congregacao",
+            name: "Congregacao",
+            type: "person_select",
+            category: "presenca",
+            defaultLabel: "Congregacao",
+            selectionSource: { kind: "external_base", externalBaseId: 7 },
+            active: true,
+          },
+        ]}
+        externalBases={[{ id: 7, name: "Congregacoes", active: true, items: [] }]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
+
+    expect(screen.queryByRole("option", { name: "Seletor por base" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
+
+    expect(screen.queryByRole("option", { name: "Nome de socio" })).not.toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Congregacao" })).toBeInTheDocument();
+  });
+
+  it("filtra templates de presenca pelo modo atual", () => {
+    render(
+      <CreateFormScreen
+        {...baseProps}
+        presets={[
+          {
+            id: 1,
+            type: "presenca",
+            name: "Template Nucleo",
+            fieldDefinitions: [{ id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false }],
+            resultsConfig: { formMode: "nucleo" },
+          },
+          {
+            id: 2,
+            type: "presenca",
+            name: "Template Geral",
+            fieldDefinitions: [{ id: 2, type: "text", label: "Nome livre", required: true, show: true, total: false }],
+            resultsConfig: { formMode: "geral" },
+          },
+        ]}
+      />,
+    );
+
+    expect(screen.getByRole("option", { name: "Template Nucleo" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Template Geral" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+
+    expect(screen.getByRole("option", { name: "Template Geral" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Template Nucleo" })).not.toBeInTheDocument();
+  });
 });
