@@ -1013,12 +1013,12 @@ input[type="radio"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 52px;
-  padding: 6px 10px;
+  min-width: 44px;
+  padding: 5px 8px;
   border-radius: 999px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   color: #fff;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -1030,21 +1030,6 @@ input[type="radio"] {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
-}
-
-.public-reading-toolbar__zoom {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 52px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .public-reading-toolbar[data-theme="light"] {
@@ -1893,8 +1878,8 @@ button:not(.ui-btn):focus-visible {
   }
 
   .public-reading-toolbar__zoom {
-    min-width: 46px;
-    padding: 5px 8px;
+    min-width: 40px;
+    padding: 4px 7px;
     font-size: 11px;
   }
 

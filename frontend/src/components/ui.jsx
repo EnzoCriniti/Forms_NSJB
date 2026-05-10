@@ -208,6 +208,7 @@ export const PublicReadingToolbar = ({
   onToggleTheme,
   onIncreaseFontScale,
   onDecreaseFontScale,
+  backHref,
 }) => {
   const resolveInitialTheme = () => {
     if (theme) return theme;
@@ -308,7 +309,22 @@ export const PublicReadingToolbar = ({
 
   return (
     <div className="public-reading-toolbar" data-theme={localTheme} aria-label="Ajustes de leitura">
-      <span className="public-reading-toolbar__zoom" title="Zoom do texto">{Math.round(localFontScale * 100)}%</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        {backHref && (
+          <Btn
+            v="ghost"
+            sz="sm"
+            icon="back"
+            onClick={() => {
+              window.location.hash = backHref.startsWith("#") ? backHref : `#${backHref}`;
+            }}
+            title="Voltar"
+            aria-label="Voltar"
+            style={{ ...fontControlStyle, width: 34, justifyContent: "center", padding: 0 }}
+          />
+        )}
+        <span className="public-reading-toolbar__zoom" title="Zoom do texto">{Math.round(localFontScale * 100)}%</span>
+      </div>
       <div className="public-reading-toolbar__actions">
         <Btn
           v="ghost"

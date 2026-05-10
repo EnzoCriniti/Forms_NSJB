@@ -21,36 +21,24 @@ export const ResultsPresenceHeader = ({
   stats = [],
 }) => (
   <div>
-    {publicActionHref && <PublicReadingToolbar {...readingControls} />}
-    <div className="screen-top-card results-top-card" style={{ marginBottom: 6, color: "#fff" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
-          {(onNavigate || publicActionHref) && (
-            <Btn
-              v="ghost"
-              icon="back"
-              onClick={() => {
-                if (onNavigate) {
-                  onNavigate("list");
-                  return;
-                }
-                window.location.hash = publicActionHref.startsWith("#") ? publicActionHref : `#${publicActionHref}`;
-              }}
-            >
-              Voltar
-            </Btn>
-          )}
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1.08, letterSpacing: "-0.02em" }}>{form.title}</h2>
-            <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
-              <StatusBadge status={form.status} />
-              {(form.labels || []).map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
-              <span className="results-top-card__meta-note" style={{ fontSize: 11, color: "rgba(255,255,255,0.86)" }}>Fecha: {formatDateTime(form.closing)}</span>
+    {publicActionHref && <PublicReadingToolbar {...readingControls} backHref={publicActionHref} />}
+    {!publicActionHref && (
+      <div className="screen-top-card results-top-card" style={{ marginBottom: 6, color: "#fff" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: 1 }}>
+            {onNavigate && <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />}
+            <div style={{ minWidth: 0 }}>
+              <h2 style={{ margin: 0, fontSize: 22, fontWeight: 900, color: "#fff", lineHeight: 1.08, letterSpacing: "-0.02em" }}>{form.title}</h2>
+              <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
+                <StatusBadge status={form.status} />
+                {(form.labels || []).map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
+                <span className="results-top-card__meta-note" style={{ fontSize: 11, color: "rgba(255,255,255,0.86)" }}>Fecha: {formatDateTime(form.closing)}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    )}
 
     {grauOptions.length > 0 && (
       <div style={{ display: "flex", flexDirection: "column", gap: 8, margin: "18px 0 14px" }}>
