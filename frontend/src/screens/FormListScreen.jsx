@@ -11,7 +11,7 @@ import { FormListCard } from "../components/FormListCard";
 import { canCreateForms, canViewForm, visibleFormsFor } from "../lib/auth";
 import { buildFormSearchIndex, normalizeSearchText } from "../lib/forms";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 4;
 
 export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onTogglePinnedForm, pinnedFormIds = [], user, labels = [], forms = [], onDeleteForm, formDeleteKeyConfigured = null }) => {
   const [search, setSearch] = useState("");

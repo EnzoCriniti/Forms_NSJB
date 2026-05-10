@@ -50,6 +50,8 @@ const visibleEventFormsFor = (user, eventForms) => {
   return eventForms.filter(form => form.status !== "arquivado");
 };
 
+const PAGE_SIZE = 4;
+
 export const EventsScreen = ({
   events = [],
   forms = [],
@@ -76,6 +78,8 @@ export const EventsScreen = ({
   const [saving, setSaving] = useState(false);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [eventsPage, setEventsPage] = useState(1);
+  const [formsPage, setFormsPage] = useState(1);
 
   const pinnedEventSet = useMemo(() => new Set(pinnedEventIds), [pinnedEventIds]);
   const pinnedFormSet = useMemo(() => new Set(pinnedFormIds), [pinnedFormIds]);
@@ -88,9 +92,18 @@ export const EventsScreen = ({
 
   const openEvent = event => {
     setSelectedEventId(event.id);
+    setFormsPage(1);
     setMode("detail");
     setFeedback(null);
   };
+
+  const eventsTotalPages = Math.max(1, Math.ceil(sortedEvents.length / PAGE_SIZE));
+  const safeEventsPage = Math.min(eventsPage, eventsTotalPages);
+  const pagedEvents = sortedEvents.slice((safeEventsPage - 1) * PAGE_SIZE, safeEventsPage * PAGE_SIZE);
+
+  const formsTotalPages = Math.max(1, Math.ceil(eventForms.length / PAGE_SIZE));
+  const safeFormsPage = Math.min(formsPage, formsTotalPages);
+  const pagedEventForms = eventForms.slice((safeFormsPage - 1) * PAGE_SIZE, safeFormsPage * PAGE_SIZE);
 
   const startNew = () => {
     setDraft({ ...emptyDraft });
@@ -267,7 +280,7 @@ export const EventsScreen = ({
           </div>
         ) : (
           <div style={{ display: "grid", gap: 18 }}>
-            {eventForms.map(form => (
+            {pagedEventForms.map(form => (
               <FormListCard
                 key={form.id}
                 form={form}
@@ -282,6 +295,18 @@ export const EventsScreen = ({
                 onDeleteForm={onDeleteForm}
               />
             ))}
+            {eventForms.length > PAGE_SIZE && (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
+                <div style={{ fontSize: 12, color: COLORS.textMuted }}>
+                  Exibindo {(safeFormsPage - 1) * PAGE_SIZE + 1} a {Math.min(safeFormsPage * PAGE_SIZE, eventForms.length)} de {eventForms.length}
+                </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.max(1, current - 1))} disabled={safeFormsPage === 1}>Anterior</Btn>
+                  <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {safeFormsPage} de {formsTotalPages}</div>
+                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.min(formsTotalPages, current + 1))} disabled={safeFormsPage === formsTotalPages}>Proxima</Btn>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -304,7 +329,19 @@ export const EventsScreen = ({
           <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
             Nenhum evento criado.
           </div>
-        ) : sortedEvents.map(renderEventCard)}
+        ) : pagedEvents.map(renderEventCard)}
+        {sortedEvents.length > PAGE_SIZE && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
+            <div style={{ fontSize: 12, color: COLORS.textMuted }}>
+              Exibindo {(safeEventsPage - 1) * PAGE_SIZE + 1} a {Math.min(safeEventsPage * PAGE_SIZE, sortedEvents.length)} de {sortedEvents.length}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.max(1, current - 1))} disabled={safeEventsPage === 1}>Anterior</Btn>
+              <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {safeEventsPage} de {eventsTotalPages}</div>
+              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.min(eventsTotalPages, current + 1))} disabled={safeEventsPage === eventsTotalPages}>Proxima</Btn>
+            </div>
+          </div>
+        )}
       </div>
       <ConfirmModal
         open={Boolean(pendingDelete)}

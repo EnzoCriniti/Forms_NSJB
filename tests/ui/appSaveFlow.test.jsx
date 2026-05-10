@@ -42,8 +42,21 @@ const originalForm = {
   metrics: { responses: 1, total: 2 },
 };
 
+const event = form => ({
+  id: 100,
+  title: "Evento Teste",
+  description: "",
+  date: "2026-05-04",
+  opening: "",
+  closing: "",
+  status: "pronto",
+  formIds: [form.id],
+  messageConfig: {},
+});
+
 const bootstrap = form => ({
   forms: [form],
+  events: [event(form)],
   responsesByForm: {},
   escalaByForm: {},
   users: [admin.user],
@@ -55,6 +68,11 @@ const bootstrap = form => ({
   ],
   membersConfig: {},
 });
+
+const openTestEvent = async () => {
+  const eventCard = await screen.findByText("Evento Teste - 04/05/2026");
+  fireEvent.click(eventCard);
+};
 
 describe("App save flow", () => {
   beforeEach(() => {
@@ -106,6 +124,7 @@ describe("App save flow", () => {
 
     const { container } = render(<App />);
 
+    await openTestEvent();
     await screen.findByText(/Presenca Edicao/i);
 
     const actions = container.querySelector(".card-actions");
@@ -119,6 +138,7 @@ describe("App save flow", () => {
     await waitFor(() => expect(screen.getByText("Formulario alterado com sucesso")).toBeInTheDocument());
 
     fireEvent.click(screen.getByRole("button", { name: "Voltar para Formularios" }));
+    await openTestEvent();
     fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
 
     await screen.findByText("Totalizacao");
@@ -161,6 +181,7 @@ describe("App save flow", () => {
 
     const { container } = render(<App />);
 
+    await openTestEvent();
     await screen.findByText(/Presenca Edicao/i);
 
     const actions = container.querySelector(".card-actions");
@@ -195,6 +216,7 @@ describe("App save flow", () => {
 
     const { container } = render(<App />);
 
+    await openTestEvent();
     await screen.findByText(/Presenca Edicao/i);
     fireEvent.click(screen.getByRole("button", { name: "Responder" }));
 
