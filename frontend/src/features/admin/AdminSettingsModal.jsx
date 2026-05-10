@@ -32,7 +32,6 @@ const SCALE_PRESETS = [
 ];
 const emptyUser = { name: "", username: "", password: "", role: "viewer" };
 const emptyLabel = { name: "", color: "#2e7d32" };
-const emptyPreset = { name: "", type: "presenca", fieldDefinitions: [], scaleSections: [] };
 const emptyFieldCatalog = { key: "", name: "", type: "yes_no", category: "presenca", defaultLabel: "", gridSchema: { rows: DEFAULT_GRID_ROWS, cols: DEFAULT_GRID_COLS }, selectionSource: { kind: "members" }, description: "", active: true };
 const emptyScaleTaskCatalog = { key: "", name: "", category: "cozinha", defaultLabel: "", description: "", active: true };
 const emptyExternalBase = { name: "", description: "", sourceType: "google_sheets", sheetUrl: "", range: "Itens!A:B", valueColumn: "A", labelColumn: "B", descriptionColumn: "", activeColumn: "", syncEnabled: true, syncFrequencyHours: 24, active: true, items: [] };
@@ -433,7 +432,6 @@ export const AdminSettingsModal = ({
   onDeleteUser,
   onSaveLabel,
   onDeleteLabel,
-  onSavePreset,
   onDeletePreset,
   onSaveFieldCatalogItem,
   onDeleteFieldCatalogItem,
@@ -453,7 +451,6 @@ export const AdminSettingsModal = ({
   const [tab, setTab] = useState("users");
   const [userDraft, setUserDraft] = useState(emptyUser);
   const [labelDraft, setLabelDraft] = useState(emptyLabel);
-  const [presetDraft, setPresetDraft] = useState(emptyPreset);
   const [fieldCatalogDraft, setFieldCatalogDraft] = useState(emptyFieldCatalog);
   const [scaleTaskDraft, setScaleTaskDraft] = useState(emptyScaleTaskCatalog);
   const [externalBaseDraft, setExternalBaseDraft] = useState(emptyExternalBase);
@@ -502,22 +499,6 @@ export const AdminSettingsModal = ({
     try {
       await onSaveLabel({ ...labelDraft, name: labelDraft.name.trim(), createdBy: labelDraft.createdBy || currentUser?.name || "Admin" });
       setLabelDraft(emptyLabel);
-      setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
-  };
-
-  const submitPreset = async () => {
-    if (!presetDraft.name.trim()) return;
-    const isEdit = Boolean(presetDraft.id);
-    setBusyAction("preset");
-    setFeedback({ tone: "loading", message: isEdit ? "Salvando template..." : "Criando template..." });
-    try {
-      await onSavePreset({ ...presetDraft, name: presetDraft.name.trim(), createdBy: presetDraft.createdBy || currentUser?.name || "Admin" });
-      setPresetDraft(emptyPreset);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -1116,20 +1097,13 @@ export const AdminSettingsModal = ({
         {tab === "presets" && (
           <section className="settings-grid">
             <div>
-              <h4 style={{ margin: "0 0 10px" }}>{presetDraft.id ? "Editar template" : "Novo template"}</h4>
+              <h4 style={{ margin: "0 0 10px" }}>Como os templates funcionam</h4>
               <div style={{ display: "grid", gap: 10 }}>
-                <AdminField>
-                  <input value={presetDraft.name} onChange={e => setPresetDraft({ ...presetDraft, name: e.target.value })} placeholder="Nome do template" style={inputStyle} />
-                </AdminField>
-                <AdminField>
-                  <select value={presetDraft.type} onChange={e => setPresetDraft({ ...presetDraft, type: e.target.value })} style={inputStyle}>
-                    <option value="presenca">Presenca</option>
-                    <option value="escala_organ">Escala da Organ</option>
-                  </select>
-                </AdminField>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <Btn onClick={submitPreset} loading={busyAction === "preset"}>{presetDraft.id ? "Salvar template" : "Criar template"}</Btn>
-                  {presetDraft.id && <Btn v="ghost" onClick={() => setPresetDraft(emptyPreset)}>Cancelar</Btn>}
+                <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                  Templates sao criados na tela de criacao de formulario. Aqui voce acompanha os existentes e pode remover o que nao faz mais sentido.
+                </div>
+                <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                  Para salvar um novo template, use a acao <strong style={{ color: COLORS.text }}>Salvar como Template</strong> dentro do builder do formulario.
                 </div>
               </div>
             </div>
@@ -1151,7 +1125,6 @@ export const AdminSettingsModal = ({
                         <strong>{preset.name}</strong>
                         <div>{modeLabel} - {count} - Criado por {preset.createdBy || "Sistema"}</div>
                       </div>
-                      <Btn v="secondary" sz="sm" onClick={() => setPresetDraft(preset)}>Editar</Btn>
                       <Btn v="danger" sz="sm" onClick={() => requestDelete(
                         "Excluir template",
                         `Tem certeza que deseja excluir o template ${preset.name}?`,
