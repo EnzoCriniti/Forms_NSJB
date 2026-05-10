@@ -90,6 +90,16 @@ export const AppHeader = ({
             </button>
           ))}
         </nav>
+        {currentUser && (
+          <div className="app-header__mobile-tools" aria-label="Ajustes de leitura">
+            <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= 0.9} aria-label="Diminuir fonte">
+              A-
+            </button>
+            <button type="button" className="app-header__mobile-font-button" onClick={onIncreaseFontScale} disabled={fontScale >= 1.3} aria-label="Aumentar fonte">
+              A+
+            </button>
+          </div>
+        )}
         <div className="app-header__session">
           <AuthPanel
             user={currentUser}
@@ -116,7 +126,7 @@ export const AppHeader = ({
             <div className="app-header-drawer__top">
               <div>
                 <div style={{ fontSize: 10, fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.6 }}>Menu</div>
-                <strong style={{ fontSize: 16, color: "var(--text)" }}>NSJB Forms</strong>
+                <strong style={{ fontSize: 13, color: "var(--text)" }}>NSJB Forms</strong>
               </div>
               <button type="button" className="app-header-drawer__close" aria-label="Fechar menu" onClick={() => setDrawerOpen(false)}>
                 <Icon name="close" size={18} />
@@ -144,19 +154,13 @@ export const AppHeader = ({
               <div className="app-header-drawer__account">
                 <span className="app-header-drawer__account-badge">{userInitials}</span>
                 <div>
-                <strong>{currentUser?.name || "Usuario"}</strong>
-                <small>{currentUser?.role === "admin" ? "Administrador" : "Visualizacao"}</small>
+                  <strong>{currentUser?.name || "Usuario"}</strong>
+                  <small>{currentUser?.role === "admin" ? "Administrador" : "Visualizacao"}</small>
                 </div>
               </div>
               <div className="app-header-drawer__actions">
                 <button type="button" className="app-header-drawer__action" onClick={toggleThemeAndClose}>
                   <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
-                </button>
-                <button type="button" className="app-header-drawer__action" onClick={onDecreaseFontScale} disabled={fontScale <= 0.9}>
-                  <span>Diminuir fonte</span>
-                </button>
-                <button type="button" className="app-header-drawer__action" onClick={onIncreaseFontScale} disabled={fontScale >= 1.3}>
-                  <span>Aumentar fonte</span>
                 </button>
                 {currentUser?.role === "admin" && (
                   <button type="button" className="app-header-drawer__action app-header-drawer__action--primary" onClick={openSettingsAndClose}>

@@ -32,6 +32,9 @@ describe("AppHeader", () => {
       />,
     );
 
+    expect(screen.getByRole("button", { name: "Diminuir fonte" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Aumentar fonte" })).toBeInTheDocument();
+
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
 
     expect(screen.getByRole("dialog", { name: "Menu principal" })).toBeInTheDocument();
