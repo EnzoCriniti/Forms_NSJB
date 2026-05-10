@@ -999,7 +999,7 @@ input[type="radio"] {
 .public-reading-toolbar {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 14px;
   padding: 10px 12px;
@@ -1009,12 +1009,19 @@ input[type="radio"] {
   backdrop-filter: blur(8px);
 }
 
-.public-reading-toolbar__label {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.82);
+.public-reading-toolbar__zoom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .public-reading-toolbar__actions {
@@ -1023,6 +1030,21 @@ input[type="radio"] {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.public-reading-toolbar__zoom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 
 .public-reading-toolbar[data-theme="light"] {
@@ -1042,6 +1064,12 @@ input[type="radio"] {
 
 .public-reading-toolbar[data-theme="light"] .ui-btn[data-variant="ghost"]:hover:not(:disabled) {
   background: rgba(26, 107, 60, 0.12) !important;
+}
+
+.public-reading-toolbar[data-theme="light"] .public-reading-toolbar__zoom {
+  color: var(--text);
+  background: rgba(26, 107, 60, 0.08);
+  border-color: rgba(26, 107, 60, 0.14);
 }
 
 .public-reading-toolbar[data-theme="dark"] {
@@ -1864,8 +1892,10 @@ button:not(.ui-btn):focus-visible {
     gap: 8px;
   }
 
-  .public-reading-toolbar__label {
-    font-size: 10px;
+  .public-reading-toolbar__zoom {
+    min-width: 46px;
+    padding: 5px 8px;
+    font-size: 11px;
   }
 
   .public-reading-toolbar__actions {

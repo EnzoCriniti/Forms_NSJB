@@ -48,8 +48,10 @@ describe("PublicFormScreen", () => {
   it("expõe controles de leitura e persiste as preferencias no navegador", () => {
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/1/resultados" />);
 
+    expect(screen.getByText("100%")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Aumentar fonte" }));
     expect(document.documentElement.style.getPropertyValue("--app-font-scale")).toBe("1.1");
+    expect(screen.getByText("110%")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Mudar para modo escuro" }));
     expect(document.documentElement.dataset.theme).toBe("dark");

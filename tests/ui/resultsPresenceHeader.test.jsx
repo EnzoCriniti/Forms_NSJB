@@ -64,9 +64,11 @@ describe("ResultsPresenceHeader", () => {
       />,
     );
 
+    expect(screen.getByText("100%")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Aumentar fonte" }));
     expect(document.documentElement.style.getPropertyValue("--app-font-scale")).toBe("1.1");
     fireEvent.click(screen.getByRole("button", { name: "Mudar para modo escuro" }));
     expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
   });
 });

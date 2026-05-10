@@ -178,7 +178,7 @@ describe("App public data flow", () => {
 
     render(<App />);
 
-    expect(await screen.findByRole("button", { name: "Ver formulário" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Voltar" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Todos" })).toBeInTheDocument();
   });
 
@@ -279,3 +279,4 @@ const jsonResponse = (payload, ok = true) => ({
   ok,
   json: async () => payload,
 });
+
