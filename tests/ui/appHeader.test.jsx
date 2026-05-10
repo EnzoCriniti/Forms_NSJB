@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { AppHeader } from "../../frontend/src/components/AppHeader.jsx";
 
@@ -41,7 +41,7 @@ describe("AppHeader", () => {
     expect(onOpenSettings).toHaveBeenCalledTimes(1);
 
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
-    fireEvent.click(screen.getByRole("button", { name: "Formulários" }));
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Menu principal" })).getByRole("button", { name: "Formulários" }));
 
     expect(onNavigate).toHaveBeenCalledWith("list");
   });

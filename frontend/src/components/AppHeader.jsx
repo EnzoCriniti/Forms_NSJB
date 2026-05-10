@@ -25,6 +25,12 @@ export const AppHeader = ({
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const canOpenDrawer = Boolean(currentUser);
+  const userInitials = String(currentUser?.name || "Usuario")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map(part => part.charAt(0).toUpperCase())
+    .join("") || "U";
 
   useEffect(() => {
     setDrawerOpen(false);
@@ -89,13 +95,13 @@ export const AppHeader = ({
             user={currentUser}
             onLogin={onLogin}
             onLogout={onLogout}
-          theme={theme}
-          fontScale={fontScale}
-          onIncreaseTextSize={onIncreaseFontScale}
-          onDecreaseTextSize={onDecreaseFontScale}
-          onToggleTheme={onToggleTheme}
-          onOpenSettings={onOpenSettings}
-        />
+            theme={theme}
+            fontScale={fontScale}
+            onIncreaseTextSize={onIncreaseFontScale}
+            onDecreaseTextSize={onDecreaseFontScale}
+            onToggleTheme={onToggleTheme}
+            onOpenSettings={onOpenSettings}
+          />
         </div>
       </header>
       {canOpenDrawer && drawerOpen && (
@@ -128,10 +134,7 @@ export const AppHeader = ({
                     <span className="app-header-drawer__nav-icon">
                       <Icon name={n.icon} size={16} />
                     </span>
-                    <span>
-                      <strong>{n.label}</strong>
-                      <small>{n.key === "dashboard" ? "Visao geral" : n.key === "list" ? "Formularios e filtros" : "Criar e publicar"}</small>
-                    </span>
+                    <strong>{n.label}</strong>
                   </button>
                 ))}
               </div>
@@ -139,8 +142,11 @@ export const AppHeader = ({
             <div className="app-header-drawer__section">
               <div className="app-header-drawer__section-label">Conta</div>
               <div className="app-header-drawer__account">
+                <span className="app-header-drawer__account-badge">{userInitials}</span>
+                <div>
                 <strong>{currentUser?.name || "Usuario"}</strong>
                 <small>{currentUser?.role === "admin" ? "Administrador" : "Visualizacao"}</small>
+                </div>
               </div>
               <div className="app-header-drawer__actions">
                 <button type="button" className="app-header-drawer__action" onClick={toggleThemeAndClose}>
@@ -153,11 +159,11 @@ export const AppHeader = ({
                   <span>Aumentar fonte</span>
                 </button>
                 {currentUser?.role === "admin" && (
-                  <button type="button" className="app-header-drawer__action" onClick={openSettingsAndClose}>
+                  <button type="button" className="app-header-drawer__action app-header-drawer__action--primary" onClick={openSettingsAndClose}>
                     <span>Configuracoes</span>
                   </button>
                 )}
-                <button type="button" className="app-header-drawer__action" onClick={logoutAndClose}>
+                <button type="button" className="app-header-drawer__action app-header-drawer__action--danger" onClick={logoutAndClose}>
                   <span>Sair</span>
                 </button>
               </div>
