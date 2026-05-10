@@ -826,6 +826,7 @@ export default function App() {
             pinnedFormIds={pinnedFormIds}
             initialSelectedEventId={activeEventId}
             onSaveEvent={handleSaveEvent}
+            onPublishEvent={handlePublishEvent}
             onDeleteEvent={handleDeleteEvent}
             onTogglePinnedEvent={handleTogglePinnedEvent}
             onCreateFormInEvent={handleCreateFormInEvent}

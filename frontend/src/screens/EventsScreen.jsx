@@ -61,6 +61,7 @@ export const EventsScreen = ({
   pinnedFormIds = [],
   initialSelectedEventId = null,
   onSaveEvent,
+  onPublishEvent,
   onDeleteEvent,
   onTogglePinnedEvent,
   onCreateFormInEvent,
@@ -78,6 +79,7 @@ export const EventsScreen = ({
   const [saving, setSaving] = useState(false);
   const [pendingDelete, setPendingDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [statusAction, setStatusAction] = useState(null);
   const [eventsPage, setEventsPage] = useState(1);
   const [formsPage, setFormsPage] = useState(1);
 
@@ -137,6 +139,34 @@ export const EventsScreen = ({
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const publish = async () => {
+    if (!selectedEvent || !onPublishEvent) return;
+    setStatusAction("publish");
+    setFeedback(null);
+    try {
+      await onPublishEvent(selectedEvent.id);
+      setFeedback({ tone: "success", message: "Evento publicado." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setStatusAction(null);
+    }
+  };
+
+  const close = async () => {
+    if (!selectedEvent || !onSaveEvent) return;
+    setStatusAction("close");
+    setFeedback(null);
+    try {
+      await onSaveEvent({ ...selectedEvent, status: "encerrado" });
+      setFeedback({ tone: "success", message: "Evento encerrado." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setStatusAction(null);
     }
   };
 
@@ -267,9 +297,16 @@ export const EventsScreen = ({
         {renderShellHeader(
           <>
             <Btn v="ghost" icon="back" onClick={() => setMode("list")} aria-label="Voltar" />
-            <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <h2 style={{ margin: 0, fontSize: 20 }}>{selectedEvent.date ? `${selectedEvent.title} - ${formatDate(selectedEvent.date)}` : selectedEvent.title}</h2>
+              <StatusBadge status={selectedEvent.status} />
             </div>
+            {canManageEvents && selectedEvent.status === "pronto" && onPublishEvent && (
+              <Btn v="secondary" icon="check" onClick={publish} loading={statusAction === "publish"} disabled={Boolean(statusAction)}>Publicar</Btn>
+            )}
+            {canManageEvents && selectedEvent.status === "publicado" && (
+              <Btn v="secondary" icon="lock" onClick={close} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
+            )}
             {canManageEvents && <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>}
             {canManageEvents && <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />}
           </>,
