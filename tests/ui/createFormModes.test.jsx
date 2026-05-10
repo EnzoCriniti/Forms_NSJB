@@ -97,4 +97,16 @@ describe("CreateFormScreen form modes", () => {
     expect(screen.getByRole("option", { name: "Congregacao" })).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Vai ao jantar" })).toBeInTheDocument();
   });
+
+  it("mostra o editor de campo em etapas mais curtas", () => {
+    render(<CreateFormScreen {...baseProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
+
+    expect(screen.getByText("1. Origem do campo")).toBeInTheDocument();
+    expect(screen.getByText("2. Definicao principal")).toBeInTheDocument();
+    expect(screen.getByText("3. Ajustes extras")).toBeInTheDocument();
+    expect(screen.getByText("Campo local deste formulario")).toBeInTheDocument();
+    expect(screen.getByText("Esse campo nao precisa de configuracao extra. Se o texto ja estiver certo, ele pode ser adicionado agora.")).toBeInTheDocument();
+  });
 });
