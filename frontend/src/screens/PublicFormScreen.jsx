@@ -125,18 +125,6 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
             <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Formulario"}</h2>
             <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>{form.description || "Preencha o formulario abaixo."}</p>
           </div>
-          {resultsHref && (
-            <Btn
-              v="secondary"
-              sz="sm"
-              icon="eye"
-              onClick={() => {
-                window.location.hash = resultsHref.startsWith("#") ? resultsHref : `#${resultsHref}`;
-              }}
-            >
-              Resultados
-            </Btn>
-          )}
         </div>
       ) : (
         <PublicTopCompact form={form} onBack={onBack} description={form.description || "Preencha o formulário abaixo."} actionLabel={resultsHref ? "Resultados" : ""} actionHref={resultsHref} readingControls={readingControls} />

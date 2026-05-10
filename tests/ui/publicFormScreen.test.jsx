@@ -80,8 +80,8 @@ describe("PublicFormScreen", () => {
       />,
     );
 
-    expect(screen.getByText("Formulario Publico")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Resultados" })).toBeInTheDocument();
+    expect(screen.getAllByText("Formulario Publico").length).toBeGreaterThan(0);
+    expect(screen.queryByRole("button", { name: "Resultados" })).not.toBeInTheDocument();
     expect(screen.queryByText("NSJB Forms")).not.toBeInTheDocument();
   });
 
