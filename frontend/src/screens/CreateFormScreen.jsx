@@ -987,6 +987,16 @@ export const CreateFormScreen = ({
                             ? "Se a lista vier da biblioteca, a origem ja foi definida na configuracao do campo."
                             : "Campos gerais so aceitam seletores ligados a bases externas configuradas na biblioteca."}
                         </div>
+                        <div style={{ padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
+                          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.4, color: COLORS.textMuted, marginBottom: 4 }}>
+                            Resumo do vinculo
+                          </div>
+                          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>
+                            {activeSelectionSource?.kind === "external_base"
+                              ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
+                              : "Base central de socios"}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

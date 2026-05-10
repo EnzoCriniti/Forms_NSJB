@@ -943,6 +943,16 @@ export const AdminSettingsModal = ({
                                 O campo usa a base central de socios como origem.
                               </div>
                             )}
+                            <div style={{ marginTop: 10, padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
+                              <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.4, color: COLORS.textMuted, marginBottom: 4 }}>
+                                Resumo do vinculo
+                              </div>
+                              <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>
+                                {fieldCatalogDraft.selectionSource?.kind === "external_base"
+                                  ? `Base externa sincronizada: ${getExternalBaseName(externalBases, fieldCatalogDraft.selectionSource?.externalBaseId)}`
+                                  : "Base central de socios"}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
