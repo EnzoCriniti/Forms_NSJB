@@ -182,6 +182,41 @@ describe("App public data flow", () => {
     expect(screen.getByRole("button", { name: "Todos" })).toBeInTheDocument();
   });
 
+  it("bloqueia a tela publica de resultados quando a opcao nao esta habilitada", async () => {
+    window.history.pushState(null, "", "/formularios/presenca-teste/resultados");
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap([
+          {
+            id: 1,
+            slug: "presenca-teste",
+            type: "presenca",
+            status: "fechado",
+            title: "Formulario Publico",
+            sessionName: "Sessao Publica",
+            description: "",
+            closing: "2026-05-05T20:00",
+            fieldDefinitions: [
+              { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+              { id: 2, type: "yes_no", label: "Vai?", required: true, show: true, total: true },
+            ],
+            resultsConfig: { publicResultsEnabled: false },
+            labels: [],
+          },
+        ]));
+      }
+      if (url === "/api/forms/1/responses") {
+        return jsonResponse({ responses: [] });
+      }
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    expect(await screen.findByRole("heading", { name: "Resultados públicos indisponíveis" })).toBeInTheDocument();
+    expect(screen.getByText("Este formulário não está configurado para exibir resultados publicamente.")).toBeInTheDocument();
+  });
+
   it("carrega a escala publica sob demanda", async () => {
     window.location.hash = "#/formularios/escala-teste";
     vi.stubGlobal("fetch", vi.fn(async url => {
