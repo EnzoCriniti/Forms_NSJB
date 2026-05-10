@@ -273,6 +273,7 @@ export const CreateFormScreen = ({
     () => FORM_MODE_OPTIONS.find(option => option.id === formMode) || FORM_MODE_OPTIONS[0],
     [formMode],
   );
+  const isEditingExistingForm = Boolean(form) && !isDuplicateMode;
   const membersFieldsCount = useMemo(
     () => fields.filter(isMembersSelectionField).length,
     [fields],
@@ -584,40 +585,54 @@ export const CreateFormScreen = ({
         </div>
       </div>
 
-      <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
-        {[
-          { id: "presenca", title: "Presenca", desc: "Perguntas, acompanhantes, totalizacao e controle de envio." },
-          { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsaveis e auxiliares." },
-        ].map(option => (
-          <button
-            className="create-form-type-card"
-            key={option.id}
-            onClick={() => {
-              setFormat(option.id);
-              setPreset(null);
-              if (option.id === "presenca") {
-                const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
-                setFormMode(FORM_MODES.NUCLEO);
-                setFields(defaultFields);
-                setResultsConfig(createDefaultResultsConfig(defaultFields));
-              } else {
-                setFormMode(FORM_MODES.GERAL);
-                setScaleDraft(createDefaultScaleSections());
-                setScaleLimit(1);
-              }
-            }}
-            style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `2px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-              <strong style={{ fontSize: 14 }}>{option.title}</strong>
-              {format === option.id && <Icon name="check" size={16} />}
-            </div>
-            <p style={{ margin: "7px 0 0", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.45 }}>{option.desc}</p>
-          </button>
-        ))}
-      </div>
+      {!isEditingExistingForm && (
+        <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
+          {[
+            { id: "presenca", title: "Presenca", desc: "Perguntas, acompanhantes, totalizacao e controle de envio." },
+            { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsaveis e auxiliares." },
+          ].map(option => (
+            <button
+              className="create-form-type-card"
+              key={option.id}
+              onClick={() => {
+                setFormat(option.id);
+                setPreset(null);
+                if (option.id === "presenca") {
+                  const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
+                  setFormMode(FORM_MODES.NUCLEO);
+                  setFields(defaultFields);
+                  setResultsConfig(createDefaultResultsConfig(defaultFields));
+                } else {
+                  setFormMode(FORM_MODES.GERAL);
+                  setScaleDraft(createDefaultScaleSections());
+                  setScaleLimit(1);
+                }
+              }}
+              style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `2px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
+                <strong style={{ fontSize: 14 }}>{option.title}</strong>
+                {format === option.id && <Icon name="check" size={16} />}
+              </div>
+              <p style={{ margin: "7px 0 0", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.45 }}>{option.desc}</p>
+            </button>
+          ))}
+        </div>
+      )}
 
-      {format === "presenca" && (
+      {isEditingExistingForm && (
+        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 4 }}>Tipo do formulario</div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>
+            {format === "escala_organ" ? "Escala da Organ" : "Presenca"}
+          </div>
+          <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
+            O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario.
+          </div>
+        </div>
+      )}
+
+      {!isEditingExistingForm && format === "presenca" && (
         <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, marginBottom: 8, flexWrap: "wrap" }}>
             <div>
@@ -678,14 +693,16 @@ export const CreateFormScreen = ({
         </div>
       )}
 
-      <CreateFormTemplateBar
-        format={format}
-        preset={preset}
-        presets={presets}
-        formMode={formMode}
-        onApplyTemplate={applyTemplate}
-        onClearTemplate={() => applyTemplate(null)}
-      />
+      {!isEditingExistingForm && (
+        <CreateFormTemplateBar
+          format={format}
+          preset={preset}
+          presets={presets}
+          formMode={formMode}
+          onApplyTemplate={applyTemplate}
+          onClearTemplate={() => applyTemplate(null)}
+        />
+      )}
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
         <Btn
@@ -1169,7 +1186,9 @@ export const CreateFormScreen = ({
       )}
 
       <div className="create-form-footer-actions" style={{ display: "flex", gap: 10, justifyContent: "space-between", borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 16, flexWrap: "wrap" }}>
-        <Btn v="secondary" icon="save" onClick={() => setPresetModal(true)}>Salvar como Template</Btn>
+        {!isEditingExistingForm && (
+          <Btn v="secondary" icon="save" onClick={() => setPresetModal(true)}>Salvar como Template</Btn>
+        )}
         <Btn icon="check" onClick={() => submitForm(status)} disabled={!title.trim()} loading={saving}>{saving ? "Salvando..." : `${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulario"}`}</Btn>
       </div>
       {saveError && (
@@ -1178,7 +1197,7 @@ export const CreateFormScreen = ({
         </div>
       )}
 
-      {presetModal && (
+      {!isEditingExistingForm && presetModal && (
         <div className="modal-backdrop">
           <div className="modal-card" style={{ width: 420 }}>
             <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>Salvar como Template</h3>

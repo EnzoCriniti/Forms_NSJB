@@ -562,6 +562,12 @@ describe("CreateFormScreen", () => {
       />,
     );
 
+    expect(screen.getByText("Tipo do formulario")).toBeInTheDocument();
+    expect(screen.getByText("O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Salvar como Template" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Modo do formulario")).not.toBeInTheDocument();
+    expect(screen.queryByText("Templates de formulario")).not.toBeInTheDocument();
+
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
     fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
 
