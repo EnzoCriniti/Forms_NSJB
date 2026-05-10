@@ -451,6 +451,7 @@ export const DEFAULT_PEOPLE = [];
 export const DEFAULT_MESSAGING_CONFIG = {
   whatsappGroupName: "",
   autoDispatchEnabled: true,
+  publicBaseUrl: "",
 };
 
 export const MESSAGE_TEMPLATES = [

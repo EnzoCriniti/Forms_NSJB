@@ -255,16 +255,15 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] `eventMessagesRepository.mjs` (inclui `listScheduledEventMessagesDue` para o orquestrador)
 - [x] `messageDispatchLogRepository.mjs` (append-only)
 
-### Fase 4 — services
-- [ ] `messageTemplatesService.mjs` (CRUD)
-- [ ] `personPresetsService.mjs` (CRUD)
-- [ ] `eventMessagesService.mjs`
-  - [ ] CRUD com validação de elegibilidade do evento
-  - [ ] Render de placeholders (`renderMessageBody`)
-  - [ ] Cálculo de destinatários por tipo
-  - [ ] State machine (`transitionStatus`)
-- [ ] `messageDispatcherService.mjs` + `logOnlyDispatcher.mjs`
-- [ ] Toggle global `autoDispatchEnabled` em `adminService` ou similar
+### Fase 4 — services ✅
+- [x] `core/messages.mjs` — constantes, normalizadores, render de placeholders, calculo de janela (`computeScheduledFor`)
+- [x] `messagingConfigService.mjs` — get/update de `whatsappGroupName`, `autoDispatchEnabled`, `publicBaseUrl`
+- [x] `messageTemplatesService.mjs` — CRUD com validacao
+- [x] `personPresetsService.mjs` — CRUD com validacao
+- [x] `messageRecipientsService.mjs` — calculo por tipo (group / DM auto / preset / manual / vagas em aberto)
+- [x] `eventMessagesService.mjs` — CRUD + state machine + elegibilidade + preview + dispatch + `processScheduledMessages`
+- [x] `dispatchers/logOnlyDispatcher.mjs` — adapter atual, grava em `message_dispatch_log`
+- [x] Tipos 2 e 3 bloqueados quando `membersConfig.phoneColumn` esta vazia
 
 ### Fase 5 — rotas e validadores
 - [ ] `/api/message-templates` (CRUD)
