@@ -293,11 +293,20 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Componente extraido em `features/admin/MessagingSettingsPanel.jsx` para nao inflar o modal
 - [x] Handlers em `App.jsx` propagam mudancas para o `bootstrap` sem reload
 
-### Fase 8 — aba Mensagens no evento
-- [ ] Listagem com `MessageStatusBadge`
-- [ ] Botão "Nova mensagem" → wizard (tipo → config → preview)
-- [ ] Banner se `phoneColumn` vazio (bloqueia tipos 2/3)
-- [ ] Banner se escala sem slot vago (bloqueia tipo 3)
+### Fase 8 — aba Mensagens no evento ✅
+- [x] Toggle Formularios / Mensagens dentro do detalhe do evento
+- [x] Listagem com `MessageStatusBadge`, tipo, agendamento e snippet do corpo
+- [x] Botao "Nova mensagem" no header (so quando elegivel)
+- [x] EventMessageEditorScreen como rota dedicada (criar e editar)
+- [x] Tipos disponiveis filtrados pelo que existe no evento (presenca / escala)
+- [x] Selecao de modelo (opcional) substitui corpo
+- [x] Selecao de destinatarios no tipo 2 (auto / preset / manual)
+- [x] Janela fixa de agendamento no tipo 2 (`morning_of_closing`, `12h_before`, `1h_before`)
+- [x] Datetime-local nos tipos 1 e 3
+- [x] Flag `autoDispatchEnabled` por mensagem
+- [x] Banner de elegibilidade quando evento nao tem formulario compativel
+- [x] Aviso quando `publicBaseUrl` esta vazia (links wa.me ficarao relativos)
+- [ ] Bloqueio explicito de tipo 3 quando escala nao tem slot vago (validacao virá no preview/dispatch da fase 9)
 
 ### Fase 9 — detalhe da mensagem
 - [ ] Tela com preview, lista de destinatários e `wa.me/...` por pessoa
