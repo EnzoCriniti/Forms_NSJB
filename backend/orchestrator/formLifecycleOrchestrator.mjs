@@ -6,6 +6,7 @@
 
 import { ORCHESTRATOR_INTERVAL_MS } from "../config.mjs";
 import { closeExpiredFormRecords, openScheduledFormRecords } from "../repositories/formsRepository.mjs";
+import { processScheduledMessages } from "../services/eventMessagesService.mjs";
 
 const formatLocalDateTime = date => {
   const pad = value => String(value).padStart(2, "0");
@@ -32,6 +33,10 @@ export const refreshFormLifecycle = async (now = new Date()) => ({
 
 export const closeExpiredForms = async (now = new Date()) => (await refreshFormLifecycle(now)).closed;
 
+export const tickScheduledMessages = async (now = new Date()) => {
+  return processScheduledMessages(now.toISOString());
+};
+
 export const startFormLifecycleOrchestrator = () => {
   const run = async () => {
     try {
@@ -40,6 +45,18 @@ export const startFormLifecycleOrchestrator = () => {
       if (closed > 0) console.log(`Orquestrador: ${closed} formulario(s) fechado(s) por horario.`);
     } catch (error) {
       console.error("Orquestrador: falha ao atualizar ciclo de vida dos formularios.", error);
+    }
+
+    try {
+      const results = await tickScheduledMessages();
+      const dispatched = results.filter(item => item.action === "dispatched").length;
+      const marked = results.filter(item => item.action === "marked_ready").length;
+      const failed = results.filter(item => item.action === "failed").length;
+      if (dispatched > 0) console.log(`Orquestrador: ${dispatched} mensagem(ns) disparada(s) automaticamente.`);
+      if (marked > 0) console.log(`Orquestrador: ${marked} mensagem(ns) marcada(s) como pronta (auto-dispatch desativado).`);
+      if (failed > 0) console.warn(`Orquestrador: ${failed} mensagem(ns) com erro de dispatch.`);
+    } catch (error) {
+      console.error("Orquestrador: falha ao processar mensagens agendadas.", error);
     }
   };
 

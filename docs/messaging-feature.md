@@ -320,11 +320,11 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Historico completo de logs com `dispatcherVersion` e contadores de destinatarios
 - [x] Teste de API novo cobrindo cancel + cancel novamente (400) + delete + verifica no bootstrap
 
-### Fase 10 — orquestrador
-- [ ] Hook em `formLifecycleOrchestrator` processa agendadas
-- [ ] Respeita flag global `autoDispatchEnabled`
-- [ ] Respeita flag por mensagem `autoDispatchEnabled`
-- [ ] Testes unitários cobrindo cenários: prazo vencido com auto on, com auto off (vira `pronta`), com flag global off
+### Fase 10 — orquestrador ✅
+- [x] `tickScheduledMessages` integrado a `startFormLifecycleOrchestrator` (executa em cada tick)
+- [x] Loga totais (`dispatched`, `marked_ready`, `failed`) sem poluir o console quando nao ha trabalho
+- [x] `refreshFormLifecycle` (usado no bootstrap) **nao** processa mensagens — evita disparar a cada chamada
+- [x] 4 testes unitarios cobrindo: vencida com auto on (`dispatched`), flag global desligada (`marked_ready`, sem log), flag por mensagem desligada (`marked_ready`), agendada no futuro (ignorada)
 
 ### Fase 11 — testes UI
 - [ ] Aba Mensagens só aparece quando elegível
