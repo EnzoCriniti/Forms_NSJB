@@ -249,11 +249,11 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Seed de `messagingConfig` em `settings` com `whatsappGroupName=""` e `autoDispatchEnabled=true`
 - [x] `ensureMessageTemplatesSeed` e `ensureMessagingConfigSeed` chamados em `ensureSeedData`
 
-### Fase 3 — repositories
-- [ ] `messageTemplatesRepository.mjs`
-- [ ] `personPresetsRepository.mjs`
-- [ ] `eventMessagesRepository.mjs`
-- [ ] `messageDispatchLogRepository.mjs`
+### Fase 3 — repositories ✅
+- [x] `messageTemplatesRepository.mjs`
+- [x] `personPresetsRepository.mjs`
+- [x] `eventMessagesRepository.mjs` (inclui `listScheduledEventMessagesDue` para o orquestrador)
+- [x] `messageDispatchLogRepository.mjs` (append-only)
 
 ### Fase 4 — services
 - [ ] `messageTemplatesService.mjs` (CRUD)
