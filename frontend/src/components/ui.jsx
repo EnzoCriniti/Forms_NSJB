@@ -292,16 +292,16 @@ export const PublicReadingToolbar = ({
   const fontControlStyle = {
     minHeight: 34,
     padding: "6px 10px",
-    border: "1px solid rgba(255,255,255,0.26)",
-    background: "rgba(255,255,255,0.08)",
-    color: "#fff",
+    border: localTheme === "dark" ? "1px solid rgba(255,255,255,0.26)" : "1px solid rgba(15, 38, 24, 0.12)",
+    background: localTheme === "dark" ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.96)",
+    color: localTheme === "dark" ? "#fff" : "var(--text)",
     fontWeight: 800,
     borderRadius: 10,
     boxShadow: "none",
   };
 
   return (
-    <div className="public-reading-toolbar" aria-label="Ajustes de leitura">
+    <div className="public-reading-toolbar" data-theme={localTheme} aria-label="Ajustes de leitura">
       <div className="public-reading-toolbar__actions">
         <Btn
           v="ghost"
@@ -331,7 +331,7 @@ export const PublicReadingToolbar = ({
           onClick={handleThemeToggle}
           title={localTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
           aria-label={localTheme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
-          style={{ ...fontControlStyle, minWidth: 80 }}
+          style={{ ...fontControlStyle, minWidth: 80, fontWeight: 900 }}
         >
           {localTheme === "dark" ? "Claro" : "Escuro"}
         </Btn>
