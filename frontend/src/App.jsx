@@ -81,6 +81,9 @@ const EMPTY_BOOTSTRAP = {
   people: [],
   membersConfig: {},
   externalBases: [],
+  messageTemplates: [],
+  personPresets: [],
+  messagingConfig: { whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" },
 };
 
 export default function App() {

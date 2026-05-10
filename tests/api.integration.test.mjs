@@ -1547,6 +1547,41 @@ test("event message type 1 dispatch grava log e marca disparada", async () => {
   }
 });
 
+test("bootstrap expoe messageTemplates, personPresets, messagingConfig e event.messages", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+
+    const initialBootstrap = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    assert.ok(Array.isArray(initialBootstrap.messageTemplates));
+    assert.ok(initialBootstrap.messageTemplates.length >= 3);
+    assert.ok(Array.isArray(initialBootstrap.personPresets));
+    assert.equal(initialBootstrap.messagingConfig.autoDispatchEnabled, true);
+    assert.equal(initialBootstrap.messagingConfig.whatsappGroupName, "");
+
+    const presenca = initialBootstrap.forms.find(form => form.type === "presenca");
+    const eventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento Bootstrap",
+      formIds: [presenca.id],
+    }, adminToken);
+    const event = (await eventRes.json()).event;
+
+    await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "new_scale",
+      body: "Confiram em {{event.title}}",
+    }, adminToken);
+
+    const refreshed = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    const savedEvent = refreshed.events.find(item => item.id === event.id);
+    assert.ok(savedEvent);
+    assert.ok(Array.isArray(savedEvent.messages));
+    assert.equal(savedEvent.messages.length, 1);
+    assert.equal(savedEvent.messages[0].type, "new_scale");
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("event message type 2 bloqueia sem phoneColumn e libera ao configurar", async () => {
   const ctx = await startServer();
   try {

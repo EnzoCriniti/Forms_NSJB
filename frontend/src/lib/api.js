@@ -163,3 +163,55 @@ export const saveScaleTaskCatalogItem = item => requestJson("/api/scale-task-cat
 });
 
 export const deleteScaleTaskCatalogItem = id => requestJson(`/api/scale-task-catalog/${id}`, { method: "DELETE" });
+
+export const fetchMessagingConfig = () => requestJson("/api/messaging-config");
+
+export const saveMessagingConfig = config => requestJson("/api/messaging-config", {
+  method: "PUT",
+  body: JSON.stringify(config),
+});
+
+export const fetchMessageTemplates = () => requestJson("/api/message-templates");
+
+export const saveMessageTemplate = template => requestJson("/api/message-templates", {
+  method: "POST",
+  body: JSON.stringify(template),
+});
+
+export const deleteMessageTemplate = id => requestJson(`/api/message-templates/${id}`, { method: "DELETE" });
+
+export const fetchPersonPresets = () => requestJson("/api/person-presets");
+
+export const savePersonPreset = preset => requestJson("/api/person-presets", {
+  method: "POST",
+  body: JSON.stringify(preset),
+});
+
+export const deletePersonPreset = id => requestJson(`/api/person-presets/${id}`, { method: "DELETE" });
+
+export const fetchEventMessages = eventId => requestJson(`/api/events/${eventId}/messages`);
+
+export const saveEventMessage = (eventId, message) => requestJson(`/api/events/${eventId}/messages`, {
+  method: "POST",
+  body: JSON.stringify(message),
+});
+
+export const fetchEventMessage = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}`);
+
+export const fetchEventMessagePreview = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/preview`);
+
+export const dispatchEventMessage = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/dispatch`, {
+  method: "POST",
+  body: JSON.stringify({}),
+});
+
+export const cancelEventMessage = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/cancel`, {
+  method: "POST",
+  body: JSON.stringify({}),
+});
+
+export const deleteEventMessage = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}`, {
+  method: "DELETE",
+});
+
+export const fetchEventMessageLogs = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/logs`);

@@ -278,10 +278,12 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Validadores: `validateMessageTemplatePayload`, `validatePersonPresetPayload`, `validateMessagingConfigPayload`, `validateEventMessagePayload`
 - [x] 5 testes API cobrindo CRUD de templates/presets, config global, elegibilidade, dispatch (log gravado, status disparada) e bloqueio por phoneColumn
 
-### Fase 6 — bootstrap e api.js
-- [ ] Bootstrap expõe `messageTemplates`, `personPresets`, `messagingConfig`
-- [ ] Mensagens vêm dentro do evento (`event.messages`)
-- [ ] Helpers em `frontend/src/lib/api.js`
+### Fase 6 — bootstrap e api.js ✅
+- [x] Bootstrap expoe `messageTemplates`, `personPresets`, `messagingConfig`
+- [x] Mensagens vem dentro do evento (`event.messages`) via 1 query global agrupada por eventId
+- [x] `EMPTY_BOOTSTRAP` em App.jsx atualizado com defaults dos novos campos
+- [x] 14 helpers novos em `frontend/src/lib/api.js`: `fetchMessagingConfig`, `saveMessagingConfig`, `fetchMessageTemplates`, `saveMessageTemplate`, `deleteMessageTemplate`, `fetchPersonPresets`, `savePersonPreset`, `deletePersonPreset`, `fetchEventMessages`, `saveEventMessage`, `fetchEventMessage`, `fetchEventMessagePreview`, `dispatchEventMessage`, `cancelEventMessage`, `deleteEventMessage`, `fetchEventMessageLogs`
+- [x] Teste validando bootstrap.messageTemplates, bootstrap.messagingConfig e event.messages
 
 ### Fase 7 — admin (Configurações > Mensagens)
 - [ ] CRUD templates com preview e lista de placeholders
