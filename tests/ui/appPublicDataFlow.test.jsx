@@ -34,7 +34,7 @@ describe("App public data flow", () => {
   });
 
   it("carrega respostas do formulario publico sob demanda", async () => {
-    window.location.hash = "#/formularios/presenca-teste";
+    window.location.hash = "#/formularios/1";
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([
@@ -75,7 +75,7 @@ describe("App public data flow", () => {
   });
 
   it("nao mostra voltar para visitante no link publico", async () => {
-    window.location.hash = "#/formularios/presenca-teste";
+    window.location.hash = "#/formularios/1";
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([
@@ -109,8 +109,8 @@ describe("App public data flow", () => {
     expect(screen.queryByRole("button", { name: "Voltar" })).not.toBeInTheDocument();
   });
 
-  it("abre formulario publico usando o novo caminho /formularios/slug", async () => {
-    window.history.pushState(null, "", "/formularios/presenca-teste");
+  it("abre formulario publico usando o novo caminho /formularios/id", async () => {
+    window.history.pushState(null, "", "/formularios/1");
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([
@@ -143,8 +143,8 @@ describe("App public data flow", () => {
     expect(await screen.findByText("Nome *")).toBeInTheDocument();
   });
 
-  it("abre a tela publica de resultados pelo caminho /formularios/slug/resultados", async () => {
-    window.history.pushState(null, "", "/formularios/presenca-teste/resultados");
+  it("abre a tela publica de resultados pelo caminho /formularios/id/resultados", async () => {
+    window.history.pushState(null, "", "/formularios/1/resultados");
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([
@@ -183,7 +183,7 @@ describe("App public data flow", () => {
   });
 
   it("bloqueia a tela publica de resultados quando a opcao nao esta habilitada", async () => {
-    window.history.pushState(null, "", "/formularios/presenca-teste/resultados");
+    window.history.pushState(null, "", "/formularios/1/resultados");
     vi.stubGlobal("fetch", vi.fn(async url => {
       if (url === "/api/bootstrap") {
         return jsonResponse(bootstrap([

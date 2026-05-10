@@ -29,7 +29,7 @@ const people = [
 
 describe("PublicFormScreen", () => {
   it("renderiza campos dinamicos do formulario", () => {
-    render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/presenca-teste/resultados" />);
+    render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/1/resultados" />);
 
     expect(screen.getByText("Formulario Publico - 10/05/2026")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
@@ -41,11 +41,11 @@ describe("PublicFormScreen", () => {
 
   it("abre a rota publica de resultados pelo header", () => {
     window.location.hash = "";
-    render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/presenca-teste/resultados" />);
+    render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/1/resultados" />);
 
     fireEvent.click(screen.getByRole("button", { name: "Resultados" }));
 
-    expect(window.location.hash).toBe("#/formularios/presenca-teste/resultados");
+    expect(window.location.hash).toBe("#/formularios/1/resultados");
   });
 
   it("abre modal de edicao quando a pessoa ja respondeu", () => {

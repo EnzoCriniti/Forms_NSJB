@@ -27,7 +27,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao e controles de sessao. No mobile mostra menu lateral expansivo nas telas de navegacao.
 - `frontend/src/lib/appShell.js`
-  Centraliza helpers do shell, inclusive o caminho publico de formularios `#/formularios/<slug>`.
+  Centraliza helpers do shell, inclusive o caminho publico canônico de formularios `#/formularios/<id>` e a leitura de links legados por slug.
 
 ## Listagem
 
@@ -65,7 +65,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
 - `frontend/src/App.jsx`
-  Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<slug>/resultados` so abre quando o formulario de presenca permite resultados publicos.
+  Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 
 ## Backend da base sincronizada
 

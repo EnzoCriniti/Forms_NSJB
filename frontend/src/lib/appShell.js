@@ -50,14 +50,18 @@ export const clampFontScale = value => Math.min(FONT_SCALE_MAX, Math.max(FONT_SC
 
 export const PUBLIC_FORM_PATH_PREFIX = "/formularios/";
 
-export const buildPublicFormPath = slug => {
-  if (!slug) return "";
-  return `#${PUBLIC_FORM_PATH_PREFIX}${encodeURIComponent(slug)}`;
+const encodePublicRouteSegment = value => encodeURIComponent(String(value || "").trim());
+
+export const buildPublicFormPath = formOrId => {
+  const id = typeof formOrId === "object" ? formOrId?.id : formOrId;
+  if (!id) return "";
+  return `#${PUBLIC_FORM_PATH_PREFIX}${encodePublicRouteSegment(id)}`;
 };
 
-export const buildPublicFormResultsPath = slug => {
-  if (!slug) return "";
-  return `#${PUBLIC_FORM_PATH_PREFIX}${encodeURIComponent(slug)}/resultados`;
+export const buildPublicFormResultsPath = formOrId => {
+  const id = typeof formOrId === "object" ? formOrId?.id : formOrId;
+  if (!id) return "";
+  return `#${PUBLIC_FORM_PATH_PREFIX}${encodePublicRouteSegment(id)}/resultados`;
 };
 
 export const normalizeStoredSession = stored => {
@@ -81,7 +85,7 @@ const decodePublicSlug = slug => {
 };
 
 export const getPublicSlugFromLocation = () => {
-  return getPublicRouteFromLocation()?.slug || null;
+  return getPublicRouteFromLocation()?.identifier || null;
 };
 
 export const getPublicRouteFromLocation = () => {
@@ -97,6 +101,11 @@ export const getPublicRouteFromLocation = () => {
   const withoutPrefix = rawPath.replace(PUBLIC_FORM_PATH_PREFIX, "");
   const view = withoutPrefix.endsWith("/resultados") ? "results" : "form";
   const slugPart = view === "results" ? withoutPrefix.replace(/\/resultados$/, "") : withoutPrefix;
-  const slug = decodePublicSlug(slugPart);
-  return slug ? { slug, view } : null;
+  const identifier = decodePublicSlug(slugPart);
+  if (!identifier) return null;
+  return {
+    identifier,
+    view,
+    isLegacySlug: !/^\d+$/.test(identifier),
+  };
 };

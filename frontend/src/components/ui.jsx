@@ -232,7 +232,7 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
 
 export const PublicTop = ({ form, onBack }) => {
   const [copied, setCopied] = useState(false);
-  const publicPath = buildPublicFormPath(form?.slug);
+  const publicPath = buildPublicFormPath(form);
   const copyTarget = publicPath ? `${window.location.href.split("#")[0]}${publicPath}` : "";
 
   const handleCopy = async () => {

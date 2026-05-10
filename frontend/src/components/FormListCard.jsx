@@ -40,8 +40,8 @@ export const FormListCard = ({
   const formMode = getFormMode(form);
 
   const openPublicForm = () => {
-    if (!form?.slug) return;
-    window.location.hash = buildPublicFormPath(form.slug);
+    if (!form?.id) return;
+    window.location.hash = buildPublicFormPath(form);
   };
 
   const openResults = () => {
