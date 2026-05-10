@@ -155,4 +155,29 @@ describe("EventsScreen", () => {
 
     await waitFor(() => expect(onDeleteEvent).toHaveBeenCalledWith(10));
   });
+
+  it("viewer acessa eventos e formularios sem acoes administrativas", () => {
+    render(
+      <EventsScreen
+        events={events}
+        forms={forms}
+        user={{ role: "viewer", name: "Viewer" }}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Evento Maio - 20/05/2026")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Novo evento" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Editar evento" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Excluir evento" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+
+    expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Novo formulario" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Editar formulario" })).not.toBeInTheDocument();
+  });
 });

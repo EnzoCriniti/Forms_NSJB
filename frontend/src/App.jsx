@@ -260,7 +260,7 @@ export default function App() {
   }, [pinnedEventsByUser]);
 
   useEffect(() => {
-    if (currentUser && canCreateForms(currentUser) && screen === "list") {
+    if (currentUser && screen === "list") {
       setScreen("events");
     }
   }, [currentUser?.id, currentUser?.role, screen]);
@@ -377,11 +377,7 @@ export default function App() {
       setScreen("list");
       return;
     }
-    if (nextScreen === "events" && !canCreateForms(currentUser)) {
-      setScreen("list");
-      return;
-    }
-    if (nextScreen === "list" && canCreateForms(currentUser)) {
+    if (nextScreen === "list" && currentUser) {
       setScreen("events");
       return;
     }
@@ -689,9 +685,9 @@ export default function App() {
     setBootstrap(prev => ({ ...prev, scaleTaskCatalog: result.scaleTaskCatalog }));
   };
 
-  const nav = canCreateForms(currentUser)
+  const nav = currentUser
     ? [
-        { key: "dashboard", icon: "chart", label: "Dashboard" },
+        ...(canCreateForms(currentUser) ? [{ key: "dashboard", icon: "chart", label: "Dashboard" }] : []),
         { key: "events", icon: "calendar", label: "Eventos" },
       ]
     : [];
@@ -819,7 +815,7 @@ export default function App() {
             user={currentUser}
           />
         )}
-        {screen === "events" && canCreateForms(currentUser) && (
+        {screen === "events" && currentUser && (
           <EventsScreen
             events={events}
             forms={forms}

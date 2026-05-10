@@ -55,6 +55,8 @@ const bootstrap = {
   membersConfig: {},
 };
 
+const viewer = { id: 2, name: "Viewer", username: "viewer", role: "viewer" };
+
 describe("App dashboard flow", () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -189,6 +191,32 @@ describe("App dashboard flow", () => {
     expect(screen.getByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Usuário")).toBeInTheDocument();
     vi.useRealTimers();
+  });
+
+  it("viewer acessa eventos e formularios vinculados", async () => {
+    window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({
+      user: viewer,
+      token: "token-viewer",
+      expiresAt: null,
+    }));
+
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") return jsonResponse({ ...bootstrap, users: [admin, viewer] });
+      if (url === "/api/auth/me") return jsonResponse({ user: viewer, expiresAt: null });
+      if (url === "/api/security/form-delete-key/status") return jsonResponse({ configured: false });
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    expect(await screen.findByRole("button", { name: "Eventos" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Dashboard" })).not.toBeInTheDocument();
+    expect(screen.getByText("Evento Dashboard - 10/05/2026")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Evento Dashboard - 10/05/2026"));
+
+    expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Novo formulario" })).not.toBeInTheDocument();
   });
 });
 

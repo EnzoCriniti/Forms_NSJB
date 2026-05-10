@@ -45,6 +45,11 @@ const sortEvents = (events, pinnedSet) => [...events].sort((a, b) => {
   return String(b.date || "").localeCompare(String(a.date || "")) || Number(b.id || 0) - Number(a.id || 0);
 });
 
+const visibleEventFormsFor = (user, eventForms) => {
+  if (user?.role === "admin") return eventForms;
+  return eventForms.filter(form => form.status !== "arquivado");
+};
+
 export const EventsScreen = ({
   events = [],
   forms = [],
@@ -63,6 +68,7 @@ export const EventsScreen = ({
   onDeleteForm,
   onNavigate,
 }) => {
+  const canManageEvents = user?.role === "admin";
   const [mode, setMode] = useState(initialSelectedEventId ? "detail" : "list");
   const [selectedEventId, setSelectedEventId] = useState(initialSelectedEventId);
   const [draft, setDraft] = useState(() => ({ ...emptyDraft }));
@@ -77,8 +83,8 @@ export const EventsScreen = ({
   const selectedEvent = useMemo(() => events.find(event => event.id === selectedEventId) || null, [events, selectedEventId]);
   const eventForms = useMemo(() => {
     const ids = new Set(selectedEvent?.formIds || []);
-    return forms.filter(form => ids.has(form.id));
-  }, [forms, selectedEvent]);
+    return visibleEventFormsFor(user, forms.filter(form => ids.has(form.id)));
+  }, [forms, selectedEvent, user]);
 
   const openEvent = event => {
     setSelectedEventId(event.id);
@@ -182,11 +188,13 @@ export const EventsScreen = ({
             {event.closing && <span>Fechamento: {formatDateTime(event.closing)}</span>}
           </div>
         </div>
-        <div style={{ display: "flex", gap: 6 }} onClick={eventClick => eventClick.stopPropagation()}>
-          <Btn v={isPinned ? "warning" : "ghost"} icon="pin" sz="sm" style={LIST_ACTION_STYLE} title={isPinned ? "Desfixar evento" : "Fixar evento"} aria-label={isPinned ? "Desfixar evento" : "Fixar evento"} onClick={() => onTogglePinnedEvent?.(event.id)} />
-          <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar evento" aria-label="Editar evento" onClick={() => editEvent(event)} />
-          <Btn v="danger" icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir evento" aria-label="Excluir evento" onClick={() => setPendingDelete(event)} />
-        </div>
+        {canManageEvents && (
+          <div style={{ display: "flex", gap: 6 }} onClick={eventClick => eventClick.stopPropagation()}>
+            <Btn v={isPinned ? "warning" : "ghost"} icon="pin" sz="sm" style={LIST_ACTION_STYLE} title={isPinned ? "Desfixar evento" : "Fixar evento"} aria-label={isPinned ? "Desfixar evento" : "Fixar evento"} onClick={() => onTogglePinnedEvent?.(event.id)} />
+            <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar evento" aria-label="Editar evento" onClick={() => editEvent(event)} />
+            <Btn v="danger" icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir evento" aria-label="Excluir evento" onClick={() => setPendingDelete(event)} />
+          </div>
+        )}
       </div>
     );
   };
@@ -249,8 +257,8 @@ export const EventsScreen = ({
             <div style={{ minWidth: 0, flex: 1 }}>
               <h2 style={{ margin: 0, fontSize: 20 }}>{selectedEvent.date ? `${selectedEvent.title} - ${formatDate(selectedEvent.date)}` : selectedEvent.title}</h2>
             </div>
-            <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>
-            <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />
+            {canManageEvents && <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>}
+            {canManageEvents && <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />}
           </>,
         )}
         {eventForms.length === 0 ? (
@@ -266,7 +274,7 @@ export const EventsScreen = ({
                 user={user}
                 labels={labels}
                 isPinned={pinnedFormSet.has(form.id)}
-                canPinForms
+                canPinForms={canManageEvents}
                 onNavigate={onNavigate}
                 onDuplicateForm={onDuplicateForm}
                 onTogglePinnedForm={onTogglePinnedForm}
@@ -288,7 +296,7 @@ export const EventsScreen = ({
           <div style={{ minWidth: 0, flex: 1 }}>
             <h2 style={{ margin: 0, fontSize: 20 }}>Eventos</h2>
           </div>
-          <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" />
+          {canManageEvents && <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" />}
         </>,
       )}
       <div style={{ display: "grid", gap: 18 }}>

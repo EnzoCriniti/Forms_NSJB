@@ -15,6 +15,50 @@ export const LABELS = [
 
 export const DEFAULT_USERS = [
   { id: 1, username: "admin", password: "admin123", role: "admin", name: "Administrador" },
+  { id: 2, username: "viewer", password: "viewer123", role: "viewer", name: "Visualizador" },
+];
+
+export const MOCK_EVENTS = [
+  {
+    id: 1,
+    title: "Sessao de Escala",
+    description: "Evento operacional com presenca do nucleo e escala da organizacao.",
+    date: "2026-05-02",
+    opening: "2026-04-28T08:00",
+    closing: "2026-05-02T15:00",
+    status: "pronto",
+    formSeedIds: [1, 2],
+  },
+  {
+    id: 2,
+    title: "Sessao Instrutiva",
+    description: "Evento ficticio para validar fluxo de formulario em rascunho.",
+    date: "2026-05-10",
+    opening: "2026-05-05T08:00",
+    closing: "2026-05-09T23:59",
+    status: "rascunho",
+    formSeedIds: [3],
+  },
+  {
+    id: 3,
+    title: "Evento Beneficente",
+    description: "Evento encerrado para testar historico e acesso a resultados.",
+    date: "2026-04-26",
+    opening: "2026-04-20T08:00",
+    closing: "2026-04-25T18:00",
+    status: "encerrado",
+    formSeedIds: [4],
+  },
+  {
+    id: 4,
+    title: "Sessao de Escala",
+    description: "Evento fechado com formulario antigo para testar listagem historica.",
+    date: "2026-04-25",
+    opening: "2026-04-20T08:00",
+    closing: "2026-04-24T23:59",
+    status: "encerrado",
+    formSeedIds: [5],
+  },
 ];
 
 export const DEFAULT_MEMBERS_CONFIG = {

@@ -166,7 +166,11 @@ test("bootstrap returns seeded data and storage metadata", async () => {
     const payload = await res.json();
     assert.ok(Array.isArray(payload.forms));
     assert.ok(payload.forms.length >= 1);
+    assert.ok(Array.isArray(payload.events));
+    assert.ok(payload.events.length >= 1);
+    assert.ok(payload.events.some(event => event.formIds.length >= 1));
     assert.ok(Array.isArray(payload.users));
+    assert.ok(payload.users.some(user => user.username === "viewer" && user.role === "viewer"));
     assert.equal(Object.prototype.hasOwnProperty.call(payload.users[0] || {}, "password"), false);
     assert.deepEqual(payload.responsesByForm, {});
     assert.deepEqual(payload.escalaByForm, {});

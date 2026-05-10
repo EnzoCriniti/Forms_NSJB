@@ -9,6 +9,7 @@ import {
   DEFAULT_USERS,
   ESCALA_SECTIONS,
   LABELS,
+  MOCK_EVENTS,
   MOCK_FORMS,
   MOCK_RESPONSES,
   PRESETS,
@@ -101,6 +102,39 @@ const ensureFormsSeed = async () => {
   });
 };
 
+const ensureEventsSeed = async () => {
+  const count = (await database.queryOne("SELECT COUNT(*) AS total FROM events"))?.total || 0;
+  if (count) return;
+
+  const forms = await database.queryMany("SELECT id, slug FROM forms");
+  const bySlug = new Map(forms.map(form => [form.slug, Number(form.id)]));
+  const bySeedId = new Map(MOCK_FORMS.map(form => [form.id, bySlug.get(form.slug)]));
+  const now = nowIso();
+
+  await database.withTransaction(async tx => {
+    for (const event of MOCK_EVENTS) {
+      const formIds = event.formSeedIds.map(seedId => bySeedId.get(seedId)).filter(Boolean);
+      await tx.execute(`
+        INSERT INTO events (
+          title, description, date, opening, closing, status, form_ids_json, message_config_json, published_at, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        event.title,
+        event.description || "",
+        event.date,
+        event.opening,
+        event.closing,
+        event.status,
+        stringifyJson(formIds),
+        stringifyJson({}),
+        null,
+        now,
+        now,
+      ]);
+    }
+  });
+};
+
 const ensureUsersSeed = async () => {
   const count = (await database.queryOne("SELECT COUNT(*) AS total FROM users"))?.total || 0;
   if (count) return;
@@ -173,6 +207,7 @@ const ensureMembersConfigSeed = async () => {
 
 export const ensureSeedData = async () => {
   await ensureFormsSeed();
+  await ensureEventsSeed();
   await ensureUsersSeed();
   await ensureLabelsSeed();
   await ensurePresetsSeed();

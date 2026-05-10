@@ -44,9 +44,9 @@ Mapa curto das areas mais mexidas por agentes.
 ## Eventos
 
 - `frontend/src/screens/EventsScreen.jsx`
-  Tela administrativa de eventos. Lista, cria, edita, fixa e exclui eventos; ao abrir um evento, mostra os formularios vinculados e permite criar formulario dentro dele.
+  Tela de eventos para contas logadas. Admin lista, cria, edita, fixa e exclui eventos; viewer acessa os eventos e formularios vinculados sem acoes administrativas.
 - `frontend/src/App.jsx`
-  Inclui o menu `Eventos`, guarda `events` no bootstrap e anexa novos formularios ao evento ativo.
+  Inclui o menu `Eventos` para admin e viewer, guarda `events` no bootstrap e anexa novos formularios ao evento ativo.
 - `backend/routes/eventRoutes.mjs`
   Rotas administrativas `POST /api/events`, `DELETE /api/events/:id` e `POST /api/events/:id/publish`.
 - `backend/services/eventsService.mjs`
