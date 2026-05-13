@@ -94,6 +94,23 @@ describe("CreateFormScreen", () => {
     expect(onSaveForm.mock.calls[0][0].title).toBe("Escala da Organ - 20/05/2026");
   });
 
+  it("volta para o evento de origem quando o formulario foi aberto dentro dele", () => {
+    const onNavigate = vi.fn();
+
+    renderNewForm({
+      onNavigate,
+      event: {
+        id: 77,
+        title: "Evento de Origem",
+        date: "2026-05-20",
+      },
+    });
+
+    fireEvent.click(screen.getByLabelText("Voltar"));
+
+    expect(onNavigate).toHaveBeenCalledWith("events");
+  });
+
   it("abre a pre-visualizacao e reflete o rascunho atual", () => {
     renderNewForm();
 

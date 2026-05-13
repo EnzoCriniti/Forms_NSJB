@@ -170,6 +170,7 @@ export const CreateFormScreen = ({
   event = null,
   isDuplicateMode = false,
 }) => {
+  const goBack = () => onNavigate(event ? "events" : "list");
   const [format, setFormat] = useState("presenca");
   const [formMode, setFormMode] = useState(FORM_MODES.NUCLEO);
   const [preset, setPreset] = useState(null);
@@ -599,7 +600,7 @@ export const CreateFormScreen = ({
   return (
     <div>
       <div className="create-form-header create-form-mobile-hero" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <Btn v="ghost" icon="back" onClick={() => onNavigate("list")} />
+        <Btn v="ghost" icon="back" onClick={goBack} aria-label="Voltar" />
         <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
         <div>
           <h2 style={{ margin: 0, fontSize: 22 }}>{form && !isDuplicateMode ? "Editar Formulario" : "Novo Formulario"}</h2>
@@ -1298,10 +1299,10 @@ export const CreateFormScreen = ({
                 icon="check"
                 onClick={() => {
                   setSaveSuccess(null);
-                  onNavigate("list");
+                  goBack();
                 }}
               >
-                Voltar para Formularios
+                {event ? "Voltar para o evento" : "Voltar para Formularios"}
               </Btn>
             </div>
           </div>
