@@ -36,6 +36,10 @@ O fluxo esperado e subir tudo de uma vez. O compose resolve a ordem e aguarda o 
 
 Use a partir da raiz do repositorio:
 
+1. Tenha o Docker Desktop aberto.
+2. Entre na pasta do projeto clonado.
+3. Suba a stack com build inicial.
+
 ```powershell
 docker compose -f docker/compose.yml up -d --build
 ```
@@ -45,6 +49,18 @@ Isso sobe:
 - `frontend` em `http://localhost:5173`
 - `backend` em `http://localhost:8787`
 - `postgres` em `localhost:5432`
+
+Se for a primeira vez, espere alguns segundos e confirme o estado:
+
+```powershell
+docker compose -f docker/compose.yml ps
+```
+
+Se houver erro de inicializacao, veja os logs:
+
+```powershell
+docker compose -f docker/compose.yml logs -f
+```
 
 ## Como parar
 

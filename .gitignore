@@ -6,6 +6,7 @@ tools/node/
 storage/
 screenshots/
 imagens/
+.claude/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal

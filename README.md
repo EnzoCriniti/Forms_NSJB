@@ -54,14 +54,31 @@ O caminho oficial e via Docker Compose.
 
 ### Passo a passo
 
+1. Clone o repositório.
+2. Entre na pasta raiz do projeto.
+3. Suba a stack com build inicial.
+
 ```powershell
 docker compose -f docker/compose.yml up -d --build
 ```
 
-Depois abra:
+4. Aguarde os containers ficarem prontos.
+5. Abra no navegador:
 
 - Frontend: `http://localhost:5173`
 - Backend health: `http://localhost:8787/api/health`
+
+### Como conferir a stack
+
+```powershell
+docker compose -f docker/compose.yml ps
+```
+
+Se algo falhar na primeira subida, consulte:
+
+```powershell
+docker compose -f docker/compose.yml logs -f
+```
 
 ### Para parar
 
@@ -69,17 +86,14 @@ Depois abra:
 docker compose -f docker/compose.yml down
 ```
 
-### Para ver o estado da stack
+### Atalhos no Windows
 
-```powershell
-docker compose -f docker/compose.yml ps
-```
+Se voce estiver no Windows, tambem pode usar:
 
-### Para ver logs
-
-```powershell
-docker compose -f docker/compose.yml logs -f
-```
+- `scripts/windows/start-docker.bat`
+- `scripts/windows/restart-docker.bat`
+- `scripts/windows/stop-docker.bat`
+- `scripts/windows/status-docker.bat`
 
 ## Documentacao central
 
