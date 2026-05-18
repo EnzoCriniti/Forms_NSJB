@@ -12,6 +12,10 @@ Mapa curto das areas mais mexidas por agentes.
   Paineis compartilhados da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Painel compartilhado da aba de catalogos administrativos, com campos base e tarefas base.
+- `frontend/src/features/admin/adminOrganizationPanels.jsx`
+  Painel compartilhado de classificacoes e templates administrativos.
+- `frontend/src/features/admin/adminSecurityPanels.jsx`
+  Painel compartilhado da chave mestra e status da seguranca.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Helpers compartilhados do admin, incluindo listas paginadas, preview de campo, editor de matriz e painel de auditoria.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
@@ -93,6 +97,10 @@ Mapa curto das areas mais mexidas por agentes.
   Componentes compartilhados para usuarios e bases externas fora do modal principal.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Componentes compartilhados da aba de catalogos administrativos, com formulários e listas de campos e tarefas.
+- `frontend/src/features/admin/adminOrganizationPanels.jsx`
+  Componentes compartilhados das classificacoes e templates administrativos.
+- `frontend/src/features/admin/adminSecurityPanels.jsx`
+  UI compartilhada da seguranca administrativa.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.

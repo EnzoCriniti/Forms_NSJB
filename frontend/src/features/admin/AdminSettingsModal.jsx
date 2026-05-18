@@ -5,12 +5,14 @@
  */
 
 import React, { useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, FieldControl, NotePanel, SplitSection, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
 import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 import { CatalogManagementPanel } from "./adminCatalogPanels";
 import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
-import { AuditLogsPanel, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, PaginatedList, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
+import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
+import { SecurityPanel } from "./adminSecurityPanels";
+import { AuditLogsPanel, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
 
 const inputStyle = {
   width: "100%",
@@ -292,63 +294,13 @@ export const AdminSettingsModal = ({
         )}
 
         {tab === "security" && (
-          <SplitSection
-            leftTitle={formDeleteKeyConfigured ? "Alterar chave mestra" : "Cadastrar chave mestra"}
-            rightTitle="Status da seguranca"
-            left={(
-              <div style={{ display: "grid", gap: 10 }}>
-                <FeedbackBanner
-                  tone={formDeleteKeyConfigured === null ? "loading" : "info"}
-                  message={formDeleteKeyConfigured === null
-                    ? "Carregando status da chave mestra..."
-                    : formDeleteKeyConfigured
-                      ? "A chave mestra esta configurada. Para alterar, informe a chave atual e a nova chave."
-                      : "Nenhuma chave mestra configurada. Cadastre uma nova chave para liberar exclusoes seguras."}
-                />
-                {formDeleteKeyConfigured && (
-                  <FieldControl label="Chave mestra atual">
-                    <input
-                      type="password"
-                      value={securityDraft.currentMasterKey}
-                      onChange={e => setSecurityDraft({ ...securityDraft, currentMasterKey: e.target.value })}
-                      placeholder="Chave mestra atual"
-                      style={inputStyle}
-                    />
-                  </FieldControl>
-                )}
-                <FieldControl label="Nova chave mestra">
-                  <input
-                    type="password"
-                    value={securityDraft.newMasterKey}
-                    onChange={e => setSecurityDraft({ ...securityDraft, newMasterKey: e.target.value })}
-                    placeholder="Nova chave mestra"
-                    style={inputStyle}
-                  />
-                </FieldControl>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  <Btn
-                    onClick={submitSecurity}
-                    loading={busyAction === "security"}
-                    disabled={!securityDraft.newMasterKey.trim() || (formDeleteKeyConfigured && !securityDraft.currentMasterKey.trim())}
-                  >
-                    {formDeleteKeyConfigured ? "Salvar alteracao" : "Cadastrar chave"}
-                  </Btn>
-                  {(securityDraft.currentMasterKey || securityDraft.newMasterKey) && <Btn v="ghost" onClick={() => setSecurityDraft(emptySecurityDraft)}>Cancelar</Btn>}
-                </div>
-              </div>
-            )}
-            right={(
-              <SurfacePanel background={COLORS.surfaceAlt} border={COLORS.borderLight} radius={8} padding={12} style={{ fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
-                <div style={{ fontWeight: 800, color: COLORS.text, marginBottom: 8 }}>
-                  {formDeleteKeyConfigured === null
-                    ? "Carregando..."
-                    : formDeleteKeyConfigured
-                      ? "Chave mestra configurada"
-                      : "Nenhuma chave mestra configurada"}
-                </div>
-                <div>A exclusao de formularios exige validacao no backend antes de remover respostas, response_values e escala associados.</div>
-              </SurfacePanel>
-            )}
+          <SecurityPanel
+            formDeleteKeyConfigured={formDeleteKeyConfigured}
+            securityDraft={securityDraft}
+            setSecurityDraft={setSecurityDraft}
+            submitSecurity={submitSecurity}
+            busyAction={busyAction}
+            onCancelSecurity={() => setSecurityDraft(emptySecurityDraft)}
           />
         )}
         {tab === "catalog" && (
@@ -374,85 +326,21 @@ export const AdminSettingsModal = ({
         )}
 
         {tab === "labels" && (
-          <SplitSection
-            leftTitle={labelDraft.id ? "Editar classificacao" : "Nova classificacao"}
-            rightTitle="Classificacoes existentes"
-            left={(
-              <div style={{ display: "grid", gap: 12 }}>
-                <FieldControl label="Nome da classificacao">
-                  <input value={labelDraft.name} onChange={e => setLabelDraft({ ...labelDraft, name: e.target.value })} placeholder="Nome da classificacao" style={inputStyle} />
-                </FieldControl>
-                <FieldControl label="Cor">
-                  <input value={labelDraft.color} onChange={e => setLabelDraft({ ...labelDraft, color: e.target.value })} type="color" style={{ ...inputStyle, padding: 4, height: 44, minHeight: 44, boxSizing: "border-box", overflow: "hidden" }} />
-                </FieldControl>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <Btn onClick={submitLabel} loading={busyAction === "label"}>{labelDraft.id ? "Salvar classificacao" : "Criar classificacao"}</Btn>
-                  {labelDraft.id && <Btn v="ghost" onClick={() => setLabelDraft(emptyLabel)}>Cancelar</Btn>}
-                </div>
-              </div>
-            )}
-            right={(
-              <PaginatedList
-                items={labels}
-                emptyText="Nenhuma classificacao cadastrada."
-                renderItem={label => (
-                  <div key={label.id} className="settings-row">
-                    <div><strong><span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 99, background: label.color, marginRight: 8 }} />{label.name}</strong><div>Criado por {label.createdBy || "Sistema"}</div></div>
-                    <Btn v="secondary" sz="sm" onClick={() => setLabelDraft(label)}>Editar</Btn>
-                    <Btn v="danger" sz="sm" onClick={() => requestDelete(
-                      "Excluir classificacao",
-                      `Tem certeza que deseja excluir a classificacao ${label.name}?`,
-                      "Excluir",
-                      () => onDeleteLabel(label.id),
-                    )}>Remover</Btn>
-                  </div>
-                )}
-              />
-            )}
+          <LabelsPanel
+            labelDraft={labelDraft}
+            setLabelDraft={setLabelDraft}
+            submitLabel={submitLabel}
+            busyAction={busyAction}
+            labels={labels}
+            requestDelete={requestDelete}
+            onDeleteLabel={onDeleteLabel}
           />
         )}
         {tab === "presets" && (
-          <SplitSection
-            leftTitle="Como os templates funcionam"
-            rightTitle="Templates de formulario existentes"
-            left={(
-              <div style={{ display: "grid", gap: 10 }}>
-                <NotePanel>
-                  Templates sao criados na tela de criacao de formulario. Aqui voce acompanha os existentes e pode remover o que nao faz mais sentido.
-                </NotePanel>
-                <SurfacePanel style={{ fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55, borderRadius: 10, padding: 12 }}>
-                  Para salvar um novo template, use a acao <strong style={{ color: COLORS.text }}>Salvar como Template</strong> dentro do builder do formulario.
-                </SurfacePanel>
-              </div>
-            )}
-            right={(
-              <PaginatedList
-                items={presets}
-                emptyText="Nenhum template cadastrado."
-                renderItem={preset => {
-                  const count = preset.type === "escala_organ"
-                    ? `${preset.scaleSections?.length ?? 0} secoes`
-                    : `${preset.fieldDefinitions?.length ?? 0} campos`;
-                  const modeLabel = preset.type === "escala_organ"
-                    ? "Escala da Organ"
-                    : (preset.resultsConfig?.formMode === "nucleo" ? "Presenca do nucleo" : "Formulario geral");
-                  return (
-                    <div key={preset.id} className="settings-row">
-                      <div>
-                        <strong>{preset.name}</strong>
-                        <div>{modeLabel} - {count} - Criado por {preset.createdBy || "Sistema"}</div>
-                      </div>
-                      <Btn v="danger" sz="sm" onClick={() => requestDelete(
-                        "Excluir template",
-                        `Tem certeza que deseja excluir o template ${preset.name}?`,
-                        "Excluir",
-                        () => onDeletePreset(preset.id),
-                      )}>Remover</Btn>
-                    </div>
-                  );
-                }}
-              />
-            )}
+          <TemplatesPanel
+            presets={presets}
+            requestDelete={requestDelete}
+            onDeletePreset={onDeletePreset}
           />
         )}
 

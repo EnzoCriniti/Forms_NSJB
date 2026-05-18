@@ -23,6 +23,10 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Painel reutilizavel da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Painel reutilizavel da aba de catalogos administrativos, com os blocos de campos base e tarefas base.
+- `frontend/src/features/admin/adminOrganizationPanels.jsx`
+  Painel reutilizavel de classificacoes e templates administrativos.
+- `frontend/src/features/admin/adminSecurityPanels.jsx`
+  Painel reutilizavel da chave mestra administrativa.
 - `frontend/src/screens/createFormPanels.jsx`
   Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 - `frontend/src/screens/resultsPanels.jsx`
@@ -64,6 +68,10 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   UI compartilhada dos blocos de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   UI compartilhada da aba de catalogos dentro do admin.
+- `frontend/src/features/admin/adminOrganizationPanels.jsx`
+  UI compartilhada das classificacoes e templates dentro do admin.
+- `frontend/src/features/admin/adminSecurityPanels.jsx`
+  UI compartilhada da seguranca administrativa.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
   Configuracao da base de socios sincronizada.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
