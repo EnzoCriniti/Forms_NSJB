@@ -30,6 +30,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/ui.jsx`
   Reune componentes visuais compartilhados. Inclui `ScreenHeader` para evitar repeticao dos topos internos com voltar, titulo, subtitulo e acoes.
   Tambem fornece `SurfacePanel` e `MetricCard` para reduzir wrappers visuais repetidos em telas grandes.
+  `FieldControl` centraliza rotulos, controles e textos auxiliares de campos repetidos.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 - `docs/REUSO.md`

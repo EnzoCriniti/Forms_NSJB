@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, FieldControl, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
 import { fetchAuditLogs } from "../../lib/api";
 import { ROLES } from "../../lib/auth";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
@@ -709,45 +709,36 @@ export const AdminSettingsModal = ({
                 <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
                   Cadastre uma lista externa sincronizada para usar em campos do formulario. Essas bases nao substituem a base central de socios.
                 </div>
-                <AdminField>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Seletor por base</label>
+                <FieldControl label="Seletor por base">
                   <input value={externalBaseDraft.name} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, name: e.target.value })} placeholder="Ex: Congregacoes, Turnos, Equipes" style={inputStyle} />
-                </AdminField>
-                <AdminField>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Descricao</label>
+                </FieldControl>
+                <FieldControl label="Descricao">
                   <textarea value={externalBaseDraft.description} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, description: e.target.value })} placeholder="Explique onde essa base sera usada no sistema." rows={3} style={inputStyle} />
-                </AdminField>
-                <AdminField>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Link publico do Google Sheets</label>
+                </FieldControl>
+                <FieldControl label="Link publico do Google Sheets">
                   <input value={externalBaseDraft.sheetUrl} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={inputStyle} />
-                </AdminField>
+                </FieldControl>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                  <AdminField>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Aba / intervalo</label>
+                  <FieldControl label="Aba / intervalo">
                     <input value={externalBaseDraft.range} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, range: e.target.value })} placeholder="Itens!A:B" style={inputStyle} />
-                  </AdminField>
-                  <AdminField>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Frequencia da sincronizacao (horas)</label>
+                  </FieldControl>
+                  <FieldControl label="Frequencia da sincronizacao (horas)">
                     <input type="number" min="1" value={externalBaseDraft.syncFrequencyHours || 24} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, syncFrequencyHours: Number(e.target.value) || 24 })} style={inputStyle} />
-                  </AdminField>
+                  </FieldControl>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 8 }}>
-                  <AdminField>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do valor</label>
+                  <FieldControl label="Coluna do valor">
                     <input value={externalBaseDraft.valueColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, valueColumn: e.target.value })} placeholder="A" style={inputStyle} />
-                  </AdminField>
-                  <AdminField>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do rotulo</label>
+                  </FieldControl>
+                  <FieldControl label="Coluna do rotulo">
                     <input value={externalBaseDraft.labelColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, labelColumn: e.target.value })} placeholder="B" style={inputStyle} />
-                  </AdminField>
-                  <AdminField>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna da descricao</label>
+                  </FieldControl>
+                  <FieldControl label="Coluna da descricao">
                     <input value={externalBaseDraft.descriptionColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, descriptionColumn: e.target.value })} placeholder="C" style={inputStyle} />
-                  </AdminField>
-                  <AdminField>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna de ativo</label>
+                  </FieldControl>
+                  <FieldControl label="Coluna de ativo">
                     <input value={externalBaseDraft.activeColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, activeColumn: e.target.value })} placeholder="D" style={inputStyle} />
-                  </AdminField>
+                  </FieldControl>
                 </div>
                 <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>
                   <input type="checkbox" checked={externalBaseDraft.syncEnabled !== false} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, syncEnabled: e.target.checked })} /> Permitir sincronizacao automatica

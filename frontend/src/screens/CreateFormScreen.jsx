@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Icon, Btn, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, Btn, FieldControl, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
@@ -757,8 +757,7 @@ export const CreateFormScreen = ({
 
       <div style={{ display: "grid", gap: 14, marginBottom: 20 }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Titulo *</label>
+          <FieldControl label="Titulo" required>
             <input
               value={formTitle}
               onChange={event => {
@@ -775,41 +774,38 @@ export const CreateFormScreen = ({
                 cursor: shouldPresetTitle ? "not-allowed" : "text",
               }}
             />
-            <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
+            <div style={{ fontSize: 11, color: COLORS.textMuted }}>
               {shouldPresetTitle
                 ? "O nome deste formulario e padronizado pelo evento."
                 : "O nome pode ser editado nesta tela."}
             </div>
-          </div>
+          </FieldControl>
         </div>
-        <div>
-          <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Descricao / Instrucoes</label>
+        <FieldControl label="Descricao / Instrucoes">
           <textarea value={desc} onChange={event => setDesc(event.target.value)} rows={3} placeholder="Prezada Irmandade..." style={{ ...inp, resize: "vertical" }} />
-        </div>
+        </FieldControl>
         <div className="create-form-meta-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Abertura programada</label>
+          <FieldControl label="Abertura programada" hint="O formulario vai para aberto automaticamente nesta data.">
             <input type="date" value={eventDate} onChange={event => setEventDate(event.target.value)} style={inp} />
-            <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>O formulario vai para aberto automaticamente nesta data.</div>
-          </div>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Fechamento automatico</label>
+          </FieldControl>
+          <FieldControl label="Fechamento automatico" hint="Quando chegar este horario, o formulario fecha sozinho.">
             <input type="datetime-local" value={closingDate} onChange={event => setClosingDate(event.target.value)} style={inp} />
-            <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>Quando chegar este horario, o formulario fecha sozinho.</div>
-          </div>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Status</label>
+          </FieldControl>
+          <FieldControl label="Status">
             <select value={status} onChange={event => setStatus(event.target.value)} style={inp}>
               <option value="rascunho">Rascunho</option>
               <option value="aberto">Aberto</option>
               <option value="fechado">Fechado</option>
               <option value="arquivado">Arquivado</option>
             </select>
-          </div>
+          </FieldControl>
         </div>
         <div className="create-form-meta-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Total esperado</label>
+          <FieldControl label="Total esperado" hint={linkedPeopleField
+            ? `Se deixar em branco, o total sera assumido pela base carregada (${people.length} pessoas).`
+            : formMode === FORM_MODES.GERAL
+              ? "Formulario geral nao usa a base central, entao o sistema nao controla faltantes esperados."
+              : "Sem vinculo com a base completa, o sistema nao controla faltantes esperados."}>
             <input
               type="number"
               min="0"
@@ -819,29 +815,20 @@ export const CreateFormScreen = ({
               disabled={!linkedPeopleField}
               style={{ ...inp, opacity: linkedPeopleField ? 1 : 0.7 }}
             />
-            <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
-              {linkedPeopleField
-                ? `Se deixar em branco, o total sera assumido pela base carregada (${people.length} pessoas).`
-                : formMode === FORM_MODES.GERAL
-                  ? "Formulario geral nao usa a base central, entao o sistema nao controla faltantes esperados."
-                  : "Sem vinculo com a base completa, o sistema nao controla faltantes esperados."}
-            </div>
-          </div>
-          <div>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Texto de fechamento</label>
+          </FieldControl>
+          <FieldControl label="Texto de fechamento">
             <input value={closingText} onChange={event => setClosingText(event.target.value)} style={inp} />
-          </div>
+          </FieldControl>
         </div>
       </div>
 
-      <div style={{ marginBottom: 20 }}>
-        <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 8 }}>Classificacoes</label>
+      <FieldControl label="Classificacoes" style={{ marginBottom: 20 }}>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {labels.map(label => (
             <button key={label.id} onClick={() => togLabel(label.id)} style={{ padding: "4px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "2px solid", cursor: "pointer", transition: "all 0.15s", borderColor: selLabels.includes(label.id) ? label.color : COLORS.borderLight, background: selLabels.includes(label.id) ? label.color : "transparent", color: selLabels.includes(label.id) ? "#fff" : label.color }}>{label.name}</button>
           ))}
         </div>
-      </div>
+      </FieldControl>
 
       <div className="create-form-people-bar" style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
         <Icon name="user" size={14} />

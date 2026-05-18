@@ -175,6 +175,30 @@ export const MetricCard = ({ value, label, tone = COLORS.primary, background = C
   </SurfacePanel>
 );
 
+export const FieldControl = ({
+  label,
+  hint,
+  children,
+  className = "",
+  style,
+  labelStyle,
+  hintStyle,
+  required = false,
+  htmlFor,
+  actions,
+}) => (
+  <div className={className} style={{ display: "grid", gap: 6, ...style }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+      <label htmlFor={htmlFor} style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, ...labelStyle }}>
+        {label}{required ? " *" : ""}
+      </label>
+      {actions}
+    </div>
+    {children}
+    {hint && <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45, ...hintStyle }}>{hint}</div>}
+  </div>
+);
+
 export const ScreenHeader = ({
   className = "",
   style,
