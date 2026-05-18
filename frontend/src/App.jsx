@@ -10,6 +10,7 @@ import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -70,24 +71,6 @@ import {
   sanitizeUser,
 } from "./lib/appShell";
 
-const EMPTY_BOOTSTRAP = {
-  forms: [],
-  events: [],
-  responsesByForm: {},
-  escalaByForm: {},
-  users: [],
-  labels: [],
-  presets: [],
-  fieldCatalog: [],
-  scaleTaskCatalog: [],
-  people: [],
-  membersConfig: {},
-  externalBases: [],
-  messageTemplates: [],
-  personPresets: [],
-  messagingConfig: { whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" },
-};
-
 export default function App() {
   const [screen, setScreen] = useState("list");
   const [activeFormId, setActiveFormId] = useState(null);
@@ -103,7 +86,7 @@ export default function App() {
   const [pinnedEventsByUser, setPinnedEventsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedEvents, {}));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [bootstrap, setBootstrap] = useState(EMPTY_BOOTSTRAP);
+  const [bootstrap, setBootstrap] = useState(createEmptyBootstrap);
   const [responseDetails, setResponseDetails] = useState({});
   const [escalaDetails, setEscalaDetails] = useState({});
   const [detailLoading, setDetailLoading] = useState(null);
@@ -145,17 +128,16 @@ export default function App() {
     if (!silent) setLoading(true);
     setError("");
     try {
-      const next = { ...EMPTY_BOOTSTRAP, ...(await fetchBootstrap()) };
+      const next = normalizeBootstrap(await fetchBootstrap());
       setBootstrap(next);
-      if (!preserveSelection) {
-        const firstVisible = visibleFormsFor(currentUser, next.forms)[0] || null;
-        setActiveFormId(firstVisible?.id || null);
-      } else if (activeFormId && !next.forms.some(form => form.id === activeFormId)) {
-        setActiveFormId(next.forms[0]?.id || null);
-      } else if (!activeFormId) {
-        const firstVisible = visibleFormsFor(currentUser, next.forms)[0] || null;
-        setActiveFormId(firstVisible?.id || null);
-      }
+      const nextActiveFormId = pickActiveFormIdAfterBootstrap({
+        currentFormId: activeFormId,
+        currentUser,
+        forms: next.forms,
+        visibleForms: visibleFormsFor(currentUser, next.forms),
+        preserveSelection,
+      });
+      setActiveFormId(nextActiveFormId);
       return next;
     } catch (loadError) {
       setError(loadError.message || "Erro ao carregar dados.");
