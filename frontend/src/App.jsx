@@ -10,7 +10,7 @@ import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, replaceBootstrapList, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, sortBootstrapEventsByDateDesc, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -398,10 +398,7 @@ export default function App() {
           ...targetEvent,
           formIds: [...targetEvent.formIds, response.form.id],
         });
-        setBootstrap(prev => ({
-          ...prev,
-          events: (prev.events || []).map(event => event.id === eventResponse.event.id ? eventResponse.event : event),
-        }));
+        setBootstrap(prev => replaceBootstrapList(prev, "events", (prev.events || []).map(event => event.id === eventResponse.event.id ? eventResponse.event : event)));
       }
     }
     setDraftForm(null);
@@ -412,10 +409,10 @@ export default function App() {
 
   const handleSaveEvent = async payload => {
     const response = await saveEvent(payload);
-    setBootstrap(prev => replaceBootstrapList(prev, "events", [
+    setBootstrap(prev => replaceBootstrapList(prev, "events", sortBootstrapEventsByDateDesc([
       response.event,
       ...(prev.events || []).filter(event => event.id !== response.event.id),
-    ].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || Number(b.id || 0) - Number(a.id || 0))));
+    ])));
     return response.event;
   };
 
@@ -506,19 +503,14 @@ export default function App() {
       return next;
     });
     await refreshBootstrap({ silent: true, rethrow: true });
-    setBootstrap(prev => replaceBootstrapList(prev, "events", (prev.events || []).map(event => ({
-      ...event,
-      formIds: (event.formIds || []).filter(id => id !== formId),
-    }))));
+    setBootstrap(prev => removeFormIdFromEvents(prev, formId));
     return result;
   };
 
   const handleSaveResponse = async payload => {
     const result = await saveResponse(payload);
     setResponseDetails(prev => ({ ...prev, [payload.formId]: result.responses }));
-    setBootstrap(prev => replaceBootstrapList(prev, "forms", prev.forms.map(form => form.id === payload.formId
-      ? { ...form, metrics: { ...form.metrics, responses: result.responses.length } }
-      : form)));
+    setBootstrap(prev => updateBootstrapFormMetrics(prev, payload.formId, { responses: result.responses.length }));
   };
 
   const handleSaveEscala = async (formId, sections) => {
@@ -527,9 +519,7 @@ export default function App() {
     setBootstrap(prev => {
       const total = result.sections.reduce((sum, section) => sum + section.slots.length, 0);
       const filled = result.sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
-      return replaceBootstrapList(prev, "forms", prev.forms.map(form => form.id === formId
-        ? { ...form, metrics: { responses: filled, total, filled, pending: total - filled } }
-        : form));
+      return updateBootstrapFormMetrics(prev, formId, { responses: filled, total, filled, pending: total - filled });
     });
   };
 
@@ -540,9 +530,7 @@ export default function App() {
       setBootstrap(prev => {
         const total = result.sections.reduce((sum, section) => sum + section.slots.length, 0);
         const filled = result.sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
-        return replaceBootstrapList(prev, "forms", prev.forms.map(form => form.id === formId
-          ? { ...form, metrics: { responses: filled, total, filled, pending: total - filled } }
-          : form));
+        return updateBootstrapFormMetrics(prev, formId, { responses: filled, total, filled, pending: total - filled });
       });
       return result.sections;
     } catch (error) {

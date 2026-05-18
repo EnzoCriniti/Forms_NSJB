@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, replaceBootstrapList, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, sortBootstrapEventsByDateDesc, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {
@@ -74,5 +74,40 @@ describe("appBootstrap helpers", () => {
       message => message.id === 10,
     );
     expect(bootstrap.events[0].messages).toEqual([{ id: 11 }]);
+  });
+
+  it("atualiza as metricas de um formulario sem mexer nos demais", () => {
+    const bootstrap = updateBootstrapFormMetrics(
+      { forms: [{ id: 1, metrics: { responses: 2 } }, { id: 2, metrics: { responses: 0 } }] },
+      1,
+      { responses: 5, total: 8 },
+    );
+
+    expect(bootstrap.forms).toEqual([
+      { id: 1, metrics: { responses: 5, total: 8 } },
+      { id: 2, metrics: { responses: 0 } },
+    ]);
+  });
+
+  it("remove um formulario de todos os eventos vinculados", () => {
+    const bootstrap = removeFormIdFromEvents(
+      { events: [{ id: 1, formIds: [10, 11] }, { id: 2, formIds: [11, 12] }] },
+      11,
+    );
+
+    expect(bootstrap.events).toEqual([
+      { id: 1, formIds: [10] },
+      { id: 2, formIds: [12] },
+    ]);
+  });
+
+  it("ordena eventos por data mais recente e id", () => {
+    const events = sortBootstrapEventsByDateDesc([
+      { id: 1, date: "2026-05-01" },
+      { id: 3, date: "2026-05-03" },
+      { id: 2, date: "2026-05-03" },
+    ]);
+
+    expect(events.map(event => event.id)).toEqual([3, 2, 1]);
   });
 });

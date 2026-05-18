@@ -75,6 +75,29 @@ export const removeNestedBootstrapItem = (bootstrap, key, parentPredicate, child
   }));
 };
 
+export const sortBootstrapEventsByDateDesc = events => [...(Array.isArray(events) ? events : [])].sort(
+  (left, right) => String(right?.date || "").localeCompare(String(left?.date || "")) || Number(right?.id || 0) - Number(left?.id || 0),
+);
+
+export const updateBootstrapFormMetrics = (bootstrap, formId, metrics) => replaceBootstrapList(
+  bootstrap,
+  "forms",
+  (Array.isArray(bootstrap?.forms) ? bootstrap.forms : []).map(form => (
+    form.id === formId
+      ? { ...form, metrics: { ...(form.metrics || {}), ...metrics } }
+      : form
+  )),
+);
+
+export const removeFormIdFromEvents = (bootstrap, formId) => replaceBootstrapList(
+  bootstrap,
+  "events",
+  (Array.isArray(bootstrap?.events) ? bootstrap.events : []).map(event => ({
+    ...event,
+    formIds: (Array.isArray(event?.formIds) ? event.formIds : []).filter(id => id !== formId),
+  })),
+);
+
 export const pickActiveFormIdAfterBootstrap = ({
   currentFormId,
   currentUser,
