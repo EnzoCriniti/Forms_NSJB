@@ -20,6 +20,7 @@ Checklist incremental para reduzir arquivos grandes, separar responsabilidades e
 - [ ] `frontend/src/App.jsx`
   - separar shell, rotas e regras de sessao
   - extrair helpers de navegacao e acesso
+  - viewport de alto nivel extraida para `frontend/src/AppViewport.jsx`
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
   - etapa inicial e dados basicos extraidos para paineis compartilhados
   - revisar edicao de campos, modos e validacoes

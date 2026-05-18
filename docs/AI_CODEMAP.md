@@ -36,6 +36,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/App.jsx`
   Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile. Contas logadas respondem formularios pela tela interna `respond`; links publicos continuam em `#/formularios/<id>`.
+- `frontend/src/AppViewport.jsx`
+  Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e as telas internas apos o login.
 - `frontend/src/components/AppHeader.jsx`

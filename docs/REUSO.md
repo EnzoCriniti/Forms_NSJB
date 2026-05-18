@@ -19,6 +19,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Card reutilizavel da listagem de formularios com acoes e badges.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado que renderiza header global e telas internas apos o login.
+- `frontend/src/AppViewport.jsx`
+  Gate de alto nivel do app para login, publicos, loading e shell autenticado.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
