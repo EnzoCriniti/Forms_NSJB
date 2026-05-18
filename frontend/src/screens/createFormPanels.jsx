@@ -645,3 +645,81 @@ export const ResultsConfigPanel = ({
     )}
   </SurfacePanel>
 );
+
+export const FormFooterPanel = ({
+  format,
+  isEditingExistingForm,
+  saving,
+  hasError,
+  onOpenPresetModal,
+  onSubmit,
+  canSubmit,
+  presetModal,
+  presetName,
+  onPresetNameChange,
+  onSaveTemplate,
+  onClosePresetModal,
+  saveSuccess,
+  onCloseSaveSuccess,
+  onGoBack,
+  saveSuccessTitle,
+  saveSuccessMessage,
+  submitButtonLabel,
+  saveButtonLabel,
+  templateSummary,
+  templateDescription,
+  templateButtonLabel,
+}) => (
+  <>
+    <div className="create-form-footer-actions" style={{ display: "flex", gap: 10, justifyContent: "space-between", borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 16, flexWrap: "wrap" }}>
+      {!isEditingExistingForm && (
+        <Btn v="secondary" icon="save" onClick={onOpenPresetModal}>{templateButtonLabel}</Btn>
+      )}
+      <Btn icon="check" onClick={onSubmit} disabled={!canSubmit} loading={saving}>{saving ? "Salvando..." : submitButtonLabel}</Btn>
+    </div>
+    {hasError && (
+      <div style={{ marginTop: 12, background: COLORS.dangerLight, border: `1px solid ${COLORS.danger}`, borderRadius: 10, padding: "10px 14px", fontSize: 12, color: COLORS.danger }}>
+        {hasError}
+      </div>
+    )}
+
+    {!isEditingExistingForm && presetModal && (
+      <div className="modal-backdrop">
+        <div className="modal-card" style={{ width: 420 }}>
+          <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>Salvar como Template</h3>
+          <p style={{ margin: "0 0 6px", fontSize: 12, color: COLORS.textSecondary }}>
+            {templateSummary}
+          </p>
+          <div style={{ background: COLORS.surfaceAlt, borderRadius: 8, padding: "8px 12px", marginBottom: 14, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.6 }}>
+            <strong style={{ color: COLORS.text }}>O template vai salvar:</strong>{" "}
+            {templateDescription}
+          </div>
+          <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Nome do template</label>
+          <input value={presetName} onChange={onPresetNameChange} placeholder="Ex: Sessao de Escala Padrao" style={{ ...fieldStyle, marginBottom: 16 }} autoFocus onKeyDown={event => { if (event.key === "Enter") onSaveTemplate(); }} />
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+            <Btn v="secondary" onClick={onClosePresetModal}>Cancelar</Btn>
+            <Btn icon="save" onClick={onSaveTemplate} disabled={!presetName.trim()}>Salvar Template</Btn>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {saveSuccess && (
+      <div className="modal-backdrop">
+        <div className="modal-card" style={{ width: 420 }}>
+          <h3 style={{ margin: "0 0 6px", fontSize: 16 }}>{saveSuccessTitle}</h3>
+          <p style={{ margin: "0 0 18px", fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>
+            {saveSuccessMessage}
+          </p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+            <Btn icon="check" onClick={onCloseSaveSuccess}>
+              {saveButtonLabel}
+            </Btn>
+          </div>
+        </div>
+      </div>
+    )}
+  </>
+);
+
+const fieldStyle = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };

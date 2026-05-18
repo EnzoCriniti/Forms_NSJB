@@ -98,7 +98,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario: defaults, presets, normalizacao de base e sincronizacao de resultados.
 - `frontend/src/screens/createFormPanels.jsx`
-  Painéis compartilhados da criacao de formulario: etapa inicial, dados basicos, modo, editor de campo, escala, lista de campos e resultados.
+  Painéis compartilhados da criacao de formulario: etapa inicial, dados basicos, modo, editor de campo, escala, lista de campos, resultados e rodape.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/features/admin/adminAccessPanels.jsx`

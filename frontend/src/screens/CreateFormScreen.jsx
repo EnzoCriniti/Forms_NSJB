@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Icon, Btn, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { FieldEditorPanel, FormBasicsPanel, FormModePanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
+import { FieldEditorPanel, FormBasicsPanel, FormFooterPanel, FormModePanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
 import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
@@ -177,6 +177,12 @@ export const CreateFormScreen = ({
     () => fields.filter(isMembersSelectionField).length,
     [fields],
   );
+  const templateSummary = format === "escala_organ"
+    ? `Salvando ${scaleDraft.length} secoes como template reutilizavel.`
+    : `Salvando ${fields.length} campos como template reutilizavel.`;
+  const templateDescription = format === "presenca"
+    ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes."
+    : "secoes da escala, descricao, texto de fechamento e classificacoes.";
   const selectedCatalogItem = useMemo(
     () => nFieldMode === "catalog"
       ? filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId))
@@ -680,60 +686,33 @@ export const CreateFormScreen = ({
         </>
       )}
 
-      <div className="create-form-footer-actions" style={{ display: "flex", gap: 10, justifyContent: "space-between", borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 16, flexWrap: "wrap" }}>
-        {!isEditingExistingForm && (
-          <Btn v="secondary" icon="save" onClick={() => setPresetModal(true)}>Salvar como Template</Btn>
-        )}
-        <Btn icon="check" onClick={() => submitForm(status)} disabled={!formTitle.trim()} loading={saving}>{saving ? "Salvando..." : `${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulario"}`}</Btn>
-      </div>
-      {saveError && (
-        <div style={{ marginTop: 12, background: COLORS.dangerLight, border: `1px solid ${COLORS.danger}`, borderRadius: 10, padding: "10px 14px", fontSize: 12, color: COLORS.danger }}>
-          {saveError}
-        </div>
-      )}
-
-      {!isEditingExistingForm && presetModal && (
-        <div className="modal-backdrop">
-          <div className="modal-card" style={{ width: 420 }}>
-            <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>Salvar como Template</h3>
-            <p style={{ margin: "0 0 6px", fontSize: 12, color: COLORS.textSecondary }}>
-              Salvando {format === "escala_organ" ? `${scaleDraft.length} secoes` : `${fields.length} campos`} como template reutilizavel.
-            </p>
-            <div style={{ background: COLORS.surfaceAlt, borderRadius: 8, padding: "8px 12px", marginBottom: 14, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.6 }}>
-              <strong style={{ color: COLORS.text }}>O template vai salvar:</strong>{" "}
-              {format === "presenca" ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes." : "secoes da escala, descricao, texto de fechamento e classificacoes."}
-            </div>
-            <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Nome do template</label>
-            <input value={presetName} onChange={event => setPresetName(event.target.value)} placeholder="Ex: Sessao de Escala Padrao" style={{ ...inp, marginBottom: 16 }} autoFocus onKeyDown={event => { if (event.key === "Enter") saveAsTemplate(); }} />
-            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-              <Btn v="secondary" onClick={() => { setPresetModal(false); setPresetName(""); }}>Cancelar</Btn>
-              <Btn icon="save" onClick={saveAsTemplate} disabled={!presetName.trim()}>Salvar Template</Btn>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {saveSuccess && (
-        <div className="modal-backdrop">
-          <div className="modal-card" style={{ width: 420 }}>
-            <h3 style={{ margin: "0 0 6px", fontSize: 16 }}>{saveSuccess.title}</h3>
-            <p style={{ margin: "0 0 18px", fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>
-              {saveSuccess.message}
-            </p>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <Btn
-                icon="check"
-                onClick={() => {
-                  setSaveSuccess(null);
-                  goBack();
-                }}
-              >
-                {event ? "Voltar para o evento" : "Voltar para Formularios"}
-              </Btn>
-            </div>
-          </div>
-        </div>
-      )}
+      <FormFooterPanel
+        format={format}
+        isEditingExistingForm={isEditingExistingForm}
+        saving={saving}
+        hasError={saveError}
+        onOpenPresetModal={() => setPresetModal(true)}
+        onSubmit={() => submitForm(status)}
+        canSubmit={Boolean(formTitle.trim())}
+        presetModal={presetModal}
+        presetName={presetName}
+        onPresetNameChange={event => setPresetName(event.target.value)}
+        onSaveTemplate={saveAsTemplate}
+        onClosePresetModal={() => { setPresetModal(false); setPresetName(""); }}
+        saveSuccess={saveSuccess}
+        onCloseSaveSuccess={() => {
+          setSaveSuccess(null);
+          goBack();
+        }}
+        onGoBack={goBack}
+        saveSuccessTitle={saveSuccess?.title}
+        saveSuccessMessage={saveSuccess?.message}
+        submitButtonLabel={`${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulario"}`}
+        saveButtonLabel={event ? "Voltar para o evento" : "Voltar para Formularios"}
+        templateSummary={templateSummary}
+        templateDescription={templateDescription}
+        templateButtonLabel="Salvar como Template"
+      />
       </>
       )}
     </div>
