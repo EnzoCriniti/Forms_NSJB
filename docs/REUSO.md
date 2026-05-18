@@ -101,6 +101,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Planilha de resultados, totalizacao e filtro de grau.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Resposta publica e modo interno.
+- `frontend/src/screens/publicFormPanels.jsx`
+  Cabeçalho, avisos e modal compartilhados do fluxo publico e interno de resposta.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Escala publica e modo interno.
 - `frontend/src/lib/appShell.js`

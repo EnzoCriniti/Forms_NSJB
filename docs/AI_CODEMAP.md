@@ -131,6 +131,8 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
   No modo interno, usa apenas um topo leve de contexto e nao expõe atalho visual para resultados.
+- `frontend/src/screens/publicFormPanels.jsx`
+  Blocos compartilhados do fluxo publico e interno de resposta: cabeçalho, aviso de erro, aviso de edição, sucesso e modal de edição.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Renderiza a escala publica e tambem o modo interno `variant="internal"` para contas logadas.
 - `frontend/src/components/ui.jsx`
