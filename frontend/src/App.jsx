@@ -5,9 +5,6 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, ClosedPublicScreen } from "./components/ui";
-import { AppStatusScreen } from "./components/AppStatusScreen";
-import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
 import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
@@ -53,17 +50,11 @@ import {
   deletePersonPreset,
   saveEventMessage,
 } from "./lib/api";
-import { ResultsScreen } from "./screens/ResultsScreen";
-import { PublicFormScreen } from "./screens/PublicFormScreen";
-import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
-import { AppShellContent } from "./AppShellContent";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
 import {
   buildDuplicateFormDraft,
   buildSaveFormPayloadFromExisting,
-  buildPublicFormPath,
-  buildPublicFormResultsPath,
   clampFontScale,
   FONT_SCALE_STEP,
   getPublicRouteFromLocation,
