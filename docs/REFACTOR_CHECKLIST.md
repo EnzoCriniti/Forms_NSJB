@@ -14,6 +14,9 @@ Checklist incremental para reduzir arquivos grandes, separar responsabilidades e
 - [x] `frontend/src/screens/createFormPanels.jsx`
 - [x] `frontend/src/screens/createFormDomain.js`
 - [x] `frontend/src/screens/resultsPanels.jsx`
+- [x] `frontend/src/features/admin/MessagingSettingsPanel.jsx`
+- [x] `frontend/src/screens/PublicFormScreen.jsx`
+- [x] `frontend/src/screens/PublicEscalaScreen.jsx`
 
 ## Proximos passos
 
@@ -25,14 +28,8 @@ Checklist incremental para reduzir arquivos grandes, separar responsabilidades e
   - etapa inicial e dados basicos extraidos para paineis compartilhados
   - revisar edicao de campos, modos e validacoes
   - mover blocos restantes para subcomponentes
-- [ ] `frontend/src/features/admin/MessagingSettingsPanel.jsx`
-  - dividir configuracao global, modelos e presets
 - [ ] `frontend/src/screens/ResultsScreen.jsx`
   - revisar controle de planilha, filtros e exportacao
-- [ ] `frontend/src/screens/PublicFormScreen.jsx`
-  - separar layout interno/publico e componentes repetidos
-- [ ] `frontend/src/screens/PublicEscalaScreen.jsx`
-  - alinhar com o mesmo padrao do formulario publico
 - [ ] Testes por dominio
   - adicionar/ajustar suites quando cada etapa for concluida
 

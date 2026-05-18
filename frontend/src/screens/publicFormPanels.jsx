@@ -1,5 +1,5 @@
 import React from "react";
-import { COLORS, Btn, FeedbackBanner, Icon, PublicTopCompact, ScreenHeader } from "../components/ui";
+import { COLORS, Btn, FeedbackBanner, Icon } from "../components/ui";
 import { PublicScreenFrame, PublicScreenHeader, PublicScreenLayout } from "./publicScreenFrame";
 
 export const PublicResponseSuccessPanel = ({ isInternal, form, onBack, resultsHref, readingControls, editing }) => (
@@ -27,20 +27,17 @@ export const PublicResponseSuccessPanel = ({ isInternal, form, onBack, resultsHr
 );
 
 export const PublicResponseHeader = ({ isInternal, form, onBack, resultsHref, readingControls, subtitle }) => (
-  <>
-    {isInternal ? (
-      <ScreenHeader
-        className="internal-response-header"
-        title={form?.title || "Formulario"}
-        subtitle={form.description || subtitle || "Preencha o formulario abaixo."}
-        titleStyle={{ color: COLORS.text }}
-        subtitleStyle={{ color: COLORS.textMuted }}
-        marginBottom={14}
-      />
-    ) : (
-      <PublicTopCompact form={form} onBack={onBack} description={form.description || subtitle || "Preencha o formulário abaixo."} actionLabel={resultsHref ? "Resultados" : ""} actionHref={resultsHref} readingControls={readingControls} />
-    )}
-  </>
+  <PublicScreenHeader
+    isInternal={isInternal}
+    form={form}
+    onBack={onBack}
+    titleFallback="Formulario"
+    internalSubtitle={form.description || subtitle || "Preencha o formulario abaixo."}
+    publicDescription={form.description || subtitle || "Preencha o formulario abaixo."}
+    actionLabel={resultsHref ? "Resultados" : ""}
+    actionHref={resultsHref}
+    readingControls={readingControls}
+  />
 );
 
 export const PublicResponseErrorBanner = ({ submitError }) => (

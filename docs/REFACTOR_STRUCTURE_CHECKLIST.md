@@ -23,6 +23,9 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
   - top, modo, tipo inicial e dados basicos movidos para `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   - lista de campos e editor movidos para `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   - escala, resultados e rodape movidos para `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
+- [x] `frontend/src/screens/PublicFormScreen.jsx` e `frontend/src/screens/PublicEscalaScreen.jsx`
+  - estrutura interna/publica alinhada em `frontend/src/screens/publicScreenFrame.jsx`
+  - container, cabecalho e moldura principal compartilhados entre formulario e escala
 - [ ] `frontend/src/screens/createFormPanels.jsx` - restante
   - revisar duplicacao entre preview, escala, resultados e rodape
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
@@ -36,9 +39,6 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 - [ ] `frontend/src/components/ui.jsx`
   - identificar componentes genericos que podem sair para arquivos menores
   - unificar wrappers visuais repetidos
-- [ ] `frontend/src/screens/PublicFormScreen.jsx` e `frontend/src/screens/PublicEscalaScreen.jsx`
-  - alinhar estrutura interna/publica
-  - unificar seletores, modais e cabecalhos compartilhados
 - [ ] `frontend/src/screens/ResultsScreen.jsx` e `frontend/src/screens/resultsPanels.jsx`
   - revisar se ainda existe duplicacao entre planilha, filtros e totalizacao
 - [ ] `frontend/src/features/admin/*`
