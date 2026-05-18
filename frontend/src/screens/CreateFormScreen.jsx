@@ -33,6 +33,7 @@ import {
   buildCreateFormDerivedState,
   buildFieldTypeTransition,
   buildCreateFormFormatSelectionState,
+  buildCreateFormSaveOutcome,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
   moveItem,
@@ -365,12 +366,7 @@ export const CreateFormScreen = ({
         scaleDraft,
         linkedPeopleField,
       }));
-      setSaveSuccess({
-        title: form && !isDuplicateMode ? "Formulario alterado com sucesso" : "Formulario salvo com sucesso",
-        message: form && !isDuplicateMode
-          ? "As alteracoes foram gravadas e ja estao disponiveis na listagem."
-          : "O formulario foi salvo e ja esta disponivel na listagem.",
-      });
+      setSaveSuccess(buildCreateFormSaveOutcome({ form, isDuplicateMode }));
     } catch (error) {
       setSaveError(resolveActionErrorMessage(error));
     } finally {

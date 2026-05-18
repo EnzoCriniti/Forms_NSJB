@@ -6,6 +6,7 @@ import {
   buildCreateFormPayload,
   buildCreateFormModeTransition,
   buildCreateFormTemplateState,
+  buildCreateFormSaveOutcome,
   buildCreateFormTemplatePayload,
   buildFieldDraftDefaults,
   buildFieldDraftFromCatalogItem,
@@ -206,5 +207,16 @@ describe("createFormDomain", () => {
     expect(nextState.fields).toHaveLength(2);
     expect(nextState.resultsConfig.formMode).toBe(FORM_MODES.NUCLEO);
     expect(nextState.closingText).toBe("Fecha");
+  });
+
+  it("monta a mensagem de sucesso do salvamento de forma consistente", () => {
+    expect(buildCreateFormSaveOutcome({ form: null, isDuplicateMode: false })).toEqual({
+      title: "Formulario salvo com sucesso",
+      message: "O formulario foi salvo e ja esta disponivel na listagem.",
+    });
+    expect(buildCreateFormSaveOutcome({ form: { id: 1 }, isDuplicateMode: false })).toEqual({
+      title: "Formulario alterado com sucesso",
+      message: "As alteracoes foram gravadas e ja estao disponiveis na listagem.",
+    });
   });
 });

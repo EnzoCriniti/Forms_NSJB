@@ -332,6 +332,13 @@ export const buildCreateFormFormatSelectionState = nextFormat => {
   };
 };
 
+export const buildCreateFormSaveOutcome = ({ form, isDuplicateMode = false }) => ({
+  title: form && !isDuplicateMode ? "Formulario alterado com sucesso" : "Formulario salvo com sucesso",
+  message: form && !isDuplicateMode
+    ? "As alteracoes foram gravadas e ja estao disponiveis na listagem."
+    : "O formulario foi salvo e ja esta disponivel na listagem.",
+});
+
 export const buildPresetTitle = (format, event) => {
   const eventDate = event?.date ? ` - ${formatDate(event.date)}` : "";
   if (format === "presenca") {
