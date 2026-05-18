@@ -1,4 +1,4 @@
-# Refactor Structure Checklist
+﻿# Refactor Structure Checklist
 
 Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplicacoes de UI e regra.
 
@@ -22,10 +22,9 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 - [x] `frontend/src/screens/createFormPanels.jsx`
   - top, modo, tipo inicial e dados basicos movidos para `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   - lista de campos e editor movidos para `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
+  - escala, resultados e rodape movidos para `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
 - [ ] `frontend/src/screens/createFormPanels.jsx` - restante
-  - quebrar em subcomponentes por area funcional
   - revisar duplicacao entre preview, escala, resultados e rodape
-- [ ] `frontend/src/screens/CreateFormScreen.jsx`
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
   - reduzir orquestracao remanescente
   - remover qualquer regra que ainda possa viver no dominio

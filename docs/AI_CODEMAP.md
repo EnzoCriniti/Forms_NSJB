@@ -1,4 +1,4 @@
-# AI Code Map
+﻿# AI Code Map
 
 Mapa curto das areas mais mexidas por agentes.
 
@@ -108,15 +108,19 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor, estado do editor de campo, montagem/merge de campos, payload final e sincronizacao de resultados.
 - `frontend/src/screens/createFormPanels.jsx`
-  Pain�is compartilhados da criacao de formulario: pre-visualizacao, escala, resultados e rodape.
-  Este arquivo agora funciona como barramento para os paineis iniciais e de campos em arquivos separados.
-  A pre-visualizacao publica tambem ficou isolada em `FormPreviewPanel`.
+  Barramento dos paineis reutilizaveis da criacao de formulario.
+  Este arquivo agora expõe apenas a pre-visualizacao publica e reexporta os demais blocos por dominio.
   Os paineis iniciais ficaram em `frontend/src/features/forms/createFormPanels/setupPanels.jsx`.
   Os paineis de lista e editor de campos ficaram em `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`.
+  Os paineis finais de escala, resultados e rodape ficaram em `frontend/src/features/forms/createFormPanels/finalPanels.jsx`.
   A lista de campos usa `FormFieldRow` para cada item e `ResultsTotalRow` para cada total configurado.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
+  Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
+- `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
+  Paineis finais da criacao de formulario: escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
+- `frontend/src/features/admin/AdminSettingsModal.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
@@ -125,7 +129,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   Componentes compartilhados para usuarios e bases externas fora do modal principal.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
-  Componentes compartilhados da aba de catalogos administrativos, com formulários e listas de campos e tarefas.
+  Componentes compartilhados da aba de catalogos administrativos, com formulÃ¡rios e listas de campos e tarefas.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
   Componentes compartilhados das classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
@@ -151,11 +155,11 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers puros da planilha de resultados: ordenacao de grau, filtros ativos, estatisticas e formatacao.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
-  No modo interno, usa apenas um topo leve de contexto e nao expõe atalho visual para resultados.
+  No modo interno, usa apenas um topo leve de contexto e nao expÃµe atalho visual para resultados.
 - `frontend/src/screens/publicFormDomain.js`
   Helpers puros do fluxo publico: opcoes de selecao de pessoa e busca de resposta existente.
 - `frontend/src/screens/publicFormPanels.jsx`
-  Blocos compartilhados do fluxo publico e interno de resposta: cabeçalho, aviso de erro, aviso de edição, sucesso e modal de edição.
+  Blocos compartilhados do fluxo publico e interno de resposta: cabeÃ§alho, aviso de erro, aviso de ediÃ§Ã£o, sucesso e modal de ediÃ§Ã£o.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Renderiza a escala publica e tambem o modo interno `variant="internal"` para contas logadas.
 - `frontend/src/screens/publicScaleDomain.js`
