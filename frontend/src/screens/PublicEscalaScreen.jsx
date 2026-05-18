@@ -6,6 +6,7 @@
 
 import React, { useState } from "react";
 import { COLORS, Btn, FeedbackBanner, PublicTopCompact, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { PublicScaleSignupModal } from "./publicScalePanels";
 import { getScalePersonLimit } from "../lib/forms";
 
 export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
@@ -90,16 +91,16 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
         </div>
       </div>
       {selSlot && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 }}>
-          <div style={{ background: COLORS.surface, borderRadius: 16, padding: 24, width: 420, maxWidth: "100%" }}>
-            <h3 style={{ margin: "0 0 6px" }}>Preencher vaga</h3>
-            <p style={{ margin: "0 0 16px", fontSize: 13, color: COLORS.textSecondary }}><strong>{sections[selSlot.si].title}</strong> - {sections[selSlot.si].slots[selSlot.sli].role}</p>
-            <select value={signName} onChange={event => setSignName(event.target.value)} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, marginBottom: 16 }}>
-              <option value="">Selecione seu nome...</option>{names.map(name => <option key={name} value={name}>{name}</option>)}
-            </select>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}><Btn v="secondary" onClick={() => setSelSlot(null)} disabled={saving}>Cancelar</Btn><Btn icon="check" disabled={!signName} onClick={signup} loading={saving}>Confirmar</Btn></div>
-          </div>
-        </div>
+        <PublicScaleSignupModal
+          sectionTitle={sections[selSlot.si].title}
+          slotRole={sections[selSlot.si].slots[selSlot.sli].role}
+          names={names}
+          signName={signName}
+          onChangeSignName={setSignName}
+          onCancel={() => setSelSlot(null)}
+          onConfirm={signup}
+          saving={saving}
+        />
       )}
     </div>
   );

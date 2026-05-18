@@ -106,6 +106,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Cabeçalho, avisos e modal compartilhados do fluxo publico e interno de resposta.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Escala publica e modo interno.
+- `frontend/src/screens/publicScalePanels.jsx`
+  Modal reutilizavel de inscricao na escala publica.
 - `frontend/src/lib/appShell.js`
   Caminhos publicos canonicos e helpers de navegacao publica.
 
