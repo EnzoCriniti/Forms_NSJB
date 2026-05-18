@@ -41,7 +41,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e as telas internas apos o login.
 - `frontend/src/lib/appBootstrap.js`
-  Helpers puros do bootstrap inicial do frontend, incluindo normalizacao do payload, selecao do formulario ativo e operacoes reutilizaveis de lista no estado.
+  Helpers puros do bootstrap inicial do frontend, incluindo normalizacao do payload, selecao do formulario ativo e operacoes reutilizaveis de lista e listas aninhadas no estado.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.

@@ -10,7 +10,7 @@ import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, replaceBootstrapList, upsertBootstrapListItem } from "./lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, replaceBootstrapList, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -635,17 +635,7 @@ export default function App() {
 
   const handleSaveEventMessage = async (eventId, payload) => {
     const result = await saveEventMessage(eventId, payload);
-    setBootstrap(prev => ({
-      ...prev,
-      events: (prev.events || []).map(event => {
-        if (event.id !== eventId) return event;
-        const existing = event.messages || [];
-        const next = payload?.id
-          ? existing.map(item => item.id === result.message.id ? result.message : item)
-          : [result.message, ...existing];
-        return { ...event, messages: next };
-      }),
-    }));
+    setBootstrap(prev => upsertNestedBootstrapItem(prev, "events", event => event.id === eventId, "messages", result.message, { prepend: !payload?.id }));
     return result.message;
   };
 
@@ -662,26 +652,11 @@ export default function App() {
   };
 
   const applyMessageUpdate = updated => {
-    setBootstrap(prev => ({
-      ...prev,
-      events: (prev.events || []).map(event => {
-        if (event.id !== updated.eventId) return event;
-        return {
-          ...event,
-          messages: (event.messages || []).map(item => item.id === updated.id ? updated : item),
-        };
-      }),
-    }));
+    setBootstrap(prev => upsertNestedBootstrapItem(prev, "events", event => event.id === updated.eventId, "messages", updated));
   };
 
   const applyMessageDeletion = messageId => {
-    setBootstrap(prev => ({
-      ...prev,
-      events: (prev.events || []).map(event => ({
-        ...event,
-        messages: (event.messages || []).filter(item => item.id !== messageId),
-      })),
-    }));
+    setBootstrap(prev => removeNestedBootstrapItem(prev, "events", () => true, "messages", item => item.id === messageId));
   };
 
   const handleSyncMembersConfig = async () => {

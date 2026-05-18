@@ -51,6 +51,30 @@ export const removeBootstrapListItem = (bootstrap, key, predicate) => {
   return replaceBootstrapList(bootstrap, key, list.filter(item => !predicate(item)));
 };
 
+export const upsertNestedBootstrapItem = (bootstrap, key, parentPredicate, childKey, item, { prepend = false } = {}) => {
+  const list = Array.isArray(bootstrap?.[key]) ? bootstrap[key] : [];
+  return replaceBootstrapList(bootstrap, key, list.map(parent => {
+    if (!parentPredicate(parent)) return parent;
+    const currentChildren = Array.isArray(parent?.[childKey]) ? parent[childKey] : [];
+    const index = currentChildren.findIndex(current => String(current?.id) === String(item?.id));
+    const nextChildren = index >= 0
+      ? currentChildren.map((current, currentIndex) => currentIndex === index ? item : current)
+      : prepend
+        ? [item, ...currentChildren]
+        : [...currentChildren, item];
+    return { ...parent, [childKey]: nextChildren };
+  }));
+};
+
+export const removeNestedBootstrapItem = (bootstrap, key, parentPredicate, childKey, childPredicate) => {
+  const list = Array.isArray(bootstrap?.[key]) ? bootstrap[key] : [];
+  return replaceBootstrapList(bootstrap, key, list.map(parent => {
+    if (!parentPredicate(parent)) return parent;
+    const currentChildren = Array.isArray(parent?.[childKey]) ? parent[childKey] : [];
+    return { ...parent, [childKey]: currentChildren.filter(item => !childPredicate(item)) };
+  }));
+};
+
 export const pickActiveFormIdAfterBootstrap = ({
   currentFormId,
   currentUser,
