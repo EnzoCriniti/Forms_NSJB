@@ -139,6 +139,8 @@ Mapa curto das areas mais mexidas por agentes.
   Renderiza a escala publica e tambem o modo interno `variant="internal"` para contas logadas.
 - `frontend/src/screens/publicScalePanels.jsx`
   Modal compartilhado de inscricao na escala publica, separado da tela principal.
+- `frontend/src/screens/PublicEscalaScreen.jsx`
+  Fluxo publico da escala agora usa paineis reutilizaveis para metricas e lista de vagas.
 - `frontend/src/components/ui.jsx`
   Toolbar de leitura das telas publicas, com ajuste de fonte, troca de tema persistidos no navegador e botao de voltar reutilizavel.
 - `frontend/src/styles.css`

@@ -6,7 +6,7 @@
 
 import React, { useState } from "react";
 import { COLORS, Btn, FeedbackBanner, PublicTopCompact, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
-import { PublicScaleSignupModal } from "./publicScalePanels";
+import { PublicScaleMetricsPanel, PublicScaleSectionsPanel, PublicScaleSignupModal } from "./publicScalePanels";
 import { getScalePersonLimit } from "../lib/forms";
 
 export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
@@ -69,26 +69,9 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
         <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />
       )}
       <div className={isInternal ? "internal-response-card" : "public-response-card public-scale-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : undefined, border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: 18 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>
-          <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div><strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong></div>
-          <div className="public-scale-metric" style={{ background: COLORS.dangerLight, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Pendentes</div><strong style={{ fontSize: 24, color: COLORS.danger }}>{total - filled}</strong></div>
-          <div className="public-scale-metric" style={{ background: COLORS.surfaceAlt, borderRadius: 10, padding: 12 }}><div style={{ fontSize: 11, color: COLORS.textSecondary }}>Total</div><strong style={{ fontSize: 24, color: COLORS.textSecondary }}>{total}</strong></div>
-        </div>
-        <p style={{ margin: "0 0 14px", color: COLORS.textSecondary, fontSize: 13 }}>Escolha uma vaga pendente para preencher seu nome. Cada nome pode ocupar ate {scaleLimit} vaga{scaleLimit !== 1 ? "s" : ""} nesta escala.</p>
+        <PublicScaleMetricsPanel filled={filled} pending={total - filled} total={total} scaleLimit={scaleLimit} />
         {error && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="error" message={error} /></div>}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {sections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="public-scale-section" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden" }}>
-              <div style={{ background: section.color, padding: "9px 14px", fontWeight: 800, fontSize: 13 }}>{section.title}</div>
-              {section.slots.map((slot, slotIndex) => (
-                <button key={slotIndex} disabled={!!slot.person} onClick={() => setSelSlot({ si: sectionIndex, sli: slotIndex })} style={{ width: "100%", border: "none", borderBottom: `1px solid ${COLORS.borderLight}`, background: slot.person ? COLORS.surfaceAlt : COLORS.surface, padding: "10px 14px", display: "flex", justifyContent: "space-between", gap: 10, cursor: slot.person ? "not-allowed" : "pointer", color: COLORS.text, textAlign: "left" }}>
-                  <strong style={{ minWidth: 100 }}>{slot.role}</strong>
-                  <span style={{ color: slot.person ? COLORS.textSecondary : COLORS.primary, fontWeight: slot.person ? 500 : 800 }}>{slot.person || "Pendente"}</span>
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
+        <PublicScaleSectionsPanel sections={sections} onPickSlot={(sectionIndex, slotIndex) => setSelSlot({ si: sectionIndex, sli: slotIndex })} />
       </div>
       {selSlot && (
         <PublicScaleSignupModal

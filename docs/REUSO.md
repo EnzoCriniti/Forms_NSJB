@@ -109,6 +109,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Escala publica e modo interno.
 - `frontend/src/screens/publicScalePanels.jsx`
   Modal reutilizavel de inscricao na escala publica.
+- `frontend/src/screens/PublicEscalaScreen.jsx`
+  Agora usa paineis reutilizaveis para metricas e lista de vagas.
 - `frontend/src/lib/appShell.js`
   Caminhos publicos canonicos e helpers de navegacao publica.
 
