@@ -108,7 +108,7 @@ Mapa curto das areas mais mexidas por agentes.
   No modo `nucleo`, o campo principal da base central de socios entra como base obrigatoria; no modo `geral`, essa base central fica bloqueada.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/createFormDomain.js`
-  Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor e de duplicacao, estado e transicoes do draft de campo, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
+  Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor e de duplicacao, estado e transicoes do draft de campo, patches de escala, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
 - `frontend/src/screens/createFormPanels.jsx`
   Barramento dos paineis reutilizaveis da criacao de formulario.
   Este arquivo agora apenas reexporta os blocos por dominio.

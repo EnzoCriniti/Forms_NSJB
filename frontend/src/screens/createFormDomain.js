@@ -417,6 +417,19 @@ export const updateScaleSection = (sections, index, patch) => sections.map((sect
 
 export const appendScaleSection = sections => [...sections, createLocalScaleSection()];
 
+export const buildScaleModePatch = mode => (
+  mode === "local"
+    ? { source: "local", catalogTaskId: "", catalogKey: "", catalogName: "" }
+    : { source: "catalog" }
+);
+
+export const buildScaleCatalogPatch = (catalogId, activeScaleTaskCatalog = []) => {
+  const catalogItem = activeScaleTaskCatalog.find(item => String(item.id) === String(catalogId));
+  return catalogItem
+    ? { source: "catalog", catalogTaskId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name, title: catalogItem.defaultLabel }
+    : { source: "catalog", catalogTaskId: "", catalogKey: "", catalogName: "" };
+};
+
 export const updateListItemAtIndex = (items, index, value) => items.map((item, itemIndex) => (
   itemIndex === index ? value : item
 ));

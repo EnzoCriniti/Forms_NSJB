@@ -39,6 +39,8 @@ import {
   removeFieldById,
   updateScaleSection,
   appendScaleSection,
+  buildScaleModePatch,
+  buildScaleCatalogPatch,
   updateListItemAtIndex,
   removeListItemAtIndex,
   appendListItem,
@@ -294,14 +296,11 @@ export const CreateFormScreen = ({
   };
 
   const setScaleMode = (index, mode) => {
-    updateScale(index, mode === "local" ? { source: "local", catalogTaskId: "", catalogKey: "", catalogName: "" } : { source: "catalog" });
+    updateScale(index, buildScaleModePatch(mode));
   };
 
   const applyScaleCatalog = (index, catalogId) => {
-    const catalogItem = activeScaleTaskCatalog.find(item => String(item.id) === String(catalogId));
-    updateScale(index, catalogItem
-      ? { source: "catalog", catalogTaskId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name, title: catalogItem.defaultLabel }
-      : { source: "catalog", catalogTaskId: "", catalogKey: "", catalogName: "" });
+    updateScale(index, buildScaleCatalogPatch(catalogId, activeScaleTaskCatalog));
   };
 
   const applyTemplate = templateId => {

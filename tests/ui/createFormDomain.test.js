@@ -8,6 +8,8 @@ import {
   buildCreateFormTemplateState,
   buildCreateFormSaveOutcome,
   buildCreateFormTemplatePayload,
+  buildScaleCatalogPatch,
+  buildScaleModePatch,
   buildFieldDraftDefaults,
   buildAppliedCatalogFieldDraft,
   buildFieldDraftFromCatalogItem,
@@ -299,5 +301,17 @@ describe("createFormDomain", () => {
     expect(removeListItemAtIndex(["A", "B"], 0)).toEqual(["B"]);
     expect(appendListItem(["A"], "B")).toEqual(["A", "B"]);
     expect(addTotalLayoutField([], { id: 7, type: "yes_no" })).toEqual([{ fieldId: 7, style: "split" }]);
+  });
+
+  it("monta patches de escala para modo e catalogo", () => {
+    expect(buildScaleModePatch("local")).toEqual({ source: "local", catalogTaskId: "", catalogKey: "", catalogName: "" });
+    expect(buildScaleModePatch("catalog")).toEqual({ source: "catalog" });
+    expect(buildScaleCatalogPatch(2, [{ id: 2, key: "som", name: "Som", defaultLabel: "Mesa de som" }])).toEqual({
+      source: "catalog",
+      catalogTaskId: 2,
+      catalogKey: "som",
+      catalogName: "Som",
+      title: "Mesa de som",
+    });
   });
 });
