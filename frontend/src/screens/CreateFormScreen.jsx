@@ -21,6 +21,9 @@ import {
   createDefaultScaleSections,
   createLocalScaleSection,
   buildCreateFormInitialState,
+  buildFieldDraftDefaults,
+  buildFieldDraftFromExistingField,
+  buildFieldDraftFromCatalogItem,
   ensurePrimaryMembersField,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
@@ -224,17 +227,18 @@ export const CreateFormScreen = ({
   const addGridCol = () => setNGridCols([...nGridCols, ""]);
 
   const resetFieldDraft = () => {
-    setEditingFieldId(null);
-    setNType("yes_no");
-    setNFieldMode("local");
-    setNCatalogId("");
-    setNLabel("");
-    setNRequired(false);
-    setNPersonRole(hasPrimaryLinkedField ? "secondary" : "primary");
-    setNGridRows(DEFAULT_GRID_ROWS);
-    setNGridCols(DEFAULT_GRID_COLS);
-    setNValidation({});
-    setAddOpen(false);
+    const draft = buildFieldDraftDefaults({ hasPrimaryLinkedField });
+    setEditingFieldId(draft.editingFieldId);
+    setNType(draft.nType);
+    setNFieldMode(draft.nFieldMode);
+    setNCatalogId(draft.nCatalogId);
+    setNLabel(draft.nLabel);
+    setNRequired(draft.nRequired);
+    setNPersonRole(draft.nPersonRole);
+    setNGridRows(draft.nGridRows);
+    setNGridCols(draft.nGridCols);
+    setNValidation(draft.nValidation);
+    setAddOpen(draft.addOpen);
   };
 
   const openNewFieldDraft = () => {
@@ -246,17 +250,18 @@ export const CreateFormScreen = ({
   };
 
   const startEditField = field => {
-    setEditingFieldId(field.id);
-    setNType(field.type);
-    setNFieldMode(field.catalogFieldId ? "catalog" : "local");
-    setNCatalogId(field.catalogFieldId || "");
-    setNLabel(field.label);
-    setNRequired(Boolean(field.required));
-    setNPersonRole(isMembersSelectionField(field) ? (getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary") : "secondary");
-    setNGridRows(field.gridRows?.length ? field.gridRows : DEFAULT_GRID_ROWS);
-    setNGridCols(field.gridCols?.length ? field.gridCols : DEFAULT_GRID_COLS);
-    setNValidation(field.validation || {});
-    setAddOpen(true);
+    const draft = buildFieldDraftFromExistingField(field, { fields });
+    setEditingFieldId(draft.editingFieldId);
+    setNType(draft.nType);
+    setNFieldMode(draft.nFieldMode);
+    setNCatalogId(draft.nCatalogId);
+    setNLabel(draft.nLabel);
+    setNRequired(draft.nRequired);
+    setNPersonRole(draft.nPersonRole);
+    setNGridRows(draft.nGridRows);
+    setNGridCols(draft.nGridCols);
+    setNValidation(draft.nValidation);
+    setAddOpen(draft.addOpen);
   };
 
   const addField = () => {
@@ -318,17 +323,13 @@ export const CreateFormScreen = ({
     setNCatalogId(catalogId);
     const catalogItem = filteredFieldCatalog.find(item => String(item.id) === String(catalogId));
     if (!catalogItem) return;
-    setNType(catalogItem.type);
-    setNLabel(catalogItem.defaultLabel);
-    if (catalogItem.type === "person_select") {
-      setNPersonRole(hasPrimaryLinkedField && !editingFieldId ? "secondary" : "primary");
-    }
-    if (catalogItem.type === "grid") {
-      const schema = getCatalogGridSchema(catalogItem);
-      setNGridRows(schema.rows);
-      setNGridCols(schema.cols);
-    }
-    setNValidation({});
+    const draft = buildFieldDraftFromCatalogItem(catalogItem, { hasPrimaryLinkedField, editingFieldId });
+    setNType(draft.nType);
+    setNLabel(draft.nLabel);
+    setNPersonRole(draft.nPersonRole);
+    setNGridRows(draft.nGridRows);
+    setNGridCols(draft.nGridCols);
+    setNValidation(draft.nValidation);
   };
 
   const setFieldMode = mode => {

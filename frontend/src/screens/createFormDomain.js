@@ -55,6 +55,48 @@ export const createDefaultScaleSections = () => [];
 
 export const createLocalScaleSection = () => ({ source: "local", title: "Nova secao", responsaveis: 1, auxiliares: 2 });
 
+export const buildFieldDraftDefaults = ({ hasPrimaryLinkedField = false } = {}) => ({
+  editingFieldId: null,
+  nType: "yes_no",
+  nFieldMode: "local",
+  nCatalogId: "",
+  nLabel: "",
+  nRequired: false,
+  nPersonRole: hasPrimaryLinkedField ? "secondary" : "primary",
+  nGridRows: DEFAULT_GRID_ROWS,
+  nGridCols: DEFAULT_GRID_COLS,
+  nValidation: {},
+  addOpen: false,
+});
+
+export const buildFieldDraftFromExistingField = (field, { fields = [] } = {}) => ({
+  editingFieldId: field?.id ?? null,
+  nType: field?.type || "yes_no",
+  nFieldMode: field?.catalogFieldId ? "catalog" : "local",
+  nCatalogId: field?.catalogFieldId || "",
+  nLabel: field?.label || "",
+  nRequired: Boolean(field?.required),
+  nPersonRole: field && isMembersSelectionField(field)
+    ? (getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary")
+    : "secondary",
+  nGridRows: field?.gridRows?.length ? field.gridRows : DEFAULT_GRID_ROWS,
+  nGridCols: field?.gridCols?.length ? field.gridCols : DEFAULT_GRID_COLS,
+  nValidation: field?.validation || {},
+  addOpen: true,
+});
+
+export const buildFieldDraftFromCatalogItem = (catalogItem, { hasPrimaryLinkedField = false, editingFieldId = null } = {}) => {
+  if (!catalogItem) return {};
+  return {
+    nType: catalogItem.type,
+    nLabel: catalogItem.defaultLabel,
+    nPersonRole: catalogItem.type === "person_select" && hasPrimaryLinkedField && !editingFieldId ? "secondary" : "primary",
+    nGridRows: catalogItem.type === "grid" ? getCatalogGridSchema(catalogItem).rows : DEFAULT_GRID_ROWS,
+    nGridCols: catalogItem.type === "grid" ? getCatalogGridSchema(catalogItem).cols : DEFAULT_GRID_COLS,
+    nValidation: {},
+  };
+};
+
 export const buildCreateFormInitialState = ({ form, isDuplicateMode = false }) => {
   if (!form || isDuplicateMode) {
     const format = "presenca";

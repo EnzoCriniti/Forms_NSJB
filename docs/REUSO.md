@@ -42,7 +42,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   O topo e o card de contexto do editor tambem podem ser reutilizados por `FormHeaderPanel` e `FormContextPanel`.
   As linhas de campos usam `FormFieldRow` e os totais configurados usam `ResultsTotalRow`.
 - `frontend/src/screens/createFormDomain.js`
-  Helpers puros da criacao de formulario para defaults, titulos padrao, estado inicial do editor, validacao e sincronizacao de resultados.
+  Helpers puros da criacao de formulario para defaults, titulos padrao, estado inicial do editor, estado do editor de campo, validacao e sincronizacao de resultados.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.
@@ -63,7 +63,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/screens/CreateFormScreen.jsx`
   Editor principal de formulario, com modos `nucleo` e `geral`, campos da biblioteca, presets e configuracoes de resultados.
 - `frontend/src/screens/createFormDomain.js`
-  Regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Inclui presets, estado inicial do editor, normalizacao de base e sincronizacao de resultados.
+  Regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Inclui presets, estado inicial do editor, estado do editor de campo, normalizacao de base e sincronizacao de resultados.
 - `frontend/src/lib/forms.js`
   Helpers de modo estrutural, base central, origem de selecao e validacao ligada ao formulario.
 - `shared/formRules.mjs`

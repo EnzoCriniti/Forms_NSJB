@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
   buildCreateFormInitialState,
+  buildFieldDraftDefaults,
+  buildFieldDraftFromCatalogItem,
+  buildFieldDraftFromExistingField,
   buildPresetTitle,
   createDefaultPresenceFields,
   createDefaultResultsConfig,
@@ -66,5 +69,38 @@ describe("createFormDomain", () => {
     expect(existing.title).toBe("Escala");
     expect(existing.setupStep).toBe("editor");
     expect(existing.scaleDraft).toEqual([{ title: "Secao 1" }]);
+  });
+
+  it("monta os estados do editor de campo por origem", () => {
+    const defaults = buildFieldDraftDefaults({ hasPrimaryLinkedField: true });
+    const existing = buildFieldDraftFromExistingField({
+      id: 2,
+      type: "person_select",
+      label: "Acompanhante",
+      catalogFieldId: 9,
+      required: true,
+      gridRows: ["Linha 1"],
+      gridCols: ["Coluna 1"],
+      validation: { minLength: 2 },
+      memberBinding: { source: "members", role: "secondary" },
+    }, {
+      fields: [
+        { id: 1, type: "person_select", memberBinding: { source: "members", role: "primary" } },
+      ],
+    });
+    const catalog = buildFieldDraftFromCatalogItem({
+      type: "grid",
+      defaultLabel: "Matriz",
+      gridSchema: { rows: ["R1"], cols: ["C1", "C2"] },
+    }, {
+      hasPrimaryLinkedField: true,
+    });
+
+    expect(defaults.nPersonRole).toBe("secondary");
+    expect(existing.nFieldMode).toBe("catalog");
+    expect(existing.nPersonRole).toBe("secondary");
+    expect(existing.nGridRows).toEqual(["Linha 1"]);
+    expect(catalog.nLabel).toBe("Matriz");
+    expect(catalog.nGridCols).toEqual(["C1", "C2"]);
   });
 });
