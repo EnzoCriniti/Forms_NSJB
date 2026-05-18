@@ -8,7 +8,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { COLORS, Icon, Btn, ConfirmModal, FeedbackBanner, MetricCard, resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
-import { PresenceResultsPanel } from "./resultsPanels";
+import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
 
 const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
 
@@ -529,99 +529,40 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   };
 
   return (
-    <div>
-      <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-        <Btn v="secondary" icon="download" sz="sm" onClick={exportCsv}>Exportar</Btn>
-      </div>
-      {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
-      {!canEdit && (
-        <div style={{ background: "#fff8e1", border: "1px solid #ffe082", borderRadius: 10, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#795548", display: "flex", alignItems: "center", gap: 8 }}>
-          <Icon name="lock" size={14} />
-          Voce nao tem permissao para editar esta escala. Apenas administradores podem fazer alteracoes.
-        </div>
-      )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 20 }}>
-        <MetricCard value={filled} label="Preenchidas" tone={COLORS.primary} style={{ padding: "12px 16px" }} />
-        <MetricCard value={total - filled} label="Pendentes" tone={COLORS.danger} style={{ padding: "12px 16px" }} />
-        <MetricCard value={total} label="Total" tone={COLORS.textSecondary} style={{ padding: "12px 16px" }} />
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${COLORS.borderLight}` }}>
-            <div style={{ background: section.color, padding: "10px 16px" }}><h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#333" }}>{section.title}</h3></div>
-            <div style={{ background: COLORS.surface }}>
-              {section.slots.map((slot, slotIndex) => (
-                <div key={slotIndex} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 16px", borderBottom: slotIndex < section.slots.length - 1 ? `1px solid ${COLORS.borderLight}` : "none", cursor: canEdit && !slot.person ? "pointer" : "default", transition: "background 0.15s" }} onClick={() => clickSlot(sectionIndex, slotIndex)}>
-                  {canEdit ? (
-                    <select value={slot.role} onClick={event => event.stopPropagation()} onChange={event => updateSlot(sectionIndex, slotIndex, { role: event.target.value })} style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, width: 110, flexShrink: 0, border: `1px solid ${COLORS.borderLight}`, borderRadius: 6, padding: "5px 6px", background: COLORS.surface }}>
-                      <option>Responsavel</option>
-                      <option>Auxiliar</option>
-                    </select>
-                  ) : (
-                    <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, width: 110, flexShrink: 0 }}>{slot.role}</span>
-                  )}
-                  {slot.person ? (
-                    <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div style={{ width: 24, height: 24, borderRadius: "50%", background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary }}><Icon name="user" size={12} /></div>
-                        {canEdit ? (
-                          <select value={slot.person} onClick={event => event.stopPropagation()} onChange={event => updateSlot(sectionIndex, slotIndex, { person: event.target.value })} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 6, padding: "6px 8px", fontSize: 13, fontWeight: 500, minWidth: 260, background: COLORS.surface }}>
-                            <option value="">Pendente</option>
-                            {people.map(person => <option key={person.name} value={person.name}>{person.name}</option>)}
-                          </select>
-                        ) : (
-                          <span style={{ fontSize: 13, fontWeight: 500 }}>{slot.person}</span>
-                        )}
-                      </div>
-                      {canEdit && <button aria-label={`Remover vaga ${section.title} ${slot.role}`} disabled={busyAction === "remove"} onClick={event => { event.stopPropagation(); remove(sectionIndex, slotIndex); }} style={{ background: "none", border: "none", color: COLORS.textMuted, cursor: busyAction === "remove" ? "not-allowed" : "pointer", padding: 4, opacity: busyAction === "remove" ? 0.3 : 0.5 }}><Icon name="close" size={12} /></button>}
-                    </div>
-                  ) : (
-                    <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <div style={{ width: 24, height: 24, borderRadius: "50%", border: `2px dashed ${COLORS.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.textMuted }}><Icon name={canEdit ? "plus" : "user"} size={10} /></div>
-                      <span style={{ fontSize: 12, color: COLORS.textMuted, fontStyle: "italic" }}>{canEdit ? "Pendente - selecione um nome" : "Pendente"}</span>
-                      {canEdit && (
-                        <select value={slot.person} onClick={event => event.stopPropagation()} onChange={event => updateSlot(sectionIndex, slotIndex, { person: event.target.value })} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 6, padding: "6px 8px", fontSize: 13, minWidth: 260, background: COLORS.surface }}>
-                          <option value="">Pendente</option>
-                          {people.map(person => <option key={person.name} value={person.name}>{person.name}</option>)}
-                        </select>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-              {canEdit && (
-                <div style={{ padding: "8px 16px", background: COLORS.surfaceAlt }}>
-                  <Btn v="secondary" icon="plus" sz="sm" onClick={() => addSlot(sectionIndex)} loading={busyAction === "add"}>Adicionar vaga nesta secao</Btn>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {showSignup && selSlot && canEdit && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
-          <div style={{ background: COLORS.surface, borderRadius: 16, padding: 24, width: 400, maxWidth: "90vw" }}>
-            <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>Inscrever-se na vaga</h3>
-            <p style={{ margin: "0 0 16px", fontSize: 13, color: COLORS.textSecondary }}><strong>{sections[selSlot.sectionIndex].title}</strong> - {sections[selSlot.sectionIndex].slots[selSlot.slotIndex].role}</p>
-            <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Selecione seu nome</label>
-            <select value={signName} onChange={event => setSignName(event.target.value)} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: COLORS.surface, boxSizing: "border-box", marginBottom: 16 }}>
-              <option value="">Selecione...</option>{names.map(name => <option key={name} value={name}>{name}</option>)}
-            </select>
-            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}><Btn v="secondary" onClick={() => { setShowSignup(false); setSelSlot(null); }} disabled={busyAction === "signup"}>Cancelar</Btn><Btn icon="check" onClick={signup} disabled={!signName} loading={busyAction === "signup"}>Confirmar</Btn></div>
-          </div>
-        </div>
-      )}
-      <ConfirmModal
-        open={Boolean(pendingRemoval)}
-        title="Remover vaga"
-        message="Tem certeza que deseja remover a pessoa desta vaga? A alteração será salva imediatamente."
-        confirmLabel="Remover"
-        tone="danger"
-        busy={busyAction === "remove"}
-        onCancel={() => setPendingRemoval(null)}
-        onConfirm={confirmRemoval}
-      />
-    </div>
+    <EscalaResultsPanel
+      canEdit={canEdit}
+      feedback={feedback}
+      filled={filled}
+      total={total}
+      sections={sections}
+      people={people}
+      busyAction={busyAction}
+      showSignup={showSignup}
+      selSlot={selSlot}
+      signName={signName}
+      names={names}
+      onOpenSignup={(sectionIndex, slotIndex) => {
+        if (!canEdit) return;
+        if (!sections[sectionIndex].slots[slotIndex].person) {
+          setSelSlot({ sectionIndex, slotIndex });
+          setShowSignup(true);
+          setSignName("");
+        }
+      }}
+      onCloseSignup={() => {
+        setShowSignup(false);
+        setSelSlot(null);
+      }}
+      onSetSignName={setSignName}
+      onConfirmSignup={signup}
+      onUpdateSlot={updateSlot}
+      onRemoveSlot={(sectionIndex, slotIndex) => remove(sectionIndex, slotIndex)}
+      onConfirmRemoval={confirmRemoval}
+      onAddSlot={addSlot}
+      onExportCsv={exportCsv}
+      onCancelRemoval={() => setPendingRemoval(null)}
+      pendingRemoval={pendingRemoval}
+    />
   );
 };
 
@@ -630,4 +571,5 @@ const formatFieldValue = (value, type) => {
   if (type === "grid") return Object.entries(value).map(([row, col]) => `${row}: ${col}`).join(" | ");
   return value;
 };
+
 

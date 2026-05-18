@@ -128,6 +128,7 @@ Mapa curto das areas mais mexidas por agentes.
   Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
+  Tambem concentra a renderizacao reutilizavel da escala em `EscalaResultsPanel`.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
   No modo interno, usa apenas um topo leve de contexto e nao expõe atalho visual para resultados.
