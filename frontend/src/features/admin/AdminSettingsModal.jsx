@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
 import { fetchAuditLogs } from "../../lib/api";
 import { ROLES } from "../../lib/auth";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
@@ -914,7 +914,7 @@ export const AdminSettingsModal = ({
                       />
                     )}
                       {fieldCatalogDraft.type === "person_select" && (
-                        <div style={{ display: "grid", gap: 10, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+                        <SurfacePanel style={{ display: "grid", gap: 10 }}>
                           <div>
                             <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Vinculo do campo</label>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
@@ -965,7 +965,7 @@ export const AdminSettingsModal = ({
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </SurfacePanel>
                       )}
                     <AdminField>
                       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Observacoes internas</label>
@@ -1132,9 +1132,9 @@ export const AdminSettingsModal = ({
                 <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
                   Templates sao criados na tela de criacao de formulario. Aqui voce acompanha os existentes e pode remover o que nao faz mais sentido.
                 </div>
-                <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                <SurfacePanel style={{ fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55, borderRadius: 10, padding: 12 }}>
                   Para salvar um novo template, use a acao <strong style={{ color: COLORS.text }}>Salvar como Template</strong> dentro do builder do formulario.
-                </div>
+                </SurfacePanel>
               </div>
             </div>
             <div>

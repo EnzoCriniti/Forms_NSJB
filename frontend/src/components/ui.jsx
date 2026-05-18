@@ -138,6 +138,43 @@ export const Btn = ({ children, v = "primary", sz = "md", icon, onClick, style: 
   );
 };
 
+export const SurfacePanel = ({
+  as: Component = "div",
+  className = "",
+  style,
+  children,
+  background = COLORS.surface,
+  border = COLORS.borderLight,
+  radius = 12,
+  padding = 14,
+}) => (
+  <Component
+    className={className}
+    style={{
+      background,
+      border: `1px solid ${border}`,
+      borderRadius: radius,
+      padding,
+      ...style,
+    }}
+  >
+    {children}
+  </Component>
+);
+
+export const MetricCard = ({ value, label, tone = COLORS.primary, background = COLORS.surface, border = COLORS.borderLight, style }) => (
+  <SurfacePanel
+    style={{ textAlign: "center", ...style }}
+    background={background}
+    border={border}
+    radius={10}
+    padding="12px 16px"
+  >
+    <div style={{ fontSize: 22, fontWeight: 700, color: tone }}>{value}</div>
+    <div style={{ fontSize: 11, color: COLORS.textMuted }}>{label}</div>
+  </SurfacePanel>
+);
+
 export const ScreenHeader = ({
   className = "",
   style,

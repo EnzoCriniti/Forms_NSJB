@@ -29,6 +29,7 @@ Mapa curto das areas mais mexidas por agentes.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
 - `frontend/src/components/ui.jsx`
   Reune componentes visuais compartilhados. Inclui `ScreenHeader` para evitar repeticao dos topos internos com voltar, titulo, subtitulo e acoes.
+  Tambem fornece `SurfacePanel` e `MetricCard` para reduzir wrappers visuais repetidos em telas grandes.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 

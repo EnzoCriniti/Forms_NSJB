@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, Btn, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
@@ -662,7 +662,7 @@ export const CreateFormScreen = ({
       {!showTypeSetup && (
       <>
       {isEditingExistingForm && (
-        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
+        <SurfacePanel style={{ marginBottom: 14 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 4 }}>Tipo do formulario</div>
           <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>
             {format === "escala_organ" ? "Escala da Organ" : "Presenca"}
@@ -670,7 +670,7 @@ export const CreateFormScreen = ({
           <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
             O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario.
           </div>
-        </div>
+        </SurfacePanel>
       )}
 
       {!isEditingExistingForm && format === "presenca" && (
@@ -876,7 +876,7 @@ export const CreateFormScreen = ({
       )}
 
       {format === "escala_organ" && (
-        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 16, marginBottom: 20 }}>
+        <SurfacePanel style={{ marginBottom: 20, padding: 16 }}>
           <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Modelo da Escala da Organ</div>
           <p style={{ margin: "0 0 14px", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.5 }}>Defina as secoes, quantos responsaveis e quantos auxiliares cada uma tera.</p>
           <div style={{ display: "grid", gap: 6, maxWidth: 280, marginBottom: 14 }}>
@@ -915,7 +915,7 @@ export const CreateFormScreen = ({
             ))}
           </div>
           <Btn v="secondary" icon="plus" sz="sm" onClick={addScale} style={{ marginTop: 10 }}>Adicionar secao</Btn>
-        </div>
+        </SurfacePanel>
       )}
 
       {format === "presenca" && (
@@ -1175,7 +1175,7 @@ export const CreateFormScreen = ({
             </button>
           )}
 
-          <div style={{ marginTop: 18, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 16 }}>
+          <SurfacePanel style={{ marginTop: 18, padding: 16 }}>
             <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>Configuracao dos Resultados</div>
             <p style={{ margin: "0 0 14px", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.5 }}>
               Ajuste a visualizacao da totalizacao e os recursos da planilha final.
@@ -1250,7 +1250,7 @@ export const CreateFormScreen = ({
                 )}
               </div>
             )}
-          </div>
+          </SurfacePanel>
         </div>
       )}
 
