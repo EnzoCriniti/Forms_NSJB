@@ -6,7 +6,6 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, ClosedPublicScreen } from "./components/ui";
-import { AppHeader } from "./components/AppHeader";
 import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
@@ -53,16 +52,10 @@ import {
   deletePersonPreset,
   saveEventMessage,
 } from "./lib/api";
-import { FormListScreen } from "./screens/FormListScreen";
-import { DashboardScreen } from "./screens/DashboardScreen";
-import { EventsScreen } from "./screens/EventsScreen";
-import { EventMessageEditorScreen } from "./screens/EventMessageEditorScreen";
-import { EventMessageDetailScreen } from "./screens/EventMessageDetailScreen";
-import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { ResultsScreen } from "./screens/ResultsScreen";
-import { SettingsScreen } from "./screens/SettingsScreen";
 import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
+import { AppShellContent } from "./AppShellContent";
 import { isFormClosedForPublic } from "./lib/forms";
 import {
   buildDuplicateFormDraft,
@@ -896,167 +889,90 @@ export default function App() {
     );
   }
 
-  return (
-    <div className="app-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>
-      <AppHeader
-        nav={nav}
-        screen={screen}
-        currentUser={currentUser}
-        theme={theme}
-        fontScale={fontScale}
-        onNavigate={navigate}
-        onIncreaseFontScale={increaseFontScale}
-        onDecreaseFontScale={decreaseFontScale}
-        onToggleTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
-        onOpenSettings={() => navigate("settings")}
-        onLogin={login}
-        onLogout={logout}
-      />
-      <main className="app-main" style={{ maxWidth: 1120, margin: "0 auto", padding: "24px 20px" }}>
-        {screen === "dashboard" && (
-          <DashboardScreen
-            onNavigate={navigate}
-            forms={forms}
-            labels={labels}
-            people={people}
-            presets={presets}
-            fieldCatalog={fieldCatalog}
-            scaleTaskCatalog={scaleTaskCatalog}
-            user={currentUser}
-          />
-        )}
-        {screen === "events" && currentUser && (
-          <EventsScreen
-            events={events}
-            forms={forms}
-            labels={labels}
-            user={currentUser}
-            pinnedEventIds={pinnedEventIds}
-            pinnedFormIds={pinnedFormIds}
-            initialSelectedEventId={activeEventId}
-            onSaveEvent={handleSaveEvent}
-            onPublishEvent={handlePublishEvent}
-            onDeleteEvent={handleDeleteEvent}
-            onTogglePinnedEvent={handleTogglePinnedEvent}
-            onCreateFormInEvent={handleCreateFormInEvent}
-            onDuplicateForm={handleDuplicateForm}
-            onArchiveForm={handleArchiveForm}
-            onTogglePinnedForm={handleTogglePinnedForm}
-            onDeleteForm={handleDeleteForm}
-            onCreateEventMessage={event => openEventMessageEditor(event, null)}
-            onOpenEventMessage={(event, message) => openEventMessageDetail(event, message)}
-            onNavigate={navigate}
-          />
-        )}
-        {screen === "eventMessageEditor" && currentUser && activeEvent && (
-          <EventMessageEditorScreen
-            event={activeEvent}
-            eventForms={forms.filter(form => (activeEvent.formIds || []).includes(form.id))}
-            message={(activeEvent.messages || []).find(item => item.id === activeMessageId) || null}
-            messageTemplates={messageTemplates}
-            personPresets={personPresets}
-            people={people}
-            messagingConfig={messagingConfig}
-            onSave={payload => handleSaveEventMessage(activeEvent.id, payload)}
-            onCancel={saved => {
-              if (saved?.id) {
-                setActiveMessageId(saved.id);
-                setScreen("eventMessageDetail");
-              } else {
-                setActiveMessageId(null);
-                setScreen("events");
-              }
-            }}
-          />
-        )}
-        {screen === "eventMessageDetail" && currentUser && activeEvent && activeMessageId && (
-          <EventMessageDetailScreen
-            event={activeEvent}
-            message={(activeEvent.messages || []).find(item => item.id === activeMessageId) || null}
-            onMessageUpdated={applyMessageUpdate}
-            onMessageDeleted={id => { applyMessageDeletion(id); setActiveMessageId(null); setScreen("events"); }}
-            onEdit={() => setScreen("eventMessageEditor")}
-            onBack={() => { setActiveMessageId(null); setScreen("events"); }}
-          />
-        )}
-        {screen === "list" && <FormListScreen onNavigate={navigate} onDuplicateForm={handleDuplicateForm} onArchiveForm={handleArchiveForm} onTogglePinnedForm={handleTogglePinnedForm} pinnedFormIds={pinnedFormIds} user={currentUser} labels={labels} forms={forms} onDeleteForm={handleDeleteForm} formDeleteKeyConfigured={formDeleteKeyConfigured} />}
-        {screen === "create" && <CreateFormScreen onNavigate={navigate} people={people} membersConfig={membersConfig} externalBases={externalBases} labels={labels} presets={presets} fieldCatalog={fieldCatalog} scaleTaskCatalog={scaleTaskCatalog} onSavePreset={handleSavePreset} onSaveForm={handleSaveForm} form={editingForm} event={activeEvent} isDuplicateMode={Boolean(draftForm)} />}
-        {screen === "settings" && canCreateForms(currentUser) && (
-          <SettingsScreen
-            onNavigate={navigate}
-            users={users}
-            labels={labels}
-            presets={presets}
-            fieldCatalog={fieldCatalog}
-            scaleTaskCatalog={scaleTaskCatalog}
-            membersConfig={membersConfig}
-            externalBases={externalBases}
-            people={people}
-            currentUser={currentUser}
-            onSaveUser={handleSaveUser}
-            onDeleteUser={handleDeleteUser}
-            onSaveLabel={handleSaveLabel}
-            onDeleteLabel={handleDeleteLabel}
-            onSavePreset={handleSavePreset}
-            onDeletePreset={handleDeletePreset}
-            onSaveMembersConfig={handleSaveMembersConfig}
-            onSyncMembersConfig={handleSyncMembersConfig}
-            onSaveExternalBase={handleSaveExternalBase}
-            onDeleteExternalBase={handleDeleteExternalBase}
-            onSyncExternalBase={handleSyncExternalBase}
-            onSavePeople={handleSavePeople}
-            onSaveFieldCatalogItem={handleSaveFieldCatalogItem}
-            onDeleteFieldCatalogItem={handleDeleteFieldCatalogItem}
-            onSaveScaleTaskCatalogItem={handleSaveScaleTaskCatalogItem}
-            onDeleteScaleTaskCatalogItem={handleDeleteScaleTaskCatalogItem}
-            formDeleteKeyConfigured={formDeleteKeyConfigured}
-            onSaveFormDeleteKey={handleSaveFormDeleteKey}
-            messageTemplates={messageTemplates}
-            personPresets={personPresets}
-            messagingConfig={messagingConfig}
-            onSaveMessagingConfig={handleSaveMessagingConfig}
-            onSaveMessageTemplate={handleSaveMessageTemplate}
-            onDeleteMessageTemplate={handleDeleteMessageTemplate}
-            onSavePersonPreset={handleSavePersonPreset}
-            onDeletePersonPreset={handleDeletePersonPreset}
-          />
-        )}
-        {screen === "results" && activeForm && (
-          <ResultsScreen
-            onNavigate={navigate}
-            form={activeForm}
-            responses={responsesByForm[activeForm.id] || []}
-            sections={escalaByForm[activeForm.id] || []}
-            people={people}
-            user={currentUser}
-            labels={labels}
-            onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
-          />
-        )}
-        {screen === "respond" && activeForm && activeForm.type === "presenca" && (
-          <PublicFormScreen
-            form={activeForm}
-            responses={responsesByForm[activeForm.id] || []}
-            onSaveResponse={handleSaveResponse}
-            onBack={() => navigate("list")}
-            people={people}
-            externalBases={externalBases}
-            resultsHref={activeForm.resultsConfig?.publicResultsEnabled ? buildPublicFormResultsPath(activeForm) : ""}
-            variant="internal"
-          />
-        )}
-        {screen === "respond" && activeForm && activeForm.type === "escala_organ" && (
-          <PublicEscalaScreen
-            form={activeForm}
-            onBack={() => navigate("list")}
-            people={people}
-            sections={escalaByForm[activeForm.id] || []}
-            onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
-            onClaimSlot={(sectionIndex, slotIndex, person) => handleClaimEscalaSlot(activeForm.id, sectionIndex, slotIndex, person)}
-            variant="internal"
-          />
-        )}
-      </main>
-    </div>
-  );
+  const shellApp = {
+    nav,
+    screen,
+    currentUser,
+    theme,
+    fontScale,
+    onNavigate: navigate,
+    onIncreaseFontScale: increaseFontScale,
+    onDecreaseFontScale: decreaseFontScale,
+    onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
+    onOpenSettings: () => navigate("settings"),
+    onLogin: login,
+    onLogout: logout,
+    forms,
+    labels,
+    people,
+    presets,
+    fieldCatalog,
+    scaleTaskCatalog,
+    events,
+    messageTemplates,
+    personPresets,
+    messagingConfig,
+    pinnedEventIds,
+    pinnedFormIds,
+    activeEventId,
+    activeMessageId,
+    activeEvent,
+    activeForm,
+    editingForm,
+    draftForm,
+    membersConfig,
+    externalBases,
+    users,
+    formDeleteKeyConfigured,
+    responsesByForm,
+    escalaByForm,
+    handleSaveEvent,
+    handlePublishEvent,
+    handleDeleteEvent,
+    handleTogglePinnedEvent,
+    handleCreateFormInEvent,
+    handleDuplicateForm,
+    handleArchiveForm,
+    handleTogglePinnedForm,
+    handleDeleteForm,
+    handleSaveEventMessage,
+    applyMessageUpdate,
+    applyMessageDeletion,
+    handleSaveEscala,
+    handleClaimEscalaSlot,
+    handleSaveUser,
+    handleDeleteUser,
+    handleSaveLabel,
+    handleDeleteLabel,
+    handleSavePreset,
+    handleDeletePreset,
+    handleSaveMembersConfig,
+    handleSyncMembersConfig,
+    handleSaveExternalBase,
+    handleDeleteExternalBase,
+    handleSyncExternalBase,
+    handleSavePeople,
+    handleSaveFieldCatalogItem,
+    handleDeleteFieldCatalogItem,
+    handleSaveScaleTaskCatalogItem,
+    handleDeleteScaleTaskCatalogItem,
+    handleSaveFormDeleteKey,
+    handleSaveMessagingConfig,
+    handleSaveMessageTemplate,
+    handleDeleteMessageTemplate,
+    handleSavePersonPreset,
+    handleDeletePersonPreset,
+    setActiveMessageId,
+    setActiveEventId,
+    setScreen,
+    setDraftForm,
+    setEditingFormId,
+    setActiveFormId,
+    canCreateForms,
+    handleSaveForm,
+    openEventMessageEditor,
+    openEventMessageDetail,
+  };
+
+  return <AppShellContent app={shellApp} />;
 }

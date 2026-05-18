@@ -17,6 +17,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Cabecalho de resultados de presenca com toolbar publica, filtros e cards de resumo.
 - `frontend/src/components/FormListCard.jsx`
   Card reutilizavel da listagem de formularios com acoes e badges.
+- `frontend/src/AppShellContent.jsx`
+  Shell autenticado que renderiza header global e telas internas apos o login.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
@@ -39,6 +41,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Componentes compartilhados das mensagens de evento: destinatarios, agendamento, preview e historico.
 - `frontend/src/features/events/components/`
   Pasta alvo para novos componentes compartilhados do dominio de eventos.
+- `docs/REFACTOR_CHECKLIST.md`
+  Checklist sequencial com o que ja foi quebrado em componentes e os proximos passos.
 
 ## Formularios
 
