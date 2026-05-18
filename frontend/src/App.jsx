@@ -55,6 +55,7 @@ import { isFormClosedForPublic } from "./lib/forms";
 import {
   buildDuplicateFormDraft,
   buildSaveFormPayloadFromExisting,
+  buildAppShellDerivedState,
   clampFontScale,
   FONT_SCALE_STEP,
   getPublicRouteFromLocation,
@@ -85,29 +86,44 @@ export default function App() {
   const [formDeleteKeyConfigured, setFormDeleteKeyConfigured] = useState(null);
   const currentUser = session?.user || null;
   const authToken = session?.token || null;
-  const pinnedFormIds = useMemo(() => {
-    if (!currentUser?.id) return [];
-    return Array.isArray(pinnedFormsByUser[String(currentUser.id)]) ? pinnedFormsByUser[String(currentUser.id)] : [];
-  }, [currentUser?.id, pinnedFormsByUser]);
-  const pinnedEventIds = useMemo(() => {
-    if (!currentUser?.id) return [];
-    return Array.isArray(pinnedEventsByUser[String(currentUser.id)]) ? pinnedEventsByUser[String(currentUser.id)] : [];
-  }, [currentUser?.id, pinnedEventsByUser]);
-
-  const forms = bootstrap.forms;
-  const responsesByForm = { ...(bootstrap.responsesByForm || {}), ...responseDetails };
-  const escalaByForm = { ...(bootstrap.escalaByForm || {}), ...escalaDetails };
   const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events, messageTemplates = [], personPresets = [], messagingConfig = { whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" } } = bootstrap;
-  const activeForm = useMemo(() => forms.find(form => form.id === activeFormId) || null, [forms, activeFormId]);
-  const activeEvent = useMemo(() => events.find(event => event.id === activeEventId) || null, [events, activeEventId]);
-  const editingForm = useMemo(() => draftForm || forms.find(form => form.id === editingFormId) || null, [draftForm, forms, editingFormId]);
-  const publicForm = useMemo(() => {
-    const identifier = publicRoute?.identifier;
-    if (!identifier) return null;
-    return forms.find(form => String(form.id) === String(identifier) || form.slug === identifier) || null;
-  }, [forms, publicRoute?.identifier]);
-  const publicResultsEnabled = publicForm?.type === "presenca" && publicForm?.resultsConfig?.publicResultsEnabled === true;
-  const publicResultsView = publicRoute?.view === "results";
+  const {
+    forms,
+    responsesByForm,
+    escalaByForm,
+    pinnedFormIds,
+    pinnedEventIds,
+    activeForm,
+    activeEvent,
+    editingForm,
+    publicForm,
+    publicResultsEnabled,
+    publicResultsView,
+  } = useMemo(() => buildAppShellDerivedState({
+    bootstrap,
+    responseDetails,
+    escalaDetails,
+    currentUser,
+    pinnedFormsByUser,
+    pinnedEventsByUser,
+    activeFormId,
+    activeEventId,
+    editingFormId,
+    draftForm,
+    publicRoute,
+  }), [
+    bootstrap,
+    responseDetails,
+    escalaDetails,
+    currentUser,
+    pinnedFormsByUser,
+    pinnedEventsByUser,
+    activeFormId,
+    activeEventId,
+    editingFormId,
+    draftForm,
+    publicRoute,
+  ]);
   const hasLoadedResponses = formId => Object.prototype.hasOwnProperty.call(bootstrap.responsesByForm || {}, formId) || Object.prototype.hasOwnProperty.call(responseDetails, formId);
   const hasLoadedEscala = formId => Object.prototype.hasOwnProperty.call(bootstrap.escalaByForm || {}, formId) || Object.prototype.hasOwnProperty.call(escalaDetails, formId);
 
