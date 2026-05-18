@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, Icon, StatusBadge, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, Icon, ScreenHeader, StatusBadge, resolveActionErrorMessage } from "../components/ui";
 import { FormListCard } from "../components/FormListCard";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
 import { formatDate, formatDateTime } from "../lib/forms";
@@ -258,12 +258,6 @@ export const EventsScreen = ({
     }
   };
 
-  const renderShellHeader = children => (
-    <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-      {children}
-    </div>
-  );
-
   const renderEventCard = event => {
     const isPinned = pinnedEventSet.has(event.id);
     return (
@@ -317,14 +311,12 @@ export const EventsScreen = ({
     return (
       <div>
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-        {renderShellHeader(
-          <>
-            <Btn v="ghost" icon="back" onClick={cancelEdit} aria-label="Voltar" />
-            <div style={{ minWidth: 0, flex: 1 }}>
-              <h2 style={{ margin: 0, fontSize: 20 }}>{draft.id ? "Editar evento" : "Novo evento"}</h2>
-            </div>
-          </>,
-        )}
+        <ScreenHeader
+          className="settings-top-card"
+          leading={<Btn v="ghost" icon="back" onClick={cancelEdit} aria-label="Voltar" />}
+          title={draft.id ? "Editar evento" : "Novo evento"}
+          titleSize={20}
+        />
         <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18 }}>
           <div style={{ display: "grid", gap: 14 }}>
             <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 12 }}>
@@ -365,26 +357,31 @@ export const EventsScreen = ({
     return (
       <div>
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-        {renderShellHeader(
-          <>
-            <Btn v="ghost" icon="back" onClick={() => setMode("list")} aria-label="Voltar" />
+        <ScreenHeader
+          className="settings-top-card"
+          leading={<Btn v="ghost" icon="back" onClick={() => setMode("list")} aria-label="Voltar" />}
+          titleContent={(
             <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <h2 style={{ margin: 0, fontSize: 20 }}>{selectedEvent.date ? `${selectedEvent.title} - ${formatDate(selectedEvent.date)}` : selectedEvent.title}</h2>
               <StatusBadge status={selectedEvent.status} />
             </div>
-            {canManageEvents && selectedEvent.status === "pronto" && onPublishEvent && (
-              <Btn v="secondary" icon="check" onClick={publish} loading={statusAction === "publish"} disabled={Boolean(statusAction)}>Publicar</Btn>
-            )}
-            {canManageEvents && selectedEvent.status === "publicado" && (
-              <Btn v="secondary" icon="lock" onClick={close} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
-            )}
-            {canManageEvents && <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>}
-            {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />}
-            {canManageEvents && detailTab === "messages" && messagesEligible && onCreateEventMessage && (
-              <Btn icon="plus" onClick={() => onCreateEventMessage(selectedEvent)} aria-label="Nova mensagem" title="Nova mensagem" />
-            )}
-          </>,
-        )}
+          )}
+          actions={(
+            <>
+              {canManageEvents && selectedEvent.status === "pronto" && onPublishEvent && (
+                <Btn v="secondary" icon="check" onClick={publish} loading={statusAction === "publish"} disabled={Boolean(statusAction)}>Publicar</Btn>
+              )}
+              {canManageEvents && selectedEvent.status === "publicado" && (
+                <Btn v="secondary" icon="lock" onClick={close} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
+              )}
+              {canManageEvents && <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>}
+              {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />}
+              {canManageEvents && detailTab === "messages" && messagesEligible && onCreateEventMessage && (
+                <Btn icon="plus" onClick={() => onCreateEventMessage(selectedEvent)} aria-label="Nova mensagem" title="Nova mensagem" />
+              )}
+            </>
+          )}
+        />
         <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
           <Btn v={detailTab === "forms" ? "primary" : "ghost"} sz="sm" onClick={() => setDetailTab("forms")}>
             Formularios{eventForms.length > 0 ? ` (${eventForms.length})` : ""}
@@ -445,14 +442,12 @@ export const EventsScreen = ({
   return (
     <div>
       {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-      {renderShellHeader(
-        <>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <h2 style={{ margin: 0, fontSize: 20 }}>Eventos</h2>
-          </div>
-          {canManageEvents && <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" />}
-        </>,
-      )}
+      <ScreenHeader
+        className="settings-top-card"
+        title="Eventos"
+        titleSize={20}
+        actions={canManageEvents ? <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" /> : null}
+      />
       <div style={{ display: "grid", gap: 18 }}>
         {sortedEvents.length === 0 ? (
           <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>

@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, Btn, FeedbackBanner, PublicTopCompact, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, resolvePersonBySelectionValue, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
 export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "", readingControls, variant = "public" }) => {
@@ -120,12 +120,14 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   return (
     <div style={{ maxWidth: 680, margin: "0 auto" }}>
       {isInternal ? (
-        <div className="screen-top-card internal-response-header" style={{ marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Formulario"}</h2>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>{form.description || "Preencha o formulario abaixo."}</p>
-          </div>
-        </div>
+        <ScreenHeader
+          className="internal-response-header"
+          title={form?.title || "Formulario"}
+          subtitle={form.description || "Preencha o formulario abaixo."}
+          titleStyle={{ color: COLORS.text }}
+          subtitleStyle={{ color: COLORS.textMuted }}
+          marginBottom={14}
+        />
       ) : (
         <PublicTopCompact form={form} onBack={onBack} description={form.description || "Preencha o formulário abaixo."} actionLabel={resultsHref ? "Resultados" : ""} actionHref={resultsHref} readingControls={readingControls} />
       )}

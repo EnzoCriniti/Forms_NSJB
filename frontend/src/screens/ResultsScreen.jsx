@@ -5,7 +5,7 @@
  */
 
 import React, { useMemo, useRef, useState } from "react";
-import { COLORS, Icon, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, Btn, ConfirmModal, FeedbackBanner, MetricCard, resolveActionErrorMessage } from "../components/ui";
 import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
@@ -693,9 +693,9 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
         </div>
       )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 20 }}>
-        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "12px 16px", textAlign: "center" }}><div style={{ fontSize: 22, fontWeight: 700, color: COLORS.primary }}>{filled}</div><div style={{ fontSize: 11, color: COLORS.textMuted }}>Preenchidas</div></div>
-        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "12px 16px", textAlign: "center" }}><div style={{ fontSize: 22, fontWeight: 700, color: COLORS.danger }}>{total - filled}</div><div style={{ fontSize: 11, color: COLORS.textMuted }}>Pendentes</div></div>
-        <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "12px 16px", textAlign: "center" }}><div style={{ fontSize: 22, fontWeight: 700, color: COLORS.textSecondary }}>{total}</div><div style={{ fontSize: 11, color: COLORS.textMuted }}>Total</div></div>
+        <MetricCard value={filled} label="Preenchidas" tone={COLORS.primary} style={{ padding: "12px 16px" }} />
+        <MetricCard value={total - filled} label="Pendentes" tone={COLORS.danger} style={{ padding: "12px 16px" }} />
+        <MetricCard value={total} label="Total" tone={COLORS.textSecondary} style={{ padding: "12px 16px" }} />
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {sections.map((section, sectionIndex) => (
