@@ -6,9 +6,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Icon, Btn, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
-import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { FieldEditorPanel, FormBasicsPanel, FormFooterPanel, FormModePanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
+import { FieldEditorPanel, FormBasicsPanel, FormFooterPanel, FormModePanel, FormPreviewPanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
 import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
@@ -567,30 +566,17 @@ export const CreateFormScreen = ({
         peopleConfigLabel={formMode === FORM_MODES.NUCLEO ? (membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios.") : "Base central bloqueada neste formulario geral."}
       />
 
-      {showPreview && (
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10 }}>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>
-                Pre-visualizacao do formulario
-              </div>
-              <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 2 }}>
-                Esta area mostra como o link publico esta ficando com base no rascunho atual.
-              </div>
-            </div>
-          </div>
-          <CreateFormLivePreview
-            format={format}
-            title={previewTitle}
-            description={previewDescription}
-            closingText={previewClosingText}
-            fields={fields}
-            people={people}
-            scaleSections={scaleDraft}
-            scaleLimit={scaleLimit}
-          />
-        </div>
-      )}
+      <FormPreviewPanel
+        showPreview={showPreview}
+        format={format}
+        previewTitle={previewTitle}
+        previewDescription={previewDescription}
+        previewClosingText={previewClosingText}
+        fields={fields}
+        people={people}
+        scaleDraft={scaleDraft}
+        scaleLimit={scaleLimit}
+      />
 
       {format === "escala_organ" && (
         <ScaleEditorPanel

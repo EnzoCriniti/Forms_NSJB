@@ -102,6 +102,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/createFormPanels.jsx`
   Painéis compartilhados da criacao de formulario: etapa inicial, dados basicos, modo, editor de campo, escala, lista de campos, resultados e rodape.
   O editor de campo foi dividido em blocos menores para origem, definicao, ajustes extras e acoes.
+  A pre-visualizacao publica tambem ficou isolada em `FormPreviewPanel`.
   A lista de campos usa `FormFieldRow` para cada item e `ResultsTotalRow` para cada total configurado.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.

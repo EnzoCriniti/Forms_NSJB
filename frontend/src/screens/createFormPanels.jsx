@@ -7,6 +7,7 @@
 import React from "react";
 import { COLORS, Btn, Icon, FieldControl, SurfacePanel } from "../components/ui";
 import { CreateFormFieldPreview } from "../components/CreateFormFieldPreview";
+import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 
 export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, options, onSelectMode }) => (
   <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
@@ -249,6 +250,44 @@ export const PresenceFieldsPanel = ({
     )}
   </div>
 );
+
+export const FormPreviewPanel = ({
+  showPreview,
+  format,
+  previewTitle,
+  previewDescription,
+  previewClosingText,
+  fields,
+  people,
+  scaleDraft,
+  scaleLimit,
+}) => {
+  if (!showPreview) return null;
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10 }}>
+        <div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, textTransform: "uppercase", letterSpacing: 0.4 }}>
+            Pre-visualizacao do formulario
+          </div>
+          <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 2 }}>
+            Esta area mostra como o link publico esta ficando com base no rascunho atual.
+          </div>
+        </div>
+      </div>
+      <CreateFormLivePreview
+        format={format}
+        title={previewTitle}
+        description={previewDescription}
+        closingText={previewClosingText}
+        fields={fields}
+        people={people}
+        scaleSections={scaleDraft}
+        scaleLimit={scaleLimit}
+      />
+    </div>
+  );
+};
 
 export const FieldEditorPanel = ({
   addOpen,
