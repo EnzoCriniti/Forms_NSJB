@@ -19,5 +19,5 @@ Regras:
 
 - `FormFieldRow` deve ser usado para qualquer linha da lista de campos.
 - `ResultsTotalRow` deve ser usado para qualquer linha do painel de totais.
-- `createFormDomain.js` concentra helpers puros de default, normalizacao e validacao.
+- `createFormDomain.js` concentra helpers puros de default, normalizacao, mutacoes reutilizaveis de listas e validacao.
 - `CreateFormScreen.jsx` deve ficar apenas com orquestracao de estado e integracao com esses blocos.

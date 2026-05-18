@@ -378,6 +378,31 @@ export const moveItem = (items, index, direction) => {
   return next;
 };
 
+export const toggleFieldShow = (fields, fieldId) => fields.map(item => (
+  item.id === fieldId ? { ...item, show: !item.show } : item
+));
+
+export const removeFieldById = (fields, fieldId) => fields.filter(item => item.id !== fieldId);
+
+export const updateScaleSection = (sections, index, patch) => sections.map((section, sectionIndex) => (
+  sectionIndex === index ? { ...section, ...patch } : section
+));
+
+export const appendScaleSection = sections => [...sections, createLocalScaleSection()];
+
+export const updateListItemAtIndex = (items, index, value) => items.map((item, itemIndex) => (
+  itemIndex === index ? value : item
+));
+
+export const removeListItemAtIndex = (items, index) => items.filter((_, itemIndex) => itemIndex !== index);
+
+export const appendListItem = (items, value = "") => [...items, value];
+
+export const addTotalLayoutField = (totalsLayout, field) => ([
+  ...totalsLayout,
+  { fieldId: field.id, style: getAutomaticTotalStyle(field) },
+]);
+
 export const createDefaultResultsConfig = fields => ({
   searchEnabled: true,
   showLinkedRoster: true,

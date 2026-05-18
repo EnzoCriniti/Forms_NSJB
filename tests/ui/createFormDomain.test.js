@@ -12,6 +12,14 @@ import {
   buildFieldDraftFromCatalogItem,
   buildFieldDraftFromExistingField,
   buildPresetTitle,
+  toggleFieldShow,
+  removeFieldById,
+  updateScaleSection,
+  appendScaleSection,
+  updateListItemAtIndex,
+  removeListItemAtIndex,
+  appendListItem,
+  addTotalLayoutField,
   createDefaultPresenceFields,
   createDefaultResultsConfig,
   normalizePeopleBaseBindings,
@@ -218,5 +226,16 @@ describe("createFormDomain", () => {
       title: "Formulario alterado com sucesso",
       message: "As alteracoes foram gravadas e ja estao disponiveis na listagem.",
     });
+  });
+
+  it("reaproveita helpers puros para mutacoes de listas do editor", () => {
+    expect(toggleFieldShow([{ id: 1, show: true }], 1)).toEqual([{ id: 1, show: false }]);
+    expect(removeFieldById([{ id: 1 }, { id: 2 }], 2)).toEqual([{ id: 1 }]);
+    expect(updateScaleSection([{ title: "A" }], 0, { title: "B" })).toEqual([{ title: "B" }]);
+    expect(appendScaleSection([{ title: "A" }])).toHaveLength(2);
+    expect(updateListItemAtIndex(["A", "B"], 1, "C")).toEqual(["A", "C"]);
+    expect(removeListItemAtIndex(["A", "B"], 0)).toEqual(["B"]);
+    expect(appendListItem(["A"], "B")).toEqual(["A", "B"]);
+    expect(addTotalLayoutField([], { id: 7, type: "yes_no" })).toEqual([{ fieldId: 7, style: "split" }]);
   });
 });

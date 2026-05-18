@@ -19,7 +19,6 @@ import {
   createDefaultPresenceFields,
   createDefaultResultsConfig,
   createDefaultScaleSections,
-  createLocalScaleSection,
   buildCreateFormInitialState,
   buildFieldDraftDefaults,
   buildFieldDraftFromExistingField,
@@ -34,9 +33,16 @@ import {
   buildFieldTypeTransition,
   buildCreateFormFormatSelectionState,
   buildCreateFormSaveOutcome,
-  getAutomaticTotalStyle,
   getCatalogGridSchema,
   moveItem,
+  toggleFieldShow,
+  removeFieldById,
+  updateScaleSection,
+  appendScaleSection,
+  updateListItemAtIndex,
+  removeListItemAtIndex,
+  appendListItem,
+  addTotalLayoutField,
   normalizePeopleBaseBindings,
   buildFieldValidation,
 } from "./createFormDomain";
@@ -162,15 +168,15 @@ export const CreateFormScreen = ({
     ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes."
     : "secoes da escala, descricao, texto de fechamento e classificacoes.";
   const handleModeSelect = nextMode => syncModeWithFields(nextMode);
-  const handleToggleFieldShow = fieldId => setFields(fields.map(item => item.id === fieldId ? { ...item, show: !item.show } : item));
-  const handleRemoveField = fieldId => setFields(fields.filter(item => item.id !== fieldId));
+  const handleToggleFieldShow = fieldId => setFields(toggleFieldShow(fields, fieldId));
+  const handleRemoveField = fieldId => setFields(removeFieldById(fields, fieldId));
   const handleMoveTotalLayout = (index, direction) => {
     setResultsConfig(current => ({ ...current, totalsLayout: moveItem(current.totalsLayout, index, direction) }));
   };
   const handleAddTotalField = field => {
     setResultsConfig(current => ({
       ...current,
-      totalsLayout: [...current.totalsLayout, { fieldId: field.id, style: getAutomaticTotalStyle(field) }],
+      totalsLayout: addTotalLayoutField(current.totalsLayout, field),
     }));
   };
   const applyFieldDraftState = draft => {
@@ -211,14 +217,14 @@ export const CreateFormScreen = ({
   };
 
   const togLabel = id => setSelLabels(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
-  const updateScale = (index, patch) => setScaleDraft(scaleDraft.map((section, sectionIndex) => sectionIndex === index ? { ...section, ...patch } : section));
-  const addScale = () => setScaleDraft([...scaleDraft, createLocalScaleSection()]);
-  const updateGridRow = (index, value) => setNGridRows(nGridRows.map((row, rowIndex) => rowIndex === index ? value : row));
-  const removeGridRow = index => setNGridRows(nGridRows.filter((_, rowIndex) => rowIndex !== index));
-  const addGridRow = () => setNGridRows([...nGridRows, ""]);
-  const updateGridCol = (index, value) => setNGridCols(nGridCols.map((col, colIndex) => colIndex === index ? value : col));
-  const removeGridCol = index => setNGridCols(nGridCols.filter((_, colIndex) => colIndex !== index));
-  const addGridCol = () => setNGridCols([...nGridCols, ""]);
+  const updateScale = (index, patch) => setScaleDraft(updateScaleSection(scaleDraft, index, patch));
+  const addScale = () => setScaleDraft(appendScaleSection(scaleDraft));
+  const updateGridRow = (index, value) => setNGridRows(updateListItemAtIndex(nGridRows, index, value));
+  const removeGridRow = index => setNGridRows(removeListItemAtIndex(nGridRows, index));
+  const addGridRow = () => setNGridRows(appendListItem(nGridRows));
+  const updateGridCol = (index, value) => setNGridCols(updateListItemAtIndex(nGridCols, index, value));
+  const removeGridCol = index => setNGridCols(removeListItemAtIndex(nGridCols, index));
+  const addGridCol = () => setNGridCols(appendListItem(nGridCols));
 
   const resetFieldDraft = () => {
     applyFieldDraftState(buildFieldDraftDefaults({ hasPrimaryLinkedField }));
