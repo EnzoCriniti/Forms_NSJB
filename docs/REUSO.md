@@ -21,6 +21,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
 - `frontend/src/screens/createFormPanels.jsx`
   Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
+- `frontend/src/screens/resultsPanels.jsx`
+  Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
 
 ## Formularios
 
