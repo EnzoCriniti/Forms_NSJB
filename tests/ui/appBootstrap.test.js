@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, replaceBootstrapList } from "../../frontend/src/lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, replaceBootstrapList, upsertBootstrapListItem } from "../../frontend/src/lib/appBootstrap";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {
@@ -42,5 +42,18 @@ describe("appBootstrap helpers", () => {
     const bootstrap = replaceBootstrapList({ forms: [], labels: ["a"] }, "labels", ["b"]);
     expect(bootstrap.forms).toEqual([]);
     expect(bootstrap.labels).toEqual(["b"]);
+  });
+
+  it("insere ou atualiza itens de uma lista do bootstrap", () => {
+    const initial = { events: [{ id: 1, name: "A" }] };
+    const updated = upsertBootstrapListItem(initial, "events", { id: 1, name: "B" });
+    const appended = upsertBootstrapListItem(updated, "events", { id: 2, name: "C" });
+    expect(updated.events).toEqual([{ id: 1, name: "B" }]);
+    expect(appended.events).toEqual([{ id: 1, name: "B" }, { id: 2, name: "C" }]);
+  });
+
+  it("remove itens de uma lista do bootstrap", () => {
+    const bootstrap = removeBootstrapListItem({ events: [{ id: 1 }, { id: 2 }] }, "events", item => item.id === 1);
+    expect(bootstrap.events).toEqual([{ id: 2 }]);
   });
 });

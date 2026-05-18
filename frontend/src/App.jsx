@@ -10,7 +10,7 @@ import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, replaceBootstrapList } from "./lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, replaceBootstrapList, upsertBootstrapListItem } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -421,10 +421,7 @@ export default function App() {
 
   const handlePublishEvent = async id => {
     const response = await publishEvent(id);
-    setBootstrap(prev => ({
-      ...prev,
-      events: (prev.events || []).map(event => event.id === response.event.id ? response.event : event),
-    }));
+    setBootstrap(prev => upsertBootstrapListItem(prev, "events", response.event));
     return response.event;
   };
 
@@ -436,10 +433,7 @@ export default function App() {
       const current = Array.isArray(prev[userKey]) ? prev[userKey] : [];
       return { ...prev, [userKey]: current.filter(eventId => eventId !== id) };
     });
-    setBootstrap(prev => ({
-      ...prev,
-      events: (prev.events || []).filter(event => event.id !== id),
-    }));
+    setBootstrap(prev => removeBootstrapListItem(prev, "events", event => event.id === id));
     if (activeEventId === id) setActiveEventId(null);
   };
 
@@ -512,25 +506,19 @@ export default function App() {
       return next;
     });
     await refreshBootstrap({ silent: true, rethrow: true });
-    setBootstrap(prev => ({
-      ...prev,
-      events: (prev.events || []).map(event => ({
-        ...event,
-        formIds: (event.formIds || []).filter(id => id !== formId),
-      })),
-    }));
+    setBootstrap(prev => replaceBootstrapList(prev, "events", (prev.events || []).map(event => ({
+      ...event,
+      formIds: (event.formIds || []).filter(id => id !== formId),
+    }))));
     return result;
   };
 
   const handleSaveResponse = async payload => {
     const result = await saveResponse(payload);
     setResponseDetails(prev => ({ ...prev, [payload.formId]: result.responses }));
-    setBootstrap(prev => ({
-      ...prev,
-      forms: prev.forms.map(form => form.id === payload.formId
-        ? { ...form, metrics: { ...form.metrics, responses: result.responses.length } }
-        : form),
-    }));
+    setBootstrap(prev => replaceBootstrapList(prev, "forms", prev.forms.map(form => form.id === payload.formId
+      ? { ...form, metrics: { ...form.metrics, responses: result.responses.length } }
+      : form)));
   };
 
   const handleSaveEscala = async (formId, sections) => {
@@ -539,12 +527,9 @@ export default function App() {
     setBootstrap(prev => {
       const total = result.sections.reduce((sum, section) => sum + section.slots.length, 0);
       const filled = result.sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
-      return {
-        ...prev,
-        forms: prev.forms.map(form => form.id === formId
-          ? { ...form, metrics: { responses: filled, total, filled, pending: total - filled } }
-          : form),
-      };
+      return replaceBootstrapList(prev, "forms", prev.forms.map(form => form.id === formId
+        ? { ...form, metrics: { responses: filled, total, filled, pending: total - filled } }
+        : form));
     });
   };
 
@@ -555,12 +540,9 @@ export default function App() {
       setBootstrap(prev => {
         const total = result.sections.reduce((sum, section) => sum + section.slots.length, 0);
         const filled = result.sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
-        return {
-          ...prev,
-          forms: prev.forms.map(form => form.id === formId
-            ? { ...form, metrics: { responses: filled, total, filled, pending: total - filled } }
-            : form),
-        };
+        return replaceBootstrapList(prev, "forms", prev.forms.map(form => form.id === formId
+          ? { ...form, metrics: { responses: filled, total, filled, pending: total - filled } }
+          : form));
       });
       return result.sections;
     } catch (error) {
@@ -573,7 +555,7 @@ export default function App() {
 
   const handleSaveUser = async user => {
     const result = await saveUser(user);
-    setBootstrap(prev => ({ ...prev, users: result.users }));
+    setBootstrap(prev => replaceBootstrapList(prev, "users", result.users));
     if (currentUser?.id === user.id) {
       const refreshed = result.users.find(item => item.id === user.id);
       setSession(prev => prev ? {
@@ -586,7 +568,7 @@ export default function App() {
 
   const handleDeleteUser = async id => {
     const result = await deleteUser(id);
-    setBootstrap(prev => ({ ...prev, users: result.users }));
+    setBootstrap(prev => replaceBootstrapList(prev, "users", result.users));
     if (currentUser?.id === id) {
       await logout();
     }
@@ -631,39 +613,24 @@ export default function App() {
 
   const handleSaveMessageTemplate = async template => {
     const result = await saveMessageTemplate(template);
-    setBootstrap(prev => {
-      const list = prev.messageTemplates || [];
-      const next = template?.id
-        ? list.map(item => item.id === result.template.id ? result.template : item)
-        : [...list, result.template];
-      return { ...prev, messageTemplates: next };
-    });
+    setBootstrap(prev => upsertBootstrapListItem(prev, "messageTemplates", result.template));
     return result.template;
   };
 
   const handleDeleteMessageTemplate = async id => {
     await deleteMessageTemplate(id);
-    setBootstrap(prev => ({
-      ...prev,
-      messageTemplates: (prev.messageTemplates || []).filter(item => item.id !== id),
-    }));
+    setBootstrap(prev => removeBootstrapListItem(prev, "messageTemplates", item => item.id === id));
   };
 
   const handleSavePersonPreset = async preset => {
     const result = await savePersonPreset(preset);
-    setBootstrap(prev => {
-      const list = prev.personPresets || [];
-      const next = preset?.id
-        ? list.map(item => item.id === result.preset.id ? result.preset : item)
-        : [...list, result.preset];
-      return replaceBootstrapList(prev, "personPresets", next);
-    });
+    setBootstrap(prev => upsertBootstrapListItem(prev, "personPresets", result.preset));
     return result.preset;
   };
 
   const handleDeletePersonPreset = async id => {
     await deletePersonPreset(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "personPresets", (prev.personPresets || []).filter(item => item.id !== id)));
+    setBootstrap(prev => removeBootstrapListItem(prev, "personPresets", item => item.id === id));
   };
 
   const handleSaveEventMessage = async (eventId, payload) => {

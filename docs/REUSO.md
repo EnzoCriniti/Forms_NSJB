@@ -22,7 +22,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do app para login, publicos, loading e shell autenticado.
 - `frontend/src/lib/appBootstrap.js`
-  Normalizacao do bootstrap, selecao do formulario ativo e substituicao de listas apos recarregar a base.
+  Normalizacao do bootstrap, selecao do formulario ativo e operacoes reutilizaveis de lista no estado.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
 - `frontend/src/features/admin/adminAccessPanels.jsx`

@@ -32,6 +32,25 @@ export const replaceBootstrapList = (bootstrap, key, list) => ({
   [key]: list,
 });
 
+export const upsertBootstrapListItem = (bootstrap, key, item, { matchKey = "id", prepend = false } = {}) => {
+  const list = Array.isArray(bootstrap?.[key]) ? bootstrap[key] : [];
+  const index = list.findIndex(current => String(current?.[matchKey]) === String(item?.[matchKey]));
+  let next;
+  if (index >= 0) {
+    next = list.map((current, currentIndex) => currentIndex === index ? item : current);
+  } else if (prepend) {
+    next = [item, ...list];
+  } else {
+    next = [...list, item];
+  }
+  return replaceBootstrapList(bootstrap, key, next);
+};
+
+export const removeBootstrapListItem = (bootstrap, key, predicate) => {
+  const list = Array.isArray(bootstrap?.[key]) ? bootstrap[key] : [];
+  return replaceBootstrapList(bootstrap, key, list.filter(item => !predicate(item)));
+};
+
 export const pickActiveFormIdAfterBootstrap = ({
   currentFormId,
   currentUser,
