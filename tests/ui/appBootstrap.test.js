@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, sortBootstrapEventsByDateDesc, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {
@@ -99,6 +99,16 @@ describe("appBootstrap helpers", () => {
       { id: 1, formIds: [10] },
       { id: 2, formIds: [12] },
     ]);
+  });
+
+  it("remove e alterna ids fixados por usuario", () => {
+    const toggled = togglePinnedIdForUser({ 1: [10] }, 1, 11);
+    const toggledBack = togglePinnedIdForUser(toggled, 1, 10);
+    const removed = removePinnedIdForUser({ 1: [10, 11] }, 1, 10);
+
+    expect(toggled[1]).toEqual([11, 10]);
+    expect(toggledBack[1]).toEqual([11]);
+    expect(removed[1]).toEqual([11]);
   });
 
   it("ordena eventos por data mais recente e id", () => {

@@ -10,7 +10,7 @@ import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, sortBootstrapEventsByDateDesc, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -424,26 +424,13 @@ export default function App() {
 
   const handleDeleteEvent = async id => {
     await deleteEvent(id);
-    setPinnedEventsByUser(prev => {
-      if (!currentUser?.id) return prev;
-      const userKey = String(currentUser.id);
-      const current = Array.isArray(prev[userKey]) ? prev[userKey] : [];
-      return { ...prev, [userKey]: current.filter(eventId => eventId !== id) };
-    });
+    setPinnedEventsByUser(prev => removePinnedIdForUser(prev, currentUser?.id, id));
     setBootstrap(prev => removeBootstrapListItem(prev, "events", event => event.id === id));
     if (activeEventId === id) setActiveEventId(null);
   };
 
   const handleTogglePinnedEvent = eventId => {
-    if (!currentUser?.id || !eventId) return;
-    const userKey = String(currentUser.id);
-    setPinnedEventsByUser(prev => {
-      const current = Array.isArray(prev[userKey]) ? prev[userKey] : [];
-      const next = current.includes(eventId)
-        ? current.filter(id => id !== eventId)
-        : [eventId, ...current];
-      return { ...prev, [userKey]: next };
-    });
+    setPinnedEventsByUser(prev => togglePinnedIdForUser(prev, currentUser?.id, eventId));
   };
 
   const handleCreateFormInEvent = event => {
@@ -473,15 +460,7 @@ export default function App() {
   };
 
   const handleTogglePinnedForm = formId => {
-    if (!currentUser?.id || !formId) return;
-    const userKey = String(currentUser.id);
-    setPinnedFormsByUser(prev => {
-      const current = Array.isArray(prev[userKey]) ? prev[userKey] : [];
-      const next = current.includes(formId)
-        ? current.filter(id => id !== formId)
-        : [formId, ...current];
-      return { ...prev, [userKey]: next };
-    });
+    setPinnedFormsByUser(prev => togglePinnedIdForUser(prev, currentUser?.id, formId));
   };
 
   const handleSaveFormDeleteKey = async payload => {
