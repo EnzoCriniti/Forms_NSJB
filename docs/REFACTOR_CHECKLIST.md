@@ -21,6 +21,7 @@ Checklist incremental para reduzir arquivos grandes, separar responsabilidades e
   - separar shell, rotas e regras de sessao
   - extrair helpers de navegacao e acesso
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
+  - etapa inicial e dados basicos extraidos para paineis compartilhados
   - revisar edicao de campos, modos e validacoes
   - mover blocos restantes para subcomponentes
 - [ ] `frontend/src/features/admin/MessagingSettingsPanel.jsx`

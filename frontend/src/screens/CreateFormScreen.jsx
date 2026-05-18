@@ -5,10 +5,10 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Icon, Btn, FieldControl, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, Btn, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormLivePreview } from "../components/CreateFormLivePreview";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { FieldEditorPanel, FormModePanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
+import { FieldEditorPanel, FormBasicsPanel, FormModePanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
 import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
@@ -467,54 +467,24 @@ export const CreateFormScreen = ({
       </div>
 
       {showTypeSetup && (
-        <div className="create-form-start-card">
-          <div style={{ fontSize: 11, fontWeight: 900, color: COLORS.primary, textTransform: "uppercase", letterSpacing: 0.6 }}>Etapa inicial</div>
-          <h3 style={{ margin: "4px 0 4px", fontSize: 20, color: COLORS.text }}>Qual estrutura voce vai criar?</h3>
-          <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>
-            A escolha define o editor correto e evita carregar configuracoes que nao pertencem ao tipo do formulario.
-          </p>
-        </div>
-      )}
-
-      {showTypeSetup && (
-        <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
-          {[
-            { id: "presenca", title: "Presenca", desc: "Perguntas, acompanhantes, totalizacao e controle de envio." },
-            { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsaveis e auxiliares." },
-          ].map(option => (
-            <button
-              className="create-form-type-card"
-              key={option.id}
-              onClick={() => {
-                setFormat(option.id);
-                setPreset(null);
-                if (option.id === "presenca") {
-                  const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
-                  setFormMode(FORM_MODES.NUCLEO);
-                  setFields(defaultFields);
-                  setResultsConfig(createDefaultResultsConfig(defaultFields));
-                } else {
-                  setFormMode(FORM_MODES.GERAL);
-                  setScaleDraft(createDefaultScaleSections());
-                  setScaleLimit(1);
-                }
-              }}
-              style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `2px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
-                <strong style={{ fontSize: 14 }}>{option.title}</strong>
-                {format === option.id && <Icon name="check" size={16} />}
-              </div>
-              <p style={{ margin: "7px 0 0", fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.45 }}>{option.desc}</p>
-            </button>
-          ))}
-        </div>
-      )}
-
-      {showTypeSetup && (
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-          <Btn icon="check" onClick={() => setSetupStep("editor")}>Continuar para o editor</Btn>
-        </div>
+        <FormTypeSetupPanel
+          format={format}
+          onSelectFormat={nextFormat => {
+            setFormat(nextFormat);
+            setPreset(null);
+            if (nextFormat === "presenca") {
+              const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
+              setFormMode(FORM_MODES.NUCLEO);
+              setFields(defaultFields);
+              setResultsConfig(createDefaultResultsConfig(defaultFields));
+            } else {
+              setFormMode(FORM_MODES.GERAL);
+              setScaleDraft(createDefaultScaleSections());
+              setScaleLimit(1);
+            }
+          }}
+          onContinue={() => setSetupStep("editor")}
+        />
       )}
 
       {!showTypeSetup && (
@@ -562,87 +532,34 @@ export const CreateFormScreen = ({
         </Btn>
       </div>
 
-      <div style={{ display: "grid", gap: 14, marginBottom: 20 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
-          <FieldControl label="Titulo" required>
-            <input
-              value={formTitle}
-              onChange={event => {
-                if (shouldPresetTitle) return;
-                setTitle(event.target.value);
-              }}
-              readOnly={shouldPresetTitle}
-              placeholder={shouldPresetTitle ? "Titulo padronizado pelo evento" : "Ex: Presenca Sessao de Escala - 02/05/2026"}
-              aria-readonly={shouldPresetTitle}
-              style={{
-                ...inp,
-                fontSize: 14,
-                background: shouldPresetTitle ? COLORS.surfaceAlt : COLORS.surface,
-                cursor: shouldPresetTitle ? "not-allowed" : "text",
-              }}
-            />
-            <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-              {shouldPresetTitle
-                ? "O nome deste formulario e padronizado pelo evento."
-                : "O nome pode ser editado nesta tela."}
-            </div>
-          </FieldControl>
-        </div>
-        <FieldControl label="Descricao / Instrucoes">
-          <textarea value={desc} onChange={event => setDesc(event.target.value)} rows={3} placeholder="Prezada Irmandade..." style={{ ...inp, resize: "vertical" }} />
-        </FieldControl>
-        <div className="create-form-meta-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
-          <FieldControl label="Abertura programada" hint="O formulario vai para aberto automaticamente nesta data.">
-            <input type="date" value={eventDate} onChange={event => setEventDate(event.target.value)} style={inp} />
-          </FieldControl>
-          <FieldControl label="Fechamento automatico" hint="Quando chegar este horario, o formulario fecha sozinho.">
-            <input type="datetime-local" value={closingDate} onChange={event => setClosingDate(event.target.value)} style={inp} />
-          </FieldControl>
-          <FieldControl label="Status">
-            <select value={status} onChange={event => setStatus(event.target.value)} style={inp}>
-              <option value="rascunho">Rascunho</option>
-              <option value="aberto">Aberto</option>
-              <option value="fechado">Fechado</option>
-              <option value="arquivado">Arquivado</option>
-            </select>
-          </FieldControl>
-        </div>
-        <div className="create-form-meta-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-          <FieldControl label="Total esperado" hint={linkedPeopleField
-            ? `Se deixar em branco, o total sera assumido pela base carregada (${people.length} pessoas).`
-            : formMode === FORM_MODES.GERAL
-              ? "Formulario geral nao usa a base central, entao o sistema nao controla faltantes esperados."
-              : "Sem vinculo com a base completa, o sistema nao controla faltantes esperados."}>
-            <input
-              type="number"
-              min="0"
-              value={linkedPeopleField ? totalExpected : ""}
-              onChange={event => setTotalExpected(event.target.value)}
-              placeholder={linkedPeopleField ? String(people.length || "") : "Disponivel apenas com campo de pessoa vinculada"}
-              disabled={!linkedPeopleField}
-              style={{ ...inp, opacity: linkedPeopleField ? 1 : 0.7 }}
-            />
-          </FieldControl>
-          <FieldControl label="Texto de fechamento">
-            <input value={closingText} onChange={event => setClosingText(event.target.value)} style={inp} />
-          </FieldControl>
-        </div>
-      </div>
-
-      <FieldControl label="Classificacoes" style={{ marginBottom: 20 }}>
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {labels.map(label => (
-            <button key={label.id} onClick={() => togLabel(label.id)} style={{ padding: "4px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "2px solid", cursor: "pointer", transition: "all 0.15s", borderColor: selLabels.includes(label.id) ? label.color : COLORS.borderLight, background: selLabels.includes(label.id) ? label.color : "transparent", color: selLabels.includes(label.id) ? "#fff" : label.color }}>{label.name}</button>
-          ))}
-        </div>
-      </FieldControl>
-
-      <div className="create-form-people-bar" style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-        <Icon name="user" size={14} />
-        <span style={{ fontSize: 12, color: COLORS.textMuted }}>
-          <strong style={{ color: COLORS.text }}>{people.length} pessoas</strong> carregadas. {formMode === FORM_MODES.NUCLEO ? (membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios.") : "Base central bloqueada neste formulario geral."}
-        </span>
-      </div>
+      <FormBasicsPanel
+        inp={inp}
+        formTitle={formTitle}
+        shouldPresetTitle={shouldPresetTitle}
+        onTitleChange={event => {
+          if (shouldPresetTitle) return;
+          setTitle(event.target.value);
+        }}
+        previewDescription={desc}
+        onDescriptionChange={event => setDesc(event.target.value)}
+        eventDate={eventDate}
+        onEventDateChange={event => setEventDate(event.target.value)}
+        closingDate={closingDate}
+        onClosingDateChange={event => setClosingDate(event.target.value)}
+        status={status}
+        onStatusChange={event => setStatus(event.target.value)}
+        linkedPeopleField={linkedPeopleField}
+        peopleCount={people.length}
+        onTotalExpectedChange={event => setTotalExpected(event.target.value)}
+        totalExpected={totalExpected}
+        formMode={formMode}
+        closingText={closingText}
+        onClosingTextChange={event => setClosingText(event.target.value)}
+        labels={labels}
+        selectedLabels={selLabels}
+        onToggleLabel={togLabel}
+        peopleConfigLabel={formMode === FORM_MODES.NUCLEO ? (membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios.") : "Base central bloqueada neste formulario geral."}
+      />
 
       {showPreview && (
         <div style={{ marginBottom: 20 }}>
