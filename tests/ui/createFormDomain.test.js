@@ -3,6 +3,8 @@ import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
   buildCreateFormInitialState,
   buildCreateFormPayload,
+  buildCreateFormModeTransition,
+  buildCreateFormTemplateState,
   buildCreateFormTemplatePayload,
   buildFieldDraftDefaults,
   buildFieldDraftFromCatalogItem,
@@ -149,5 +151,47 @@ describe("createFormDomain", () => {
     expect(payload.totalExpected).toBe(2);
     expect(template.name).toBe("Base");
     expect(template.fieldDefinitions).toHaveLength(2);
+  });
+
+  it("transita o modo geral removendo a base central e ajustando a selecao", () => {
+    const transition = buildCreateFormModeTransition({
+      nextMode: FORM_MODES.GERAL,
+      fields: [
+        { id: 1, type: "person_select", label: "Nome", memberBinding: { source: "members", role: "primary" } },
+        { id: 2, type: "text", label: "Observacao" },
+      ],
+      currentNFieldMode: "local",
+      currentNType: "person_select",
+      currentNCatalogId: "",
+      currentResultsConfig: { searchEnabled: true, showLinkedRoster: true, totalsLayout: [] },
+      filteredFieldCatalog: [],
+    });
+
+    expect(transition.nextType).toBe("yes_no");
+    expect(transition.totalExpected).toBe("");
+    expect(transition.resultsConfig.formMode).toBe(FORM_MODES.GERAL);
+    expect(transition.fields.some(field => field.type === "person_select")).toBe(false);
+  });
+
+  it("aplica template preservando os dados principais do formulario", () => {
+    const nextState = buildCreateFormTemplateState({
+      type: "presenca",
+      title: "Evento",
+      fieldDefinitions: [
+        { id: 1, type: "person_select", label: "Nome", memberBinding: { source: "members", role: "primary" } },
+        { id: 2, type: "yes_no", label: "Vai?" },
+      ],
+      labels: [1],
+      resultsConfig: { searchEnabled: false, showLinkedRoster: true, totalsLayout: [] },
+      closingText: "Fecha",
+      desc: "Descricao",
+      scaleLimit: 2,
+    });
+
+    expect(nextState.format).toBe("presenca");
+    expect(nextState.formMode).toBe(FORM_MODES.NUCLEO);
+    expect(nextState.fields).toHaveLength(2);
+    expect(nextState.resultsConfig.formMode).toBe(FORM_MODES.NUCLEO);
+    expect(nextState.closingText).toBe("Fecha");
   });
 });

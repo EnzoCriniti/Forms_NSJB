@@ -28,6 +28,7 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
   - reduzir orquestracao remanescente
   - remover qualquer regra que ainda possa viver no dominio
+  - transicoes de modo e template ja foram movidas para `frontend/src/screens/createFormDomain.js`
 - [ ] `frontend/src/App.jsx`
   - separar handlers restantes por dominio
   - revisar o que ainda merece helper em `lib/appBootstrap.js`

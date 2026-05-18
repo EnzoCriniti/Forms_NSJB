@@ -48,11 +48,6 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
   Paineis finais da criacao de formulario: escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
-- `frontend/src/screens/createFormDomain.js`
-- `frontend/src/screens/createFormDomain.js`
-  Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
-- `frontend/src/screens/createFormDomain.js`
-  Helpers puros da criacao de formulario para defaults, titulos padrao, estado inicial do editor, estado do editor de campo, montagem/merge de campos, payload final, validacao e sincronizacao de resultados.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.

@@ -400,6 +400,67 @@ export const syncResultsConfigWithFields = (config, fields) => {
   };
 };
 
+export const buildCreateFormModeTransition = ({
+  nextMode,
+  fields,
+  currentNFieldMode,
+  currentNType,
+  currentNCatalogId,
+  currentResultsConfig,
+  filteredFieldCatalog = [],
+}) => {
+  const normalizedFields = nextMode === FORM_MODES.NUCLEO
+    ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
+    : normalizePeopleBaseBindings(removeMembersBaseFields(fields));
+
+  let nextType = currentNType;
+  let nextCatalogId = currentNCatalogId;
+
+  if (nextMode === FORM_MODES.GERAL && currentNFieldMode === "local" && currentNType === "person_select") {
+    nextType = "yes_no";
+  }
+
+  if (nextMode === FORM_MODES.GERAL && currentNFieldMode === "catalog") {
+    const selectedCatalogItem = filteredFieldCatalog.find(item => String(item.id) === String(currentNCatalogId));
+    if (selectedCatalogItem?.type === "person_select" && selectedCatalogItem?.selectionSource?.kind !== "external_base") {
+      nextCatalogId = "";
+      nextType = "yes_no";
+    }
+  }
+
+  return {
+    fields: normalizedFields,
+    resultsConfig: syncResultsConfigWithFields({
+      ...currentResultsConfig,
+      formMode: nextMode,
+      showLinkedRoster: nextMode === FORM_MODES.NUCLEO ? currentResultsConfig.showLinkedRoster : false,
+    }, normalizedFields),
+    nextType,
+    nextCatalogId,
+    totalExpected: nextMode === FORM_MODES.GERAL ? "" : undefined,
+  };
+};
+
+export const buildCreateFormTemplateState = (template) => {
+  if (!template) return null;
+  const nextMode = getFormMode(template);
+  const nextFields = template.fieldDefinitions?.length ? template.fieldDefinitions : createDefaultPresenceFields(nextMode);
+  return {
+    format: template.type,
+    formMode: nextMode,
+    fields: template.fieldDefinitions?.length ? template.fieldDefinitions : null,
+    scaleDraft: template.scaleSections?.length ? template.scaleSections : null,
+    desc: template.desc !== undefined ? template.desc : null,
+    closingText: template.closingText !== undefined ? template.closingText : null,
+    selLabels: template.labels?.length ? template.labels : null,
+    resultsConfig: syncResultsConfigWithFields({
+      ...(template.resultsConfig || createDefaultResultsConfig(nextFields)),
+      formMode: nextMode,
+    }, nextFields),
+    scaleLimit: getScalePersonLimit(template),
+  };
+};
+
 export const buildFieldValidation = ({ nType, nValidation }) => {
   if (nType === "text") {
     const validation = {};

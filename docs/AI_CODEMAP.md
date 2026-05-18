@@ -106,24 +106,16 @@ Mapa curto das areas mais mexidas por agentes.
   No modo `nucleo`, o campo principal da base central de socios entra como base obrigatoria; no modo `geral`, essa base central fica bloqueada.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/createFormDomain.js`
-  Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor, estado do editor de campo, montagem/merge de campos, payload final e sincronizacao de resultados.
+  Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor, estado do editor de campo, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
 - `frontend/src/screens/createFormPanels.jsx`
   Barramento dos paineis reutilizaveis da criacao de formulario.
   Este arquivo agora expõe apenas a pre-visualizacao publica e reexporta os demais blocos por dominio.
-  Os paineis iniciais ficaram em `frontend/src/features/forms/createFormPanels/setupPanels.jsx`.
-  Os paineis de lista e editor de campos ficaram em `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`.
-  Os paineis finais de escala, resultados e rodape ficaram em `frontend/src/features/forms/createFormPanels/finalPanels.jsx`.
-  A lista de campos usa `FormFieldRow` para cada item e `ResultsTotalRow` para cada total configurado.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
   Paineis finais da criacao de formulario: escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
-- `frontend/src/features/admin/AdminSettingsModal.jsx`
-  Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
-- `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
-  Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/features/admin/adminAccessPanels.jsx`

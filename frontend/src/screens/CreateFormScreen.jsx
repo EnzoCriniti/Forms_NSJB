@@ -8,7 +8,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { FieldEditorPanel, FormBasicsPanel, FormContextPanel, FormFooterPanel, FormHeaderPanel, FormModePanel, FormPreviewPanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
-import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
+import { FORM_MODES, getPeopleBaseFieldRole, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
   DEFAULT_GRID_ROWS,
@@ -28,14 +28,12 @@ import {
   buildCreateFormPayload,
   buildCreateFormTemplatePayload,
   mergeSavedField,
-  normalizePresenceFieldsForMode,
-  ensurePrimaryMembersField,
+  buildCreateFormModeTransition,
+  buildCreateFormTemplateState,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
   moveItem,
   normalizePeopleBaseBindings,
-  removeMembersBaseFields,
-  syncResultsConfigWithFields,
   buildFieldValidation,
 } from "./createFormDomain";
 
@@ -181,7 +179,7 @@ export const CreateFormScreen = ({
   const currentFieldSourceLabel = nFieldMode === "catalog"
     ? (selectedCatalogItem ? `Campo da biblioteca: ${selectedCatalogItem.name}` : "Selecione um campo base")
     : "Campo local deste formulario";
-  const handleModeSelect = nextMode => syncModeWithFields(nextMode, fields);
+  const handleModeSelect = nextMode => syncModeWithFields(nextMode);
   const handleToggleFieldShow = fieldId => setFields(fields.map(item => item.id === fieldId ? { ...item, show: !item.show } : item));
   const handleRemoveField = fieldId => setFields(fields.filter(item => item.id !== fieldId));
   const handleMoveTotalLayout = (index, direction) => {
@@ -194,28 +192,25 @@ export const CreateFormScreen = ({
     }));
   };
 
-  const syncModeWithFields = (nextMode, nextFields) => {
-    const normalizedFields = nextMode === FORM_MODES.NUCLEO
-      ? normalizePeopleBaseBindings(ensurePrimaryMembersField(nextFields))
-      : normalizePeopleBaseBindings(removeMembersBaseFields(nextFields));
+  const syncModeWithFields = nextMode => {
+    const transition = buildCreateFormModeTransition({
+      nextMode,
+      fields,
+      currentNFieldMode: nFieldMode,
+      currentNType: nType,
+      currentNCatalogId: nCatalogId,
+      currentResultsConfig: resultsConfig,
+      filteredFieldCatalog,
+    });
     setPreset(null);
     setFormMode(nextMode);
-    setFields(normalizedFields);
-    if (nextMode === FORM_MODES.GERAL && nFieldMode === "local" && nType === "person_select") {
-      setNType("yes_no");
+    setFields(transition.fields);
+    setNType(transition.nextType);
+    setNCatalogId(transition.nextCatalogId);
+    setResultsConfig(transition.resultsConfig);
+    if (transition.totalExpected !== undefined) {
+      setTotalExpected(transition.totalExpected);
     }
-    if (nextMode === FORM_MODES.GERAL && nFieldMode === "catalog") {
-      const selectedCatalogItem = filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId));
-      if (selectedCatalogItem?.type === "person_select" && selectedCatalogItem?.selectionSource?.kind !== "external_base") {
-        setNCatalogId("");
-        setNType("yes_no");
-      }
-    }
-    setResultsConfig(current => syncResultsConfigWithFields({
-      ...current,
-      formMode: nextMode,
-      showLinkedRoster: nextMode === FORM_MODES.NUCLEO ? current.showLinkedRoster : false,
-    }, normalizedFields));
     if (nextMode === FORM_MODES.GERAL) {
       setTotalExpected("");
     }
@@ -337,17 +332,16 @@ export const CreateFormScreen = ({
     }
     const found = presets.find(item => String(item.id) === String(templateId));
     if (!found) return;
-    const nextMode = getFormMode(found);
-    const nextFields = found.fieldDefinitions?.length ? found.fieldDefinitions : createDefaultPresenceFields(nextMode);
-    setFormat(found.type);
-    setFormMode(nextMode);
-    if (found.fieldDefinitions?.length) setFields(found.fieldDefinitions);
-    if (found.scaleSections?.length) setScaleDraft(found.scaleSections);
-    if (found.desc !== undefined) setDesc(found.desc);
-    if (found.closingText) setClosingText(found.closingText);
-    if (found.labels?.length) setSelLabels(found.labels);
-    setResultsConfig(syncResultsConfigWithFields({ ...(found.resultsConfig || createDefaultResultsConfig(nextFields)), formMode: nextMode }, nextFields));
-    setScaleLimit(getScalePersonLimit(found));
+    const nextState = buildCreateFormTemplateState(found);
+    setFormat(nextState.format);
+    setFormMode(nextState.formMode);
+    if (nextState.fields) setFields(nextState.fields);
+    if (nextState.scaleDraft) setScaleDraft(nextState.scaleDraft);
+    if (nextState.desc !== null) setDesc(nextState.desc);
+    if (nextState.closingText !== null) setClosingText(nextState.closingText);
+    if (nextState.selLabels) setSelLabels(nextState.selLabels);
+    setResultsConfig(nextState.resultsConfig);
+    setScaleLimit(nextState.scaleLimit);
   };
 
   const saveAsTemplate = async () => {
