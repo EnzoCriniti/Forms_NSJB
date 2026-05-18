@@ -61,6 +61,8 @@ Mapa curto das areas mais mexidas por agentes.
   Indice rapido para agentes encontrarem componentes, helpers e telas antes de recriar comportamento ja existente.
 - `docs/REFACTOR_CHECKLIST.md`
   Checklist por etapas com o que ja foi concluido e os proximos passos de refatoracao.
+- `docs/REFACTOR_STRUCTURE_CHECKLIST.md`
+  Checklist novo focado em organizacao de pastas, reducao de duplicacao e unificacao de blocos compartilhados.
 
 ## Listagem
 

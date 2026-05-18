@@ -57,6 +57,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Pasta alvo para novos componentes compartilhados do dominio de eventos.
 - `docs/REFACTOR_CHECKLIST.md`
   Checklist sequencial com o que ja foi quebrado em componentes e os proximos passos.
+- `docs/REFACTOR_STRUCTURE_CHECKLIST.md`
+  Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplicacoes.
 
 ## Formularios
 
