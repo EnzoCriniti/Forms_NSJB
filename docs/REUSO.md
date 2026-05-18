@@ -43,6 +43,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.
+  A toolbar da planilha de presenca tambem pode ser reutilizada por `PresenceResultsToolbar`.
 - `frontend/src/features/events/components/eventsPanels.jsx`
   Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`
