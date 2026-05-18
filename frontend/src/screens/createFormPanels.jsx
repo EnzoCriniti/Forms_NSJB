@@ -224,44 +224,21 @@ export const PresenceFieldsPanel = ({
     </div>
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {fields.map((field, index) => (
-        <div className="create-form-field-row" key={field.id} style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 22, height: 22, borderRadius: 6, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: COLORS.primary, flexShrink: 0 }}>{index + 1}</div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 600, fontSize: 13 }}>{field.label}{field.required ? <span style={{ color: COLORS.danger, marginLeft: 2 }}>*</span> : ""}</div>
-            <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 1 }}>
-              {FIELD_TYPES.find(type => type.v === field.type)?.l}
-              {field.type === "grid" && field.gridRows?.length ? ` - ${field.gridRows.length} linhas x ${field.gridCols?.length ?? 0} colunas` : ""}
-            </div>
-            {field.type === "person_select" && (
-              <div style={{ fontSize: 11, color: field.selectionSource?.kind === "external_base" ? COLORS.accent : getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? COLORS.primary : COLORS.textMuted, marginTop: 2 }}>
-                {field.selectionSource?.kind === "external_base"
-                  ? `Vinculado a ${externalBaseMap.get(String(field.selectionSource.externalBaseId || ""))?.name || "base externa"}`
-                  : getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"
-                    ? "Campo principal da base central"
-                    : "Campo auxiliar da base central"}
-              </div>
-            )}
-            {summarizeFieldValidation(field) && (
-              <div style={{ fontSize: 11, color: COLORS.accent, marginTop: 2 }}>
-                Validação: {summarizeFieldValidation(field)}
-              </div>
-            )}
-          </div>
-          <div className="create-form-field-actions" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: COLORS.textSecondary, cursor: "pointer" }}>
-              <input type="checkbox" checked={field.show} onChange={() => onToggleFieldShow(field.id)} /> Exibir
-            </label>
-            <button aria-label={`Editar ${field.label}`} onClick={() => onStartEditField(field)} style={{ background: "none", border: "none", color: COLORS.textSecondary, cursor: "pointer", padding: 2 }}><Icon name="edit" size={14} /></button>
-            <button
-              aria-label={`Remover ${field.label}`}
-              disabled={formMode === "nucleo" && isMembersSelectionField(field) && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"}
-              onClick={() => onRemoveField(field.id)}
-              style={{ background: "none", border: "none", color: COLORS.textMuted, cursor: "pointer", padding: 2, opacity: formMode === "nucleo" && isMembersSelectionField(field) && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? 0.35 : 1 }}
-            >
-              <Icon name="trash" size={14} />
-            </button>
-          </div>
-        </div>
+        <FormFieldRow
+          key={field.id}
+          field={field}
+          index={index}
+          fields={fields}
+          formMode={formMode}
+          FIELD_TYPES={FIELD_TYPES}
+          isMembersSelectionField={isMembersSelectionField}
+          getPeopleBaseFieldRole={getPeopleBaseFieldRole}
+          summarizeFieldValidation={summarizeFieldValidation}
+          externalBaseMap={externalBaseMap}
+          onStartEditField={onStartEditField}
+          onToggleFieldShow={onToggleFieldShow}
+          onRemoveField={onRemoveField}
+        />
       ))}
     </div>
 
@@ -822,3 +799,80 @@ export const FormFooterPanel = ({
 );
 
 const fieldStyle = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };
+
+export const FormFieldRow = ({
+  field,
+  index,
+  fields,
+  formMode,
+  FIELD_TYPES,
+  isMembersSelectionField,
+  getPeopleBaseFieldRole,
+  summarizeFieldValidation,
+  externalBaseMap,
+  onStartEditField,
+  onToggleFieldShow,
+  onRemoveField,
+}) => (
+  <div className="create-form-field-row" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+    <div style={{ width: 22, height: 22, borderRadius: 6, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, color: COLORS.primary, flexShrink: 0 }}>{index + 1}</div>
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ fontWeight: 600, fontSize: 13 }}>{field.label}{field.required ? <span style={{ color: COLORS.danger, marginLeft: 2 }}>*</span> : ""}</div>
+      <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 1 }}>
+        {FIELD_TYPES.find(type => type.v === field.type)?.l}
+        {field.type === "grid" && field.gridRows?.length ? ` - ${field.gridRows.length} linhas x ${field.gridCols?.length ?? 0} colunas` : ""}
+      </div>
+      {field.type === "person_select" && (
+        <div style={{ fontSize: 11, color: field.selectionSource?.kind === "external_base" ? COLORS.accent : getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? COLORS.primary : COLORS.textMuted, marginTop: 2 }}>
+          {field.selectionSource?.kind === "external_base"
+            ? `Vinculado a ${externalBaseMap.get(String(field.selectionSource.externalBaseId || ""))?.name || "base externa"}`
+            : getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"
+              ? "Campo principal da base central"
+              : "Campo auxiliar da base central"}
+        </div>
+      )}
+      {summarizeFieldValidation(field) && (
+        <div style={{ fontSize: 11, color: COLORS.accent, marginTop: 2 }}>
+          Validação: {summarizeFieldValidation(field)}
+        </div>
+      )}
+    </div>
+    <div className="create-form-field-actions" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+      <label style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: COLORS.textSecondary, cursor: "pointer" }}>
+        <input type="checkbox" checked={field.show} onChange={() => onToggleFieldShow(field.id)} /> Exibir
+      </label>
+      <button aria-label={`Editar ${field.label}`} onClick={() => onStartEditField(field)} style={{ background: "none", border: "none", color: COLORS.textSecondary, cursor: "pointer", padding: 2 }}><Icon name="edit" size={14} /></button>
+      <button
+        aria-label={`Remover ${field.label}`}
+        disabled={formMode === "nucleo" && isMembersSelectionField(field) && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"}
+        onClick={() => onRemoveField(field.id)}
+        style={{ background: "none", border: "none", color: COLORS.textMuted, cursor: "pointer", padding: 2, opacity: formMode === "nucleo" && isMembersSelectionField(field) && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary" ? 0.35 : 1 }}
+      >
+        <Icon name="trash" size={14} />
+      </button>
+    </div>
+  </div>
+);
+
+export const ResultsTotalRow = ({
+  field,
+  index,
+  resultsConfig,
+  FIELD_TYPES,
+  onMoveTotalLayout,
+  onChangeResultsConfig,
+}) => (
+  <div className="create-form-total-row" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "center", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 10 }}>
+    <div>
+      <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>{field.label}</div>
+      <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+        Tipo: {FIELD_TYPES.find(type => type.v === field.type)?.l} • Exibicao automatica
+      </div>
+    </div>
+    <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
+      <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, -1)} disabled={index === 0}>Subir</Btn>
+      <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, 1)} disabled={index === resultsConfig.totalsLayout.length - 1}>Descer</Btn>
+      <Btn v="ghost" sz="sm" onClick={() => onChangeResultsConfig({ ...resultsConfig, totalsLayout: resultsConfig.totalsLayout.filter(layoutItem => String(layoutItem.fieldId) !== String(field.id)) })}>Remover</Btn>
+    </div>
+  </div>
+);
