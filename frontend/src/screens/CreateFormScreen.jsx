@@ -170,6 +170,19 @@ export const CreateFormScreen = ({
       totalsLayout: [...current.totalsLayout, { fieldId: field.id, style: getAutomaticTotalStyle(field) }],
     }));
   };
+  const applyFieldDraftState = draft => {
+    setEditingFieldId(draft.editingFieldId);
+    setNType(draft.nType);
+    setNFieldMode(draft.nFieldMode);
+    setNCatalogId(draft.nCatalogId);
+    setNLabel(draft.nLabel);
+    setNRequired(draft.nRequired);
+    setNPersonRole(draft.nPersonRole);
+    setNGridRows(draft.nGridRows);
+    setNGridCols(draft.nGridCols);
+    setNValidation(draft.nValidation);
+    setAddOpen(draft.addOpen);
+  };
 
   const syncModeWithFields = nextMode => {
     const transition = buildCreateFormModeTransition({
@@ -205,18 +218,7 @@ export const CreateFormScreen = ({
   const addGridCol = () => setNGridCols([...nGridCols, ""]);
 
   const resetFieldDraft = () => {
-    const draft = buildFieldDraftDefaults({ hasPrimaryLinkedField });
-    setEditingFieldId(draft.editingFieldId);
-    setNType(draft.nType);
-    setNFieldMode(draft.nFieldMode);
-    setNCatalogId(draft.nCatalogId);
-    setNLabel(draft.nLabel);
-    setNRequired(draft.nRequired);
-    setNPersonRole(draft.nPersonRole);
-    setNGridRows(draft.nGridRows);
-    setNGridCols(draft.nGridCols);
-    setNValidation(draft.nValidation);
-    setAddOpen(draft.addOpen);
+    applyFieldDraftState(buildFieldDraftDefaults({ hasPrimaryLinkedField }));
   };
 
   const openNewFieldDraft = () => {
@@ -228,18 +230,7 @@ export const CreateFormScreen = ({
   };
 
   const startEditField = field => {
-    const draft = buildFieldDraftFromExistingField(field, { fields });
-    setEditingFieldId(draft.editingFieldId);
-    setNType(draft.nType);
-    setNFieldMode(draft.nFieldMode);
-    setNCatalogId(draft.nCatalogId);
-    setNLabel(draft.nLabel);
-    setNRequired(draft.nRequired);
-    setNPersonRole(draft.nPersonRole);
-    setNGridRows(draft.nGridRows);
-    setNGridCols(draft.nGridCols);
-    setNValidation(draft.nValidation);
-    setAddOpen(draft.addOpen);
+    applyFieldDraftState(buildFieldDraftFromExistingField(field, { fields }));
   };
 
   const addField = () => {
@@ -271,12 +262,19 @@ export const CreateFormScreen = ({
     const catalogItem = filteredFieldCatalog.find(item => String(item.id) === String(catalogId));
     if (!catalogItem) return;
     const draft = buildFieldDraftFromCatalogItem(catalogItem, { hasPrimaryLinkedField, editingFieldId });
-    setNType(draft.nType);
-    setNLabel(draft.nLabel);
-    setNPersonRole(draft.nPersonRole);
-    setNGridRows(draft.nGridRows);
-    setNGridCols(draft.nGridCols);
-    setNValidation(draft.nValidation);
+    applyFieldDraftState({
+      editingFieldId,
+      nType: draft.nType,
+      nFieldMode,
+      nCatalogId: catalogId,
+      nLabel: draft.nLabel,
+      nRequired,
+      nPersonRole: draft.nPersonRole,
+      nGridRows: draft.nGridRows,
+      nGridCols: draft.nGridCols,
+      nValidation: draft.nValidation,
+      addOpen,
+    });
   };
 
   const setFieldMode = mode => {
