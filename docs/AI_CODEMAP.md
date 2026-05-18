@@ -112,7 +112,9 @@ Mapa curto das areas mais mexidas por agentes.
   O editor de campo foi dividido em blocos menores para origem, definicao, ajustes extras e acoes.
   A pre-visualizacao publica tambem ficou isolada em `FormPreviewPanel`.
   A lista de campos usa `FormFieldRow` para cada item e `ResultsTotalRow` para cada total configurado.
-  O topo e o card de contexto do editor tambem ficaram em `FormHeaderPanel` e `FormContextPanel`.
+  O topo, o card de contexto, o modo estrutural e os dados basicos do editor foram movidos para `frontend/src/features/forms/createFormPanels/setupPanels.jsx`.
+- `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
+  Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/features/admin/adminAccessPanels.jsx`

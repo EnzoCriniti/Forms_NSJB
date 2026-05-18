@@ -41,6 +41,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   A pre-visualizacao publica tambem ficou em `FormPreviewPanel`.
   O topo e o card de contexto do editor tambem podem ser reutilizados por `FormHeaderPanel` e `FormContextPanel`.
   As linhas de campos usam `FormFieldRow` e os totais configurados usam `ResultsTotalRow`.
+- `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
+  Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario para defaults, titulos padrao, estado inicial do editor, estado do editor de campo, montagem/merge de campos, payload final, validacao e sincronizacao de resultados.
 - `frontend/src/screens/resultsPanels.jsx`
