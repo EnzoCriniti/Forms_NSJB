@@ -53,7 +53,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.
   A toolbar da planilha de presenca tambem pode ser reutilizada por `PresenceResultsToolbar`.
 - `frontend/src/screens/resultsDomain.js`
-  Regras puras de ordenacao, filtros e formatacao da planilha de resultados.
+  Regras puras de ordenacao, filtros, formatacao e geracao de CSV da planilha de resultados.
 - `frontend/src/features/events/components/eventsPanels.jsx`
   Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`

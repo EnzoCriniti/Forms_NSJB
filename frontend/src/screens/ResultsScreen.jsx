@@ -5,11 +5,11 @@
  */
 
 import React, { useMemo, useRef, useState } from "react";
-import { COLORS, Icon, Btn, ConfirmModal, FeedbackBanner, MetricCard, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Icon, resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
-import { NO_VALUES, TABLE_ZOOM_STEP, clampTableZoom, buildActiveFilterOptions, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "./resultsDomain";
+import { NO_VALUES, TABLE_ZOOM_STEP, clampTableZoom, buildActiveFilterOptions, buildEscalaCsv, buildPresenceCsv, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "./resultsDomain";
 
 export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
@@ -252,15 +252,13 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
   }), [activeFilter, columnSearches, columns, selectedGrau, tableRows]);
 
   const exportCsv = () => {
-    const headers = ["Grau", "Nome", ...(showLinkedRows ? ["Status"] : []), ...columns.map(col => col.label)];
-    const escape = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
-    const rows = sorted.map(row => [
-      row.grau,
-      row.name,
-      ...(showLinkedRows ? [row.status] : []),
-      ...columns.map(col => formatResultFieldValue(getFieldValue(row.response, col.id), col.type)),
-    ]);
-    const csv = [headers, ...rows].map(row => row.map(escape).join(";")).join("\n");
+    const csv = buildPresenceCsv({
+      columns,
+      rows: sorted,
+      showLinkedRows,
+      getFieldValue,
+      formatFieldValue: formatResultFieldValue,
+    });
     const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -356,13 +354,6 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
   );
 };
 
-const ColumnHeader = ({ label, sortIndicator }) => (
-  <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-    <span>{label}</span>
-    {sortIndicator}
-  </div>
-);
-
 const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }) => {
   const [showSignup, setShowSignup] = useState(false);
   const [selSlot, setSelSlot] = useState(null);
@@ -378,15 +369,6 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
     setFeedback({ tone: "loading", message: "Salvando escala..." });
     await onSaveSections(next);
     setFeedback({ tone: "success", message: successMessage });
-  };
-
-  const clickSlot = (sectionIndex, slotIndex) => {
-    if (!canEdit) return;
-    if (!sections[sectionIndex].slots[slotIndex].person) {
-      setSelSlot({ sectionIndex, slotIndex });
-      setShowSignup(true);
-      setSignName("");
-    }
   };
 
   const signup = async () => {
@@ -456,10 +438,7 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   };
 
   const exportCsv = () => {
-    const headers = ["Secao", "Funcao", "Pessoa", "Status"];
-    const escape = value => `"${String(value ?? "").replace(/"/g, '""')}"`;
-    const rows = sections.flatMap(section => section.slots.map(slot => [section.title, slot.role, slot.person || "", slot.person ? "Preenchida" : "Pendente"]));
-    const csv = [headers, ...rows].map(row => row.map(escape).join(";")).join("\n");
+    const csv = buildEscalaCsv(sections);
     const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");

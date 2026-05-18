@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { buildActiveFilterOptions, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "../../frontend/src/screens/resultsDomain";
+import { buildActiveFilterOptions, buildEscalaCsv, buildPresenceCsv, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "../../frontend/src/screens/resultsDomain";
 
 describe("resultsDomain", () => {
   it("ordena grau por prioridade canonica", () => {
@@ -55,5 +55,25 @@ describe("resultsDomain", () => {
       linkedPeople: true,
       peopleLength: 4,
     })[1].l).toBe("Campos totalizaveis");
+  });
+
+  it("monta csv de presenca com valores formatados", () => {
+    const csv = buildPresenceCsv({
+      columns: [{ id: 2, type: "grid", label: "Grade" }],
+      rows: [{ grau: "QM", name: "Maria", status: "Respondido", response: { 2: { manha: "Sim" } } }],
+      showLinkedRows: true,
+      getFieldValue: (response, fieldId) => response[fieldId],
+      formatFieldValue: formatResultFieldValue,
+    });
+
+    expect(csv).toBe('"Grau";"Nome";"Status";"Grade"\n"QM";"Maria";"Respondido";"manha: Sim"');
+  });
+
+  it("monta csv de escala com status das vagas", () => {
+    const csv = buildEscalaCsv([
+      { title: "Sala", slots: [{ role: "Responsavel", person: "Maria" }, { role: "Auxiliar", person: "" }] },
+    ]);
+
+    expect(csv).toBe('"Secao";"Funcao";"Pessoa";"Status"\n"Sala";"Responsavel";"Maria";"Preenchida"\n"Sala";"Auxiliar";"";"Pendente"');
   });
 });
