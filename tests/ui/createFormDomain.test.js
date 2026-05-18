@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
   buildCreateFormInitialState,
+  buildCreateFormPayload,
+  buildCreateFormTemplatePayload,
   buildFieldDraftDefaults,
   buildFieldDraftFromCatalogItem,
   buildFieldDraftFromExistingField,
@@ -102,5 +104,50 @@ describe("createFormDomain", () => {
     expect(existing.nGridRows).toEqual(["Linha 1"]);
     expect(catalog.nLabel).toBe("Matriz");
     expect(catalog.nGridCols).toEqual(["C1", "C2"]);
+  });
+
+  it("monta o payload de salvamento e template sem duplicar regra de campos", () => {
+    const fields = [
+      { id: 1, type: "person_select", label: "Nome", total: false, selectionSource: { kind: "members" }, memberBinding: { source: "members", role: "primary" } },
+      { id: 2, type: "yes_no", label: "Vai?", total: true },
+    ];
+
+    const payload = buildCreateFormPayload({
+      form: { id: 9, slug: "teste" },
+      format: "presenca",
+      formMode: FORM_MODES.NUCLEO,
+      status: "aberto",
+      formTitle: "Formulario",
+      desc: "Descricao",
+      selLabels: [1],
+      eventDate: "2026-05-18",
+      closingDate: "2026-05-20",
+      closingText: "Fecha",
+      totalExpected: "2",
+      resultsConfig: { searchEnabled: true, showLinkedRoster: true, totalsLayout: [] },
+      scaleLimit: 1,
+      fields,
+      scaleDraft: [],
+      linkedPeopleField: true,
+    });
+
+    const template = buildCreateFormTemplatePayload({
+      type: "presenca",
+      presetName: "  Base  ",
+      desc: "Descricao",
+      closingText: "Fecha",
+      selLabels: [1],
+      format: "presenca",
+      formMode: FORM_MODES.NUCLEO,
+      fields,
+      resultsConfig: { searchEnabled: true, showLinkedRoster: true, totalsLayout: [] },
+      scaleLimit: 1,
+      scaleDraft: [],
+    });
+
+    expect(payload.fieldDefinitions).toHaveLength(2);
+    expect(payload.totalExpected).toBe(2);
+    expect(template.name).toBe("Base");
+    expect(template.fieldDefinitions).toHaveLength(2);
   });
 });

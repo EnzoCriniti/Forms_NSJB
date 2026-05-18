@@ -187,6 +187,80 @@ export const mergeSavedField = ({ baseField, resolvedType, label, nRequired, cat
   return rest;
 };
 
+export const normalizePresenceFieldsForMode = (fields, formMode) => (
+  formMode === FORM_MODES.NUCLEO
+    ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
+    : normalizePeopleBaseBindings(removeMembersBaseFields(fields))
+);
+
+export const buildCreateFormPayload = ({
+  form,
+  format,
+  formMode,
+  status,
+  formTitle,
+  desc,
+  selLabels,
+  eventDate,
+  closingDate,
+  closingText,
+  totalExpected,
+  resultsConfig,
+  scaleLimit,
+  fields,
+  scaleDraft,
+  linkedPeopleField,
+}) => {
+  const normalizedFields = normalizePresenceFieldsForMode(fields, formMode);
+  return {
+    id: form?.id,
+    slug: form?.slug,
+    type: format,
+    status,
+    title: formTitle,
+    sessionName: "",
+    description: desc,
+    labels: selLabels,
+    date: eventDate,
+    closing: closingDate,
+    closingText,
+    totalExpected: format === "presenca" && linkedPeopleField ? Number(totalExpected || 0) : 0,
+    fieldDefinitions: format === "presenca" ? normalizedFields : [],
+    resultsConfig: format === "presenca"
+      ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
+      : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
+    scaleSections: format === "escala_organ" ? scaleDraft : [],
+  };
+};
+
+export const buildCreateFormTemplatePayload = ({
+  type,
+  presetName,
+  desc,
+  closingText,
+  selLabels,
+  format,
+  formMode,
+  fields,
+  resultsConfig,
+  scaleLimit,
+  scaleDraft,
+}) => {
+  const normalizedFields = normalizePresenceFieldsForMode(fields, formMode);
+  return {
+    type,
+    name: presetName.trim(),
+    desc,
+    closingText,
+    labels: selLabels,
+    fieldDefinitions: format === "presenca" ? normalizedFields : [],
+    resultsConfig: format === "presenca"
+      ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
+      : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
+    scaleSections: format === "escala_organ" ? scaleDraft : [],
+  };
+};
+
 export const buildCreateFormInitialState = ({ form, isDuplicateMode = false }) => {
   if (!form || isDuplicateMode) {
     const format = "presenca";

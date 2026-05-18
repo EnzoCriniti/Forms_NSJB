@@ -25,7 +25,10 @@ import {
   buildFieldDraftFromExistingField,
   buildFieldDraftFromCatalogItem,
   buildFieldSavePayload,
+  buildCreateFormPayload,
+  buildCreateFormTemplatePayload,
   mergeSavedField,
+  normalizePresenceFieldsForMode,
   ensurePrimaryMembersField,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
@@ -349,21 +352,19 @@ export const CreateFormScreen = ({
 
   const saveAsTemplate = async () => {
     if (!presetName.trim()) return;
-    const normalizedFields = formMode === FORM_MODES.NUCLEO
-      ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
-      : normalizePeopleBaseBindings(removeMembersBaseFields(fields));
-    await onSavePreset({
+    await onSavePreset(buildCreateFormTemplatePayload({
       type: format,
-      name: presetName.trim(),
+      presetName,
       desc,
       closingText,
-      labels: selLabels,
-      fieldDefinitions: format === "presenca" ? normalizedFields : [],
-      resultsConfig: format === "presenca"
-        ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
-        : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
-      scaleSections: format === "escala_organ" ? scaleDraft : [],
-    });
+      selLabels,
+      format,
+      formMode,
+      fields,
+      resultsConfig,
+      scaleLimit,
+      scaleDraft,
+    }));
     setPresetName("");
     setPresetModal(false);
   };
@@ -374,28 +375,24 @@ export const CreateFormScreen = ({
     setSaving(true);
     setSaveError("");
     try {
-      const normalizedFields = formMode === FORM_MODES.NUCLEO
-        ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
-        : normalizePeopleBaseBindings(removeMembersBaseFields(fields));
-      await onSaveForm({
-        id: form?.id,
-        slug: form?.slug,
-        type: format,
+      await onSaveForm(buildCreateFormPayload({
+        form,
+        format,
+        formMode,
         status: nextStatus,
-        title: formTitle,
-        sessionName: "",
-        description: desc,
-        labels: selLabels,
-        date: eventDate,
-        closing: closingDate,
+        formTitle,
+        desc,
+        selLabels,
+        eventDate,
+        closingDate,
         closingText,
-        totalExpected: format === "presenca" && linkedPeopleField ? Number(totalExpected || 0) : 0,
-        fieldDefinitions: format === "presenca" ? normalizedFields : [],
-        resultsConfig: format === "presenca"
-          ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
-          : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
-        scaleSections: format === "escala_organ" ? scaleDraft : [],
-      });
+        totalExpected,
+        resultsConfig,
+        scaleLimit,
+        fields,
+        scaleDraft,
+        linkedPeopleField,
+      }));
       setSaveSuccess({
         title: form && !isDuplicateMode ? "Formulario alterado com sucesso" : "Formulario salvo com sucesso",
         message: form && !isDuplicateMode
