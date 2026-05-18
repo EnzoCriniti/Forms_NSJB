@@ -9,38 +9,7 @@ import { COLORS, Icon, Btn, ConfirmModal, FeedbackBanner, MetricCard, resolveAct
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
-
-const NO_VALUES = ["Nao", "Não", "NÃ£o", "NÃƒÂ£o"];
-
-const TABLE_ZOOM_MIN = 0.4;
-const TABLE_ZOOM_MAX = 2.5;
-const TABLE_ZOOM_STEP = 0.1;
-
-const clampTableZoom = value => Math.min(TABLE_ZOOM_MAX, Math.max(TABLE_ZOOM_MIN, Number(value.toFixed(2))));
-
-const normalizeGrauToken = value => String(value || "")
-  .trim()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .toUpperCase();
-
-const getGrauPriority = grau => {
-  const normalized = normalizeGrauToken(grau);
-  if (normalized === "QM") return 0;
-  if (normalized === "CDC") return 1;
-  if (normalized === "CI") return 2;
-  if (normalized === "QS") return 3;
-  return 4;
-};
-
-const compareGrauOptions = (left, right) => {
-  const leftPriority = getGrauPriority(left);
-  const rightPriority = getGrauPriority(right);
-  if (leftPriority !== rightPriority) {
-    return leftPriority - rightPriority;
-  }
-  return String(left || "").localeCompare(String(right || ""), "pt-BR");
-};
+import { NO_VALUES, TABLE_ZOOM_STEP, clampTableZoom, buildActiveFilterOptions, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "./resultsDomain";
 
 export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
@@ -127,7 +96,7 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
       if (columnId === "name") return String(row.name || "").toLowerCase().includes(normalized);
       if (columnId === "status") return String(row.status || "").toLowerCase().includes(normalized);
       const column = columns.find(item => String(item.id) === String(columnId));
-      return String(formatFieldValue(getFieldValue(row.response, columnId), column?.type)).toLowerCase().includes(normalized);
+      return String(formatResultFieldValue(getFieldValue(row.response, columnId), column?.type)).toLowerCase().includes(normalized);
     }));
   }, [columnSearches, columns, resultsConfig.searchEnabled, selectedGrau, tableRows]);
 
@@ -272,40 +241,15 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     }
   };
 
-  const activeFilterOptions = useMemo(() => {
-    if (!activeFilter || activeFilter.type !== "select") {
-      return [];
-    }
-
-    const grauFilter = String(selectedGrau || "todos").trim();
-    const baseRows = grauFilter === "todos"
-      ? tableRows
-      : tableRows.filter(row => String(row.grau || "") === grauFilter);
-    const preservedFilters = Object.entries(columnSearches).filter(([columnId, value]) => {
-      return columnId !== activeFilter.id && String(value || "").trim();
-    });
-
-    const rows = preservedFilters.length === 0
-      ? baseRows
-      : baseRows.filter(row => preservedFilters.every(([columnId, rawValue]) => {
-        const normalized = String(rawValue).trim().toLowerCase();
-        if (columnId === "grau") return String(row.grau || "").toLowerCase().includes(normalized);
-        if (columnId === "name") return String(row.name || "").toLowerCase().includes(normalized);
-        if (columnId === "status") return String(row.status || "").toLowerCase().includes(normalized);
-        const column = columns.find(item => String(item.id) === String(columnId));
-        return String(formatFieldValue(getFieldValue(row.response, columnId), column?.type)).toLowerCase().includes(normalized);
-      }));
-
-    const values = rows.map(row => {
-      if (activeFilter.id === "grau") return row.grau;
-      if (activeFilter.id === "name") return row.name;
-      if (activeFilter.id === "status") return row.status;
-      const column = columns.find(item => String(item.id) === String(activeFilter.id));
-      return formatFieldValue(getFieldValue(row.response, activeFilter.id), column?.type);
-    });
-
-    return [...new Set(values.map(value => String(value || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-  }, [activeFilter, columnSearches, columns, selectedGrau, tableRows]);
+  const activeFilterOptions = useMemo(() => buildActiveFilterOptions({
+    activeFilter,
+    columnSearches,
+    columns,
+    selectedGrau,
+    tableRows,
+    formatFieldValue: formatResultFieldValue,
+    getFieldValue,
+  }), [activeFilter, columnSearches, columns, selectedGrau, tableRows]);
 
   const exportCsv = () => {
     const headers = ["Grau", "Nome", ...(showLinkedRows ? ["Status"] : []), ...columns.map(col => col.label)];
@@ -314,7 +258,7 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
       row.grau,
       row.name,
       ...(showLinkedRows ? [row.status] : []),
-      ...columns.map(col => formatFieldValue(getFieldValue(row.response, col.id), col.type)),
+      ...columns.map(col => formatResultFieldValue(getFieldValue(row.response, col.id), col.type)),
     ]);
     const csv = [headers, ...rows].map(row => row.map(escape).join(";")).join("\n");
     const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
@@ -344,16 +288,16 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     minWidth: col === "grau" ? 90 : col === "name" ? 160 : col === "status" ? 110 : 130,
   });
 
-  const stats = hasExpectedTotal
-    ? [
-        { l: "Respostas", v: filteredResponses.length, s: `de ${selectedGrau === "todos" ? expectedTotal : filteredRows.length}`, c: COLORS.primary },
-        { l: "Faltam", v: Math.max((selectedGrau === "todos" ? expectedTotal : filteredRows.length) - filteredResponses.length, 0), s: "pendentes", c: COLORS.danger },
-      ]
-    : [
-        { l: "Respostas", v: filteredResponses.length, s: "recebidas", c: COLORS.primary },
-        { l: "Campos totalizaveis", v: totalsLayout.length, s: "configurados", c: COLORS.accent },
-        { l: "Base vinculada", v: linkedPeople ? "Sim" : "Nao", s: linkedPeople ? `${people.length} pessoas` : "sem controle de faltantes", c: COLORS.textSecondary },
-      ];
+  const stats = buildPresenceStats({
+    hasExpectedTotal,
+    filteredResponsesLength: filteredResponses.length,
+    selectedGrau,
+    expectedTotal,
+    filteredRowsLength: filteredRows.length,
+    totalsLayoutLength: totalsLayout.length,
+    linkedPeople,
+    peopleLength: people.length,
+  });
 
 
   const totalsWithSummary = totalsLayout.map(item => {
@@ -405,7 +349,7 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
       headerCellStyle={headerCellStyle}
       sortIndicator={sortIndicator}
       onSort={handleSort}
-      formatFieldValue={formatFieldValue}
+      formatFieldValue={formatResultFieldValue}
       getFieldValue={getFieldValue}
       NO_VALUES={NO_VALUES}
     />
@@ -566,10 +510,5 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   );
 };
 
-const formatFieldValue = (value, type) => {
-  if (value === undefined || value === null || value === "") return "";
-  if (type === "grid") return Object.entries(value).map(([row, col]) => `${row}: ${col}`).join(" | ");
-  return value;
-};
 
 

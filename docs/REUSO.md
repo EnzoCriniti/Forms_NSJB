@@ -47,6 +47,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.
   A toolbar da planilha de presenca tambem pode ser reutilizada por `PresenceResultsToolbar`.
+- `frontend/src/screens/resultsDomain.js`
+  Regras puras de ordenacao, filtros e formatacao da planilha de resultados.
 - `frontend/src/features/events/components/eventsPanels.jsx`
   Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`
@@ -115,8 +117,6 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Escala publica e modo interno.
 - `frontend/src/screens/publicScalePanels.jsx`
   Modal reutilizavel de inscricao na escala publica.
-- `frontend/src/screens/PublicEscalaScreen.jsx`
-  Agora usa paineis reutilizaveis para metricas e lista de vagas.
 - `frontend/src/lib/appShell.js`
   Caminhos publicos canonicos e helpers de navegacao publica.
 

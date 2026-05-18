@@ -138,6 +138,8 @@ Mapa curto das areas mais mexidas por agentes.
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem concentra a renderizacao reutilizavel da escala em `EscalaResultsPanel`.
   A toolbar da planilha de presenca tambem ficou isolada em `PresenceResultsToolbar`.
+- `frontend/src/screens/resultsDomain.js`
+  Helpers puros da planilha de resultados: ordenacao de grau, filtros ativos, estatisticas e formatacao.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
   No modo interno, usa apenas um topo leve de contexto e nao expõe atalho visual para resultados.
