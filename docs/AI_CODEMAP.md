@@ -8,6 +8,8 @@ Mapa curto das areas mais mexidas por agentes.
   Tela dedicada da area administrativa. Encapsula o modal em modo tela.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
+- `frontend/src/features/admin/adminAccessPanels.jsx`
+  Paineis compartilhados da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Painel compartilhado da aba de catalogos administrativos, com campos base e tarefas base.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
@@ -87,6 +89,8 @@ Mapa curto das areas mais mexidas por agentes.
   Painéis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
+- `frontend/src/features/admin/adminAccessPanels.jsx`
+  Componentes compartilhados para usuarios e bases externas fora do modal principal.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Componentes compartilhados da aba de catalogos administrativos, com formulários e listas de campos e tarefas.
 - `frontend/src/lib/forms.js`
