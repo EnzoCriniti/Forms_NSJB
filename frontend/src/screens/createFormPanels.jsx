@@ -324,180 +324,54 @@ export const FieldEditorPanel = ({
       </div>
       <div className="create-form-editor-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, alignItems: "start" }}>
         <div style={{ display: "grid", gap: 10 }}>
-          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
-            <div style={{ marginBottom: 12 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>1. Origem do campo</label>
-              <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, marginBottom: 8 }}>
-                Decida se o campo nasce so aqui ou se aproveita um campo base que ja foi configurado.
-              </div>
-              <div className="create-form-segmented" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
-                <button disabled={filteredFieldCatalog.length === 0} onClick={() => onSetFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: filteredFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: filteredFieldCatalog.length === 0 ? 0.55 : 1 }}>Da biblioteca</button>
-                <button onClick={() => onSetFieldMode("local")} style={{ border: `1px solid ${nFieldMode === "local" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "local" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "local" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>Somente neste formulario</button>
-              </div>
-              {nFieldMode === "catalog" && (
-                <select value={nCatalogId} onChange={event => onApplyFieldCatalog(event.target.value)} style={inp}>
-                  <option value="">Selecione um campo base</option>
-                  {filteredFieldCatalog.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
-                </select>
-              )}
-              {nFieldMode === "local" && (
-                <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
-                  {formMode === "nucleo"
-                    ? "Este campo fica apenas neste formulario e nao entra no catalogo global."
-                    : "No formulario geral, campos locais nao usam a base central de socios."}
-                </div>
-              )}
-            </div>
-            <div style={{ borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 12 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>Resumo da origem</div>
-              <div style={{ padding: 10, borderRadius: 10, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, fontSize: 11, color: COLORS.textSecondary }}>
-                {currentFieldSourceLabel}
-              </div>
-              {nFieldMode === "catalog" && (
-                <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>
-                  O tipo e o vinculo base chegam da configuracao global do campo selecionado.
-                </div>
-              )}
-            </div>
-          </div>
-          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "grid", gap: 12 }}>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>2. Definicao principal</div>
-              <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, marginBottom: 8 }}>
-                Escolha o tipo e escreva o texto que vai aparecer para quem responder.
-              </div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Tipo do campo</label>
-              <select value={nType} disabled={nFieldMode === "catalog"} onChange={event => onSetNType(event.target.value)} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
-                {filteredFieldTypes.map(type => <option key={type.v} value={type.v}>{type.l}</option>)}
-              </select>
-              {nFieldMode === "catalog" && (
-                <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
-                  O tipo vem da configuracao global do campo base.
-                </div>
-              )}
-            </div>
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
-                {nType === "person_select" ? "Rotulo (ex: Nome)" : "Pergunta / Rotulo"}
-              </label>
-              <input value={nLabel} onChange={event => onSetNLabel(event.target.value)} placeholder={nType === "person_select" ? "Nome" : "Ex: Vai ao Jantar?"} style={inp} autoFocus />
-            </div>
-            {nType === "person_select" && (
-              <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
-                <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
-                  <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Vinculo configurado no campo</div>
-                  <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
-                    {formMode === "nucleo"
-                      ? "Campos locais usam a base central de socios como origem. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base."
-                      : "Formulario geral nao usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
-                  </div>
-                </div>
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Vinculo ativo do campo</label>
-                  <div style={{ padding: 10, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surface }}>
-                    {activeSelectionSource?.kind === "external_base"
-                      ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
-                      : "Base central de socios"}
-                  </div>
-                </div>
-                <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
-                  {formMode === "nucleo"
-                    ? "Se a lista vier da biblioteca, a origem ja foi definida na configuracao do campo."
-                    : "Campos gerais so aceitam seletores ligados a bases externas configuradas na biblioteca."}
-                </div>
-                <div style={{ padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
-                  <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.4, color: COLORS.textMuted, marginBottom: 4 }}>
-                    Resumo do vinculo
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>
-                    {activeSelectionSource?.kind === "external_base"
-                      ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
-                      : "Base central de socios"}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "grid", gap: 12 }}>
-            <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>3. Ajustes extras</div>
-              <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
-                Esta etapa so aparece para finalizar validacoes, obrigatoriedade ou a montagem de grade.
-              </div>
-            </div>
-            {(nType === "text" || nType === "number") && (
-              <div className="create-form-validation-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
-                  {nType === "text" ? "Minimo de caracteres" : "Valor minimo"}
-                  <input
-                    type="number"
-                    min="0"
-                    value={nType === "text" ? (nValidation.minLength ?? "") : (nValidation.min ?? "")}
-                    onChange={event => onSetNValidation(prev => ({ ...prev, [nType === "text" ? "minLength" : "min"]: event.target.value }))}
-                    style={{ ...inp, marginTop: 4 }}
-                  />
-                </label>
-                <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
-                  {nType === "text" ? "Maximo de caracteres" : "Valor maximo"}
-                  <input
-                    type="number"
-                    min="0"
-                    value={nType === "text" ? (nValidation.maxLength ?? "") : (nValidation.max ?? "")}
-                    onChange={event => onSetNValidation(prev => ({ ...prev, [nType === "text" ? "maxLength" : "max"]: event.target.value }))}
-                    style={{ ...inp, marginTop: 4 }}
-                  />
-                </label>
-              </div>
-            )}
-            {nType === "grid" && nFieldMode === "catalog" && (
-              <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
-                A matriz deste campo vem da biblioteca global. Para alterar linhas ou colunas, edite o campo base em Configuracoes &gt; Campos e tarefas.
-              </div>
-            )}
-            {nType === "grid" && nFieldMode === "local" && (
-              <div style={{ display: "grid", gap: 10, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, marginBottom: 4 }}>Linhas (itens a avaliar)</div>
-                  {nGridRows.map((row, index) => (
-                    <div key={index} style={{ display: "flex", gap: 6, marginBottom: 5 }}>
-                      <input value={row} onChange={event => onUpdateGridRow(index, event.target.value)} placeholder={`Linha ${index + 1}`} style={{ ...inpSm, flex: 1 }} />
-                      <button onClick={() => onRemoveGridRow(index)} style={{ background: "none", border: "none", color: COLORS.danger, cursor: "pointer", padding: "0 4px" }}><Icon name="close" size={12} /></button>
-                    </div>
-                  ))}
-                  <button onClick={onAddGridRow} style={{ fontSize: 11, color: COLORS.primary, background: "none", border: "none", cursor: "pointer", padding: "2px 0", display: "flex", alignItems: "center", gap: 4 }}><Icon name="plus" size={11} /> Adicionar linha</button>
-                </div>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, marginBottom: 4 }}>Escala de resposta (colunas)</div>
-                  <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 6 }}>
-                    {onApplyScalePreset && scalePresets.map(scalePreset => (
-                      <button key={scalePreset.label} onClick={() => onApplyScalePreset(scalePreset.cols)} style={{ fontSize: 10, padding: "3px 8px", borderRadius: 99, border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.textSecondary, cursor: "pointer", whiteSpace: "nowrap" }}>{scalePreset.label}</button>
-                    ))}
-                  </div>
-                  {nGridCols.map((col, index) => (
-                    <div key={index} style={{ display: "flex", gap: 6, marginBottom: 5 }}>
-                      <input value={col} onChange={event => onUpdateGridCol(index, event.target.value)} placeholder={`Coluna ${index + 1}`} style={{ ...inpSm, flex: 1 }} />
-                      <button onClick={() => onRemoveGridCol(index)} style={{ background: "none", border: "none", color: COLORS.danger, cursor: "pointer", padding: "0 4px" }}><Icon name="close" size={12} /></button>
-                    </div>
-                  ))}
-                  <button onClick={onAddGridCol} style={{ fontSize: 11, color: COLORS.primary, background: "none", border: "none", cursor: "pointer", padding: "2px 0", display: "flex", alignItems: "center", gap: 4 }}><Icon name="plus" size={11} /> Adicionar coluna</button>
-                </div>
-              </div>
-            )}
-            <div style={{ padding: 12, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
-              <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: COLORS.textSecondary, cursor: "pointer" }}>
-                <input type="checkbox" checked={nRequired} onChange={event => onSetNRequired(event.target.checked)} /> Campo obrigatorio
-              </label>
-            </div>
-            {nType !== "text" && nType !== "number" && nType !== "grid" && !nRequired && (
-              <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
-                Esse campo nao precisa de configuracao extra. Se o texto ja estiver certo, ele pode ser adicionado agora.
-              </div>
-            )}
-          </div>
-          <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
-            <Btn sz="sm" onClick={onAddField} disabled={isFieldSaveDisabled}>{isEditingField ? "Salvar campo" : "Adicionar"}</Btn>
-            <Btn v="ghost" sz="sm" onClick={onResetFieldDraft}>Cancelar</Btn>
-          </div>
+          <FieldEditorSourcePanel
+            inp={inp}
+            nFieldMode={nFieldMode}
+            nCatalogId={nCatalogId}
+            formMode={formMode}
+            filteredFieldCatalog={filteredFieldCatalog}
+            currentFieldSourceLabel={currentFieldSourceLabel}
+            onSetFieldMode={onSetFieldMode}
+            onApplyFieldCatalog={onApplyFieldCatalog}
+          />
+          <FieldEditorDefinitionPanel
+            inp={inp}
+            nType={nType}
+            nFieldMode={nFieldMode}
+            nLabel={nLabel}
+            filteredFieldTypes={filteredFieldTypes}
+            formMode={formMode}
+            activeSelectionSource={activeSelectionSource}
+            externalBaseMap={externalBaseMap}
+            onSetNType={onSetNType}
+            onSetNLabel={onSetNLabel}
+          />
+          <FieldEditorExtrasPanel
+            inp={inp}
+            inpSm={inpSm}
+            nType={nType}
+            nFieldMode={nFieldMode}
+            nValidation={nValidation}
+            nGridRows={nGridRows}
+            nGridCols={nGridCols}
+            scalePresets={scalePresets}
+            onSetNValidation={onSetNValidation}
+            onUpdateGridRow={onUpdateGridRow}
+            onRemoveGridRow={onRemoveGridRow}
+            onAddGridRow={onAddGridRow}
+            onUpdateGridCol={onUpdateGridCol}
+            onRemoveGridCol={onRemoveGridCol}
+            onAddGridCol={onAddGridCol}
+            onApplyScalePreset={onApplyScalePreset}
+            onSetNRequired={onSetNRequired}
+            nRequired={nRequired}
+          />
+          <FieldEditorActions
+            isFieldSaveDisabled={isFieldSaveDisabled}
+            isEditingField={isEditingField}
+            onAddField={onAddField}
+            onResetFieldDraft={onResetFieldDraft}
+          />
         </div>
         <CreateFormFieldPreview
           fieldLabel={fieldLabel}
@@ -514,6 +388,231 @@ export const FieldEditorPanel = ({
       <Icon name="plus" size={14} /> Adicionar Campo
     </button>
   )
+);
+
+export const FieldEditorSourcePanel = ({
+  inp,
+  nFieldMode,
+  nCatalogId,
+  formMode,
+  filteredFieldCatalog,
+  currentFieldSourceLabel,
+  onSetFieldMode,
+  onApplyFieldCatalog,
+}) => (
+  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+    <div style={{ marginBottom: 12 }}>
+      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>1. Origem do campo</label>
+      <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, marginBottom: 8 }}>
+        Decida se o campo nasce so aqui ou se aproveita um campo base que ja foi configurado.
+      </div>
+      <div className="create-form-segmented" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 8 }}>
+        <button disabled={filteredFieldCatalog.length === 0} onClick={() => onSetFieldMode("catalog")} style={{ border: `1px solid ${nFieldMode === "catalog" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "catalog" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "catalog" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: filteredFieldCatalog.length === 0 ? "not-allowed" : "pointer", opacity: filteredFieldCatalog.length === 0 ? 0.55 : 1 }}>Da biblioteca</button>
+        <button onClick={() => onSetFieldMode("local")} style={{ border: `1px solid ${nFieldMode === "local" ? COLORS.primary : COLORS.border}`, background: nFieldMode === "local" ? COLORS.primaryLight : COLORS.surface, color: nFieldMode === "local" ? COLORS.primary : COLORS.textSecondary, borderRadius: 8, padding: "8px 10px", fontSize: 12, fontWeight: 800, cursor: "pointer" }}>Somente neste formulario</button>
+      </div>
+      {nFieldMode === "catalog" && (
+        <select value={nCatalogId} onChange={event => onApplyFieldCatalog(event.target.value)} style={inp}>
+          <option value="">Selecione um campo base</option>
+          {filteredFieldCatalog.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+        </select>
+      )}
+      {nFieldMode === "local" && (
+        <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
+          {formMode === "nucleo"
+            ? "Este campo fica apenas neste formulario e nao entra no catalogo global."
+            : "No formulario geral, campos locais nao usam a base central de socios."}
+        </div>
+      )}
+    </div>
+    <div style={{ borderTop: `1px solid ${COLORS.borderLight}`, paddingTop: 12 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>Resumo da origem</div>
+      <div style={{ padding: 10, borderRadius: 10, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, fontSize: 11, color: COLORS.textSecondary }}>
+        {currentFieldSourceLabel}
+      </div>
+      {nFieldMode === "catalog" && (
+        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>
+          O tipo e o vinculo base chegam da configuracao global do campo selecionado.
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+export const FieldEditorDefinitionPanel = ({
+  inp,
+  nType,
+  nFieldMode,
+  nLabel,
+  filteredFieldTypes,
+  formMode,
+  activeSelectionSource,
+  externalBaseMap,
+  onSetNType,
+  onSetNLabel,
+}) => (
+  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "grid", gap: 12 }}>
+    <div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>2. Definicao principal</div>
+      <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, marginBottom: 8 }}>
+        Escolha o tipo e escreva o texto que vai aparecer para quem responder.
+      </div>
+      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>Tipo do campo</label>
+      <select value={nType} disabled={nFieldMode === "catalog"} onChange={event => onSetNType(event.target.value)} style={{ ...inp, opacity: nFieldMode === "catalog" ? 0.75 : 1 }}>
+        {filteredFieldTypes.map(type => <option key={type.v} value={type.v}>{type.l}</option>)}
+      </select>
+      {nFieldMode === "catalog" && (
+        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
+          O tipo vem da configuracao global do campo base.
+        </div>
+      )}
+    </div>
+    <div>
+      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
+        {nType === "person_select" ? "Rotulo (ex: Nome)" : "Pergunta / Rotulo"}
+      </label>
+      <input value={nLabel} onChange={event => onSetNLabel(event.target.value)} placeholder={nType === "person_select" ? "Nome" : "Ex: Vai ao Jantar?"} style={inp} autoFocus />
+    </div>
+    {nType === "person_select" && (
+      <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
+        <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
+          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Vinculo configurado no campo</div>
+          <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
+            {formMode === "nucleo"
+              ? "Campos locais usam a base central de socios como origem. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base."
+              : "Formulario geral nao usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
+          </div>
+        </div>
+        <div style={{ display: "grid", gap: 6 }}>
+          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Vinculo ativo do campo</label>
+          <div style={{ padding: 10, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surface }}>
+            {activeSelectionSource?.kind === "external_base"
+              ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
+              : "Base central de socios"}
+          </div>
+        </div>
+        <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
+          {formMode === "nucleo"
+            ? "Se a lista vier da biblioteca, a origem ja foi definida na configuracao do campo."
+            : "Campos gerais so aceitam seletores ligados a bases externas configuradas na biblioteca."}
+        </div>
+        <div style={{ padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
+          <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.4, color: COLORS.textMuted, marginBottom: 4 }}>
+            Resumo do vinculo
+          </div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>
+            {activeSelectionSource?.kind === "external_base"
+              ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
+              : "Base central de socios"}
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+export const FieldEditorExtrasPanel = ({
+  inp,
+  inpSm,
+  nType,
+  nFieldMode,
+  nValidation,
+  nGridRows,
+  nGridCols,
+  scalePresets = [],
+  onSetNValidation,
+  onUpdateGridRow,
+  onRemoveGridRow,
+  onAddGridRow,
+  onUpdateGridCol,
+  onRemoveGridCol,
+  onAddGridCol,
+  onApplyScalePreset,
+  onSetNRequired,
+  nRequired,
+}) => (
+  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "grid", gap: 12 }}>
+    <div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>3. Ajustes extras</div>
+      <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
+        Esta etapa so aparece para finalizar validacoes, obrigatoriedade ou a montagem de grade.
+      </div>
+    </div>
+    {(nType === "text" || nType === "number") && (
+      <div className="create-form-validation-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
+          {nType === "text" ? "Minimo de caracteres" : "Valor minimo"}
+          <input
+            type="number"
+            min="0"
+            value={nType === "text" ? (nValidation.minLength ?? "") : (nValidation.min ?? "")}
+            onChange={event => onSetNValidation(prev => ({ ...prev, [nType === "text" ? "minLength" : "min"]: event.target.value }))}
+            style={{ ...inp, marginTop: 4 }}
+          />
+        </label>
+        <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
+          {nType === "text" ? "Maximo de caracteres" : "Valor maximo"}
+          <input
+            type="number"
+            min="0"
+            value={nType === "text" ? (nValidation.maxLength ?? "") : (nValidation.max ?? "")}
+            onChange={event => onSetNValidation(prev => ({ ...prev, [nType === "text" ? "maxLength" : "max"]: event.target.value }))}
+            style={{ ...inp, marginTop: 4 }}
+          />
+        </label>
+      </div>
+    )}
+    {nType === "grid" && nFieldMode === "catalog" && (
+      <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+        A matriz deste campo vem da biblioteca global. Para alterar linhas ou colunas, edite o campo base em Configuracoes &gt; Campos e tarefas.
+      </div>
+    )}
+    {nType === "grid" && nFieldMode === "local" && (
+      <div style={{ display: "grid", gap: 10, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14 }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, marginBottom: 4 }}>Linhas (itens a avaliar)</div>
+          {nGridRows.map((row, index) => (
+            <div key={index} style={{ display: "flex", gap: 6, marginBottom: 5 }}>
+              <input value={row} onChange={event => onUpdateGridRow(index, event.target.value)} placeholder={`Linha ${index + 1}`} style={{ ...inpSm, flex: 1 }} />
+              <button onClick={() => onRemoveGridRow(index)} style={{ background: "none", border: "none", color: COLORS.danger, cursor: "pointer", padding: "0 4px" }}><Icon name="close" size={12} /></button>
+            </div>
+          ))}
+          <button onClick={onAddGridRow} style={{ fontSize: 11, color: COLORS.primary, background: "none", border: "none", cursor: "pointer", padding: "2px 0", display: "flex", alignItems: "center", gap: 4 }}><Icon name="plus" size={11} /> Adicionar linha</button>
+        </div>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, marginBottom: 4 }}>Escala de resposta (colunas)</div>
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 6 }}>
+            {onApplyScalePreset && scalePresets.map(scalePreset => (
+              <button key={scalePreset.label} onClick={() => onApplyScalePreset(scalePreset.cols)} style={{ fontSize: 10, padding: "3px 8px", borderRadius: 99, border: `1px solid ${COLORS.border}`, background: COLORS.surface, color: COLORS.textSecondary, cursor: "pointer", whiteSpace: "nowrap" }}>{scalePreset.label}</button>
+            ))}
+          </div>
+          {nGridCols.map((col, index) => (
+            <div key={index} style={{ display: "flex", gap: 6, marginBottom: 5 }}>
+              <input value={col} onChange={event => onUpdateGridCol(index, event.target.value)} placeholder={`Coluna ${index + 1}`} style={{ ...inpSm, flex: 1 }} />
+              <button onClick={() => onRemoveGridCol(index)} style={{ background: "none", border: "none", color: COLORS.danger, cursor: "pointer", padding: "0 4px" }}><Icon name="close" size={12} /></button>
+            </div>
+          ))}
+          <button onClick={onAddGridCol} style={{ fontSize: 11, color: COLORS.primary, background: "none", border: "none", cursor: "pointer", padding: "2px 0", display: "flex", alignItems: "center", gap: 4 }}><Icon name="plus" size={11} /> Adicionar coluna</button>
+        </div>
+      </div>
+    )}
+    <div style={{ padding: 12, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
+      <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: COLORS.textSecondary, cursor: "pointer" }}>
+        <input type="checkbox" checked={nRequired} onChange={event => onSetNRequired(event.target.checked)} /> Campo obrigatorio
+      </label>
+    </div>
+    {nType !== "text" && nType !== "number" && nType !== "grid" && !nRequired && (
+      <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
+        Esse campo nao precisa de configuracao extra. Se o texto ja estiver certo, ele pode ser adicionado agora.
+      </div>
+    )}
+  </div>
+);
+
+export const FieldEditorActions = ({ isFieldSaveDisabled, isEditingField, onAddField, onResetFieldDraft }) => (
+  <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
+    <Btn sz="sm" onClick={onAddField} disabled={isFieldSaveDisabled}>{isEditingField ? "Salvar campo" : "Adicionar"}</Btn>
+    <Btn v="ghost" sz="sm" onClick={onResetFieldDraft}>Cancelar</Btn>
+  </div>
 );
 
 export const ScaleEditorPanel = ({

@@ -33,6 +33,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Chrome reutilizavel da central administrativa com abas e resumo da aba ativa.
 - `frontend/src/screens/createFormPanels.jsx`
   Paineis compartilhados da criacao de formulario: etapa inicial, dados basicos, modo, editor de campo, escala, lista de campos, resultados e rodape.
+  O editor de campo dentro desse arquivo tambem esta separado em origem, definicao, ajustes extras e acoes.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario para defaults, titulos padrao, validacao e sincronizacao de resultados.
 - `frontend/src/screens/resultsPanels.jsx`
