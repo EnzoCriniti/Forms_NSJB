@@ -36,12 +36,16 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/features/admin/adminShellPanels.jsx`
   Chrome reutilizavel da central administrativa com abas e resumo da aba ativa.
 - `frontend/src/screens/createFormPanels.jsx`
-  Paineis compartilhados da criacao de formulario: etapa inicial, dados basicos, modo, editor de campo, escala, lista de campos, resultados e rodape.
-  O editor de campo dentro desse arquivo tambem esta separado em origem, definicao, ajustes extras e acoes.
+  Paineis compartilhados da criacao de formulario: pre-visualizacao, escala, resultados e rodape.
+  Os paineis iniciais ficaram em `frontend/src/features/forms/createFormPanels/setupPanels.jsx`.
+  Os paineis de lista e editor de campos ficaram em `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`.
   A pre-visualizacao publica tambem ficou em `FormPreviewPanel`.
-  O topo e o card de contexto do editor tambem podem ser reutilizados por `FormHeaderPanel` e `FormContextPanel`.
   As linhas de campos usam `FormFieldRow` e os totais configurados usam `ResultsTotalRow`.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
+  Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
+- `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
+  Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
+- `frontend/src/screens/createFormDomain.js`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario para defaults, titulos padrao, estado inicial do editor, estado do editor de campo, montagem/merge de campos, payload final, validacao e sincronizacao de resultados.

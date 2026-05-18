@@ -21,10 +21,11 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 
 - [x] `frontend/src/screens/createFormPanels.jsx`
   - top, modo, tipo inicial e dados basicos movidos para `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
+  - lista de campos e editor movidos para `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
 - [ ] `frontend/src/screens/createFormPanels.jsx` - restante
   - quebrar em subcomponentes por area funcional
-  - mover blocos de editor de campo e resultados para pasta propria do dominio
-  - revisar duplicacao entre preview, campo e totais
+  - revisar duplicacao entre preview, escala, resultados e rodape
+- [ ] `frontend/src/screens/CreateFormScreen.jsx`
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
   - reduzir orquestracao remanescente
   - remover qualquer regra que ainda possa viver no dominio
