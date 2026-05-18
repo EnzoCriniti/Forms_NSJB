@@ -27,6 +27,8 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
+- `frontend/src/components/ui.jsx`
+  Reune componentes visuais compartilhados. Inclui `ScreenHeader` para evitar repeticao dos topos internos com voltar, titulo, subtitulo e acoes.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 

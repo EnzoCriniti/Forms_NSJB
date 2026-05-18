@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Btn, COLORS, FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
+import { Btn, COLORS, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
 
 const ELIGIBLE_FORM_TYPES = ["presenca", "escala_organ"];
@@ -174,10 +174,11 @@ export const EventMessageEditorScreen = ({
   if (eligibleTypes.length === 0) {
     return (
       <div>
-        <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-          <Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />
-          <h2 style={{ margin: 0, fontSize: 20 }}>Nova mensagem</h2>
-        </div>
+        <ScreenHeader
+          className="settings-top-card"
+          leading={<Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />}
+          title="Nova mensagem"
+        />
         <FeedbackBanner tone="info" message="Este evento nao possui formulario de presenca ou escala vinculado. Vincule um formulario antes de criar mensagens." />
       </div>
     );
@@ -185,13 +186,13 @@ export const EventMessageEditorScreen = ({
 
   return (
     <div>
-      <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <h2 style={{ margin: 0, fontSize: 20 }}>{draft.id ? "Editar mensagem" : "Nova mensagem"}</h2>
-          <p style={{ margin: "2px 0 0", fontSize: 12, color: COLORS.textMuted }}>{event?.title}</p>
-        </div>
-      </div>
+      <ScreenHeader
+        className="settings-top-card"
+        leading={<Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />}
+        title={draft.id ? "Editar mensagem" : "Nova mensagem"}
+        subtitle={event?.title}
+        titleSize={20}
+      />
 
       <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, display: "grid", gap: 16 }}>
         <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>

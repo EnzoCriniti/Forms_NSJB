@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from "react";
-import { COLORS, Btn, FeedbackBanner, PublicTopCompact, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Btn, FeedbackBanner, PublicTopCompact, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { getScalePersonLimit } from "../lib/forms";
 
 export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
@@ -56,12 +56,14 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
   return (
     <div style={{ maxWidth: 760, margin: "0 auto" }}>
       {isInternal ? (
-        <div className="screen-top-card internal-response-header" style={{ marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ margin: 0, fontSize: 22, color: COLORS.text }}>{form?.title || "Escala"}</h2>
-            <p style={{ margin: "4px 0 0", fontSize: 13, color: COLORS.textMuted }}>Escolha uma vaga pendente para preencher seu nome.</p>
-          </div>
-        </div>
+        <ScreenHeader
+          className="internal-response-header"
+          title={form?.title || "Escala"}
+          subtitle="Escolha uma vaga pendente para preencher seu nome."
+          titleStyle={{ color: COLORS.text }}
+          subtitleStyle={{ color: COLORS.textMuted }}
+          marginBottom={14}
+        />
       ) : (
         <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />
       )}

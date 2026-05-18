@@ -5,7 +5,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react";
-import { Btn, COLORS, ConfirmModal, FeedbackBanner, Icon, resolveActionErrorMessage } from "../components/ui";
+import { Btn, COLORS, ConfirmModal, FeedbackBanner, Icon, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
 import {
   cancelEventMessage as apiCancelEventMessage,
@@ -150,10 +150,12 @@ export const EventMessageDetailScreen = ({
   if (!message) {
     return (
       <div>
-        <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-          <Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />
-          <h2 style={{ margin: 0, fontSize: 20 }}>Mensagem nao encontrada</h2>
-        </div>
+        <ScreenHeader
+          className="settings-top-card"
+          leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
+          title="Mensagem nao encontrada"
+          titleSize={20}
+        />
       </div>
     );
   }
@@ -163,25 +165,33 @@ export const EventMessageDetailScreen = ({
 
   return (
     <div>
-      <div className="create-form-header screen-top-card settings-top-card" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>
-        <Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />
-        <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <h2 style={{ margin: 0, fontSize: 20 }}>{MESSAGE_TYPE_LABELS[message.type] || message.type}</h2>
-          <MessageStatusBadge status={message.status} />
-        </div>
-        {isEditable(message.status) && onEdit && (
-          <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>
+      <ScreenHeader
+        className="settings-top-card"
+        leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
+        titleContent={(
+          <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            <h2 style={{ margin: 0, fontSize: 20 }}>{MESSAGE_TYPE_LABELS[message.type] || message.type}</h2>
+            <MessageStatusBadge status={message.status} />
+          </div>
         )}
-        {isCancellable(message.status) && (
-          <Btn v="secondary" icon="close" onClick={() => requestConfirm("cancel")} loading={busyAction === "cancel"} disabled={Boolean(busyAction)}>Cancelar</Btn>
+        actions={(
+          <>
+            {isEditable(message.status) && onEdit && (
+              <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>
+            )}
+            {isCancellable(message.status) && (
+              <Btn v="secondary" icon="close" onClick={() => requestConfirm("cancel")} loading={busyAction === "cancel"} disabled={Boolean(busyAction)}>Cancelar</Btn>
+            )}
+            {message.status === "cancelada" && (
+              <Btn v="danger" icon="trash" onClick={() => requestConfirm("delete")} loading={busyAction === "delete"} disabled={Boolean(busyAction)}>Excluir</Btn>
+            )}
+            {isDispatchable(message.status) && (
+              <Btn icon="share" onClick={() => requestConfirm("dispatch")} loading={busyAction === "dispatch"} disabled={Boolean(busyAction)}>Disparar agora</Btn>
+            )}
+          </>
         )}
-        {message.status === "cancelada" && (
-          <Btn v="danger" icon="trash" onClick={() => requestConfirm("delete")} loading={busyAction === "delete"} disabled={Boolean(busyAction)}>Excluir</Btn>
-        )}
-        {isDispatchable(message.status) && (
-          <Btn icon="share" onClick={() => requestConfirm("dispatch")} loading={busyAction === "dispatch"} disabled={Boolean(busyAction)}>Disparar agora</Btn>
-        )}
-      </div>
+        titleSize={20}
+      />
 
       {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
 
