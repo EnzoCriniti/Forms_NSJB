@@ -5,8 +5,8 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { COLORS, Icon, Btn, resolveActionErrorMessage } from "../components/ui";
-import { PublicResponseEditingBanner, PublicResponseEditModal, PublicResponseErrorBanner, PublicResponseHeader, PublicResponseSuccessPanel } from "./publicFormPanels";
+import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
+import { PublicResponseEditingBanner, PublicResponseEditModal, PublicResponseErrorBanner, PublicResponseFieldPanel, PublicResponseHeader, PublicResponseSuccessPanel } from "./publicFormPanels";
 import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, resolvePersonBySelectionValue, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 
 export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "", readingControls, variant = "public" }) => {
@@ -118,104 +118,53 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
         {fields.map(field => {
           const key = String(field.id);
           const value = values[key] ?? "";
-          return (
-            <div key={field.id} className="public-form-field" style={{ padding: "16px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
-              <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 10 }}>{field.label}{field.required ? " *" : ""}</label>
-              {summarizeFieldValidation(field) && <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 8 }}>{summarizeFieldValidation(field)}</div>}
-              {field.type === "person_select" && (
-                (() => {
-                  const selectionSource = getFieldSelectionSource(field);
-                  const options = isExternalBaseSelectionField(field)
-                    ? (externalBaseMap.get(String(selectionSource?.externalBaseId || ""))?.items || []).filter(item => item.active !== false)
-                    : people.map(person => ({ value: getPersonOptionLabel(person), label: getPersonOptionLabel(person) }));
+          const validationSummary = summarizeFieldValidation(field);
+          const personSelectNode = field.type === "person_select" ? (() => {
+            const selectionSource = getFieldSelectionSource(field);
+            const options = isExternalBaseSelectionField(field)
+              ? (externalBaseMap.get(String(selectionSource?.externalBaseId || ""))?.items || []).filter(item => item.active !== false)
+              : people.map(person => ({ value: getPersonOptionLabel(person), label: getPersonOptionLabel(person) }));
 
-                  return (
-                    <select
-                      value={value}
-                      onChange={event => handleSelectMemberField(field, event.target.value)}
-                      style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
-                    >
-                      <option value="">
-                        {isExternalBaseSelectionField(field)
-                          ? "Selecione uma opcao..."
-                          : isPrimaryPeopleBaseField(form, field)
-                            ? "Selecione seu nome..."
-                            : "Selecione uma pessoa..."}
-                      </option>
-                      {options.map(option => <option key={`${field.id}-${option.value}`} value={option.value}>{option.label}</option>)}
-                    </select>
-                  );
-                })()
-              )}
-              {field.type === "yes_no" && (
-                <div style={{ display: "flex", gap: 10 }}>
-                  {["Sim", "Não"].map(option => (
-                    <button
-                      key={option}
-                      onClick={() => setValues(prev => ({ ...prev, [key]: option }))}
-                      style={{
-                        flex: 1, padding: "10px 16px", borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
-                        border: `2px solid ${value === option ? (option === "Sim" ? COLORS.accent : COLORS.danger) : COLORS.borderLight}`,
-                        background: value === option ? (option === "Sim" ? COLORS.primaryLight : COLORS.dangerLight) : COLORS.surface,
-                        color: value === option ? (option === "Sim" ? COLORS.accent : COLORS.danger) : COLORS.textSecondary,
-                      }}
-                    >{option}</button>
-                  ))}
-                </div>
-              )}
-              {field.type === "number" && (
-                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-                  {[0, 1, 2, 3, 4, 5].map(option => (
-                    <button
-                      key={option}
-                      onClick={() => setValues(prev => ({ ...prev, [key]: option }))}
-                      style={{
-                        width: 34, height: 34, borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
-                        border: `2px solid ${value === option ? COLORS.primary : COLORS.borderLight}`,
-                        background: value === option ? COLORS.primaryLight : COLORS.surface,
-                        color: value === option ? COLORS.primary : COLORS.textMuted,
-                      }}
-                    >{option}</button>
-                  ))}
-                </div>
-              )}
-              {field.type === "text" && <input value={value} onChange={event => setValues(prev => ({ ...prev, [key]: event.target.value }))} placeholder="Digite sua resposta..." style={{ width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8 }} />}
-              {field.type === "grid" && (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-                    <thead>
-                      <tr>
-                        <th style={{ textAlign: "left", paddingBottom: 8 }} />
-                        {(field.gridCols || []).map(col => <th key={col} style={{ textAlign: "center", paddingBottom: 8 }}>{col}</th>)}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(field.gridRows || []).map(row => (
-                        <tr key={row}>
-                          <td style={{ padding: "8px 0", fontWeight: 500 }}>{row}</td>
-                          {(field.gridCols || []).map(col => (
-                            <td key={col} style={{ textAlign: "center" }}>
-                              <input type="radio" checked={value?.[row] === col} onChange={() => setValues(prev => ({ ...prev, [key]: { ...(prev[key] || {}), [row]: col } }))} />
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+            return (
+              <select
+                value={value}
+                onChange={event => handleSelectMemberField(field, event.target.value)}
+                style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
+              >
+                <option value="">
+                  {isExternalBaseSelectionField(field)
+                    ? "Selecione uma opcao..."
+                    : isPrimaryPeopleBaseField(form, field)
+                      ? "Selecione seu nome..."
+                      : "Selecione uma pessoa..."}
+                </option>
+                {options.map(option => <option key={`${field.id}-${option.value}`} value={option.value}>{option.label}</option>)}
+              </select>
+            );
+          })() : null;
+
+          return (
+            <PublicResponseFieldPanel
+              key={field.id}
+              field={field}
+              value={value}
+              editing={editing}
+              colorTokens={COLORS}
+              validationSummary={validationSummary}
+              personSelectNode={personSelectNode}
+              onTextChange={nextValue => setValues(prev => ({ ...prev, [key]: nextValue }))}
+              onYesNoChange={option => setValues(prev => ({ ...prev, [key]: option }))}
+              onNumberChange={option => setValues(prev => ({ ...prev, [key]: option }))}
+              onGridChange={(row, col) => setValues(prev => ({ ...prev, [key]: { ...(prev[key] || {}), [row]: col } }))}
+            />
           );
         })}
         <div style={{ padding: "20px 24px 0" }}>
           <Btn sz="lg" icon={editing ? "edit" : "check"} style={{ width: "100%", justifyContent: "center" }} onClick={submit} loading={submitting} disabled={submitting || duplicateResponseLocked}>{editing ? "Atualizar Resposta" : "Enviar Resposta"}</Btn>
-          <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", marginTop: 8 }}>Você pode editar sua resposta enquanto o formulário estiver aberto.</p>
+          <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", marginTop: 8 }}>Voce pode editar sua resposta enquanto o formulario estiver aberto.</p>
         </div>
       </div>
       {editModal && <PublicResponseEditModal selectedPerson={selectedPerson} onCancel={cancelEdit} onConfirm={confirmEdit} />}
     </div>
   );
 };
-
-
-
