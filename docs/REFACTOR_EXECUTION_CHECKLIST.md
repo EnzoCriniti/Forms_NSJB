@@ -12,8 +12,8 @@ Checklist operacional para continuar a refatoracao sem depender de decisoes gran
 
 ## App shell
 
-- [ ] Extrair regras de navegacao de `frontend/src/App.jsx` para helper puro.
-- [ ] Cobrir helper de navegacao com teste de dominio.
+- [x] Extrair regras de navegacao de `frontend/src/App.jsx` para helper puro.
+- [x] Cobrir helper de navegacao com teste de dominio.
 - [ ] Extrair seletores derivados do shell quando reduzirem duplicacao.
 - [ ] Revisar handlers de bootstrap que ainda repetem `replaceBootstrapList`.
 - [ ] Validar com `test:ui -- appBootstrap appHeader appSaveFlow` e `build`.
@@ -45,4 +45,3 @@ Checklist operacional para continuar a refatoracao sem depender de decisoes gran
 - [ ] Remover estilos mortos quando houver evidencia por busca.
 - [ ] Evitar divisao de CSS sem ganho claro.
 - [ ] Validar com testes de UI relevantes e `build`.
-

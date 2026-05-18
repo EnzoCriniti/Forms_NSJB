@@ -56,7 +56,7 @@ Mapa curto das areas mais mexidas por agentes.
   `NotePanel` cobre caixas de aviso e explicacao que aparecem em mais de uma tela.
   `SplitSection` organiza telas administrativas em duas colunas para edicao e listagem.
 - `frontend/src/lib/appShell.js`
-  Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
+  Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>` e a decisao pura de navegacao interna.
 - `docs/REUSO.md`
   Indice rapido para agentes encontrarem componentes, helpers e telas antes de recriar comportamento ja existente.
 - `docs/REFACTOR_CHECKLIST.md`

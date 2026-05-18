@@ -133,7 +133,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/screens/publicScalePanels.jsx`
   Modal reutilizavel de inscricao na escala publica.
 - `frontend/src/lib/appShell.js`
-  Caminhos publicos canonicos e helpers de navegacao publica.
+  Caminhos publicos canonicos, helpers de navegacao publica e decisao pura de navegacao interna.
 
 ## Regra pratica
 

@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../frontend/src/lib/appShell.js";
+import { buildPublicEventFormPath, getPublicRouteFromLocation, resolveAppNavigation } from "../../frontend/src/lib/appShell.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -19,5 +19,53 @@ describe("appShell public routes", () => {
       view: "form",
       isLegacySlug: false,
     });
+  });
+});
+
+describe("appShell navigation", () => {
+  const canCreateForms = user => user?.role === "admin";
+  const canViewForm = (user, form) => user?.role === "admin" || form?.status === "aberto";
+
+  it("bloqueia telas administrativas para usuario sem permissao", () => {
+    expect(resolveAppNavigation({
+      nextScreen: "settings",
+      currentUser: { role: "viewer" },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({ screen: "list", clearDraft: false });
+  });
+
+  it("manda usuarios logados da lista para eventos", () => {
+    expect(resolveAppNavigation({
+      nextScreen: "list",
+      currentUser: { role: "admin" },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({ screen: "events", clearDraft: false });
+  });
+
+  it("prepara edicao ao navegar para criacao com formulario", () => {
+    expect(resolveAppNavigation({
+      nextScreen: "create",
+      form: { id: 7 },
+      currentUser: { role: "admin" },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({
+      screen: "create",
+      clearDraft: true,
+      editingFormId: 7,
+      activeFormId: 7,
+    });
+  });
+
+  it("bloqueia resultados sem permissao de visualizar formulario", () => {
+    expect(resolveAppNavigation({
+      nextScreen: "results",
+      activeForm: { id: 3, status: "rascunho" },
+      currentUser: { role: "viewer" },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({ screen: "list", clearDraft: false });
   });
 });

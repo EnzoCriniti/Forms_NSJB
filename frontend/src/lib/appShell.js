@@ -46,6 +46,44 @@ export const buildSaveFormPayloadFromExisting = (form, status = form?.status) =>
   scaleSections: form?.scaleSections || [],
 });
 
+export const resolveAppNavigation = ({
+  nextScreen,
+  form = null,
+  activeForm = null,
+  currentUser = null,
+  canCreateForms,
+  canViewForm,
+}) => {
+  const canCreate = canCreateForms(currentUser);
+  if (["dashboard", "create", "settings"].includes(nextScreen) && !canCreate) {
+    return { screen: "list", clearDraft: false };
+  }
+
+  if (nextScreen === "list" && currentUser) {
+    return { screen: "events", clearDraft: false };
+  }
+
+  const targetForm = form || activeForm;
+  if (nextScreen === "results" && targetForm && !canViewForm(currentUser, targetForm)) {
+    return { screen: "list", clearDraft: false };
+  }
+
+  if (nextScreen === "create") {
+    return {
+      screen: nextScreen,
+      clearDraft: true,
+      editingFormId: form?.id || null,
+      activeFormId: form?.id,
+    };
+  }
+
+  return {
+    screen: nextScreen,
+    clearDraft: true,
+    activeFormId: form?.id,
+  };
+};
+
 export const clampFontScale = value => Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, Number(value.toFixed(2))));
 
 export const PUBLIC_FORM_PATH_PREFIX = "/formularios/";

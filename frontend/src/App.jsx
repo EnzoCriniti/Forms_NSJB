@@ -59,6 +59,7 @@ import {
   FONT_SCALE_STEP,
   getPublicRouteFromLocation,
   normalizeStoredSession,
+  resolveAppNavigation,
   sanitizeUser,
 } from "./lib/appShell";
 
@@ -345,38 +346,25 @@ export default function App() {
   };
 
   const navigate = (nextScreen, form) => {
-    if (nextScreen === "dashboard" && !canCreateForms(currentUser)) {
-      setScreen("list");
-      return;
-    }
-    if (nextScreen === "create" && !canCreateForms(currentUser)) {
-      setScreen("list");
-      return;
-    }
-    if (nextScreen === "settings" && !canCreateForms(currentUser)) {
-      setScreen("list");
-      return;
-    }
-    if (nextScreen === "list" && currentUser) {
-      setScreen("events");
-      return;
-    }
-    const targetForm = form || activeForm;
-    if (nextScreen === "create") {
-      setDraftForm(null);
-      setEditingFormId(form?.id || null);
-      if (form) setActiveFormId(form.id);
-    } else if (form) {
-      setActiveFormId(form.id);
-      setDraftForm(null);
-    } else {
+    const decision = resolveAppNavigation({
+      nextScreen,
+      form,
+      activeForm,
+      currentUser,
+      canCreateForms,
+      canViewForm,
+    });
+
+    if (decision.clearDraft) {
       setDraftForm(null);
     }
-    if (nextScreen === "results" && targetForm && !canViewForm(currentUser, targetForm)) {
-      setScreen("list");
-      return;
+    if (Object.prototype.hasOwnProperty.call(decision, "editingFormId")) {
+      setEditingFormId(decision.editingFormId);
     }
-    setScreen(nextScreen);
+    if (decision.activeFormId) {
+      setActiveFormId(decision.activeFormId);
+    }
+    setScreen(decision.screen);
   };
 
   const handleSaveForm = async payload => {
