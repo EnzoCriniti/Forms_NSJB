@@ -40,14 +40,14 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Os paineis iniciais ficaram em `frontend/src/features/forms/createFormPanels/setupPanels.jsx`.
   Os paineis de lista e editor de campos ficaram em `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`.
   Os paineis finais de escala, resultados e rodape ficaram em `frontend/src/features/forms/createFormPanels/finalPanels.jsx`.
-  A pre-visualizacao publica tambem ficou em `FormPreviewPanel`.
+  A pre-visualizacao publica tambem ficou em `FormPreviewPanel`, exportado por `frontend/src/features/forms/createFormPanels/finalPanels.jsx`.
   As linhas de campos usam `FormFieldRow` e os totais configurados usam `ResultsTotalRow`.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
-  Paineis finais da criacao de formulario: escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
+  Paineis finais da criacao de formulario: pre-visualizacao, escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.

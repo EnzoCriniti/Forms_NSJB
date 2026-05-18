@@ -29,8 +29,9 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 - [x] `frontend/src/screens/ResultsScreen.jsx` e `frontend/src/screens/resultsPanels.jsx`
   - geracao de CSV de presenca e escala movida para `frontend/src/screens/resultsDomain.js`
   - testes de dominio cobrem os formatos exportados
-- [ ] `frontend/src/screens/createFormPanels.jsx` - restante
-  - revisar duplicacao entre preview, escala, resultados e rodape
+- [x] `frontend/src/screens/createFormPanels.jsx` - restante
+  - pre-visualizacao movida para `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
+  - barramento ficou apenas com reexports dos paineis por dominio
 - [ ] `frontend/src/screens/CreateFormScreen.jsx`
   - reduzir orquestracao remanescente
   - remover qualquer regra que ainda possa viver no dominio
