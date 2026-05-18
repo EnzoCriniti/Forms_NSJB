@@ -96,6 +96,25 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
   </>
 );
 
+export const FormHeaderPanel = ({ onBack, title, subtitle }) => (
+  <div className="create-form-header create-form-mobile-hero" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+    <Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />
+    <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
+    <div>
+      <h2 style={{ margin: 0, fontSize: 22 }}>{title}</h2>
+      <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>{subtitle}</p>
+    </div>
+  </div>
+);
+
+export const FormContextPanel = ({ title, body, footer }) => (
+  <SurfacePanel style={{ marginBottom: 14 }}>
+    <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 4 }}>{title}</div>
+    <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>{body}</div>
+    <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>{footer}</div>
+  </SurfacePanel>
+);
+
 export const FormBasicsPanel = ({
   inp,
   formTitle,

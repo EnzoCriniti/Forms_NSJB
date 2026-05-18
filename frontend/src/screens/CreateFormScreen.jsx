@@ -5,9 +5,9 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Icon, Btn, SurfacePanel, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { FieldEditorPanel, FormBasicsPanel, FormFooterPanel, FormModePanel, FormPreviewPanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
+import { FieldEditorPanel, FormBasicsPanel, FormContextPanel, FormFooterPanel, FormHeaderPanel, FormModePanel, FormPreviewPanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
 import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
@@ -462,14 +462,11 @@ export const CreateFormScreen = ({
 
   return (
     <div>
-      <div className="create-form-header create-form-mobile-hero" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-        <Btn v="ghost" icon="back" onClick={goBack} aria-label="Voltar" />
-        <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
-        <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}>{form && !isDuplicateMode ? "Editar Formulario" : "Novo Formulario"}</h2>
-          <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>{showTypeSetup ? "Escolha o tipo antes de abrir o editor" : "Configure o formulario e salve na base local"}</p>
-        </div>
-      </div>
+      <FormHeaderPanel
+        onBack={goBack}
+        title={form && !isDuplicateMode ? "Editar Formulario" : "Novo Formulario"}
+        subtitle={showTypeSetup ? "Escolha o tipo antes de abrir o editor" : "Configure o formulario e salve na base local"}
+      />
 
       {showTypeSetup && (
         <FormTypeSetupPanel
@@ -495,15 +492,11 @@ export const CreateFormScreen = ({
       {!showTypeSetup && (
       <>
       {isEditingExistingForm && (
-        <SurfacePanel style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 4 }}>Tipo do formulario</div>
-          <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>
-            {format === "escala_organ" ? "Escala da Organ" : "Presenca"}
-          </div>
-          <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
-            O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario.
-          </div>
-        </SurfacePanel>
+        <FormContextPanel
+          title="Tipo do formulario"
+          body={format === "escala_organ" ? "Escala da Organ" : "Presenca"}
+          footer="O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario."
+        />
       )}
 
       {!isEditingExistingForm && format === "presenca" && (

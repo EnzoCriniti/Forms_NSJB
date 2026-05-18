@@ -37,6 +37,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Paineis compartilhados da criacao de formulario: etapa inicial, dados basicos, modo, editor de campo, escala, lista de campos, resultados e rodape.
   O editor de campo dentro desse arquivo tambem esta separado em origem, definicao, ajustes extras e acoes.
   A pre-visualizacao publica tambem ficou em `FormPreviewPanel`.
+  O topo e o card de contexto do editor tambem podem ser reutilizados por `FormHeaderPanel` e `FormContextPanel`.
   As linhas de campos usam `FormFieldRow` e os totais configurados usam `ResultsTotalRow`.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario para defaults, titulos padrao, validacao e sincronizacao de resultados.
