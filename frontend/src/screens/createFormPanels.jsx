@@ -684,25 +684,23 @@ export const ResultsConfigPanel = ({
       <div style={{ fontSize: 12, color: COLORS.textMuted }}>Adicione campos totalizaveis para configurar esta area.</div>
     ) : (
       <div style={{ display: "grid", gap: 8 }}>
-        {resultsConfig.totalsLayout.map((item, index) => {
-          const field = totalizableFields.find(current => String(current.id) === String(item.fieldId));
-          if (!field) return null;
-          return (
-            <div className="create-form-total-row" key={field.id} style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "center", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 10 }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>{field.label}</div>
-                <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-                  Tipo: {FIELD_TYPES.find(type => type.v === field.type)?.l} • Exibicao automatica
-                </div>
-              </div>
-              <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
-                <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, -1)} disabled={index === 0}>Subir</Btn>
-                <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, 1)} disabled={index === resultsConfig.totalsLayout.length - 1}>Descer</Btn>
-                <Btn v="ghost" sz="sm" onClick={() => onChangeResultsConfig({ ...resultsConfig, totalsLayout: resultsConfig.totalsLayout.filter(layoutItem => String(layoutItem.fieldId) !== String(item.fieldId)) })}>Remover</Btn>
-              </div>
-            </div>
-          );
-        })}
+            {resultsConfig.totalsLayout.map((item, index) => {
+              const field = totalizableFields.find(current => String(current.id) === String(item.fieldId));
+              if (!field) return null;
+              return (
+                <ResultsTotalRow
+                  key={item.fieldId}
+                  field={field}
+                  index={index}
+                  totalCount={resultsConfig.totalsLayout.length}
+                  onMoveTotalLayout={onMoveTotalLayout}
+                  onRemove={() => onChangeResultsConfig({
+                    ...resultsConfig,
+                    totalsLayout: resultsConfig.totalsLayout.filter(layoutItem => String(layoutItem.fieldId) !== String(item.fieldId)),
+                  })}
+                />
+              );
+            })}
         {availableTotals.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
             {availableTotals.map(field => (
@@ -861,18 +859,19 @@ export const ResultsTotalRow = ({
   FIELD_TYPES,
   onMoveTotalLayout,
   onChangeResultsConfig,
+  onRemove,
 }) => (
   <div className="create-form-total-row" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 8, alignItems: "center", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 10 }}>
     <div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>{field.label}</div>
-      <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-        Tipo: {FIELD_TYPES.find(type => type.v === field.type)?.l} • Exibicao automatica
-      </div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>{field?.label ?? ""}</div>
+        <div style={{ fontSize: 11, color: COLORS.textMuted }}>
+          Tipo: {field?.type ?? ""} • Exibicao automatica
+        </div>
     </div>
     <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
       <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, -1)} disabled={index === 0}>Subir</Btn>
-      <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, 1)} disabled={index === resultsConfig.totalsLayout.length - 1}>Descer</Btn>
-      <Btn v="ghost" sz="sm" onClick={() => onChangeResultsConfig({ ...resultsConfig, totalsLayout: resultsConfig.totalsLayout.filter(layoutItem => String(layoutItem.fieldId) !== String(field.id)) })}>Remover</Btn>
+        <Btn v="ghost" sz="sm" onClick={() => onMoveTotalLayout(index, 1)}>Descer</Btn>
+      <Btn v="ghost" sz="sm" onClick={onRemove}>Remover</Btn>
     </div>
   </div>
 );
