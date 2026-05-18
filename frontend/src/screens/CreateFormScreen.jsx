@@ -30,6 +30,7 @@ import {
   mergeSavedField,
   buildCreateFormModeTransition,
   buildCreateFormTemplateState,
+  buildCreateFormDerivedState,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
   moveItem,
@@ -110,75 +111,53 @@ export const CreateFormScreen = ({
   const inp = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };
   const inpSm = { ...inp, padding: "6px 10px", fontSize: 12 };
   const fieldLabel = nLabel.trim() || (nType === "person_select" ? "Nome" : "Novo campo");
-  const linkedPeopleField = useMemo(() => hasLinkedPeopleField({ fieldDefinitions: fields }), [fields]);
-  const totalizableFields = useMemo(() => fields.filter(field => field.total), [fields]);
-  const activeFieldCatalog = useMemo(() => fieldCatalog.filter(item => item.active !== false), [fieldCatalog]);
-  const activeScaleTaskCatalog = useMemo(() => scaleTaskCatalog.filter(item => item.active !== false), [scaleTaskCatalog]);
-  const externalBaseMap = useMemo(() => new Map((externalBases || []).map(base => [String(base.id), base])), [externalBases]);
-  const availableTotals = useMemo(() => totalizableFields.filter(field => !resultsConfig.totalsLayout.some(item => String(item.fieldId) === String(field.id))), [resultsConfig.totalsLayout, totalizableFields]);
-  const canUseMembersBase = format === "presenca" && formMode === FORM_MODES.NUCLEO;
-  const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId)
-    || (nType !== "person_select" && !nLabel.trim())
-    || (!canUseMembersBase && nFieldMode === "local" && nType === "person_select");
+  const {
+    linkedPeopleField,
+    totalizableFields,
+    activeFieldCatalog,
+    activeScaleTaskCatalog,
+    externalBaseMap,
+    availableTotals,
+    canUseMembersBase,
+    hasPrimaryLinkedField,
+    editingField,
+    canOfferMembersSelector,
+    filteredFieldTypes,
+    filteredFieldCatalog,
+    selectedCatalogItem,
+    activeSelectionSource,
+    currentFieldSourceLabel,
+    membersFieldsCount,
+    activeModeOption,
+    isFieldSaveDisabled,
+  } = useMemo(() => buildCreateFormDerivedState({
+    format,
+    formMode,
+    fields,
+    fieldCatalog,
+    scaleTaskCatalog,
+    externalBases,
+    resultsConfig,
+    editingFieldId,
+    nFieldMode,
+    nType,
+    nCatalogId,
+    nLabel,
+  }), [format, formMode, fields, fieldCatalog, scaleTaskCatalog, externalBases, resultsConfig, editingFieldId, nFieldMode, nType, nCatalogId, nLabel]);
   const previewTitle = title.trim();
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();
-  const hasPrimaryLinkedField = useMemo(() => fields.some(field => field.type === "person_select" && getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) === "primary"), [fields]);
-  const editingField = useMemo(
-    () => fields.find(field => String(field.id) === String(editingFieldId)) || null,
-    [editingFieldId, fields],
-  );
   const shouldPresetTitle = Boolean(event) && !form && (format === "presenca" || format === "escala_organ");
   const presetTitle = shouldPresetTitle ? buildPresetTitle(format, event) : "";
   const formTitle = shouldPresetTitle ? presetTitle : title;
-  const canOfferMembersSelector = canUseMembersBase && !hasPrimaryLinkedField;
-  const filteredFieldTypes = useMemo(() => {
-    const shouldKeepCurrentPersonType = editingField?.type === "person_select";
-    if (canUseMembersBase && (canOfferMembersSelector || shouldKeepCurrentPersonType)) return FIELD_TYPES;
-    return FIELD_TYPES.filter(type => type.v !== "person_select" || shouldKeepCurrentPersonType);
-  }, [canOfferMembersSelector, canUseMembersBase, editingField]);
-  const filteredFieldCatalog = useMemo(() => {
-    const isEditingCatalogMembersField = editingField?.catalogFieldId
-      && editingField?.type === "person_select"
-      && isMembersSelectionField(editingField);
-    return activeFieldCatalog.filter(item => {
-      if (item.type !== "person_select") return true;
-      if (item?.selectionSource?.kind === "external_base") return true;
-      if (!canUseMembersBase) return false;
-      if (canOfferMembersSelector) return true;
-      return isEditingCatalogMembersField && String(item.id) === String(editingField.catalogFieldId);
-    });
-  }, [activeFieldCatalog, canOfferMembersSelector, canUseMembersBase, editingField]);
-  const activeModeOption = useMemo(
-    () => FORM_MODE_OPTIONS.find(option => option.id === formMode) || FORM_MODE_OPTIONS[0],
-    [formMode],
-  );
   const isEditingExistingForm = Boolean(form) && !isDuplicateMode;
   const showTypeSetup = !form && !isDuplicateMode && setupStep === "type";
-  const membersFieldsCount = useMemo(
-    () => fields.filter(isMembersSelectionField).length,
-    [fields],
-  );
   const templateSummary = format === "escala_organ"
     ? `Salvando ${scaleDraft.length} secoes como template reutilizavel.`
     : `Salvando ${fields.length} campos como template reutilizavel.`;
   const templateDescription = format === "presenca"
     ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes."
     : "secoes da escala, descricao, texto de fechamento e classificacoes.";
-  const selectedCatalogItem = useMemo(
-    () => nFieldMode === "catalog"
-      ? filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId))
-      : null,
-    [filteredFieldCatalog, nCatalogId, nFieldMode],
-  );
-  const activeSelectionSource = useMemo(() => {
-    if (nType !== "person_select") return null;
-    if (selectedCatalogItem?.selectionSource?.kind === "external_base") return selectedCatalogItem.selectionSource;
-    return { kind: "members" };
-  }, [nType, selectedCatalogItem]);
-  const currentFieldSourceLabel = nFieldMode === "catalog"
-    ? (selectedCatalogItem ? `Campo da biblioteca: ${selectedCatalogItem.name}` : "Selecione um campo base")
-    : "Campo local deste formulario";
   const handleModeSelect = nextMode => syncModeWithFields(nextMode);
   const handleToggleFieldShow = fieldId => setFields(fields.map(item => item.id === fieldId ? { ...item, show: !item.show } : item));
   const handleRemoveField = fieldId => setFields(fields.filter(item => item.id !== fieldId));
@@ -200,7 +179,6 @@ export const CreateFormScreen = ({
       currentNType: nType,
       currentNCatalogId: nCatalogId,
       currentResultsConfig: resultsConfig,
-      filteredFieldCatalog,
     });
     setPreset(null);
     setFormMode(nextMode);
