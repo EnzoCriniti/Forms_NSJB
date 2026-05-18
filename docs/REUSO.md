@@ -116,6 +116,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 
 - `frontend/src/screens/ResultsScreen.jsx`
   Planilha de resultados, totalizacao e filtro de grau.
+- `frontend/src/screens/publicScreenFrame.jsx`
+  Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Resposta publica e modo interno.
 - `frontend/src/screens/publicFormDomain.js`

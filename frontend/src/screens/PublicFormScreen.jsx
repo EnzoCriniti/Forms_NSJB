@@ -7,6 +7,7 @@
 import React, { useMemo, useState } from "react";
 import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
 import { PublicResponseEditingBanner, PublicResponseEditModal, PublicResponseErrorBanner, PublicResponseFieldPanel, PublicResponseHeader, PublicResponseSuccessPanel } from "./publicFormPanels";
+import { PublicScreenFrame, PublicScreenLayout } from "./publicScreenFrame";
 import { getPersonField, getVisibleFields, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 import { buildPublicPersonSelectOptions, findExistingPublicResponse, findSelectedPublicPerson } from "./publicFormDomain";
 
@@ -110,11 +111,11 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   }
 
   return (
-    <div style={{ maxWidth: 680, margin: "0 auto" }}>
+    <PublicScreenLayout maxWidth={680}>
       <PublicResponseHeader isInternal={isInternal} form={form} onBack={onBack} resultsHref={resultsHref} readingControls={readingControls} />
       <PublicResponseErrorBanner submitError={submitError} />
       <PublicResponseEditingBanner editing={editing} />
-      <div className={isInternal ? "internal-response-card" : "public-response-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: "0 0 24px" }}>
+      <PublicScreenFrame isInternal={isInternal} cardStyle={{ padding: "0 0 24px" }}>
         {fields.map(field => {
           const key = String(field.id);
           const value = values[key] ?? "";
@@ -156,8 +157,8 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
           <Btn sz="lg" icon={editing ? "edit" : "check"} style={{ width: "100%", justifyContent: "center" }} onClick={submit} loading={submitting} disabled={submitting || duplicateResponseLocked}>{editing ? "Atualizar Resposta" : "Enviar Resposta"}</Btn>
           <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", marginTop: 8 }}>Voce pode editar sua resposta enquanto o formulario estiver aberto.</p>
         </div>
-      </div>
+      </PublicScreenFrame>
       {editModal && <PublicResponseEditModal selectedPerson={selectedPerson} onCancel={cancelEdit} onConfirm={confirmEdit} />}
-    </div>
+    </PublicScreenLayout>
   );
 };

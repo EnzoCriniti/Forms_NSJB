@@ -1,10 +1,20 @@
 import React from "react";
 import { COLORS, Btn, FeedbackBanner, Icon, PublicTopCompact, ScreenHeader } from "../components/ui";
+import { PublicScreenFrame, PublicScreenHeader, PublicScreenLayout } from "./publicScreenFrame";
 
 export const PublicResponseSuccessPanel = ({ isInternal, form, onBack, resultsHref, readingControls, editing }) => (
-  <div style={{ maxWidth: 680, margin: "0 auto" }}>
-    {!isInternal && <PublicTopCompact form={form} onBack={onBack} actionLabel="Resultados" actionHref={resultsHref} readingControls={readingControls} />}
-    <div className={isInternal ? "internal-response-card" : "public-response-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : "0 0 16px 16px", border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: "40px 24px", textAlign: "center" }}>
+  <PublicScreenLayout maxWidth={680}>
+    {!isInternal && (
+      <PublicScreenHeader
+        isInternal={isInternal}
+        form={form}
+        onBack={onBack}
+        actionLabel="Resultados"
+        actionHref={resultsHref}
+        readingControls={readingControls}
+      />
+    )}
+    <PublicScreenFrame isInternal={isInternal} cardStyle={{ padding: "40px 24px", textAlign: "center" }}>
       <div style={{ width: 56, height: 56, borderRadius: "50%", background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", color: COLORS.primary }}>
         <Icon name="check" size={28} />
       </div>
@@ -12,8 +22,8 @@ export const PublicResponseSuccessPanel = ({ isInternal, form, onBack, resultsHr
       <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary }}>
         {editing ? "Sua resposta anterior foi substituída com sucesso." : "Obrigado pelo preenchimento."} Se precisar alterar, acesse este mesmo link novamente.
       </p>
-    </div>
-  </div>
+    </PublicScreenFrame>
+  </PublicScreenLayout>
 );
 
 export const PublicResponseHeader = ({ isInternal, form, onBack, resultsHref, readingControls, subtitle }) => (

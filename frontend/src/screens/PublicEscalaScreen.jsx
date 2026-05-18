@@ -5,8 +5,9 @@
  */
 
 import React, { useState } from "react";
-import { COLORS, Btn, FeedbackBanner, PublicTopCompact, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { FeedbackBanner, resolveActionErrorMessage } from "../components/ui";
 import { PublicScaleMetricsPanel, PublicScaleSectionsPanel, PublicScaleSignupModal } from "./publicScalePanels";
+import { PublicScreenFrame, PublicScreenHeader, PublicScreenLayout } from "./publicScreenFrame";
 import { buildPublicScaleLimitMessage, buildPublicScaleNextSections, countPublicScaleAssignments, resolvePublicScaleLimit } from "./publicScaleDomain";
 
 export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
@@ -52,24 +53,22 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
   };
 
   return (
-    <div style={{ maxWidth: 760, margin: "0 auto" }}>
-      {isInternal ? (
-        <ScreenHeader
-          className="internal-response-header"
-          title={form?.title || "Escala"}
-          subtitle="Escolha uma vaga pendente para preencher seu nome."
-          titleStyle={{ color: COLORS.text }}
-          subtitleStyle={{ color: COLORS.textMuted }}
-          marginBottom={14}
-        />
-      ) : (
-        <PublicTopCompact form={form} onBack={onBack} readingControls={readingControls} />
-      )}
-      <div className={isInternal ? "internal-response-card" : "public-response-card public-scale-card"} style={{ background: COLORS.surface, borderRadius: isInternal ? 12 : undefined, border: `1px solid ${COLORS.borderLight}`, borderTop: isInternal ? `1px solid ${COLORS.borderLight}` : "none", padding: 18 }}>
-        <PublicScaleMetricsPanel filled={filled} pending={total - filled} total={total} scaleLimit={scaleLimit} />
-        {error && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="error" message={error} /></div>}
-        <PublicScaleSectionsPanel sections={sections} onPickSlot={(sectionIndex, slotIndex) => setSelSlot({ si: sectionIndex, sli: slotIndex })} />
-      </div>
+    <PublicScreenLayout maxWidth={760}>
+      <PublicScreenHeader
+        isInternal={isInternal}
+        form={form}
+        onBack={onBack}
+        titleFallback="Escala"
+        internalSubtitle="Escolha uma vaga pendente para preencher seu nome."
+        readingControls={readingControls}
+      />
+      <PublicScreenFrame isInternal={isInternal} cardClassName="public-scale-card">
+        <div className="public-scale-card__content">
+          <PublicScaleMetricsPanel filled={filled} pending={total - filled} total={total} scaleLimit={scaleLimit} />
+          {error && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="error" message={error} /></div>}
+          <PublicScaleSectionsPanel sections={sections} onPickSlot={(sectionIndex, slotIndex) => setSelSlot({ si: sectionIndex, sli: slotIndex })} />
+        </div>
+      </PublicScreenFrame>
       {selSlot && (
         <PublicScaleSignupModal
           sectionTitle={sections[selSlot.si].title}
@@ -82,6 +81,6 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
           saving={saving}
         />
       )}
-    </div>
+    </PublicScreenLayout>
   );
 };
