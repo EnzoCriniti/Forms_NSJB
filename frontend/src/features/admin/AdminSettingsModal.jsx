@@ -12,6 +12,7 @@ import { CatalogManagementPanel } from "./adminCatalogPanels";
 import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
 import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
 import { SecurityPanel } from "./adminSecurityPanels";
+import { AdminSettingsHeader } from "./adminShellPanels";
 import { AuditLogsPanel, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
 
 const inputStyle = {
@@ -229,39 +230,7 @@ export const AdminSettingsModal = ({
           </div>
         )}
 
-        <div className="settings-tabs" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
-          {tabs.map(item => (
-            <Btn
-              key={item.key}
-              v={tab === item.key ? "primary" : "secondary"}
-              sz="sm"
-              className="settings-tab"
-              onClick={() => setTab(item.key)}
-              style={{
-                alignItems: "flex-start",
-                border: tab === item.key ? "1px solid rgba(26, 107, 60, 0.28)" : `1px solid ${COLORS.borderLight}`,
-                borderRadius: 12,
-                boxShadow: tab === item.key ? "0 10px 24px rgba(26, 107, 60, 0.14)" : "none",
-                flexDirection: "column",
-                gap: 2,
-                minHeight: 54,
-                padding: "9px 12px",
-                textAlign: "left",
-              }}
-            >
-              <span className="settings-tab__label">{item.label}</span>
-              <span className="settings-tab__description" aria-hidden="true">{item.description}</span>
-            </Btn>
-          ))}
-        </div>
-
-        <div className="settings-active-panel">
-          <div className="settings-active-panel__eyebrow">Modulo administrativo</div>
-          <div>
-            <strong>{activeTab.label}</strong>
-            <span>{activeTab.description}</span>
-          </div>
-        </div>
+        <AdminSettingsHeader tabs={tabs} tab={tab} setTab={setTab} activeTab={activeTab} />
 
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
 

@@ -27,6 +27,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Painel reutilizavel de classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   Painel reutilizavel da chave mestra administrativa.
+- `frontend/src/features/admin/adminShellPanels.jsx`
+  Chrome reutilizavel da central administrativa com abas e resumo da aba ativa.
 - `frontend/src/screens/createFormPanels.jsx`
   Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 - `frontend/src/screens/resultsPanels.jsx`
@@ -72,6 +74,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   UI compartilhada das classificacoes e templates dentro do admin.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   UI compartilhada da seguranca administrativa.
+- `frontend/src/features/admin/adminShellPanels.jsx`
+  UI compartilhada da barra de abas e do resumo do modulo administrativo.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
   Configuracao da base de socios sincronizada.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`

@@ -16,6 +16,8 @@ Mapa curto das areas mais mexidas por agentes.
   Painel compartilhado de classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   Painel compartilhado da chave mestra e status da seguranca.
+- `frontend/src/features/admin/adminShellPanels.jsx`
+  Chrome compartilhado da central administrativa, com a barra de abas e o resumo da aba ativa.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Helpers compartilhados do admin, incluindo listas paginadas, preview de campo, editor de matriz e painel de auditoria.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
@@ -101,6 +103,8 @@ Mapa curto das areas mais mexidas por agentes.
   Componentes compartilhados das classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   UI compartilhada da seguranca administrativa.
+- `frontend/src/features/admin/adminShellPanels.jsx`
+  UI compartilhada da navegacao e resumo da central administrativa.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.
