@@ -20,6 +20,7 @@ import {
   createDefaultResultsConfig,
   createDefaultScaleSections,
   createLocalScaleSection,
+  buildCreateFormInitialState,
   ensurePrimaryMembersField,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
@@ -81,48 +82,24 @@ export const CreateFormScreen = ({
   const [setupStep, setSetupStep] = useState("type");
 
   useEffect(() => {
-    if (!form) {
-      const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
-      setFormat("presenca");
-      setFormMode(FORM_MODES.NUCLEO);
-      setPreset(null);
-      setTitle("");
-      setDesc("");
-      setSelLabels([]);
-      setEventDate("");
-      setClosingDate("");
-      setStatus("rascunho");
-      setTotalExpected("");
-      setClosingText("Este formulario nao esta mais aceitando respostas.");
-      setFields(defaultFields);
-      setResultsConfig(createDefaultResultsConfig(defaultFields));
-      setScaleLimit(1);
-      setScaleDraft(createDefaultScaleSections());
-      setSetupStep("type");
-      return;
-    }
-    const nextMode = getFormMode(form);
-    const nextFields = form.fieldDefinitions?.length ? form.fieldDefinitions : createDefaultPresenceFields(nextMode);
-    setFormat(form.type);
-    setFormMode(nextMode);
-    setPreset(null);
-    setTitle(form.title || "");
-    setDesc(form.description || "");
-    setSelLabels(form.labels || []);
-    setEventDate(form.date || "");
-    setClosingDate(form.closing || "");
-    setStatus(form.status || "rascunho");
-    setTotalExpected(form.totalExpected > 0 ? String(form.totalExpected) : "");
-    setClosingText(form.closingText || "");
-    setFields(nextFields);
-    setResultsConfig(syncResultsConfigWithFields({
-      ...(form.resultsConfig || createDefaultResultsConfig(nextFields)),
-      formMode: nextMode,
-    }, nextFields));
-    setScaleLimit(getScalePersonLimit(form));
-    setScaleDraft(form.scaleSections?.length ? form.scaleSections : createDefaultScaleSections());
-    setSetupStep("editor");
-  }, [form]);
+    const nextState = buildCreateFormInitialState({ form, isDuplicateMode });
+    setFormat(nextState.format);
+    setFormMode(nextState.formMode);
+    setPreset(nextState.preset);
+    setTitle(nextState.title);
+    setDesc(nextState.desc);
+    setSelLabels(nextState.selLabels);
+    setEventDate(nextState.eventDate);
+    setClosingDate(nextState.closingDate);
+    setStatus(nextState.status);
+    setTotalExpected(nextState.totalExpected);
+    setClosingText(nextState.closingText);
+    setFields(nextState.fields);
+    setResultsConfig(nextState.resultsConfig);
+    setScaleLimit(nextState.scaleLimit);
+    setScaleDraft(nextState.scaleDraft);
+    setSetupStep(nextState.setupStep);
+  }, [form, isDuplicateMode]);
 
   const inp = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };
   const inpSm = { ...inp, padding: "6px 10px", fontSize: 12 };

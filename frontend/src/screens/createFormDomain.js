@@ -55,6 +55,56 @@ export const createDefaultScaleSections = () => [];
 
 export const createLocalScaleSection = () => ({ source: "local", title: "Nova secao", responsaveis: 1, auxiliares: 2 });
 
+export const buildCreateFormInitialState = ({ form, isDuplicateMode = false }) => {
+  if (!form || isDuplicateMode) {
+    const format = "presenca";
+    const formMode = FORM_MODES.NUCLEO;
+    const fields = createDefaultPresenceFields(formMode);
+    return {
+      format,
+      formMode,
+      preset: null,
+      title: "",
+      desc: "",
+      selLabels: [],
+      eventDate: "",
+      closingDate: "",
+      status: "rascunho",
+      totalExpected: "",
+      closingText: "Este formulario nao esta mais aceitando respostas.",
+      fields,
+      resultsConfig: createDefaultResultsConfig(fields),
+      scaleLimit: 1,
+      scaleDraft: createDefaultScaleSections(),
+      setupStep: "type",
+    };
+  }
+
+  const formMode = getFormMode(form);
+  const fields = form.fieldDefinitions?.length ? form.fieldDefinitions : createDefaultPresenceFields(formMode);
+  return {
+    format: form.type,
+    formMode,
+    preset: null,
+    title: form.title || "",
+    desc: form.description || "",
+    selLabels: form.labels || [],
+    eventDate: form.date || "",
+    closingDate: form.closing || "",
+    status: form.status || "rascunho",
+    totalExpected: form.totalExpected > 0 ? String(form.totalExpected) : "",
+    closingText: form.closingText || "",
+    fields,
+    resultsConfig: syncResultsConfigWithFields({
+      ...(form.resultsConfig || createDefaultResultsConfig(fields)),
+      formMode,
+    }, fields),
+    scaleLimit: getScalePersonLimit(form),
+    scaleDraft: form.scaleSections?.length ? form.scaleSections : createDefaultScaleSections(),
+    setupStep: "editor",
+  };
+};
+
 export const buildPresetTitle = (format, event) => {
   const eventDate = event?.date ? ` - ${formatDate(event.date)}` : "";
   if (format === "presenca") {

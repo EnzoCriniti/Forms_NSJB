@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
+  buildCreateFormInitialState,
   buildPresetTitle,
   createDefaultPresenceFields,
   createDefaultResultsConfig,
@@ -38,5 +39,32 @@ describe("createFormDomain", () => {
   it("mantem campo de presenca padrao no modo nucleo", () => {
     expect(createDefaultPresenceFields(FORM_MODES.NUCLEO)).toHaveLength(1);
     expect(createDefaultPresenceFields(FORM_MODES.GERAL)).toHaveLength(0);
+  });
+
+  it("monta o estado inicial do editor para novo formulario e edicao", () => {
+    const fresh = buildCreateFormInitialState({ form: null });
+    const existing = buildCreateFormInitialState({
+      form: {
+        type: "escala_organ",
+        title: "Escala",
+        description: "Descricao",
+        labels: [1],
+        date: "2026-05-18",
+        closing: "2026-05-20",
+        status: "aberto",
+        totalExpected: 3,
+        closingText: "Fecha",
+        resultsConfig: { searchEnabled: false, showLinkedRoster: false, totalsLayout: [] },
+        scaleSections: [{ title: "Secao 1" }],
+      },
+    });
+
+    expect(fresh.format).toBe("presenca");
+    expect(fresh.formMode).toBe(FORM_MODES.NUCLEO);
+    expect(fresh.setupStep).toBe("type");
+    expect(existing.format).toBe("escala_organ");
+    expect(existing.title).toBe("Escala");
+    expect(existing.setupStep).toBe("editor");
+    expect(existing.scaleDraft).toEqual([{ title: "Secao 1" }]);
   });
 });
