@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, FieldControl, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, FieldControl, NotePanel, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
 import { fetchAuditLogs } from "../../lib/api";
 import { ROLES } from "../../lib/auth";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
@@ -706,9 +706,9 @@ export const AdminSettingsModal = ({
             <div>
               <h4 style={{ margin: "0 0 10px" }}>{externalBaseDraft.id ? "Editar base externa" : "Nova base externa"}</h4>
               <div style={{ display: "grid", gap: 10 }}>
-                <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                <NotePanel>
                   Cadastre uma lista externa sincronizada para usar em campos do formulario. Essas bases nao substituem a base central de socios.
-                </div>
+                </NotePanel>
                 <FieldControl label="Seletor por base">
                   <input value={externalBaseDraft.name} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, name: e.target.value })} placeholder="Ex: Congregacoes, Turnos, Equipes" style={inputStyle} />
                 </FieldControl>
@@ -863,9 +863,9 @@ export const AdminSettingsModal = ({
                 <div>
                   <h4 style={{ margin: "0 0 10px" }}>{fieldCatalogDraft.id ? "Editar campo base" : "Novo campo base"}</h4>
                   <div style={{ display: "grid", gap: 10 }}>
-                    <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                    <NotePanel>
                       Preencha o nome exibido no formulario e ajuste o tipo. O identificador tecnico pode ser informado manualmente ou sera gerado automaticamente ao salvar.
-                    </div>
+                    </NotePanel>
                     <AdminField>
                       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Identificador tecnico</label>
                       <input value={fieldCatalogDraft.key} onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, key: e.target.value })} placeholder="Opcional. Ex: presenca_sessao" style={inputStyle} />
@@ -1010,9 +1010,9 @@ export const AdminSettingsModal = ({
                 <div>
                   <h4 style={{ margin: "0 0 10px" }}>{scaleTaskDraft.id ? "Editar tarefa base" : "Nova tarefa base"}</h4>
                   <div style={{ display: "grid", gap: 10 }}>
-                    <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                    <NotePanel>
                       Use esta biblioteca para reaproveitar tarefas recorrentes. O identificador tecnico pode ficar em branco e sera gerado ao salvar.
-                    </div>
+                    </NotePanel>
                     <AdminField>
                       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Identificador tecnico</label>
                       <input value={scaleTaskDraft.key} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, key: e.target.value })} placeholder="Opcional. Ex: preparo_jantar" style={inputStyle} />
@@ -1120,9 +1120,9 @@ export const AdminSettingsModal = ({
             <div>
               <h4 style={{ margin: "0 0 10px" }}>Como os templates funcionam</h4>
               <div style={{ display: "grid", gap: 10 }}>
-                <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+                <NotePanel>
                   Templates sao criados na tela de criacao de formulario. Aqui voce acompanha os existentes e pode remover o que nao faz mais sentido.
-                </div>
+                </NotePanel>
                 <SurfacePanel style={{ fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55, borderRadius: 10, padding: 12 }}>
                   Para salvar um novo template, use a acao <strong style={{ color: COLORS.text }}>Salvar como Template</strong> dentro do builder do formulario.
                 </SurfacePanel>

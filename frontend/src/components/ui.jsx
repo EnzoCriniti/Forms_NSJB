@@ -195,9 +195,34 @@ export const FieldControl = ({
       {actions}
     </div>
     {children}
-    {hint && <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45, ...hintStyle }}>{hint}</div>}
+  {hint && <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45, ...hintStyle }}>{hint}</div>}
   </div>
 );
+
+export const NotePanel = ({ children, style, tone = "neutral" }) => {
+  const palette = {
+    neutral: { background: COLORS.surfaceAlt, border: COLORS.borderLight, color: COLORS.textSecondary },
+    primary: { background: COLORS.primaryLight, border: COLORS.borderLight, color: COLORS.textSecondary },
+    warning: { background: COLORS.warningLight, border: COLORS.warning, color: COLORS.textSecondary },
+  }[tone] || { background: COLORS.surfaceAlt, border: COLORS.borderLight, color: COLORS.textSecondary };
+
+  return (
+    <div
+      style={{
+        background: palette.background,
+        border: `1px solid ${palette.border}`,
+        borderRadius: 10,
+        padding: 12,
+        fontSize: 12,
+        color: palette.color,
+        lineHeight: 1.55,
+        ...style,
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const ScreenHeader = ({
   className = "",

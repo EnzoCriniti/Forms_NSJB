@@ -9,6 +9,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Use `SurfacePanel` para blocos visuais com borda, raio e padding padrao.
   Use `MetricCard` para indicadores simples com numero grande e legenda.
   Use `FieldControl` para campos rotulados com ajuda opcional e acoes laterais.
+  Use `NotePanel` para avisos e textos auxiliares em caixa cinza/verde dentro dos formularios.
 - `frontend/src/components/CreateFormFieldPreview.jsx`
   Previa isolada de campo para o editor de formulario.
 - `frontend/src/components/ResultsPresenceHeader.jsx`
