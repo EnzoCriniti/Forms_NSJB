@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
   buildCreateFormInitialState,
+  buildCreateFormFormatSelectionState,
   buildCreateFormPayload,
   buildCreateFormModeTransition,
   buildCreateFormTemplateState,
@@ -73,6 +74,18 @@ describe("createFormDomain", () => {
     expect(existing.title).toBe("Escala");
     expect(existing.setupStep).toBe("editor");
     expect(existing.scaleDraft).toEqual([{ title: "Secao 1" }]);
+  });
+
+  it("monta o estado inicial ao trocar entre presenca e formulario geral", () => {
+    const presence = buildCreateFormFormatSelectionState("presenca");
+    const general = buildCreateFormFormatSelectionState("escala_organ");
+
+    expect(presence.format).toBe("presenca");
+    expect(presence.formMode).toBe(FORM_MODES.NUCLEO);
+    expect(presence.resultsConfig.formMode).toBe(FORM_MODES.NUCLEO);
+    expect(general.format).toBe("escala_organ");
+    expect(general.formMode).toBe(FORM_MODES.GERAL);
+    expect(general.scaleLimit).toBe(1);
   });
 
   it("monta os estados do editor de campo por origem", () => {

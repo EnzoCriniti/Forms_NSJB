@@ -32,6 +32,7 @@ import {
   buildCreateFormTemplateState,
   buildCreateFormDerivedState,
   buildFieldTypeTransition,
+  buildCreateFormFormatSelectionState,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
   moveItem,
@@ -389,18 +390,14 @@ export const CreateFormScreen = ({
         <FormTypeSetupPanel
           format={format}
           onSelectFormat={nextFormat => {
-            setFormat(nextFormat);
             setPreset(null);
-            if (nextFormat === "presenca") {
-              const defaultFields = createDefaultPresenceFields(FORM_MODES.NUCLEO);
-              setFormMode(FORM_MODES.NUCLEO);
-              setFields(defaultFields);
-              setResultsConfig(createDefaultResultsConfig(defaultFields));
-            } else {
-              setFormMode(FORM_MODES.GERAL);
-              setScaleDraft(createDefaultScaleSections());
-              setScaleLimit(1);
-            }
+            const nextState = buildCreateFormFormatSelectionState(nextFormat);
+            setFormat(nextState.format);
+            setFormMode(nextState.formMode);
+            setFields(nextState.fields);
+            if (nextState.resultsConfig) setResultsConfig(nextState.resultsConfig);
+            if (nextState.scaleDraft) setScaleDraft(nextState.scaleDraft);
+            if (nextState.scaleLimit !== undefined) setScaleLimit(nextState.scaleLimit);
           }}
           onContinue={() => setSetupStep("editor")}
         />

@@ -311,6 +311,27 @@ export const buildCreateFormInitialState = ({ form, isDuplicateMode = false }) =
   };
 };
 
+export const buildCreateFormFormatSelectionState = nextFormat => {
+  if (nextFormat === "presenca") {
+    const formMode = FORM_MODES.NUCLEO;
+    const fields = createDefaultPresenceFields(formMode);
+    return {
+      format: nextFormat,
+      formMode,
+      fields,
+      resultsConfig: createDefaultResultsConfig(fields),
+    };
+  }
+
+  return {
+    format: nextFormat,
+    formMode: FORM_MODES.GERAL,
+    fields: createDefaultPresenceFields(FORM_MODES.GERAL),
+    scaleDraft: createDefaultScaleSections(),
+    scaleLimit: 1,
+  };
+};
+
 export const buildPresetTitle = (format, event) => {
   const eventDate = event?.date ? ` - ${formatDate(event.date)}` : "";
   if (format === "presenca") {
