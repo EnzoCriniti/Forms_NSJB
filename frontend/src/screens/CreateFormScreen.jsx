@@ -31,6 +31,7 @@ import {
   buildCreateFormModeTransition,
   buildCreateFormTemplateState,
   buildCreateFormDerivedState,
+  buildFieldTypeTransition,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
   moveItem,
@@ -542,11 +543,12 @@ export const CreateFormScreen = ({
                 onSetFieldMode={setFieldMode}
                 onApplyFieldCatalog={applyFieldCatalog}
                 onSetNType={nextType => {
-                  setNType(nextType);
-                  setNPersonRole(nextType === "person_select" && hasPrimaryLinkedField ? "secondary" : "primary");
-                  setNGridRows(DEFAULT_GRID_ROWS);
-                  setNGridCols(DEFAULT_GRID_COLS);
-                  setNValidation({});
+                  const transition = buildFieldTypeTransition({ nextType, hasPrimaryLinkedField });
+                  setNType(transition.nType);
+                  setNPersonRole(transition.nPersonRole);
+                  setNGridRows(transition.nGridRows);
+                  setNGridCols(transition.nGridCols);
+                  setNValidation(transition.nValidation);
                 }}
                 onSetNLabel={setNLabel}
                 onSetNRequired={setNRequired}

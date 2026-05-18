@@ -532,6 +532,14 @@ export const buildCreateFormDerivedState = ({
   };
 };
 
+export const buildFieldTypeTransition = ({ nextType, hasPrimaryLinkedField = false }) => ({
+  nType: nextType,
+  nPersonRole: nextType === "person_select" && hasPrimaryLinkedField ? "secondary" : "primary",
+  nGridRows: DEFAULT_GRID_ROWS,
+  nGridCols: DEFAULT_GRID_COLS,
+  nValidation: {},
+});
+
 export const buildFieldValidation = ({ nType, nValidation }) => {
   if (nType === "text") {
     const validation = {};
