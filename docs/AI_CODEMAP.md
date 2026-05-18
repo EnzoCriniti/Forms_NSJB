@@ -63,6 +63,8 @@ Mapa curto das areas mais mexidas por agentes.
   Checklist por etapas com o que ja foi concluido e os proximos passos de refatoracao.
 - `docs/REFACTOR_STRUCTURE_CHECKLIST.md`
   Checklist novo focado em organizacao de pastas, reducao de duplicacao e unificacao de blocos compartilhados.
+- `docs/REFACTOR_EXECUTION_CHECKLIST.md`
+  Checklist operacional granular para continuar os lotes de refatoracao sem replanejamento a cada tarefa.
 
 ## Listagem
 

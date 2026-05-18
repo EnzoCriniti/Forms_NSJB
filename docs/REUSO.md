@@ -64,6 +64,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Checklist sequencial com o que ja foi quebrado em componentes e os proximos passos.
 - `docs/REFACTOR_STRUCTURE_CHECKLIST.md`
   Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplicacoes.
+- `docs/REFACTOR_EXECUTION_CHECKLIST.md`
+  Checklist granular para guiar os proximos lotes de refatoracao com validacao e commits.
 
 ## Formularios
 
