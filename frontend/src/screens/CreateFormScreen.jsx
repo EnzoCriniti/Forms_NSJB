@@ -24,6 +24,8 @@ import {
   buildFieldDraftDefaults,
   buildFieldDraftFromExistingField,
   buildFieldDraftFromCatalogItem,
+  buildFieldSavePayload,
+  mergeSavedField,
   ensurePrimaryMembersField,
   getAutomaticTotalStyle,
   getCatalogGridSchema,
@@ -265,57 +267,26 @@ export const CreateFormScreen = ({
   };
 
   const addField = () => {
-    const catalogItem = nFieldMode === "catalog" ? filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId)) : null;
-    const resolvedType = catalogItem?.type || nType;
-    const label = nLabel.trim() || (resolvedType === "person_select" ? "Nome" : "");
-    if (!label) return;
-    const catalogProps = catalogItem
-      ? { catalogFieldId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name }
-      : {};
-    const validation = buildFieldValidation({ nType: resolvedType, nValidation });
-    const selectionSource = resolvedType === "person_select"
-      ? (catalogItem?.selectionSource?.kind === "external_base"
-          ? { kind: "external_base", externalBaseId: Number(catalogItem.selectionSource.externalBaseId) }
-          : { kind: "members" })
-      : undefined;
-    const memberBinding = resolvedType === "person_select" && selectionSource?.kind !== "external_base"
-      ? { source: "members", role: nPersonRole }
-      : undefined;
-    const gridProps = resolvedType === "grid"
-      ? {
-          gridRows: catalogItem ? getCatalogGridSchema(catalogItem).rows : nGridRows.filter(row => row.trim()),
-          gridCols: catalogItem ? getCatalogGridSchema(catalogItem).cols : nGridCols.filter(col => col.trim()),
-        }
-      : {};
-    if (editingFieldId) {
-      const nextFields = fields.map(field => {
-        if (field.id !== editingFieldId) return field;
-        const {
-          catalogFieldId,
-          catalogKey,
-          catalogName,
-          gridRows,
-          gridCols,
-          ...baseField
-        } = field;
-        return {
-          ...baseField,
-          type: resolvedType,
-          label,
-          required: nRequired,
-          total: resolvedType === "yes_no" || resolvedType === "number",
-          ...catalogProps,
-          ...(selectionSource ? { selectionSource } : {}),
-          ...(memberBinding ? { memberBinding } : {}),
-          validation,
-          ...gridProps,
-        };
-      });
-      setFields(normalizePeopleBaseBindings(nextFields));
-    } else {
-      const nextFields = [...fields, { id: Date.now(), type: resolvedType, label, required: nRequired, show: true, total: resolvedType === "yes_no" || resolvedType === "number", ...catalogProps, ...(selectionSource ? { selectionSource } : {}), ...(memberBinding ? { memberBinding } : {}), validation, ...gridProps }];
-      setFields(normalizePeopleBaseBindings(nextFields));
-    }
+    const payload = buildFieldSavePayload({
+      fields,
+      editingFieldId,
+      nFieldMode,
+      nCatalogId,
+      nType,
+      nLabel,
+      nRequired,
+      nPersonRole,
+      nValidation,
+      nGridRows,
+      nGridCols,
+      filteredFieldCatalog,
+    });
+    if (!payload) return;
+    const nextField = mergeSavedField(payload);
+    const nextFields = editingFieldId
+      ? fields.map(field => (field.id === editingFieldId ? nextField : field))
+      : [...fields, nextField];
+    setFields(normalizePeopleBaseBindings(nextFields));
     resetFieldDraft();
   };
 
