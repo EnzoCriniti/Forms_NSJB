@@ -149,6 +149,8 @@ Mapa curto das areas mais mexidas por agentes.
   Blocos compartilhados do fluxo publico e interno de resposta: cabeçalho, aviso de erro, aviso de edição, sucesso e modal de edição.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Renderiza a escala publica e tambem o modo interno `variant="internal"` para contas logadas.
+- `frontend/src/screens/publicScaleDomain.js`
+  Helpers puros da escala publica: limite de vagas, contagem de atribuicoes e montagem da proxima versao das secoes.
 - `frontend/src/screens/publicScalePanels.jsx`
   Modal compartilhado de inscricao na escala publica, separado da tela principal.
 - `frontend/src/screens/PublicEscalaScreen.jsx`

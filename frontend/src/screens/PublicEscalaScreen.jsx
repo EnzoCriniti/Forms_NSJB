@@ -7,7 +7,7 @@
 import React, { useState } from "react";
 import { COLORS, Btn, FeedbackBanner, PublicTopCompact, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { PublicScaleMetricsPanel, PublicScaleSectionsPanel, PublicScaleSignupModal } from "./publicScalePanels";
-import { getScalePersonLimit } from "../lib/forms";
+import { buildPublicScaleLimitMessage, buildPublicScaleNextSections, countPublicScaleAssignments, resolvePublicScaleLimit } from "./publicScaleDomain";
 
 export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
   const isInternal = variant === "internal";
@@ -16,7 +16,7 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const names = people.map(person => person.name);
-  const scaleLimit = getScalePersonLimit(form);
+  const scaleLimit = resolvePublicScaleLimit(form);
   const total = sections.reduce((sum, section) => sum + section.slots.length, 0);
   const filled = sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
 
@@ -24,9 +24,9 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
     setError("");
     if (!selSlot || !signName) return;
 
-    const assignedCount = sections.reduce((sum, section) => sum + section.slots.filter(slot => String(slot.person || "").trim().toLowerCase() === signName.trim().toLowerCase()).length, 0);
+    const assignedCount = countPublicScaleAssignments(sections, signName);
     if (assignedCount >= scaleLimit) {
-      setError(scaleLimit === 1 ? "Este nome ja esta em uma vaga desta escala." : "Este nome ja atingiu o limite de vagas desta escala.");
+      setError(buildPublicScaleLimitMessage(scaleLimit));
       return;
     }
 
@@ -35,10 +35,7 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
       if (onClaimSlot) {
         await onClaimSlot(selSlot.si, selSlot.sli, signName);
       } else if (onSaveSections) {
-        const next = sections.map((section, sectionIndex) => sectionIndex === selSlot.si ? {
-          ...section,
-          slots: section.slots.map((slot, slotIndex) => slotIndex === selSlot.sli ? { ...slot, person: signName } : slot),
-        } : section);
+        const next = buildPublicScaleNextSections(sections, selSlot.si, selSlot.sli, signName);
         await onSaveSections(next);
       }
       setSelSlot(null);
