@@ -22,7 +22,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do app para login, publicos, loading e shell autenticado.
 - `frontend/src/lib/appBootstrap.js`
-  Normalizacao do bootstrap, selecao do formulario ativo, operacoes reutilizaveis de lista e listas aninhadas no estado, ordenacao de eventos, atualizacao de metricas de formularios e alternancia de itens fixados por usuario.
+  Normalizacao do bootstrap, selecao do formulario ativo, operacoes reutilizaveis de lista e listas aninhadas no estado, ordenacao de eventos, metricas de formularios/escala e alternancia de itens fixados por usuario.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
@@ -70,7 +70,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/screens/CreateFormScreen.jsx`
   Editor principal de formulario, com modos `nucleo` e `geral`, campos da biblioteca, presets e configuracoes de resultados.
 - `frontend/src/screens/createFormDomain.js`
-  Regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Inclui presets, estado inicial do editor, estado do editor de campo, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, normalizacao de base e sincronizacao de resultados.
+  Regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Inclui presets, estado inicial do editor e de duplicacao, estado do editor de campo, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, normalizacao de base e sincronizacao de resultados.
 - `frontend/src/lib/forms.js`
   Helpers de modo estrutural, base central, origem de selecao e validacao ligada ao formulario.
 - `shared/formRules.mjs`

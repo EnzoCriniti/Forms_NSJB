@@ -89,6 +89,16 @@ export const updateBootstrapFormMetrics = (bootstrap, formId, metrics) => replac
   )),
 );
 
+export const buildEscalaMetrics = sections => {
+  const safeSections = Array.isArray(sections) ? sections : [];
+  const total = safeSections.reduce((sum, section) => sum + (Array.isArray(section?.slots) ? section.slots.length : 0), 0);
+  const filled = safeSections.reduce((sum, section) => {
+    const slots = Array.isArray(section?.slots) ? section.slots : [];
+    return sum + slots.filter(slot => slot?.person).length;
+  }, 0);
+  return { responses: filled, total, filled, pending: total - filled };
+};
+
 export const removeFormIdFromEvents = (bootstrap, formId) => replaceBootstrapList(
   bootstrap,
   "events",

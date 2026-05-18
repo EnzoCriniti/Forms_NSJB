@@ -85,6 +85,28 @@ describe("createFormDomain", () => {
     expect(existing.scaleDraft).toEqual([{ title: "Secao 1" }]);
   });
 
+  it("mantem os dados do rascunho ao iniciar em modo duplicacao", () => {
+    const duplicate = buildCreateFormInitialState({
+      form: {
+        type: "presenca",
+        title: "Presenca Edicao (Copia)",
+        description: "Descricao",
+        labels: [1],
+        date: "2026-05-18",
+        closing: "2026-05-20",
+        status: "rascunho",
+        totalExpected: 2,
+        fieldDefinitions: [{ id: 1, type: "yes_no", label: "Vai?", show: true }],
+        resultsConfig: { searchEnabled: true, showLinkedRoster: false, totalsLayout: [] },
+      },
+      isDuplicateMode: true,
+    });
+
+    expect(duplicate.title).toBe("Presenca Edicao (Copia)");
+    expect(duplicate.status).toBe("rascunho");
+    expect(duplicate.setupStep).toBe("editor");
+  });
+
   it("monta o estado inicial ao trocar entre presenca e formulario geral", () => {
     const presence = buildCreateFormFormatSelectionState("presenca");
     const general = buildCreateFormFormatSelectionState("escala_organ");

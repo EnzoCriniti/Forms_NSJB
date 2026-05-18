@@ -10,7 +10,7 @@ import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
+import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -495,22 +495,14 @@ export default function App() {
   const handleSaveEscala = async (formId, sections) => {
     const result = await saveEscala(formId, sections);
     setEscalaDetails(prev => ({ ...prev, [formId]: result.sections }));
-    setBootstrap(prev => {
-      const total = result.sections.reduce((sum, section) => sum + section.slots.length, 0);
-      const filled = result.sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
-      return updateBootstrapFormMetrics(prev, formId, { responses: filled, total, filled, pending: total - filled });
-    });
+    setBootstrap(prev => updateBootstrapFormMetrics(prev, formId, buildEscalaMetrics(result.sections)));
   };
 
   const handleClaimEscalaSlot = async (formId, sectionIndex, slotIndex, person) => {
     try {
       const result = await claimEscalaSlot(formId, sectionIndex, slotIndex, person);
       setEscalaDetails(prev => ({ ...prev, [formId]: result.sections }));
-      setBootstrap(prev => {
-        const total = result.sections.reduce((sum, section) => sum + section.slots.length, 0);
-        const filled = result.sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
-        return updateBootstrapFormMetrics(prev, formId, { responses: filled, total, filled, pending: total - filled });
-      });
+      setBootstrap(prev => updateBootstrapFormMetrics(prev, formId, buildEscalaMetrics(result.sections)));
       return result.sections;
     } catch (error) {
       if (error?.status === 409 || error?.code === "ESCALA_CONFLICT") {

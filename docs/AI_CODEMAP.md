@@ -45,7 +45,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e as telas internas apos o login.
 - `frontend/src/lib/appBootstrap.js`
-  Helpers puros do bootstrap inicial do frontend, incluindo normalizacao do payload, selecao do formulario ativo, operacoes reutilizaveis de lista e listas aninhadas no estado, ordenacao de eventos, atualizacao de metricas de formularios e alternancia de itens fixados por usuario.
+  Helpers puros do bootstrap inicial do frontend, incluindo normalizacao do payload, selecao do formulario ativo, operacoes reutilizaveis de lista e listas aninhadas no estado, ordenacao de eventos, metricas de formularios/escala e alternancia de itens fixados por usuario.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
@@ -106,7 +106,7 @@ Mapa curto das areas mais mexidas por agentes.
   No modo `nucleo`, o campo principal da base central de socios entra como base obrigatoria; no modo `geral`, essa base central fica bloqueada.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/createFormDomain.js`
-  Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor, estado do editor de campo, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
+  Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor e de duplicacao, estado do editor de campo, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
 - `frontend/src/screens/createFormPanels.jsx`
   Barramento dos paineis reutilizaveis da criacao de formulario.
   Este arquivo agora expõe apenas a pre-visualizacao publica e reexporta os demais blocos por dominio.

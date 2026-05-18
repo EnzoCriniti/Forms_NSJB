@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
+import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {
@@ -87,6 +87,13 @@ describe("appBootstrap helpers", () => {
       { id: 1, metrics: { responses: 5, total: 8 } },
       { id: 2, metrics: { responses: 0 } },
     ]);
+  });
+
+  it("calcula metricas da escala a partir das vagas", () => {
+    expect(buildEscalaMetrics([
+      { slots: [{ person: "Maria" }, { person: "" }] },
+      { slots: [{ person: "Joao" }] },
+    ])).toEqual({ responses: 2, total: 3, filled: 2, pending: 1 });
   });
 
   it("remove um formulario de todos os eventos vinculados", () => {

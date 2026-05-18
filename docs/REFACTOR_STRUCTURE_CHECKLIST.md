@@ -36,9 +36,11 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
   - remover qualquer regra que ainda possa viver no dominio
   - mover mutacoes repetidas de listas e drafts para helpers puros no dominio
   - transicoes de modo e template ja foram movidas para `frontend/src/screens/createFormDomain.js`
+  - estado inicial de duplicacao preserva o rascunho em `frontend/src/screens/createFormDomain.js`
 - [ ] `frontend/src/App.jsx`
   - separar handlers restantes por dominio
   - revisar o que ainda merece helper em `lib/appBootstrap.js`
+  - calculo de metricas de escala movido para `buildEscalaMetrics`
 - [ ] `frontend/src/components/ui.jsx`
   - identificar componentes genericos que podem sair para arquivos menores
   - unificar wrappers visuais repetidos

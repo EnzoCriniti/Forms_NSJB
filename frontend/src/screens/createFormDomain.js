@@ -262,7 +262,7 @@ export const buildCreateFormTemplatePayload = ({
 };
 
 export const buildCreateFormInitialState = ({ form, isDuplicateMode = false }) => {
-  if (!form || isDuplicateMode) {
+  if (!form) {
     const format = "presenca";
     const formMode = FORM_MODES.NUCLEO;
     const fields = createDefaultPresenceFields(formMode);
