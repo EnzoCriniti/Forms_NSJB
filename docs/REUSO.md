@@ -33,6 +33,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Chrome reutilizavel da central administrativa com abas e resumo da aba ativa.
 - `frontend/src/screens/createFormPanels.jsx`
   Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
+- `frontend/src/screens/createFormDomain.js`
+  Helpers puros da criacao de formulario para defaults, titulos padrao, validacao e sincronizacao de resultados.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
 - `frontend/src/features/events/components/eventsPanels.jsx`
@@ -48,6 +50,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 
 - `frontend/src/screens/CreateFormScreen.jsx`
   Editor principal de formulario, com modos `nucleo` e `geral`, campos da biblioteca, presets e configuracoes de resultados.
+- `frontend/src/screens/createFormDomain.js`
+  Regras puras da criacao de formulario usadas pela tela e pelos testes unitarios.
 - `frontend/src/lib/forms.js`
   Helpers de modo estrutural, base central, origem de selecao e validacao ligada ao formulario.
 - `shared/formRules.mjs`

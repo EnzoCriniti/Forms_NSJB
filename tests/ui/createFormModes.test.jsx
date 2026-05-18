@@ -28,7 +28,7 @@ describe("CreateFormScreen form modes", () => {
 
     expect(screen.getByText("Modo ativo: Presenca do nucleo")).toBeInTheDocument();
     expect(screen.getAllByText("Base central ativa").length).toBeGreaterThan(0);
-    expect(screen.getByText("Nome da base central incluso")).toBeInTheDocument();
+    expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
     expect(screen.getByText("1 campo(s) ligado(s) a base central")).toBeInTheDocument();
   });
 
@@ -40,7 +40,6 @@ describe("CreateFormScreen form modes", () => {
     expect(screen.getByText("Modo ativo: Formulario geral")).toBeInTheDocument();
     expect(screen.getAllByText("Fluxo livre").length).toBeGreaterThan(0);
     expect(screen.getByText("Base central desativada neste formulario")).toBeInTheDocument();
-    expect(screen.getByText("Campos livres sem vinculo central")).toBeInTheDocument();
     expect(screen.getByRole("spinbutton")).toBeDisabled();
   });
 

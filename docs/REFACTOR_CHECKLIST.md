@@ -12,6 +12,7 @@ Checklist incremental para reduzir arquivos grandes, separar responsabilidades e
 - [x] `frontend/src/features/admin/adminShellPanels.jsx`
 - [x] `frontend/src/features/events/components/`
 - [x] `frontend/src/screens/createFormPanels.jsx`
+- [x] `frontend/src/screens/createFormDomain.js`
 - [x] `frontend/src/screens/resultsPanels.jsx`
 
 ## Proximos passos
