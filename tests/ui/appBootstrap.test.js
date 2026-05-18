@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "../../frontend/src/lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, replaceBootstrapList } from "../../frontend/src/lib/appBootstrap";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {
@@ -36,5 +36,11 @@ describe("appBootstrap helpers", () => {
       preserveSelection: true,
     });
     expect(nextFormId).toBe(20);
+  });
+
+  it("substitui listas do bootstrap sem perder as demais chaves", () => {
+    const bootstrap = replaceBootstrapList({ forms: [], labels: ["a"] }, "labels", ["b"]);
+    expect(bootstrap.forms).toEqual([]);
+    expect(bootstrap.labels).toEqual(["b"]);
   });
 });

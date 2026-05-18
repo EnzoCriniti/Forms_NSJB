@@ -27,6 +27,11 @@ export const normalizeBootstrap = bootstrap => ({
   ...(bootstrap || {}),
 });
 
+export const replaceBootstrapList = (bootstrap, key, list) => ({
+  ...bootstrap,
+  [key]: list,
+});
+
 export const pickActiveFormIdAfterBootstrap = ({
   currentFormId,
   currentUser,
