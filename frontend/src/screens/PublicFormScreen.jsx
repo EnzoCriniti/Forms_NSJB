@@ -7,7 +7,8 @@
 import React, { useMemo, useState } from "react";
 import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
 import { PublicResponseEditingBanner, PublicResponseEditModal, PublicResponseErrorBanner, PublicResponseFieldPanel, PublicResponseHeader, PublicResponseSuccessPanel } from "./publicFormPanels";
-import { getFieldSelectionSource, getPersonField, getPersonOptionLabel, getVisibleFields, isExternalBaseSelectionField, isPrimaryPeopleBaseField, resolvePersonBySelectionValue, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
+import { getPersonField, getVisibleFields, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
+import { buildPublicPersonSelectOptions, findExistingPublicResponse, findSelectedPublicPerson } from "./publicFormDomain";
 
 export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, people, externalBases = [], resultsHref = "", readingControls, variant = "public" }) => {
   const isInternal = variant === "internal";
@@ -22,16 +23,15 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
 
   const selectedPerson = useMemo(() => {
     const raw = personField ? values[String(personField.id)] : "";
-    const found = resolvePersonBySelectionValue(people, raw);
+    const found = findSelectedPublicPerson(people, raw);
     return found ? { name: found.name, grau: found.grau, display: raw } : null;
   }, [people, personField, values]);
 
   const duplicateResponsesBlocked = form?.resultsConfig?.blockDuplicatePersonResponses === true;
   const existingResponse = selectedPerson
-    ? responses.find(response => String(response.respondentName || "").trim().toLowerCase() === selectedPerson.name.trim().toLowerCase())
+    ? findExistingPublicResponse({ responses, personName: selectedPerson.name })
     : null;
   const duplicateResponseLocked = duplicateResponsesBlocked && Boolean(existingResponse);
-  const externalBaseMap = useMemo(() => new Map((externalBases || []).map(base => [String(base.id), base])), [externalBases]);
 
   const setFieldValue = (fieldId, value) => {
     setValues(prev => ({ ...prev, [String(fieldId)]: value }));
@@ -44,7 +44,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
     setEditModal(false);
     setSubmitError("");
     if (!value) return;
-    const found = resolvePersonBySelectionValue(people, value);
+    const found = findSelectedPublicPerson(people, value);
     if (!found) return;
     const matchedResponse = responses.find(response => String(response.respondentName || "").trim().toLowerCase() === found.name.trim().toLowerCase());
     if (!matchedResponse) return;
@@ -120,10 +120,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
           const value = values[key] ?? "";
           const validationSummary = summarizeFieldValidation(field);
           const personSelectNode = field.type === "person_select" ? (() => {
-            const selectionSource = getFieldSelectionSource(field);
-            const options = isExternalBaseSelectionField(field)
-              ? (externalBaseMap.get(String(selectionSource?.externalBaseId || ""))?.items || []).filter(item => item.active !== false)
-              : people.map(person => ({ value: getPersonOptionLabel(person), label: getPersonOptionLabel(person) }));
+            const { options, placeholder } = buildPublicPersonSelectOptions({ field, form, people, externalBases });
 
             return (
               <select
@@ -132,11 +129,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
                 style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
               >
                 <option value="">
-                  {isExternalBaseSelectionField(field)
-                    ? "Selecione uma opcao..."
-                    : isPrimaryPeopleBaseField(form, field)
-                      ? "Selecione seu nome..."
-                      : "Selecione uma pessoa..."}
+                  {placeholder}
                 </option>
                 {options.map(option => <option key={`${field.id}-${option.value}`} value={option.value}>{option.label}</option>)}
               </select>
