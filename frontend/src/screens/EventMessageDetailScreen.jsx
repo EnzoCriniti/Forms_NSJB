@@ -7,6 +7,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Btn, COLORS, ConfirmModal, FeedbackBanner, Icon, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
+import { MessageLogsPanel, MessagePreviewPanel } from "../features/events/eventMessagesPanels";
 import {
   cancelEventMessage as apiCancelEventMessage,
   deleteEventMessage as apiDeleteEventMessage,
@@ -196,111 +197,24 @@ export const EventMessageDetailScreen = ({
       {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
 
       <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, display: "grid", gap: 16 }}>
-        <div style={{ display: "grid", gap: 8 }}>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
-            <span>Evento: <strong style={{ color: COLORS.text }}>{event?.title}</strong></span>
-            {message.scheduledFor && <span>Agendada: {formatDateTime(message.scheduledFor)}</span>}
-            {message.sentAt && <span>Disparada: {formatDateTime(message.sentAt)}</span>}
-            <span>Auto: {message.autoDispatchEnabled ? "sim" : "nao"}</span>
-          </div>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
+          <span>Evento: <strong style={{ color: COLORS.text }}>{event?.title}</strong></span>
+          {message.scheduledFor && <span>Agendada: {formatDateTime(message.scheduledFor)}</span>}
+          {message.sentAt && <span>Disparada: {formatDateTime(message.sentAt)}</span>}
+          <span>Auto: {message.autoDispatchEnabled ? "sim" : "nao"}</span>
         </div>
 
-        <div>
-          <h4 style={{ margin: "0 0 8px", fontSize: 13, color: COLORS.textSecondary }}>Corpo renderizado</h4>
-          {loading ? (
-            <div style={{ fontSize: 12, color: COLORS.textMuted }}>Carregando preview...</div>
-          ) : preview?.renderedBody ? (
-            <div style={{ position: "relative" }}>
-              <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, fontFamily: "inherit", fontSize: 13, margin: 0 }}>
-                {preview.renderedBody}
-              </pre>
-              <div style={{ marginTop: 8 }}>
-                <Btn v="secondary" sz="sm" icon="link" onClick={() => copy(preview.renderedBody, "body")}>
-                  {copiedKey === "body" ? "Copiado!" : "Copiar texto"}
-                </Btn>
-              </div>
-            </div>
-          ) : (
-            <div style={{ fontSize: 12, color: COLORS.textMuted }}>Preview indisponivel.</div>
-          )}
-        </div>
-
-        {!loading && preview && preview.kind === "group" && (
-          <div style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, fontSize: 13, color: COLORS.textSecondary }}>
-            Mensagem destinada ao grupo {preview.groupName ? <strong style={{ color: COLORS.text }}>{preview.groupName}</strong> : <em>(nome do grupo nao configurado)</em>}. Cole o texto acima no grupo do WhatsApp.
-          </div>
-        )}
-
-        {!loading && preview && preview.kind === "dm" && (
-          <div>
-            <h4 style={{ margin: "0 0 8px", fontSize: 13, color: COLORS.textSecondary }}>
-              Destinatarios ({recipientsActive.length} com telefone{recipientsSkipped.length > 0 ? `, ${recipientsSkipped.length} sem telefone` : ""})
-            </h4>
-            {recipientsActive.length === 0 && recipientsSkipped.length === 0 && (
-              <div style={{ fontSize: 12, color: COLORS.textMuted }}>Nenhum destinatario calculado.</div>
-            )}
-            <div style={{ display: "grid", gap: 6 }}>
-              {recipientsActive.map(recipient => (
-                <div key={recipient.key || recipient.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, background: COLORS.surface, flexWrap: "wrap" }}>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <strong style={{ fontSize: 13 }}>{recipient.name}</strong>
-                    {recipient.grau && <span style={{ fontSize: 11, color: COLORS.textMuted, marginLeft: 6 }}>({recipient.grau})</span>}
-                    <div style={{ fontSize: 11, color: COLORS.textMuted }}>{recipient.phone}</div>
-                  </div>
-                  {recipient.waLink && (
-                    <a
-                      href={recipient.waLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ fontSize: 12, color: COLORS.primary, textDecoration: "none", padding: "6px 10px", border: `1px solid ${COLORS.primary}`, borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 4 }}
-                    >
-                      <Icon name="share" size={12} /> wa.me
-                    </a>
-                  )}
-                </div>
-              ))}
-              {recipientsSkipped.map(recipient => (
-                <div key={`skipped-${recipient.key || recipient.name}`} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", border: `1px dashed ${COLORS.border}`, borderRadius: 8, background: COLORS.surfaceAlt, opacity: 0.7 }}>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <strong style={{ fontSize: 13 }}>{recipient.name}</strong>
-                    {recipient.grau && <span style={{ fontSize: 11, color: COLORS.textMuted, marginLeft: 6 }}>({recipient.grau})</span>}
-                    <div style={{ fontSize: 11, color: COLORS.warning }}>sem telefone</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <MessagePreviewPanel
+          loading={loading}
+          preview={preview}
+          copiedKey={copiedKey}
+          onCopy={copy}
+          recipientsActive={recipientsActive}
+          recipientsSkipped={recipientsSkipped}
+        />
       </section>
 
-      <section style={{ marginTop: 24 }}>
-        <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Historico de disparos</h3>
-        {logs.length === 0 ? (
-          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-            Nenhum disparo registrado ainda.
-          </div>
-        ) : (
-          <div style={{ display: "grid", gap: 10 }}>
-            {logs.map(log => (
-              <div key={log.id} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, background: COLORS.surface }}>
-                <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8, fontSize: 12, color: COLORS.textMuted }}>
-                  <span>{formatDateTime(log.dispatchedAt)} - modo {log.mode}</span>
-                  <span>{log.status} ({log.dispatcherVersion})</span>
-                </div>
-                <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 6, padding: 10, fontFamily: "inherit", fontSize: 12, margin: "8px 0 0" }}>
-                  {log.renderedBody}
-                </pre>
-                {log.groupName && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>Grupo: {log.groupName}</div>}
-                {Array.isArray(log.recipients) && log.recipients.length > 0 && (
-                  <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>
-                    {log.recipients.filter(item => !item.skipped).length} destinatario(s){log.recipients.some(item => item.skipped) ? `, ${log.recipients.filter(item => item.skipped).length} ignorado(s)` : ""}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <MessageLogsPanel logs={logs} formatDateTime={formatDateTime} />
 
       <ConfirmModal
         open={Boolean(confirmAction)}

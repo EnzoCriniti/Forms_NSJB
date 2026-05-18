@@ -25,6 +25,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
 - `frontend/src/features/events/eventsPanels.jsx`
   Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
+- `frontend/src/features/events/eventMessagesPanels.jsx`
+  Componentes compartilhados das mensagens de evento: destinatarios, agendamento, preview e historico.
 
 ## Formularios
 
