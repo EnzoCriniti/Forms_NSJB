@@ -7,7 +7,7 @@
 import React, { useMemo, useState } from "react";
 import { COLORS, Btn, ConfirmModal, FeedbackBanner, Icon, ScreenHeader, StatusBadge, resolveActionErrorMessage } from "../components/ui";
 import { formatDate, formatDateTime } from "../lib/forms";
-import { EventCard, EventDetailTabs, EventEditorPanel, EventFormsList, EventMessagesPanel } from "../features/events/eventsPanels";
+import { EventCard, EventDetailTabs, EventEditorPanel, EventFormsList, EventMessagesPanel } from "../features/events/components/eventsPanels";
 
 const ELIGIBLE_FORM_TYPES_FOR_MESSAGES = ["presenca", "escala_organ"];
 const isEventEligibleForMessages = forms => forms.some(form => ELIGIBLE_FORM_TYPES_FOR_MESSAGES.includes(form.type));

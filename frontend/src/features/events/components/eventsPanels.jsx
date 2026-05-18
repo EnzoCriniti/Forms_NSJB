@@ -1,14 +1,14 @@
 /**
- * @file frontend/src/features/events/eventsPanels.jsx
+ * @file frontend/src/features/events/components/eventsPanels.jsx
  * @summary Paineis reutilizaveis da area de eventos.
  * @responsibility Conter blocos visuais de lista, edicao e detalhe de evento.
  */
 
 import React from "react";
-import { COLORS, Btn, Icon, ScreenHeader, StatusBadge } from "../../components/ui";
-import { FormListCard } from "../../components/FormListCard";
-import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../../components/MessageStatusBadge";
-import { formatDate, formatDateTime } from "../../lib/forms";
+import { COLORS, Btn, Icon, ScreenHeader, StatusBadge } from "../../../components/ui";
+import { FormListCard } from "../../../components/FormListCard";
+import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../../../components/MessageStatusBadge";
+import { formatDate, formatDateTime } from "../../../lib/forms";
 
 export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, onDelete, onTogglePinned }) => (
   <div

@@ -1,11 +1,11 @@
 /**
- * @file frontend/src/features/events/eventMessagesPanels.jsx
+ * @file frontend/src/features/events/components/eventMessagesPanels.jsx
  * @summary Paineis reutilizaveis das mensagens de evento.
  * @responsibility Conter a UI comum do editor e do detalhe de mensagens.
  */
 
 import React from "react";
-import { Btn, COLORS, FeedbackBanner, Icon } from "../../components/ui";
+import { Btn, COLORS, FeedbackBanner, Icon } from "../../../components/ui";
 
 const panelStyle = {
   border: `1px solid ${COLORS.borderLight}`,

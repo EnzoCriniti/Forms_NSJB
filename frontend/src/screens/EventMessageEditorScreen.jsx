@@ -7,7 +7,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Btn, COLORS, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
-import { MessageRecipientsPanel, MessageSchedulePanel } from "../features/events/eventMessagesPanels";
+import { MessageRecipientsPanel, MessageSchedulePanel } from "../features/events/components/eventMessagesPanels";
 
 const ELIGIBLE_FORM_TYPES = ["presenca", "escala_organ"];
 const TYPE_TO_FORM_TYPE = {
