@@ -32,6 +32,7 @@ Mapa curto das areas mais mexidas por agentes.
   Tambem fornece `SurfacePanel` e `MetricCard` para reduzir wrappers visuais repetidos em telas grandes.
   `FieldControl` centraliza rotulos, controles e textos auxiliares de campos repetidos.
   `NotePanel` cobre caixas de aviso e explicacao que aparecem em mais de uma tela.
+  `SplitSection` organiza telas administrativas em duas colunas para edicao e listagem.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 - `docs/REUSO.md`

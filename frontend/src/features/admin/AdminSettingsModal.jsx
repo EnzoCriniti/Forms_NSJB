@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, FieldControl, NotePanel, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, FieldControl, NotePanel, SplitSection, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
 import { fetchAuditLogs } from "../../lib/api";
 import { ROLES } from "../../lib/auth";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
@@ -652,9 +652,10 @@ export const AdminSettingsModal = ({
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
 
         {tab === "users" && (
-          <section className="settings-grid">
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>{userDraft.id ? "Editar usuario" : "Novo usuario"}</h4>
+          <SplitSection
+            leftTitle={userDraft.id ? "Editar usuario" : "Novo usuario"}
+            rightTitle="Usuarios cadastrados"
+            left={(
               <div style={{ display: "grid", gap: 10 }}>
                 <AdminField>
                   <input value={userDraft.name} onChange={e => setUserDraft({ ...userDraft, name: e.target.value })} placeholder="Nome exibido" style={inputStyle} />
@@ -676,9 +677,8 @@ export const AdminSettingsModal = ({
                   {userDraft.id && <Btn v="ghost" onClick={() => setUserDraft(emptyUser)}>Cancelar</Btn>}
                 </div>
               </div>
-            </div>
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>Usuarios cadastrados</h4>
+            )}
+            right={(
               <PaginatedList
                 items={users}
                 emptyText="Nenhum usuario cadastrado."
@@ -695,16 +695,17 @@ export const AdminSettingsModal = ({
                   </div>
                 )}
               />
-            </div>
-          </section>
+            )}
+          />
         )}
 
         {tab === "members" && <MemberListConfigModalContent config={membersConfig} people={people} onSave={onSaveMembersConfig} onSync={onSyncMembersConfig} />}
 
         {tab === "external-bases" && (
-          <section className="settings-grid">
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>{externalBaseDraft.id ? "Editar base externa" : "Nova base externa"}</h4>
+          <SplitSection
+            leftTitle={externalBaseDraft.id ? "Editar base externa" : "Nova base externa"}
+            rightTitle="Bases cadastradas"
+            left={(
               <div style={{ display: "grid", gap: 10 }}>
                 <NotePanel>
                   Cadastre uma lista externa sincronizada para usar em campos do formulario. Essas bases nao substituem a base central de socios.
@@ -752,9 +753,8 @@ export const AdminSettingsModal = ({
                   {externalBaseDraft.id && <Btn v="ghost" onClick={() => setExternalBaseDraft(emptyExternalBase)}>Cancelar</Btn>}
                 </div>
               </div>
-            </div>
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>Bases cadastradas</h4>
+            )}
+            right={(
               <PaginatedList
                 items={externalBases}
                 emptyText="Nenhuma base externa cadastrada."
@@ -775,14 +775,15 @@ export const AdminSettingsModal = ({
                   </div>
                 )}
               />
-            </div>
-          </section>
+            )}
+          />
         )}
 
         {tab === "security" && (
-          <section className="settings-grid">
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>{formDeleteKeyConfigured ? "Alterar chave mestra" : "Cadastrar chave mestra"}</h4>
+          <SplitSection
+            leftTitle={formDeleteKeyConfigured ? "Alterar chave mestra" : "Cadastrar chave mestra"}
+            rightTitle="Status da seguranca"
+            left={(
               <div style={{ display: "grid", gap: 10 }}>
                 <FeedbackBanner
                   tone={formDeleteKeyConfigured === null ? "loading" : "info"}
@@ -793,7 +794,7 @@ export const AdminSettingsModal = ({
                       : "Nenhuma chave mestra configurada. Cadastre uma nova chave para liberar exclusoes seguras."}
                 />
                 {formDeleteKeyConfigured && (
-                  <AdminField>
+                  <FieldControl label="Chave mestra atual">
                     <input
                       type="password"
                       value={securityDraft.currentMasterKey}
@@ -801,9 +802,9 @@ export const AdminSettingsModal = ({
                       placeholder="Chave mestra atual"
                       style={inputStyle}
                     />
-                  </AdminField>
+                  </FieldControl>
                 )}
-                <AdminField>
+                <FieldControl label="Nova chave mestra">
                   <input
                     type="password"
                     value={securityDraft.newMasterKey}
@@ -811,7 +812,7 @@ export const AdminSettingsModal = ({
                     placeholder="Nova chave mestra"
                     style={inputStyle}
                   />
-                </AdminField>
+                </FieldControl>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <Btn
                     onClick={submitSecurity}
@@ -823,10 +824,9 @@ export const AdminSettingsModal = ({
                   {(securityDraft.currentMasterKey || securityDraft.newMasterKey) && <Btn v="ghost" onClick={() => setSecurityDraft(emptySecurityDraft)}>Cancelar</Btn>}
                 </div>
               </div>
-            </div>
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>Status da seguranca</h4>
-              <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
+            )}
+            right={(
+              <SurfacePanel background={COLORS.surfaceAlt} border={COLORS.borderLight} radius={8} padding={12} style={{ fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.55 }}>
                 <div style={{ fontWeight: 800, color: COLORS.text, marginBottom: 8 }}>
                   {formDeleteKeyConfigured === null
                     ? "Carregando..."
@@ -835,9 +835,9 @@ export const AdminSettingsModal = ({
                       : "Nenhuma chave mestra configurada"}
                 </div>
                 <div>A exclusao de formularios exige validacao no backend antes de remover respostas, response_values e escala associados.</div>
-              </div>
-            </div>
-          </section>
+              </SurfacePanel>
+            )}
+          />
         )}
 
         {tab === "catalog" && (
@@ -1004,37 +1004,32 @@ export const AdminSettingsModal = ({
                 </div>
               </section>
             )}
-
             {catalogMode === "tasks" && (
-              <section className="settings-grid">
-                <div>
-                  <h4 style={{ margin: "0 0 10px" }}>{scaleTaskDraft.id ? "Editar tarefa base" : "Nova tarefa base"}</h4>
+              <SplitSection
+                leftTitle={scaleTaskDraft.id ? "Editar tarefa base" : "Nova tarefa base"}
+                rightTitle="Tarefas cadastradas"
+                left={(
                   <div style={{ display: "grid", gap: 10 }}>
                     <NotePanel>
                       Use esta biblioteca para reaproveitar tarefas recorrentes. O identificador tecnico pode ficar em branco e sera gerado ao salvar.
                     </NotePanel>
-                    <AdminField>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Identificador tecnico</label>
+                    <FieldControl label="Identificador tecnico">
                       <input value={scaleTaskDraft.key} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, key: e.target.value })} placeholder="Opcional. Ex: preparo_jantar" style={inputStyle} />
-                    </AdminField>
-                    <AdminField>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome administrativo</label>
+                    </FieldControl>
+                    <FieldControl label="Nome administrativo">
                       <input value={scaleTaskDraft.name} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, name: e.target.value })} placeholder="Ex: Preparo do jantar" style={inputStyle} />
-                    </AdminField>
-                    <AdminField>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome exibido na escala</label>
+                    </FieldControl>
+                    <FieldControl label="Nome exibido na escala">
                       <input value={scaleTaskDraft.defaultLabel} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, defaultLabel: e.target.value })} placeholder="Ex: Preparacao do jantar" style={inputStyle} />
-                    </AdminField>
-                    <AdminField>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Grupo</label>
+                    </FieldControl>
+                    <FieldControl label="Grupo">
                       <select value={scaleTaskDraft.category} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, category: e.target.value })} style={inputStyle}>
                         {Object.entries(taskCategoryLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                       </select>
-                    </AdminField>
-                    <AdminField>
-                      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Observacoes internas</label>
+                    </FieldControl>
+                    <FieldControl label="Observacoes internas">
                       <textarea value={scaleTaskDraft.description} onChange={e => setScaleTaskDraft({ ...scaleTaskDraft, description: e.target.value })} placeholder="Quando usar esta tarefa ou como ela costuma aparecer na escala" rows={3} style={inputStyle} />
-                    </AdminField>
+                    </FieldControl>
                     <div style={{ fontSize: 11, color: COLORS.textMuted }}>
                       Identificador previsto: <strong style={{ color: COLORS.text }}>{normalizeIdentifier(scaleTaskDraft.key || scaleTaskDraft.name || scaleTaskDraft.defaultLabel) || "sera gerado ao preencher o nome"}</strong>
                     </div>
@@ -1046,9 +1041,8 @@ export const AdminSettingsModal = ({
                       {scaleTaskDraft.id && <Btn v="ghost" onClick={() => setScaleTaskDraft(emptyScaleTaskCatalog)}>Cancelar</Btn>}
                     </div>
                   </div>
-                </div>
-                <div>
-                  <h4 style={{ margin: "0 0 10px" }}>Tarefas cadastradas</h4>
+                )}
+                right={(
                   <PaginatedList
                     items={scaleTaskCatalog}
                     emptyText="Nenhuma tarefa base cadastrada."
@@ -1070,37 +1064,36 @@ export const AdminSettingsModal = ({
                       </div>
                     )}
                   />
-                </div>
-              </section>
+                )}
+              />
             )}
           </section>
         )}
-
         {tab === "labels" && (
-          <section className="settings-grid">
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>{labelDraft.id ? "Editar classificacao" : "Nova classificacao"}</h4>
+          <SplitSection
+            leftTitle={labelDraft.id ? "Editar classificacao" : "Nova classificacao"}
+            rightTitle="Classificacoes existentes"
+            left={(
               <div style={{ display: "grid", gap: 12 }}>
-                <AdminField>
+                <FieldControl label="Nome da classificacao">
                   <input value={labelDraft.name} onChange={e => setLabelDraft({ ...labelDraft, name: e.target.value })} placeholder="Nome da classificacao" style={inputStyle} />
-                </AdminField>
-                <AdminField>
+                </FieldControl>
+                <FieldControl label="Cor">
                   <input value={labelDraft.color} onChange={e => setLabelDraft({ ...labelDraft, color: e.target.value })} type="color" style={{ ...inputStyle, padding: 4, height: 44, minHeight: 44, boxSizing: "border-box", overflow: "hidden" }} />
-                </AdminField>
+                </FieldControl>
                 <div style={{ display: "flex", gap: 8 }}>
                   <Btn onClick={submitLabel} loading={busyAction === "label"}>{labelDraft.id ? "Salvar classificacao" : "Criar classificacao"}</Btn>
                   {labelDraft.id && <Btn v="ghost" onClick={() => setLabelDraft(emptyLabel)}>Cancelar</Btn>}
                 </div>
               </div>
-            </div>
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>Classificacoes existentes</h4>
+            )}
+            right={(
               <PaginatedList
                 items={labels}
                 emptyText="Nenhuma classificacao cadastrada."
                 renderItem={label => (
-                    <div key={label.id} className="settings-row">
-                      <div><strong><span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 99, background: label.color, marginRight: 8 }} />{label.name}</strong><div>Criado por {label.createdBy || "Sistema"}</div></div>
+                  <div key={label.id} className="settings-row">
+                    <div><strong><span style={{ display: "inline-block", width: 10, height: 10, borderRadius: 99, background: label.color, marginRight: 8 }} />{label.name}</strong><div>Criado por {label.createdBy || "Sistema"}</div></div>
                     <Btn v="secondary" sz="sm" onClick={() => setLabelDraft(label)}>Editar</Btn>
                     <Btn v="danger" sz="sm" onClick={() => requestDelete(
                       "Excluir classificacao",
@@ -1111,14 +1104,14 @@ export const AdminSettingsModal = ({
                   </div>
                 )}
               />
-            </div>
-          </section>
+            )}
+          />
         )}
-
         {tab === "presets" && (
-          <section className="settings-grid">
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>Como os templates funcionam</h4>
+          <SplitSection
+            leftTitle="Como os templates funcionam"
+            rightTitle="Templates de formulario existentes"
+            left={(
               <div style={{ display: "grid", gap: 10 }}>
                 <NotePanel>
                   Templates sao criados na tela de criacao de formulario. Aqui voce acompanha os existentes e pode remover o que nao faz mais sentido.
@@ -1127,9 +1120,8 @@ export const AdminSettingsModal = ({
                   Para salvar um novo template, use a acao <strong style={{ color: COLORS.text }}>Salvar como Template</strong> dentro do builder do formulario.
                 </SurfacePanel>
               </div>
-            </div>
-            <div>
-              <h4 style={{ margin: "0 0 10px" }}>Templates de formulario existentes</h4>
+            )}
+            right={(
               <PaginatedList
                 items={presets}
                 emptyText="Nenhum template cadastrado."
@@ -1156,8 +1148,8 @@ export const AdminSettingsModal = ({
                   );
                 }}
               />
-            </div>
-          </section>
+            )}
+          />
         )}
 
         {tab === "messages" && (
@@ -1211,3 +1203,4 @@ export const AdminSettingsModal = ({
     </div>
   );
 };
+

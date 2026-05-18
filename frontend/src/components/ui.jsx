@@ -224,6 +224,32 @@ export const NotePanel = ({ children, style, tone = "neutral" }) => {
   );
 };
 
+export const SplitSection = ({
+  className = "settings-grid",
+  leftTitle,
+  rightTitle,
+  left,
+  right,
+  leftTitleStyle,
+  rightTitleStyle,
+  leftTitleProps = {},
+  rightTitleProps = {},
+  leftColStyle,
+  rightColStyle,
+  style,
+}) => (
+  <section className={className} style={style}>
+    <div style={leftColStyle}>
+      {leftTitle && <h4 style={{ margin: "0 0 10px", ...leftTitleStyle }} {...leftTitleProps}>{leftTitle}</h4>}
+      {left}
+    </div>
+    <div style={rightColStyle}>
+      {rightTitle && <h4 style={{ margin: "0 0 10px", ...rightTitleStyle }} {...rightTitleProps}>{rightTitle}</h4>}
+      {right}
+    </div>
+  </section>
+);
+
 export const ScreenHeader = ({
   className = "",
   style,
