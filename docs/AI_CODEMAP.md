@@ -55,6 +55,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/EventsScreen.jsx`
   Tela de eventos para contas logadas. Admin lista, cria, edita, fixa e exclui eventos; viewer acessa os eventos e formularios vinculados sem acoes administrativas.
+- `frontend/src/features/events/eventsPanels.jsx`
+  Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 - `frontend/src/App.jsx`
   Inclui o menu `Eventos` para admin e viewer, guarda `events` no bootstrap e anexa novos formularios ao evento ativo.
 - `backend/routes/eventRoutes.mjs`

@@ -23,6 +23,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
+- `frontend/src/features/events/eventsPanels.jsx`
+  Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 
 ## Formularios
 
