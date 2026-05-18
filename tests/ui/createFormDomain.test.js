@@ -9,8 +9,10 @@ import {
   buildCreateFormSaveOutcome,
   buildCreateFormTemplatePayload,
   buildFieldDraftDefaults,
+  buildAppliedCatalogFieldDraft,
   buildFieldDraftFromCatalogItem,
   buildFieldDraftFromExistingField,
+  buildOpenFieldDraft,
   buildPresetTitle,
   toggleFieldShow,
   removeFieldById,
@@ -150,6 +152,44 @@ describe("createFormDomain", () => {
     expect(existing.nGridRows).toEqual(["Linha 1"]);
     expect(catalog.nLabel).toBe("Matriz");
     expect(catalog.nGridCols).toEqual(["C1", "C2"]);
+  });
+
+  it("monta o rascunho ao abrir novo campo", () => {
+    expect(buildOpenFieldDraft({ hasPrimaryLinkedField: true })).toEqual(expect.objectContaining({
+      editingFieldId: null,
+      nType: "yes_no",
+      nPersonRole: "secondary",
+      addOpen: true,
+    }));
+  });
+
+  it("aplica campo do catalogo preservando estado do rascunho", () => {
+    const draft = buildAppliedCatalogFieldDraft({
+      catalogId: 9,
+      filteredFieldCatalog: [{
+        id: 9,
+        type: "grid",
+        defaultLabel: "Escala",
+        gridSchema: { rows: ["R1"], cols: ["C1"] },
+      }],
+      currentDraft: {
+        editingFieldId: 3,
+        nFieldMode: "catalog",
+        nRequired: true,
+        addOpen: true,
+      },
+    });
+
+    expect(draft).toEqual(expect.objectContaining({
+      editingFieldId: 3,
+      nCatalogId: 9,
+      nType: "grid",
+      nLabel: "Escala",
+      nRequired: true,
+      nGridRows: ["R1"],
+      nGridCols: ["C1"],
+      addOpen: true,
+    }));
   });
 
   it("monta o payload de salvamento e template sem duplicar regra de campos", () => {

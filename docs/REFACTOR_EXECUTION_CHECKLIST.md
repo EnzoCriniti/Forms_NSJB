@@ -21,7 +21,7 @@ Checklist operacional para continuar a refatoracao sem depender de decisoes gran
 ## Criacao de formulario
 
 - [ ] Reduzir o bloco de estado do editor em `frontend/src/screens/CreateFormScreen.jsx`.
-- [ ] Mover regras de draft de campo restantes para `frontend/src/screens/createFormDomain.js`.
+- [x] Mover regras de draft de campo restantes para `frontend/src/screens/createFormDomain.js`.
 - [ ] Mover regras de escala restantes para helpers puros quando houver repeticao.
 - [ ] Revisar callbacks inline longos passados aos paineis.
 - [ ] Validar com `test:ui -- createFormScreen createFormDomain createFormModes` e `build`.

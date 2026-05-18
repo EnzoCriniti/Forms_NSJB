@@ -97,6 +97,33 @@ export const buildFieldDraftFromCatalogItem = (catalogItem, { hasPrimaryLinkedFi
   };
 };
 
+export const buildOpenFieldDraft = ({ canUseMembersBase = true, hasPrimaryLinkedField = false } = {}) => ({
+  ...buildFieldDraftDefaults({ hasPrimaryLinkedField }),
+  nType: canUseMembersBase ? "yes_no" : "yes_no",
+  addOpen: true,
+});
+
+export const buildAppliedCatalogFieldDraft = ({
+  catalogId,
+  filteredFieldCatalog = [],
+  currentDraft,
+  hasPrimaryLinkedField = false,
+}) => {
+  const catalogItem = filteredFieldCatalog.find(item => String(item.id) === String(catalogId));
+  if (!catalogItem) {
+    return null;
+  }
+  const draft = buildFieldDraftFromCatalogItem(catalogItem, {
+    hasPrimaryLinkedField,
+    editingFieldId: currentDraft?.editingFieldId,
+  });
+  return {
+    ...currentDraft,
+    ...draft,
+    nCatalogId: catalogId,
+  };
+};
+
 export const buildFieldSavePayload = ({
   fields,
   editingFieldId,

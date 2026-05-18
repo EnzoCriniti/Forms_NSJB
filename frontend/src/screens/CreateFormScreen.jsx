@@ -22,7 +22,8 @@ import {
   buildCreateFormInitialState,
   buildFieldDraftDefaults,
   buildFieldDraftFromExistingField,
-  buildFieldDraftFromCatalogItem,
+  buildOpenFieldDraft,
+  buildAppliedCatalogFieldDraft,
   buildFieldSavePayload,
   buildCreateFormPayload,
   buildCreateFormTemplatePayload,
@@ -33,7 +34,6 @@ import {
   buildFieldTypeTransition,
   buildCreateFormFormatSelectionState,
   buildCreateFormSaveOutcome,
-  getCatalogGridSchema,
   moveItem,
   toggleFieldShow,
   removeFieldById,
@@ -231,11 +231,7 @@ export const CreateFormScreen = ({
   };
 
   const openNewFieldDraft = () => {
-    resetFieldDraft();
-    if (!canUseMembersBase) {
-      setNType("yes_no");
-    }
-    setAddOpen(true);
+    applyFieldDraftState(buildOpenFieldDraft({ canUseMembersBase, hasPrimaryLinkedField }));
   };
 
   const startEditField = field => {
@@ -267,23 +263,29 @@ export const CreateFormScreen = ({
   };
 
   const applyFieldCatalog = catalogId => {
-    setNCatalogId(catalogId);
-    const catalogItem = filteredFieldCatalog.find(item => String(item.id) === String(catalogId));
-    if (!catalogItem) return;
-    const draft = buildFieldDraftFromCatalogItem(catalogItem, { hasPrimaryLinkedField, editingFieldId });
-    applyFieldDraftState({
+    const draft = buildAppliedCatalogFieldDraft({
+      catalogId,
+      filteredFieldCatalog,
+      hasPrimaryLinkedField,
+      currentDraft: {
       editingFieldId,
-      nType: draft.nType,
       nFieldMode,
-      nCatalogId: catalogId,
-      nLabel: draft.nLabel,
+      nCatalogId,
+      nType,
+      nLabel,
       nRequired,
-      nPersonRole: draft.nPersonRole,
-      nGridRows: draft.nGridRows,
-      nGridCols: draft.nGridCols,
-      nValidation: draft.nValidation,
+      nPersonRole,
+      nGridRows,
+      nGridCols,
+      nValidation,
       addOpen,
+      },
     });
+    if (!draft) {
+      setNCatalogId(catalogId);
+      return;
+    }
+    applyFieldDraftState(draft);
   };
 
   const setFieldMode = mode => {
