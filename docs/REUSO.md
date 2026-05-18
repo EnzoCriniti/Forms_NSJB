@@ -19,6 +19,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Card reutilizavel da listagem de formularios com acoes e badges.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
+- `frontend/src/screens/createFormPanels.jsx`
+  Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 
 ## Formularios
 
