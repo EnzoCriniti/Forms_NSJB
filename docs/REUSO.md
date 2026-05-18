@@ -97,7 +97,9 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/features/members/MemberListConfigModal.jsx`
   Configuracao da base de socios sincronizada.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
-  Configuracoes ligadas a mensagens e envio.
+  Composicao das configuracoes ligadas a mensagens e envio.
+- `frontend/src/features/admin/messagingSettingsPanels.jsx`
+  Blocos reutilizaveis de configuracao global, modelos e presets de mensagens.
 - `backend/services/adminService.mjs`
   Orquestracao dos CRUDs administrativos no backend.
 

@@ -8,6 +8,10 @@ Mapa curto das areas mais mexidas por agentes.
   Tela dedicada da area administrativa. Encapsula o modal em modo tela.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
+- `frontend/src/features/admin/MessagingSettingsPanel.jsx`
+  Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets.
+- `frontend/src/features/admin/messagingSettingsPanels.jsx`
+  Blocos reutilizaveis do painel de mensagens administrativas: configuracao global, modelos e presets.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   Paineis compartilhados da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
