@@ -8,6 +8,8 @@ Mapa curto das areas mais mexidas por agentes.
   Tela dedicada da area administrativa. Encapsula o modal em modo tela.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
+- `frontend/src/features/admin/adminSettingsShared.jsx`
+  Helpers compartilhados do admin, incluindo listas paginadas, preview de campo, editor de matriz e painel de auditoria.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
   Configuracao da base sincronizada de socios, mapeamento de colunas e preview da base atual.
 - `frontend/src/lib/api.js`
