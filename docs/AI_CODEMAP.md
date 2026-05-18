@@ -32,6 +32,8 @@ Mapa curto das areas mais mexidas por agentes.
   Tambem fornece `SurfacePanel` e `MetricCard` para reduzir wrappers visuais repetidos em telas grandes.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
+- `docs/REUSO.md`
+  Indice rapido para agentes encontrarem componentes, helpers e telas antes de recriar comportamento ja existente.
 
 ## Listagem
 
