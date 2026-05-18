@@ -19,6 +19,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Card reutilizavel da listagem de formularios com acoes e badges.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
+- `frontend/src/features/admin/adminCatalogPanels.jsx`
+  Painel reutilizavel da aba de catalogos administrativos, com os blocos de campos base e tarefas base.
 - `frontend/src/screens/createFormPanels.jsx`
   Paineis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 - `frontend/src/screens/resultsPanels.jsx`
@@ -27,6 +29,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`
   Componentes compartilhados das mensagens de evento: destinatarios, agendamento, preview e historico.
+- `frontend/src/features/events/components/`
+  Pasta alvo para novos componentes compartilhados do dominio de eventos.
 
 ## Formularios
 
@@ -54,6 +58,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   Central administrativa principal com usuarios, bases, catalogos, templates e seguranca.
+- `frontend/src/features/admin/adminCatalogPanels.jsx`
+  UI compartilhada da aba de catalogos dentro do admin.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
   Configuracao da base de socios sincronizada.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`

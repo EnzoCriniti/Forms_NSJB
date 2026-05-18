@@ -8,6 +8,8 @@ Mapa curto das areas mais mexidas por agentes.
   Tela dedicada da area administrativa. Encapsula o modal em modo tela.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
+- `frontend/src/features/admin/adminCatalogPanels.jsx`
+  Painel compartilhado da aba de catalogos administrativos, com campos base e tarefas base.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Helpers compartilhados do admin, incluindo listas paginadas, preview de campo, editor de matriz e painel de auditoria.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
@@ -59,6 +61,8 @@ Mapa curto das areas mais mexidas por agentes.
   Componentes compartilhados da area de eventos: card, editor, abas, lista de formularios e mensagens.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`
   Componentes compartilhados das mensagens de evento: destinatarios, agendamento, preview e historico.
+- `frontend/src/features/events/components/`
+  Pasta de componentes compartilhados do dominio de eventos. Use como primeiro destino para novos blocos visuais dessa area.
 - `frontend/src/App.jsx`
   Inclui o menu `Eventos` para admin e viewer, guarda `events` no bootstrap e anexa novos formularios ao evento ativo.
 - `backend/routes/eventRoutes.mjs`
@@ -83,6 +87,8 @@ Mapa curto das areas mais mexidas por agentes.
   Painéis compartilhados da criacao de formulario: modo, editor de campo, escala, lista de campos e resultados.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
+- `frontend/src/features/admin/adminCatalogPanels.jsx`
+  Componentes compartilhados da aba de catalogos administrativos, com formulários e listas de campos e tarefas.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.
