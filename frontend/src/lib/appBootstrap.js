@@ -32,6 +32,12 @@ export const replaceBootstrapList = (bootstrap, key, list) => ({
   [key]: list,
 });
 
+export const replaceBootstrapListFromResult = (bootstrap, key, result, resultKey = key) => replaceBootstrapList(
+  bootstrap,
+  key,
+  result?.[resultKey],
+);
+
 export const upsertBootstrapListItem = (bootstrap, key, item, { matchKey = "id", prepend = false } = {}) => {
   const list = Array.isArray(bootstrap?.[key]) ? bootstrap[key] : [];
   const index = list.findIndex(current => String(current?.[matchKey]) === String(item?.[matchKey]));

@@ -7,7 +7,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { STORAGE_KEYS } from "./lib/appConstants";
-import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
+import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
 import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
@@ -509,7 +509,7 @@ export default function App() {
 
   const handleSaveUser = async user => {
     const result = await saveUser(user);
-    setBootstrap(prev => replaceBootstrapList(prev, "users", result.users));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "users", result));
     if (currentUser?.id === user.id) {
       const refreshed = result.users.find(item => item.id === user.id);
       setSession(prev => prev ? {
@@ -522,7 +522,7 @@ export default function App() {
 
   const handleDeleteUser = async id => {
     const result = await deleteUser(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "users", result.users));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "users", result));
     if (currentUser?.id === id) {
       await logout();
     }
@@ -530,32 +530,32 @@ export default function App() {
 
   const handleSaveLabel = async label => {
     const result = await saveLabel(label);
-    setBootstrap(prev => replaceBootstrapList(prev, "labels", result.labels));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "labels", result));
   };
 
   const handleDeleteLabel = async id => {
     const result = await deleteLabel(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "labels", result.labels));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "labels", result));
   };
 
   const handleSavePreset = async preset => {
     const result = await savePreset(preset);
-    setBootstrap(prev => replaceBootstrapList(prev, "presets", result.presets));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "presets", result));
   };
 
   const handleDeletePreset = async id => {
     const result = await deletePreset(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "presets", result.presets));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "presets", result));
   };
 
   const handleSavePeople = async nextPeople => {
     const result = await savePeople(nextPeople);
-    setBootstrap(prev => replaceBootstrapList(prev, "people", result.people));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "people", result));
   };
 
   const handleSaveMembersConfig = async nextConfig => {
     const result = await saveMembersConfig(nextConfig);
-    setBootstrap(prev => replaceBootstrapList(prev, "membersConfig", result.membersConfig));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "membersConfig", result));
     return result;
   };
 
@@ -621,40 +621,40 @@ export default function App() {
 
   const handleSaveExternalBase = async base => {
     const result = await saveExternalBase(base);
-    setBootstrap(prev => replaceBootstrapList(prev, "externalBases", result.externalBases));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "externalBases", result));
     return result;
   };
 
   const handleDeleteExternalBase = async id => {
     const result = await deleteExternalBase(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "externalBases", result.externalBases));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "externalBases", result));
     return result;
   };
 
   const handleSyncExternalBase = async id => {
     const result = await syncExternalBase(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "externalBases", result.externalBases));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "externalBases", result));
     return result;
   };
 
   const handleSaveFieldCatalogItem = async item => {
     const result = await saveFieldCatalogItem(item);
-    setBootstrap(prev => replaceBootstrapList(prev, "fieldCatalog", result.fieldCatalog));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "fieldCatalog", result));
   };
 
   const handleDeleteFieldCatalogItem = async id => {
     const result = await deleteFieldCatalogItem(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "fieldCatalog", result.fieldCatalog));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "fieldCatalog", result));
   };
 
   const handleSaveScaleTaskCatalogItem = async item => {
     const result = await saveScaleTaskCatalogItem(item);
-    setBootstrap(prev => replaceBootstrapList(prev, "scaleTaskCatalog", result.scaleTaskCatalog));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "scaleTaskCatalog", result));
   };
 
   const handleDeleteScaleTaskCatalogItem = async id => {
     const result = await deleteScaleTaskCatalogItem(id);
-    setBootstrap(prev => replaceBootstrapList(prev, "scaleTaskCatalog", result.scaleTaskCatalog));
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, "scaleTaskCatalog", result));
   };
 
 

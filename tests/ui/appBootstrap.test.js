@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
+import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {
@@ -40,6 +40,17 @@ describe("appBootstrap helpers", () => {
 
   it("substitui listas do bootstrap sem perder as demais chaves", () => {
     const bootstrap = replaceBootstrapList({ forms: [], labels: ["a"] }, "labels", ["b"]);
+    expect(bootstrap.forms).toEqual([]);
+    expect(bootstrap.labels).toEqual(["b"]);
+  });
+
+  it("substitui listas usando payload retornado pela API", () => {
+    const bootstrap = replaceBootstrapListFromResult(
+      { forms: [], labels: ["a"] },
+      "labels",
+      { labels: ["b"] },
+    );
+
     expect(bootstrap.forms).toEqual([]);
     expect(bootstrap.labels).toEqual(["b"]);
   });
