@@ -47,6 +47,7 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 - [ ] `frontend/src/components/ui.jsx`
   - identificar componentes genericos que podem sair para arquivos menores
   - unificar wrappers visuais repetidos
+  - componentes publicos extraidos para `frontend/src/components/publicUi.jsx` e reexportados por `ui.jsx`
 - [ ] `frontend/src/features/admin/*`
   - revisar wrappers e blocos repetidos entre abas do admin
 - [ ] `frontend/src/styles.css`

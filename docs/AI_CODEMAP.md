@@ -55,6 +55,8 @@ Mapa curto das areas mais mexidas por agentes.
   `FieldControl` centraliza rotulos, controles e textos auxiliares de campos repetidos.
   `NotePanel` cobre caixas de aviso e explicacao que aparecem em mais de uma tela.
   `SplitSection` organiza telas administrativas em duas colunas para edicao e listagem.
+- `frontend/src/components/publicUi.jsx`
+  Componentes compartilhados das telas publicas: barra de leitura, topos publicos e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`, a decisao pura de navegacao interna e seletores derivados do shell.
 - `docs/REUSO.md`
@@ -166,6 +168,8 @@ Mapa curto das areas mais mexidas por agentes.
   Fluxo publico da escala agora usa paineis reutilizaveis para metricas e lista de vagas.
 - `frontend/src/components/ui.jsx`
   Toolbar de leitura das telas publicas, com ajuste de fonte, troca de tema persistidos no navegador e botao de voltar reutilizavel.
+- `frontend/src/components/publicUi.jsx`
+  Implementa a toolbar de leitura e os topos publicos reexportados por `frontend/src/components/ui.jsx`.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
 - `frontend/src/App.jsx`

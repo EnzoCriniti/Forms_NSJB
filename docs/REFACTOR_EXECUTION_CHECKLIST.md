@@ -28,10 +28,10 @@ Checklist operacional para continuar a refatoracao sem depender de decisoes gran
 
 ## UI compartilhada
 
-- [ ] Mapear componentes grandes em `frontend/src/components/ui.jsx`.
-- [ ] Extrair apenas componentes com fronteira clara e reuso existente.
-- [ ] Manter exports publicos compativeis durante a transicao.
-- [ ] Validar com testes das telas afetadas e `build`.
+- [x] Mapear componentes grandes em `frontend/src/components/ui.jsx`.
+- [x] Extrair apenas componentes com fronteira clara e reuso existente.
+- [x] Manter exports publicos compativeis durante a transicao.
+- [x] Validar com testes das telas afetadas e `build`.
 
 ## Administracao
 
