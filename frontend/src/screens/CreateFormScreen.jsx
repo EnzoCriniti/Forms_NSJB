@@ -181,7 +181,6 @@ export const CreateFormScreen = ({
   const setNCatalogId = value => updateFieldDraftValue("nCatalogId", value);
   const setNLabel = value => updateFieldDraftValue("nLabel", value);
   const setNRequired = value => updateFieldDraftValue("nRequired", value);
-  const setNPersonRole = value => updateFieldDraftValue("nPersonRole", value);
   const setNGridRows = value => updateFieldDraftValue("nGridRows", value);
   const setNGridCols = value => updateFieldDraftValue("nGridCols", value);
   const setNValidation = value => updateFieldDraftValue("nValidation", value);
@@ -231,6 +230,33 @@ export const CreateFormScreen = ({
   const updateGridCol = (index, value) => setNGridCols(updateListItemAtIndex(nGridCols, index, value));
   const removeGridCol = index => setNGridCols(removeListItemAtIndex(nGridCols, index));
   const addGridCol = () => setNGridCols(appendListItem(nGridCols));
+  const togglePreview = () => setShowPreview(prev => !prev);
+  const openPresetModal = () => setPresetModal(true);
+  const closePresetModal = () => {
+    setPresetModal(false);
+    setPresetName("");
+  };
+  const handlePresetNameChange = event => setPresetName(event.target.value);
+  const handleSubmitCurrentStatus = () => submitForm(status);
+  const closeSaveSuccess = () => {
+    setSaveSuccess(null);
+    goBack();
+  };
+  const handleTitleChange = event => {
+    if (shouldPresetTitle) return;
+    setTitle(event.target.value);
+  };
+  const selectFormat = nextFormat => {
+    setPreset(null);
+    const nextState = buildCreateFormFormatSelectionState(nextFormat);
+    setFormat(nextState.format);
+    setFormMode(nextState.formMode);
+    setFields(nextState.fields);
+    if (nextState.resultsConfig) setResultsConfig(nextState.resultsConfig);
+    if (nextState.scaleDraft) setScaleDraft(nextState.scaleDraft);
+    if (nextState.scaleLimit !== undefined) setScaleLimit(nextState.scaleLimit);
+  };
+  const continueSetup = () => setSetupStep("editor");
 
   const resetFieldDraft = () => {
     applyFieldDraftState(buildFieldDraftDefaults({ hasPrimaryLinkedField }));
@@ -287,6 +313,17 @@ export const CreateFormScreen = ({
     if (mode === "local") setNCatalogId("");
   };
 
+  const setFieldType = nextType => {
+    const transition = buildFieldTypeTransition({ nextType, hasPrimaryLinkedField });
+    updateFieldDraft({
+      nType: transition.nType,
+      nPersonRole: transition.nPersonRole,
+      nGridRows: transition.nGridRows,
+      nGridCols: transition.nGridCols,
+      nValidation: transition.nValidation,
+    });
+  };
+
   const setScaleMode = (index, mode) => {
     updateScale(index, buildScaleModePatch(mode));
   };
@@ -294,6 +331,8 @@ export const CreateFormScreen = ({
   const applyScaleCatalog = (index, catalogId) => {
     updateScale(index, buildScaleCatalogPatch(catalogId, activeScaleTaskCatalog));
   };
+  const updateScaleLimit = value => setScaleLimit(value);
+  const removeScaleSection = index => setScaleDraft(removeListItemAtIndex(scaleDraft, index));
 
   const applyTemplate = templateId => {
     setPreset(templateId || null);
@@ -321,6 +360,7 @@ export const CreateFormScreen = ({
     setResultsConfig(nextState.resultsConfig);
     setScaleLimit(nextState.scaleLimit);
   };
+  const clearTemplate = () => applyTemplate(null);
 
   const saveAsTemplate = async () => {
     if (!presetName.trim()) return;
@@ -384,17 +424,8 @@ export const CreateFormScreen = ({
       {showTypeSetup && (
         <FormTypeSetupPanel
           format={format}
-          onSelectFormat={nextFormat => {
-            setPreset(null);
-            const nextState = buildCreateFormFormatSelectionState(nextFormat);
-            setFormat(nextState.format);
-            setFormMode(nextState.formMode);
-            setFields(nextState.fields);
-            if (nextState.resultsConfig) setResultsConfig(nextState.resultsConfig);
-            if (nextState.scaleDraft) setScaleDraft(nextState.scaleDraft);
-            if (nextState.scaleLimit !== undefined) setScaleLimit(nextState.scaleLimit);
-          }}
-          onContinue={() => setSetupStep("editor")}
+          onSelectFormat={selectFormat}
+          onContinue={continueSetup}
         />
       )}
 
@@ -425,7 +456,7 @@ export const CreateFormScreen = ({
           presets={presets}
           formMode={formMode}
           onApplyTemplate={applyTemplate}
-          onClearTemplate={() => applyTemplate(null)}
+          onClearTemplate={clearTemplate}
         />
       )}
 
@@ -433,7 +464,7 @@ export const CreateFormScreen = ({
         <Btn
           v={showPreview ? "secondary" : "primary"}
           icon="eye"
-          onClick={() => setShowPreview(prev => !prev)}
+          onClick={togglePreview}
         >
           {showPreview ? "Ocultar visualizacao" : "Visualizar formulario"}
         </Btn>
@@ -443,10 +474,7 @@ export const CreateFormScreen = ({
         inp={inp}
         formTitle={formTitle}
         shouldPresetTitle={shouldPresetTitle}
-        onTitleChange={event => {
-          if (shouldPresetTitle) return;
-          setTitle(event.target.value);
-        }}
+        onTitleChange={handleTitleChange}
         previewDescription={desc}
         onDescriptionChange={event => setDesc(event.target.value)}
         eventDate={eventDate}
@@ -486,11 +514,11 @@ export const CreateFormScreen = ({
           scaleDraft={scaleDraft}
           activeScaleTaskCatalog={activeScaleTaskCatalog}
           inp={inp}
-          onScaleLimitChange={value => setScaleLimit(value)}
+          onScaleLimitChange={updateScaleLimit}
           onUpdateScale={updateScale}
           onSetScaleMode={setScaleMode}
           onApplyScaleCatalog={applyScaleCatalog}
-          onRemoveScaleSection={index => setScaleDraft(scaleDraft.filter((_, sectionIndex) => sectionIndex !== index))}
+          onRemoveScaleSection={removeScaleSection}
           onAddScale={addScale}
         />
       )}
@@ -534,14 +562,7 @@ export const CreateFormScreen = ({
                 people={people}
                 onSetFieldMode={setFieldMode}
                 onApplyFieldCatalog={applyFieldCatalog}
-                onSetNType={nextType => {
-                  const transition = buildFieldTypeTransition({ nextType, hasPrimaryLinkedField });
-                  setNType(transition.nType);
-                  setNPersonRole(transition.nPersonRole);
-                  setNGridRows(transition.nGridRows);
-                  setNGridCols(transition.nGridCols);
-                  setNValidation(transition.nValidation);
-                }}
+                onSetNType={setFieldType}
                 onSetNLabel={setNLabel}
                 onSetNRequired={setNRequired}
                 onSetNValidation={setNValidation}
@@ -580,19 +601,16 @@ export const CreateFormScreen = ({
         isEditingExistingForm={isEditingExistingForm}
         saving={saving}
         hasError={saveError}
-        onOpenPresetModal={() => setPresetModal(true)}
-        onSubmit={() => submitForm(status)}
+        onOpenPresetModal={openPresetModal}
+        onSubmit={handleSubmitCurrentStatus}
         canSubmit={Boolean(formTitle.trim())}
         presetModal={presetModal}
         presetName={presetName}
-        onPresetNameChange={event => setPresetName(event.target.value)}
+        onPresetNameChange={handlePresetNameChange}
         onSaveTemplate={saveAsTemplate}
-        onClosePresetModal={() => { setPresetModal(false); setPresetName(""); }}
+        onClosePresetModal={closePresetModal}
         saveSuccess={saveSuccess}
-        onCloseSaveSuccess={() => {
-          setSaveSuccess(null);
-          goBack();
-        }}
+        onCloseSaveSuccess={closeSaveSuccess}
         onGoBack={goBack}
         saveSuccessTitle={saveSuccess?.title}
         saveSuccessMessage={saveSuccess?.message}

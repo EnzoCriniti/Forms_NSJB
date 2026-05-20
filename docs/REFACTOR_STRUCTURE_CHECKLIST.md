@@ -39,6 +39,7 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
   - transicoes de modo e template ja foram movidas para `frontend/src/screens/createFormDomain.js`
   - estado inicial de duplicacao preserva o rascunho em `frontend/src/screens/createFormDomain.js`
   - estado do rascunho de campo agrupado em `fieldDraft` para reduzir setters soltos na tela
+  - callbacks longos passados aos paineis extraidos para handlers nomeados na tela
 - [ ] `frontend/src/App.jsx`
   - separar handlers restantes por dominio
   - revisar o que ainda merece helper em `lib/appBootstrap.js`
