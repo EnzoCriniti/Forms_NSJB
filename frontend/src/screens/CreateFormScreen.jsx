@@ -8,11 +8,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { FieldEditorPanel, FormBasicsPanel, FormContextPanel, FormFooterPanel, FormHeaderPanel, FormModePanel, FormPreviewPanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
-import { FORM_MODES, getPeopleBaseFieldRole, hasLinkedPeopleField, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
+import { FORM_MODES, getPeopleBaseFieldRole, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
-  DEFAULT_GRID_ROWS,
-  DEFAULT_GRID_COLS,
   SCALE_PRESETS,
   FORM_MODE_OPTIONS,
   buildPresetTitle,
@@ -46,7 +44,6 @@ import {
   appendListItem,
   addTotalLayoutField,
   normalizePeopleBaseBindings,
-  buildFieldValidation,
 } from "./createFormDomain";
 
 export const CreateFormScreen = ({
@@ -81,23 +78,26 @@ export const CreateFormScreen = ({
   const [resultsConfig, setResultsConfig] = useState(() => createDefaultResultsConfig(createDefaultPresenceFields(FORM_MODES.NUCLEO)));
   const [scaleLimit, setScaleLimit] = useState(1);
   const [scaleDraft, setScaleDraft] = useState(createDefaultScaleSections());
-  const [addOpen, setAddOpen] = useState(false);
-  const [editingFieldId, setEditingFieldId] = useState(null);
-  const [nType, setNType] = useState("yes_no");
-  const [nFieldMode, setNFieldMode] = useState("local");
-  const [nCatalogId, setNCatalogId] = useState("");
-  const [nLabel, setNLabel] = useState("");
-  const [nRequired, setNRequired] = useState(false);
-  const [nPersonRole, setNPersonRole] = useState("primary");
-  const [nGridRows, setNGridRows] = useState(DEFAULT_GRID_ROWS);
-  const [nGridCols, setNGridCols] = useState(DEFAULT_GRID_COLS);
-  const [nValidation, setNValidation] = useState({});
+  const [fieldDraft, setFieldDraft] = useState(() => buildFieldDraftDefaults());
   const [presetModal, setPresetModal] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [setupStep, setSetupStep] = useState("type");
+  const {
+    addOpen,
+    editingFieldId,
+    nType,
+    nFieldMode,
+    nCatalogId,
+    nLabel,
+    nRequired,
+    nPersonRole,
+    nGridRows,
+    nGridCols,
+    nValidation,
+  } = fieldDraft;
 
   useEffect(() => {
     const nextState = buildCreateFormInitialState({ form, isDuplicateMode });
@@ -125,17 +125,13 @@ export const CreateFormScreen = ({
   const {
     linkedPeopleField,
     totalizableFields,
-    activeFieldCatalog,
     activeScaleTaskCatalog,
     externalBaseMap,
     availableTotals,
     canUseMembersBase,
     hasPrimaryLinkedField,
-    editingField,
-    canOfferMembersSelector,
     filteredFieldTypes,
     filteredFieldCatalog,
-    selectedCatalogItem,
     activeSelectionSource,
     currentFieldSourceLabel,
     membersFieldsCount,
@@ -169,6 +165,26 @@ export const CreateFormScreen = ({
   const templateDescription = format === "presenca"
     ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes."
     : "secoes da escala, descricao, texto de fechamento e classificacoes.";
+  const updateFieldDraft = patch => {
+    setFieldDraft(current => ({
+      ...current,
+      ...(typeof patch === "function" ? patch(current) : patch),
+    }));
+  };
+  const updateFieldDraftValue = (key, value) => {
+    updateFieldDraft(current => ({
+      [key]: typeof value === "function" ? value(current[key]) : value,
+    }));
+  };
+  const setNType = value => updateFieldDraftValue("nType", value);
+  const setNFieldMode = value => updateFieldDraftValue("nFieldMode", value);
+  const setNCatalogId = value => updateFieldDraftValue("nCatalogId", value);
+  const setNLabel = value => updateFieldDraftValue("nLabel", value);
+  const setNRequired = value => updateFieldDraftValue("nRequired", value);
+  const setNPersonRole = value => updateFieldDraftValue("nPersonRole", value);
+  const setNGridRows = value => updateFieldDraftValue("nGridRows", value);
+  const setNGridCols = value => updateFieldDraftValue("nGridCols", value);
+  const setNValidation = value => updateFieldDraftValue("nValidation", value);
   const handleModeSelect = nextMode => syncModeWithFields(nextMode);
   const handleToggleFieldShow = fieldId => setFields(toggleFieldShow(fields, fieldId));
   const handleRemoveField = fieldId => setFields(removeFieldById(fields, fieldId));
@@ -181,19 +197,7 @@ export const CreateFormScreen = ({
       totalsLayout: addTotalLayoutField(current.totalsLayout, field),
     }));
   };
-  const applyFieldDraftState = draft => {
-    setEditingFieldId(draft.editingFieldId);
-    setNType(draft.nType);
-    setNFieldMode(draft.nFieldMode);
-    setNCatalogId(draft.nCatalogId);
-    setNLabel(draft.nLabel);
-    setNRequired(draft.nRequired);
-    setNPersonRole(draft.nPersonRole);
-    setNGridRows(draft.nGridRows);
-    setNGridCols(draft.nGridCols);
-    setNValidation(draft.nValidation);
-    setAddOpen(draft.addOpen);
-  };
+  const applyFieldDraftState = draft => setFieldDraft(draft);
 
   const syncModeWithFields = nextMode => {
     const transition = buildCreateFormModeTransition({
@@ -269,19 +273,7 @@ export const CreateFormScreen = ({
       catalogId,
       filteredFieldCatalog,
       hasPrimaryLinkedField,
-      currentDraft: {
-      editingFieldId,
-      nFieldMode,
-      nCatalogId,
-      nType,
-      nLabel,
-      nRequired,
-      nPersonRole,
-      nGridRows,
-      nGridCols,
-      nValidation,
-      addOpen,
-      },
+      currentDraft: fieldDraft,
     });
     if (!draft) {
       setNCatalogId(catalogId);
