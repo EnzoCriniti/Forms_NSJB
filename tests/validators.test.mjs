@@ -25,6 +25,10 @@ import {
   validateEventPayload,
 } from "../backend/validators/eventPayloadValidators.mjs";
 import {
+  validateEscalaClaimPayload as validateEscalaClaimPayloadFromModule,
+  validateEscalaPayload as validateEscalaPayloadFromModule,
+} from "../backend/validators/escalaPayloadValidators.mjs";
+import {
   validateResponsePayload as validateResponsePayloadFromModule,
 } from "../backend/validators/responsePayloadValidators.mjs";
 import {
@@ -266,4 +270,20 @@ test("response payload validator rejects malformed payloads from the response mo
     respondentName: "Maria",
     values: {},
   }), /formId invalido/);
+});
+
+test("escala payload validators accept valid payloads from the escala module", () => {
+  assert.doesNotThrow(() => validateEscalaPayloadFromModule("1", {
+    sections: [
+      { title: "Cozinha", color: "#fff", slots: [{ role: "Responsavel", person: null }] },
+    ],
+  }));
+  assert.doesNotThrow(() => validateEscalaClaimPayloadFromModule({ sectionIndex: 0, slotIndex: 1, person: "Maria" }));
+});
+
+test("escala payload validators reject malformed payloads from the escala module", () => {
+  assert.throws(() => validateEscalaPayloadFromModule(2, {
+    sections: [{ title: "Secao", slots: [{ role: "" }] }],
+  }), /Slot da escala precisa de funcao/);
+  assert.throws(() => validateEscalaClaimPayloadFromModule({ sectionIndex: 0, slotIndex: -1, person: "Maria" }), /slotIndex da escala invalido/);
 });

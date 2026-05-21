@@ -111,18 +111,6 @@ const validateGridSchema = schema => {
   assert(schema.cols === undefined || Array.isArray(schema.cols), "Colunas da grade precisam ser um array.");
 };
 
-const validateEscalaSection = section => {
-  assert(isObject(section), "Secao da escala invalida.");
-  assert(isNonEmptyString(section.title), "Secao da escala precisa de titulo.");
-  assert(isOptionalString(section.color), "Cor da secao invalida.");
-  assert(Array.isArray(section.slots), "Secao da escala precisa de slots.");
-  for (const slot of section.slots) {
-    assert(isObject(slot), "Slot da escala invalido.");
-    assert(isNonEmptyString(slot.role), "Slot da escala precisa de funcao.");
-    assert(isOptionalString(slot.person), "Pessoa da escala invalida.");
-  }
-};
-
 export const validateFormPayload = payload => {
   assert(isObject(payload), "Payload de formulario invalido.");
   assert(isIdLike(payload.id), "Id do formulario invalido.");
@@ -148,20 +136,6 @@ export const validateFormPayload = payload => {
     assert(Array.isArray(payload.scaleSections), "Formulario de escala precisa de scaleSections.");
     for (const section of payload.scaleSections) validateScaleSectionTemplate(section);
   }
-};
-
-export const validateEscalaPayload = (formId, payload) => {
-  assert(Number.isInteger(Number(formId)) && Number(formId) > 0, "formId da escala invalido.");
-  assert(isObject(payload), "Payload da escala invalido.");
-  assert(Array.isArray(payload.sections), "Escala precisa de secoes.");
-  for (const section of payload.sections) validateEscalaSection(section);
-};
-
-export const validateEscalaClaimPayload = payload => {
-  assert(isObject(payload), "Payload da inscricao da escala invalido.");
-  assert(Number.isInteger(Number(payload.sectionIndex)) && Number(payload.sectionIndex) >= 0, "sectionIndex da escala invalido.");
-  assert(Number.isInteger(Number(payload.slotIndex)) && Number(payload.slotIndex) >= 0, "slotIndex da escala invalido.");
-  assert(isNonEmptyString(payload.person), "Nome da inscricao invalido.");
 };
 
 export const validateUserPayload = payload => {
@@ -287,6 +261,11 @@ export const validateDeleteId = (value, label) => {
 export {
   validateEventPayload,
 } from "./eventPayloadValidators.mjs";
+
+export {
+  validateEscalaClaimPayload,
+  validateEscalaPayload,
+} from "./escalaPayloadValidators.mjs";
 
 export {
   validateResponsePayload,
