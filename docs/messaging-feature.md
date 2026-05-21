@@ -330,7 +330,7 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [ ] Aba Mensagens só aparece quando elegível
 - [ ] Wizard cria, agenda e dispara mensagem (log gerado)
 - [x] Banner aparece sem `phoneColumn`
-- [ ] Editar agendada / cancelar
+- [x] Editar agendada / cancelar
 - [ ] Render correto de placeholders no preview
 
 ### Fase 12 — polimento

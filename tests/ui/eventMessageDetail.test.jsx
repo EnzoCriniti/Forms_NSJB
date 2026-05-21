@@ -159,4 +159,41 @@ describe("EventMessageDetailScreen", () => {
     expect(screen.queryByRole("button", { name: /Disparar agora/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /^Cancelar$/ })).not.toBeInTheDocument();
   });
+
+  it("permite editar mensagem agendada e cancelar com confirmacao", async () => {
+    const scheduledMessage = { ...message, status: "agendada", scheduledFor: "2026-05-17T07:00:00.000Z" };
+    const onEdit = vi.fn();
+    const onMessageUpdated = vi.fn();
+    const fetchMock = vi.fn(async (url, options = {}) => {
+      if (url === `/api/events/10/messages/50` && (!options.method || options.method === "GET")) {
+        return jsonResponse({ message: scheduledMessage, logs: [] });
+      }
+      if (url === `/api/events/10/messages/50/preview`) return jsonResponse(previewPayload);
+      if (url === `/api/events/10/messages/50/cancel` && options.method === "POST") {
+        return jsonResponse({ message: { ...scheduledMessage, status: "cancelada" } });
+      }
+      return jsonResponse({}, false);
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(
+      <EventMessageDetailScreen
+        event={event}
+        message={scheduledMessage}
+        onMessageUpdated={onMessageUpdated}
+        onMessageDeleted={vi.fn()}
+        onEdit={onEdit}
+        onBack={vi.fn()}
+      />,
+    );
+
+    await screen.findByText("Agendada");
+    fireEvent.click(screen.getByRole("button", { name: /Editar/ }));
+    expect(onEdit).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: /^Cancelar$/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Cancelar mensagem" }));
+
+    await waitFor(() => expect(onMessageUpdated).toHaveBeenCalledWith(expect.objectContaining({ status: "cancelada" })));
+  });
 });
