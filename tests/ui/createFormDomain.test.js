@@ -36,6 +36,10 @@ import {
   buildFieldDraftFromExistingField,
   buildOpenFieldDraft,
 } from "../../frontend/src/screens/createFormFieldDraft.js";
+import {
+  buildFieldSavePayload,
+  mergeSavedField,
+} from "../../frontend/src/screens/createFormFieldSave.js";
 
 describe("createFormDomain", () => {
   it("monta o titulo padrao do evento", () => {
@@ -199,6 +203,40 @@ describe("createFormDomain", () => {
       nGridRows: ["R1"],
       nGridCols: ["C1"],
       addOpen: true,
+    }));
+  });
+
+  it("monta e mescla campo salvo a partir do catalogo", () => {
+    const payload = buildFieldSavePayload({
+      fields: [],
+      editingFieldId: null,
+      nFieldMode: "catalog",
+      nCatalogId: 9,
+      nType: "text",
+      nLabel: "",
+      nRequired: true,
+      nPersonRole: "primary",
+      nValidation: {},
+      nGridRows: [],
+      nGridCols: [],
+      filteredFieldCatalog: [{
+        id: 9,
+        key: "congregacao",
+        name: "Congregacao",
+        defaultLabel: "Congregacao",
+        type: "person_select",
+        selectionSource: { kind: "external_base", externalBaseId: "4" },
+      }],
+    });
+
+    const field = mergeSavedField(payload);
+
+    expect(payload.selectionSource).toEqual({ kind: "external_base", externalBaseId: 4 });
+    expect(payload.memberBinding).toBeUndefined();
+    expect(field).toEqual(expect.objectContaining({
+      type: "person_select",
+      label: "Nome",
+      catalogFieldId: 9,
     }));
   });
 
