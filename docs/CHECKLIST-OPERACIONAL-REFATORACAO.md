@@ -534,7 +534,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - concluido: erro e auditoria de mutacoes administrativas foram padronizados em `backend/routes/adminRouteHelpers.mjs` nas rotas de usuario, classificacoes, presets, socios, configuracao de socios, sincronizacao de socios, bases externas e catalogos
-- em andamento: a divisao fisica comecou pelos blocos coesos de catalogos e bases externas em `backend/routes/adminCatalogRoutes.mjs` e `backend/routes/adminExternalBaseRoutes.mjs`; continuar apenas nos dominios que reduzirem complexidade sem criar roteadores pequenos demais:
+- em andamento: a divisao fisica comecou pelos blocos coesos de catalogos, bases externas e socios em `backend/routes/adminCatalogRoutes.mjs`, `backend/routes/adminExternalBaseRoutes.mjs` e `backend/routes/adminMemberRoutes.mjs`; continuar apenas nos dominios que reduzirem complexidade sem criar roteadores pequenos demais:
   - users
   - labels
   - presets
