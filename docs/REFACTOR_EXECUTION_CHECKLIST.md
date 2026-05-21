@@ -41,7 +41,7 @@ Checklist operacional para continuar a refatoracao sem depender de decisoes gran
 
 ## Estilos
 
-- [ ] Mapear grupos repetidos em `frontend/src/styles.css`.
-- [ ] Remover estilos mortos quando houver evidencia por busca.
-- [ ] Evitar divisao de CSS sem ganho claro.
-- [ ] Validar com testes de UI relevantes e `build`.
+- [x] Mapear grupos repetidos em `frontend/src/styles.css`.
+- [x] Remover estilos mortos quando houver evidencia por busca.
+- [x] Evitar divisao de CSS sem ganho claro.
+- [x] Validar com testes de UI relevantes e `build`.

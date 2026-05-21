@@ -54,6 +54,7 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
 - [ ] `frontend/src/styles.css`
   - mapear blocos de estilo repetidos
   - avaliar divisao por arquivos menores se houver ganho claro
+  - estilos mortos sem uso em JSX removidos apos varredura de classes
 
 ## Regra de trabalho
 

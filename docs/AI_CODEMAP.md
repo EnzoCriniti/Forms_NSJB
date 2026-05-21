@@ -173,6 +173,7 @@ Mapa curto das areas mais mexidas por agentes.
   Implementa a toolbar de leitura e os topos publicos reexportados por `frontend/src/components/ui.jsx`.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
+  Blocos mortos antigos de totalizacao, badges e topo de resultados foram removidos apos varredura de classes.
 - `frontend/src/App.jsx`
   Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 

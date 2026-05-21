@@ -303,42 +303,12 @@ input[type="radio"] {
   padding: 12px;
 }
 
-.total-card-head {
-  align-items: flex-start;
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-}
-
 .total-card-title {
   color: var(--text);
   font-size: 12px;
   font-weight: 800;
   line-height: 1.25;
   overflow-wrap: anywhere;
-}
-
-.total-percent {
-  color: var(--accent);
-  flex: 0 0 auto;
-  font-size: 22px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.total-progress {
-  background: var(--danger-light);
-  border-radius: 999px;
-  height: 9px;
-  margin: 12px 0 10px;
-  overflow: hidden;
-}
-
-.total-progress div {
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: inherit;
-  height: 100%;
-  transition: width 0.35s ease;
 }
 
 .total-split {
@@ -354,21 +324,6 @@ input[type="radio"] {
   font-size: 13px;
 }
 
-.total-metric-pair {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 1fr 1fr;
-  margin-top: 10px;
-}
-
-.total-metric-pair div {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: 7px;
-  padding: 9px 10px;
-}
-
-.total-metric-pair strong,
 .total-number {
   display: block;
   font-size: 24px;
@@ -376,7 +331,6 @@ input[type="radio"] {
   line-height: 1;
 }
 
-.total-metric-pair span,
 .total-caption {
   color: var(--text-muted);
   display: block;
@@ -389,12 +343,10 @@ input[type="radio"] {
   margin-top: 12px;
 }
 
-.ui-card,
 .modal-card,
 .total-card,
 .form-card,
-.settings-row,
-.total-line {
+.settings-row {
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: 14px;
@@ -448,26 +400,6 @@ input[type="radio"] {
   gap: 6px;
   line-height: 1;
   padding: 4px 10px;
-}
-
-.ui-badge--primary {
-  background: var(--primary-light);
-  color: var(--primary);
-}
-
-.ui-badge--success {
-  background: var(--feedback-success-bg);
-  color: var(--feedback-success-text);
-}
-
-.ui-badge--warning {
-  background: var(--warning-light);
-  color: var(--warning);
-}
-
-.ui-badge--danger {
-  background: var(--feedback-error-bg);
-  color: var(--feedback-error-text);
 }
 
 .auth-panel input,
@@ -823,8 +755,7 @@ input[type="radio"] {
 
 .create-form-header,
 .screen-top-card,
-.settings-top-card,
-.results-top-card {
+.settings-top-card {
   background:
     radial-gradient(circle at top right, rgba(26, 107, 60, 0.28), transparent 36%),
     linear-gradient(135deg, rgba(214, 239, 219, 0.94) 0%, rgba(242, 250, 244, 0.92) 45%, rgba(255, 255, 255, 0.98) 100%),
@@ -837,8 +768,7 @@ input[type="radio"] {
 
 :root[data-theme="dark"] .create-form-header,
 :root[data-theme="dark"] .screen-top-card,
-:root[data-theme="dark"] .settings-top-card,
-:root[data-theme="dark"] .results-top-card {
+:root[data-theme="dark"] .settings-top-card {
   background:
     radial-gradient(circle at top right, rgba(85, 183, 122, 0.22), transparent 34%),
     linear-gradient(135deg, var(--primary-dark), #050806) !important;
@@ -972,12 +902,6 @@ input[type="radio"] {
 
 .results-table tbody tr:hover {
   background: var(--primary-light) !important;
-}
-
-.results-top-card {
-  background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.24), transparent 34%),
-    linear-gradient(180deg, var(--primary-dark) 0%, var(--primary) 68%, rgba(26, 107, 60, 0.78) 100%) !important;
 }
 
 .public-top {
@@ -1411,7 +1335,6 @@ button:not(.ui-btn):focus-visible {
 }
 
 @media (max-width: 720px) {
-  .events-layout,
   .events-form-grid {
     grid-template-columns: 1fr !important;
   }
@@ -1510,14 +1433,12 @@ button:not(.ui-btn):focus-visible {
   :root[data-theme="dark"] .screen-top-card h2,
   :root[data-theme="dark"] .screen-top-card p,
   :root[data-theme="dark"] .screen-top-card strong,
-  :root[data-theme="dark"] .screen-top-card .results-top-card__meta-note,
   :root[data-theme="dark"] .create-form-mobile-hero h2,
   :root[data-theme="dark"] .create-form-mobile-hero p {
     color: #fff !important;
   }
 
   :root[data-theme="dark"] .screen-top-card p,
-  :root[data-theme="dark"] .screen-top-card .results-top-card__meta-note,
   :root[data-theme="dark"] .create-form-mobile-hero p {
     color: rgba(255, 255, 255, 0.82) !important;
   }
@@ -1525,14 +1446,12 @@ button:not(.ui-btn):focus-visible {
   .screen-top-card h2,
   .screen-top-card p,
   .screen-top-card strong,
-  .screen-top-card .results-top-card__meta-note,
   .create-form-mobile-hero h2,
   .create-form-mobile-hero p {
     color: var(--text) !important;
   }
 
   .screen-top-card p,
-  .screen-top-card .results-top-card__meta-note,
   .create-form-mobile-hero p {
     color: var(--text-muted) !important;
   }
@@ -1735,9 +1654,7 @@ button:not(.ui-btn):focus-visible {
     padding: 11px;
   }
 
-  .total-percent,
-  .total-number,
-  .total-metric-pair strong {
+  .total-number {
     font-size: 21px;
   }
 
