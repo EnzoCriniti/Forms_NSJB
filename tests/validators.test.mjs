@@ -22,6 +22,13 @@ import {
   validateMembersConfigPayload,
 } from "../backend/validators/payloadValidators.mjs";
 import {
+  validateExternalBasePayload,
+  validateLabelPayload as validateLabelPayloadFromAdminModule,
+  validateMembersConfigPayload as validateMembersConfigPayloadFromAdminModule,
+  validatePeoplePayload as validatePeoplePayloadFromAdminModule,
+  validateUserPayload as validateUserPayloadFromAdminModule,
+} from "../backend/validators/adminPayloadValidators.mjs";
+import {
   validateEventPayload,
 } from "../backend/validators/eventPayloadValidators.mjs";
 import {
@@ -286,4 +293,25 @@ test("escala payload validators reject malformed payloads from the escala module
     sections: [{ title: "Secao", slots: [{ role: "" }] }],
   }), /Slot da escala precisa de funcao/);
   assert.throws(() => validateEscalaClaimPayloadFromModule({ sectionIndex: 0, slotIndex: -1, person: "Maria" }), /slotIndex da escala invalido/);
+});
+
+test("admin payload validators accept valid payloads from the admin module", () => {
+  assert.doesNotThrow(() => validateUserPayloadFromAdminModule({ username: "viewer", password: null, role: "viewer" }));
+  assert.doesNotThrow(() => validateLabelPayloadFromAdminModule({ name: "Evento", color: "#fff000" }));
+  assert.doesNotThrow(() => validatePeoplePayloadFromAdminModule({ people: [{ name: "Maria", active: true, metadata: { rowNumber: 4 } }] }));
+  assert.doesNotThrow(() => validateMembersConfigPayloadFromAdminModule({ sheetUrl: "", syncEnabled: false, syncFrequencyHours: 24 }));
+  assert.doesNotThrow(() => validateExternalBasePayload({
+    name: "Base externa",
+    active: true,
+    syncEnabled: true,
+    syncFrequencyHours: 12,
+    items: [{ value: "1", label: "Pessoa", active: true }],
+  }));
+});
+
+test("admin payload validators reject malformed payloads from the admin module", () => {
+  assert.throws(() => validateUserPayloadFromAdminModule({ username: "viewer", role: "owner" }), /Papel do usuario invalido/);
+  assert.throws(() => validatePeoplePayloadFromAdminModule({ people: [{ name: "Maria", active: "sim" }] }), /Status do socio invalido/);
+  assert.throws(() => validateMembersConfigPayloadFromAdminModule({ syncFrequencyHours: 0 }), /syncFrequencyHours invalido/);
+  assert.throws(() => validateExternalBasePayload({ name: "Base", items: [{ active: "sim" }] }), /Status do item da base externa invalido/);
 });

@@ -9,7 +9,6 @@ import {
   isIdLike,
   isNonEmptyString,
   isObject,
-  isOptionalBoolean,
   isOptionalNumberLike,
   isOptionalPositiveIntegerLike,
   isOptionalString,
@@ -17,7 +16,6 @@ import {
 
 const FORM_TYPES = ["presenca", "escala_organ"];
 const FORM_STATUS = ["rascunho", "aberto", "fechado", "arquivado"];
-const USER_ROLES = ["admin", "viewer"];
 const FIELD_TYPES = ["person_select", "yes_no", "number", "text", "grid"];
 const FIELD_CATEGORIES = ["presenca", "quantidade", "texto", "avaliacao", "outro"];
 const SCALE_TASK_CATEGORIES = ["cozinha", "limpeza", "organizacao", "sessao", "outro"];
@@ -138,23 +136,6 @@ export const validateFormPayload = payload => {
   }
 };
 
-export const validateUserPayload = payload => {
-  assert(isObject(payload), "Payload de usuario invalido.");
-  assert(isIdLike(payload.id), "Id do usuario invalido.");
-  assert(isOptionalString(payload.name), "Nome do usuario invalido.");
-  assert(isNonEmptyString(payload.username), "Username do usuario e obrigatorio.");
-  assert(isOptionalString(payload.password), "Senha do usuario invalida.");
-  assert(USER_ROLES.includes(payload.role), "Papel do usuario invalido.");
-};
-
-export const validateLabelPayload = payload => {
-  assert(isObject(payload), "Payload de classificacao invalido.");
-  assert(isIdLike(payload.id), "Id da classificacao invalido.");
-  assert(isNonEmptyString(payload.name), "Nome da classificacao e obrigatorio.");
-  assert(isNonEmptyString(payload.color), "Cor da classificacao e obrigatoria.");
-  assert(isOptionalString(payload.createdBy), "createdBy da classificacao invalido.");
-};
-
 export const validatePresetPayload = payload => {
   assert(isObject(payload), "Payload de preset invalido.");
   assert(isIdLike(payload.id), "Id do preset invalido.");
@@ -195,68 +176,18 @@ export const validateScaleTaskCatalogPayload = payload => {
   assert(payload.active === undefined || typeof payload.active === "boolean", "Status da tarefa base invalido.");
 };
 
-export const validatePeoplePayload = payload => {
-  assert(isObject(payload), "Payload de socios invalido.");
-  assert(Array.isArray(payload.people), "Lista de socios invalida.");
-  for (const person of payload.people) {
-    assert(isObject(person), "Socio invalido.");
-    assert(isIdLike(person.id), "Id do socio invalido.");
-    assert(isNonEmptyString(person.name), "Socio precisa de nome.");
-    assert(isOptionalString(person.grau), "Grau do socio invalido.");
-    assert(isOptionalString(person.phone), "Telefone do socio invalido.");
-    assert(isOptionalBoolean(person.active), "Status do socio invalido.");
-    assert(isOptionalString(person.source), "Origem do socio invalida.");
-    assert(isOptionalString(person.externalKey), "Chave externa do socio invalida.");
-    assert(isOptionalString(person.syncedAt), "Data de sincronizacao do socio invalida.");
-    assert(person.metadata === undefined || isObject(person.metadata), "Metadata do socio invalida.");
-  }
-};
-
-export const validateMembersConfigPayload = payload => {
-  assert(isObject(payload), "Payload de configuracao de socios invalido.");
-  assert(isOptionalString(payload.sourceType), "sourceType invalido.");
-  assert(isOptionalString(payload.sheetUrl), "sheetUrl invalido.");
-  assert(isOptionalString(payload.nameColumn), "nameColumn invalido.");
-  assert(isOptionalString(payload.grauColumn), "grauColumn invalido.");
-  assert(isOptionalString(payload.phoneColumn), "phoneColumn invalido.");
-  assert(isOptionalString(payload.externalIdColumn), "externalIdColumn invalido.");
-  assert(isOptionalString(payload.activeColumn), "activeColumn invalido.");
-  assert(isOptionalString(payload.range), "range invalido.");
-  assert(isOptionalBoolean(payload.syncEnabled), "syncEnabled invalido.");
-  assert(isOptionalPositiveIntegerLike(payload.syncFrequencyHours), "syncFrequencyHours invalido.");
-  assert(isOptionalString(payload.lastSyncedAt), "lastSyncedAt invalido.");
-};
-
-export const validateExternalBasePayload = payload => {
-  assert(isObject(payload), "Payload de base externa invalido.");
-  assert(isIdLike(payload.id), "Id da base externa invalido.");
-  assert(isNonEmptyString(payload.name), "Nome da base externa e obrigatorio.");
-  assert(isOptionalString(payload.description), "Descricao da base externa invalida.");
-  assert(isOptionalString(payload.sourceType), "sourceType da base externa invalido.");
-  assert(isOptionalString(payload.sheetUrl), "sheetUrl da base externa invalido.");
-  assert(isOptionalString(payload.range), "range da base externa invalido.");
-  assert(isOptionalString(payload.valueColumn), "valueColumn da base externa invalido.");
-  assert(isOptionalString(payload.labelColumn), "labelColumn da base externa invalido.");
-  assert(isOptionalString(payload.descriptionColumn), "descriptionColumn da base externa invalido.");
-  assert(isOptionalString(payload.activeColumn), "activeColumn da base externa invalido.");
-  assert(isOptionalBoolean(payload.active), "active da base externa invalido.");
-  assert(isOptionalBoolean(payload.syncEnabled), "syncEnabled da base externa invalido.");
-  assert(isOptionalPositiveIntegerLike(payload.syncFrequencyHours), "syncFrequencyHours da base externa invalido.");
-  assert(isOptionalString(payload.lastSyncedAt), "lastSyncedAt da base externa invalido.");
-  assert(payload.items === undefined || Array.isArray(payload.items), "items da base externa invalido.");
-  for (const item of payload.items || []) {
-    assert(isObject(item), "Item da base externa invalido.");
-    assert(isOptionalString(item.value), "Valor do item da base externa invalido.");
-    assert(isOptionalString(item.label), "Rotulo do item da base externa invalido.");
-    assert(isOptionalString(item.description), "Descricao do item da base externa invalida.");
-    assert(isOptionalBoolean(item.active), "Status do item da base externa invalido.");
-  }
-};
-
 export const validateDeleteId = (value, label) => {
   assert(Number.isInteger(Number(value)) && Number(value) > 0, `${label} invalido.`);
   return Number(value);
 };
+
+export {
+  validateExternalBasePayload,
+  validateLabelPayload,
+  validateMembersConfigPayload,
+  validatePeoplePayload,
+  validateUserPayload,
+} from "./adminPayloadValidators.mjs";
 
 export {
   validateEventPayload,
