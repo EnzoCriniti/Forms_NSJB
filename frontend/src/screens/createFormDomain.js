@@ -11,6 +11,7 @@ import {
   createDefaultResultsConfig,
   syncResultsConfigWithFields,
 } from "./createFormResultsConfig";
+import { getCatalogGridSchema } from "./createFormFieldDraft";
 export {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -37,23 +38,25 @@ export {
   syncResultsConfigWithFields,
 } from "./createFormResultsConfig";
 
+export {
+  buildAppliedCatalogFieldDraft,
+  buildFieldDraftDefaults,
+  buildFieldDraftFromCatalogItem,
+  buildFieldDraftFromExistingField,
+  buildFieldTypeTransition,
+  buildOpenFieldDraft,
+  DEFAULT_GRID_COLS,
+  DEFAULT_GRID_ROWS,
+  getCatalogGridSchema,
+  SCALE_PRESETS,
+} from "./createFormFieldDraft";
+
 export const FIELD_TYPES = [
   { v: "person_select", l: "Seletor por base" },
   { v: "yes_no", l: "Sim / Nao" },
   { v: "number", l: "Numerico" },
   { v: "text", l: "Texto Curto" },
   { v: "grid", l: "Grade / Matriz" },
-];
-
-export const DEFAULT_GRID_ROWS = ["Opcao 1", "Opcao 2"];
-export const DEFAULT_GRID_COLS = ["0", "1", "2", "3"];
-
-export const SCALE_PRESETS = [
-  { label: "0 a 3", cols: ["0", "1", "2", "3"] },
-  { label: "0 a 5", cols: ["0", "1", "2", "3", "4", "5"] },
-  { label: "1 a 5", cols: ["1", "2", "3", "4", "5"] },
-  { label: "Ruim / Bom", cols: ["Ruim", "Regular", "Bom", "Otimo"] },
-  { label: "Discordo / Concordo", cols: ["Discordo totalmente", "Discordo", "Neutro", "Concordo", "Concordo totalmente"] },
 ];
 
 export const FORM_MODE_OPTIONS = [
@@ -87,75 +90,6 @@ export const createDefaultMemberField = () => ({
 export const createDefaultPresenceFields = formMode => formMode === FORM_MODES.NUCLEO
   ? [createDefaultMemberField()]
   : [];
-
-export const buildFieldDraftDefaults = ({ hasPrimaryLinkedField = false } = {}) => ({
-  editingFieldId: null,
-  nType: "yes_no",
-  nFieldMode: "local",
-  nCatalogId: "",
-  nLabel: "",
-  nRequired: false,
-  nPersonRole: hasPrimaryLinkedField ? "secondary" : "primary",
-  nGridRows: DEFAULT_GRID_ROWS,
-  nGridCols: DEFAULT_GRID_COLS,
-  nValidation: {},
-  addOpen: false,
-});
-
-export const buildFieldDraftFromExistingField = (field, { fields = [] } = {}) => ({
-  editingFieldId: field?.id ?? null,
-  nType: field?.type || "yes_no",
-  nFieldMode: field?.catalogFieldId ? "catalog" : "local",
-  nCatalogId: field?.catalogFieldId || "",
-  nLabel: field?.label || "",
-  nRequired: Boolean(field?.required),
-  nPersonRole: field && isMembersSelectionField(field)
-    ? (getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary")
-    : "secondary",
-  nGridRows: field?.gridRows?.length ? field.gridRows : DEFAULT_GRID_ROWS,
-  nGridCols: field?.gridCols?.length ? field.gridCols : DEFAULT_GRID_COLS,
-  nValidation: field?.validation || {},
-  addOpen: true,
-});
-
-export const buildFieldDraftFromCatalogItem = (catalogItem, { hasPrimaryLinkedField = false, editingFieldId = null } = {}) => {
-  if (!catalogItem) return {};
-  return {
-    nType: catalogItem.type,
-    nLabel: catalogItem.defaultLabel,
-    nPersonRole: catalogItem.type === "person_select" && hasPrimaryLinkedField && !editingFieldId ? "secondary" : "primary",
-    nGridRows: catalogItem.type === "grid" ? getCatalogGridSchema(catalogItem).rows : DEFAULT_GRID_ROWS,
-    nGridCols: catalogItem.type === "grid" ? getCatalogGridSchema(catalogItem).cols : DEFAULT_GRID_COLS,
-    nValidation: {},
-  };
-};
-
-export const buildOpenFieldDraft = ({ canUseMembersBase = true, hasPrimaryLinkedField = false } = {}) => ({
-  ...buildFieldDraftDefaults({ hasPrimaryLinkedField }),
-  nType: canUseMembersBase ? "yes_no" : "yes_no",
-  addOpen: true,
-});
-
-export const buildAppliedCatalogFieldDraft = ({
-  catalogId,
-  filteredFieldCatalog = [],
-  currentDraft,
-  hasPrimaryLinkedField = false,
-}) => {
-  const catalogItem = filteredFieldCatalog.find(item => String(item.id) === String(catalogId));
-  if (!catalogItem) {
-    return null;
-  }
-  const draft = buildFieldDraftFromCatalogItem(catalogItem, {
-    hasPrimaryLinkedField,
-    editingFieldId: currentDraft?.editingFieldId,
-  });
-  return {
-    ...currentDraft,
-    ...draft,
-    nCatalogId: catalogId,
-  };
-};
 
 export const buildFieldSavePayload = ({
   fields,
@@ -411,11 +345,6 @@ export const buildPresetTitle = (format, event) => {
   return "";
 };
 
-export const getCatalogGridSchema = item => ({
-  rows: item?.gridSchema?.rows?.length ? item.gridSchema.rows : DEFAULT_GRID_ROWS,
-  cols: item?.gridSchema?.cols?.length ? item.gridSchema.cols : DEFAULT_GRID_COLS,
-});
-
 export const stripMemberBinding = field => {
   const { memberBinding, ...rest } = field || {};
   return rest;
@@ -560,14 +489,6 @@ export const buildCreateFormDerivedState = ({
     isFieldSaveDisabled,
   };
 };
-
-export const buildFieldTypeTransition = ({ nextType, hasPrimaryLinkedField = false }) => ({
-  nType: nextType,
-  nPersonRole: nextType === "person_select" && hasPrimaryLinkedField ? "secondary" : "primary",
-  nGridRows: DEFAULT_GRID_ROWS,
-  nGridCols: DEFAULT_GRID_COLS,
-  nValidation: {},
-});
 
 export const buildFieldValidation = ({ nType, nValidation }) => {
   if (nType === "text") {

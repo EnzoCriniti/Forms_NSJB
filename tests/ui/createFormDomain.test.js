@@ -8,11 +8,6 @@ import {
   buildCreateFormTemplateState,
   buildCreateFormSaveOutcome,
   buildCreateFormTemplatePayload,
-  buildFieldDraftDefaults,
-  buildAppliedCatalogFieldDraft,
-  buildFieldDraftFromCatalogItem,
-  buildFieldDraftFromExistingField,
-  buildOpenFieldDraft,
   buildPresetTitle,
   createDefaultPresenceFields,
   normalizePeopleBaseBindings,
@@ -34,6 +29,13 @@ import {
   addTotalLayoutField,
   createDefaultResultsConfig,
 } from "../../frontend/src/screens/createFormResultsConfig.js";
+import {
+  buildAppliedCatalogFieldDraft,
+  buildFieldDraftDefaults,
+  buildFieldDraftFromCatalogItem,
+  buildFieldDraftFromExistingField,
+  buildOpenFieldDraft,
+} from "../../frontend/src/screens/createFormFieldDraft.js";
 
 describe("createFormDomain", () => {
   it("monta o titulo padrao do evento", () => {

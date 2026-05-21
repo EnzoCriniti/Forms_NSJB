@@ -250,6 +250,7 @@ Checklist operacional:
 - iniciado: helpers de secoes e patches do rascunho de escala sairam para `frontend/src/screens/createFormScaleDraft.js`, com reexports preservados no dominio historico
 - iniciado: mutacoes puras de listas do editor sairam para `frontend/src/screens/createFormListHelpers.js`, com reexports preservados no dominio historico
 - iniciado: sincronizacao de `resultsConfig` e layout de totais sairam para `frontend/src/screens/createFormResultsConfig.js`, com reexports preservados no dominio historico
+- iniciado: defaults de grade e transicoes do rascunho de campo sairam para `frontend/src/screens/createFormFieldDraft.js`, com reexports preservados no dominio historico
 - remover duplicacao de `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS`, `SCALE_PRESETS` e `FORM_MODES` com outros arquivos
 - centralizar a normalizacao de `person_select` e `memberBinding`
 - separar o que e regra de formulario do que e regra de UI
