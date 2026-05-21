@@ -21,6 +21,12 @@ import {
   validatePeoplePayload,
   validateMembersConfigPayload,
 } from "../backend/validators/payloadValidators.mjs";
+import {
+  validateEventMessagePayload,
+  validateMessageTemplatePayload,
+  validateMessagingConfigPayload,
+  validatePersonPresetPayload,
+} from "../backend/validators/messagingPayloadValidators.mjs";
 
 test("validateFormPayload accepts a valid presence form", () => {
   assert.doesNotThrow(() => validateFormPayload({
@@ -156,4 +162,38 @@ test("catalog and admin validators reject invalid payloads", () => {
   assert.throws(() => validatePeoplePayload({ people: [{}] }), /Socio precisa de nome/);
   assert.throws(() => validateMembersConfigPayload({ sheetUrl: 123 }), /sheetUrl invalido/);
   assert.throws(() => validatePeoplePayload({ people: [{ name: "Maria", active: "sim" }] }), /Status do socio invalido/);
+});
+
+test("messaging payload validators accept valid payloads from the messaging module", () => {
+  assert.doesNotThrow(() => validateMessageTemplatePayload({ name: "Lembrete", type: "fill_reminder", body: "Preencha o formulario" }));
+  assert.doesNotThrow(() => validatePersonPresetPayload({ name: "Equipe", personKeys: ["maria"] }));
+  assert.doesNotThrow(() => validateMessagingConfigPayload({ whatsappGroupName: "Grupo", autoDispatchEnabled: true, publicBaseUrl: "https://example.test" }));
+  assert.doesNotThrow(() => validateEventMessagePayload({
+    type: "new_scale",
+    body: "Escala aberta",
+    templateId: 1,
+    config: {
+      formId: 2,
+      recipients: { mode: "manual", personKeys: ["maria"] },
+    },
+    scheduledFor: null,
+    windowOption: "12h_before",
+    autoDispatchEnabled: false,
+    status: "agendada",
+  }));
+});
+
+test("messaging payload validators reject invalid recipient settings", () => {
+  assert.throws(() => validateEventMessagePayload({
+    type: "new_scale",
+    body: "Escala aberta",
+    templateId: 1,
+    config: { recipients: { mode: "manual", personKeys: "maria" } },
+  }), /Lista de pessoas invalida/);
+  assert.throws(() => validateEventMessagePayload({
+    type: "new_scale",
+    body: "Escala aberta",
+    templateId: 1,
+    windowOption: "amanha",
+  }), /Janela de agendamento invalida/);
 });

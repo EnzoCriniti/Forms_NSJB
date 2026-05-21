@@ -4,6 +4,17 @@
  * @responsibility Verificar forma e tipos basicos dos dados antes da camada de servicos.
  */
 
+import {
+  assertPayload as assert,
+  isIdLike,
+  isNonEmptyString,
+  isObject,
+  isOptionalBoolean,
+  isOptionalNumberLike,
+  isOptionalPositiveIntegerLike,
+  isOptionalString,
+} from "./payloadValidatorPrimitives.mjs";
+
 const FORM_TYPES = ["presenca", "escala_organ"];
 const FORM_STATUS = ["rascunho", "aberto", "fechado", "arquivado"];
 const EVENT_STATUS = ["rascunho", "pronto", "publicado", "encerrado"];
@@ -12,17 +23,6 @@ const FIELD_TYPES = ["person_select", "yes_no", "number", "text", "grid"];
 const FIELD_CATEGORIES = ["presenca", "quantidade", "texto", "avaliacao", "outro"];
 const SCALE_TASK_CATEGORIES = ["cozinha", "limpeza", "organizacao", "sessao", "outro"];
 
-const assert = (condition, message) => {
-  if (!condition) throw new Error(message);
-};
-
-const isObject = value => value !== null && typeof value === "object" && !Array.isArray(value);
-const isNonEmptyString = value => typeof value === "string" && value.trim().length > 0;
-const isOptionalString = value => value === undefined || value === null || typeof value === "string";
-const isOptionalBoolean = value => value === undefined || value === null || typeof value === "boolean";
-const isOptionalNumberLike = value => value === undefined || value === null || value === "" || Number.isFinite(Number(value));
-const isIdLike = value => value === undefined || value === null || Number.isInteger(Number(value));
-const isOptionalPositiveIntegerLike = value => value === undefined || value === null || value === "" || (Number.isInteger(Number(value)) && Number(value) > 0);
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
 const MEMBER_BINDING_ROLES = ["primary", "secondary"];
 const SELECTION_SOURCE_KINDS = ["members", "external_base"];
@@ -326,54 +326,9 @@ export const validateDeleteId = (value, label) => {
   return Number(value);
 };
 
-const MESSAGE_TEMPLATE_TYPES = ["new_scale", "fill_reminder", "open_slots"];
-const MESSAGE_STATUSES_VALID = ["rascunho", "agendada", "pronta", "disparada", "cancelada"];
-const MESSAGE_WINDOW_OPTIONS = ["morning_of_closing", "12h_before", "1h_before"];
-const MESSAGE_RECIPIENT_MODES = ["auto", "preset", "manual"];
-
-export const validateMessageTemplatePayload = payload => {
-  assert(isObject(payload), "Payload do modelo invalido.");
-  assert(isIdLike(payload.id), "Id do modelo invalido.");
-  assert(isNonEmptyString(payload.name), "Nome do modelo e obrigatorio.");
-  assert(MESSAGE_TEMPLATE_TYPES.includes(payload.type), "Tipo do modelo invalido.");
-  assert(isNonEmptyString(payload.body), "Corpo do modelo e obrigatorio.");
-};
-
-export const validatePersonPresetPayload = payload => {
-  assert(isObject(payload), "Payload do preset invalido.");
-  assert(isIdLike(payload.id), "Id do preset invalido.");
-  assert(isNonEmptyString(payload.name), "Nome do preset e obrigatorio.");
-  assert(payload.personKeys === undefined || Array.isArray(payload.personKeys), "Lista de pessoas do preset invalida.");
-};
-
-export const validateMessagingConfigPayload = payload => {
-  assert(isObject(payload), "Payload da configuracao de mensagens invalido.");
-  assert(isOptionalString(payload.whatsappGroupName), "Nome do grupo invalido.");
-  assert(isOptionalBoolean(payload.autoDispatchEnabled), "Flag autoDispatchEnabled invalida.");
-  assert(isOptionalString(payload.publicBaseUrl), "URL publica invalida.");
-};
-
-export const validateEventMessagePayload = payload => {
-  assert(isObject(payload), "Payload da mensagem invalido.");
-  assert(isIdLike(payload.id), "Id da mensagem invalido.");
-  assert(MESSAGE_TEMPLATE_TYPES.includes(payload.type), "Tipo da mensagem invalido.");
-  assert(isNonEmptyString(payload.body), "Corpo da mensagem e obrigatorio.");
-  assert(isIdLike(payload.templateId), "Modelo da mensagem invalido.");
-  assert(payload.config === undefined || payload.config === null || isObject(payload.config), "Configuracao da mensagem invalida.");
-  if (payload.config?.formId !== undefined && payload.config?.formId !== null) {
-    assert(Number.isInteger(Number(payload.config.formId)) && Number(payload.config.formId) > 0, "Form da mensagem invalido.");
-  }
-  if (payload.config?.recipients) {
-    assert(MESSAGE_RECIPIENT_MODES.includes(payload.config.recipients.mode), "Modo de selecao de destinatarios invalido.");
-    if (payload.config.recipients.mode === "preset") {
-      assert(Number.isInteger(Number(payload.config.recipients.presetId)) && Number(payload.config.recipients.presetId) > 0, "Preset selecionado invalido.");
-    }
-    if (payload.config.recipients.mode === "manual") {
-      assert(Array.isArray(payload.config.recipients.personKeys), "Lista de pessoas invalida.");
-    }
-  }
-  assert(payload.scheduledFor === undefined || payload.scheduledFor === null || typeof payload.scheduledFor === "string", "scheduledFor invalido.");
-  assert(payload.windowOption === undefined || payload.windowOption === null || MESSAGE_WINDOW_OPTIONS.includes(payload.windowOption), "Janela de agendamento invalida.");
-  assert(payload.autoDispatchEnabled === undefined || typeof payload.autoDispatchEnabled === "boolean", "Flag autoDispatchEnabled invalida.");
-  assert(payload.status === undefined || MESSAGE_STATUSES_VALID.includes(payload.status), "Status da mensagem invalido.");
-};
+export {
+  validateEventMessagePayload,
+  validateMessageTemplatePayload,
+  validateMessagingConfigPayload,
+  validatePersonPresetPayload,
+} from "./messagingPayloadValidators.mjs";
