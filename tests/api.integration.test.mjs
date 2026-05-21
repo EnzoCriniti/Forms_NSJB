@@ -1544,7 +1544,7 @@ test("event message type 1 dispatch grava log e marca disparada", async () => {
     assert.equal(logs[0].dispatcherVersion, "log-only-1");
 
     await wait(50);
-    const auditLogs = await readAuditLogs(ctx.db, "WHERE category = ? AND action IN (?, ?) ORDER BY id ASC", ["messages", "create_event_message", "dispatch_event_message"]);
+    const auditLogs = await readAuditLogs(ctx.db, "WHERE category = ? AND action IN (?, ?)", ["messages", "create_event_message", "dispatch_event_message"]);
     assert.equal(auditLogs.length, 2);
     assert.deepEqual(auditLogs.map(log => log.action), ["create_event_message", "dispatch_event_message"]);
     assert.ok(auditLogs.every(log => log.status === "success"));

@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, resolveAppNavigation } from "../../frontend/src/lib/appShell.js";
+import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, normalizeStoredSession, resolveAppNavigation } from "../../frontend/src/lib/appShell.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -18,6 +18,28 @@ describe("appShell public routes", () => {
       eventIdentifier: "evento maio",
       view: "form",
       isLegacySlug: false,
+    });
+  });
+
+  it("ignora hash publico de evento sem formulario", () => {
+    window.location.hash = "#/eventos/10";
+    expect(getPublicRouteFromLocation()).toBeNull();
+  });
+});
+
+describe("appShell session storage", () => {
+  it("descarta sessao antiga sem token", () => {
+    expect(normalizeStoredSession({ username: "admin", password: "admin123" })).toBeNull();
+  });
+
+  it("preserva apenas dados publicos do usuario salvo", () => {
+    expect(normalizeStoredSession({
+      token: "abc",
+      user: { id: 1, name: "Admin", username: "admin", role: "admin", password: "secret" },
+    })).toEqual({
+      token: "abc",
+      expiresAt: null,
+      user: { id: 1, name: "Admin", username: "admin", role: "admin" },
     });
   });
 });

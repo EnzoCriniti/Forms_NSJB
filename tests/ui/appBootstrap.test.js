@@ -14,6 +14,26 @@ describe("appBootstrap helpers", () => {
     expect(bootstrap.forms).toEqual([{ id: 1 }]);
     expect(bootstrap.events).toEqual([]);
     expect(bootstrap.messagingConfig.whatsappGroupName).toBe("Grupo");
+    expect(bootstrap.messagingConfig.autoDispatchEnabled).toBe(true);
+    expect(bootstrap.messagingConfig.publicBaseUrl).toBe("");
+  });
+
+  it("descarta tipos invalidos no bootstrap inicial", () => {
+    const bootstrap = normalizeBootstrap({
+      forms: "quebrado",
+      events: null,
+      responsesByForm: [],
+      escalaByForm: "quebrado",
+      membersConfig: null,
+      messagingConfig: "quebrado",
+    });
+
+    expect(bootstrap.forms).toEqual([]);
+    expect(bootstrap.events).toEqual([]);
+    expect(bootstrap.responsesByForm).toEqual({});
+    expect(bootstrap.escalaByForm).toEqual({});
+    expect(bootstrap.membersConfig).toEqual({});
+    expect(bootstrap.messagingConfig).toEqual({ whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" });
   });
 
   it("escolhe o primeiro formulario visivel quando a selecao nao deve ser preservada", () => {
@@ -53,6 +73,16 @@ describe("appBootstrap helpers", () => {
 
     expect(bootstrap.forms).toEqual([]);
     expect(bootstrap.labels).toEqual(["b"]);
+  });
+
+  it("preserva a lista quando a resposta da API nao traz o array esperado", () => {
+    const bootstrap = replaceBootstrapListFromResult(
+      { forms: [], labels: ["a"] },
+      "labels",
+      { label: "b" },
+    );
+
+    expect(bootstrap.labels).toEqual(["a"]);
   });
 
   it("insere ou atualiza itens de uma lista do bootstrap", () => {
