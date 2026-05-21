@@ -525,7 +525,7 @@ Teste a reforcar:
 
 ### `backend/routes/adminRoutes.mjs`
 
-Status: Em andamento.
+Status: Reavaliar se o agregador voltar a crescer.
 
 Problemas que precisam ser corrigidos:
 - este e o maior arquivo de rotas do backend
@@ -534,7 +534,8 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - concluido: erro e auditoria de mutacoes administrativas foram padronizados em `backend/routes/adminRouteHelpers.mjs` nas rotas de usuario, classificacoes, presets, socios, configuracao de socios, sincronizacao de socios, bases externas e catalogos
-- em andamento: a divisao fisica comecou pelos blocos coesos de catalogos, bases externas e socios em `backend/routes/adminCatalogRoutes.mjs`, `backend/routes/adminExternalBaseRoutes.mjs` e `backend/routes/adminMemberRoutes.mjs`; continuar apenas nos dominios que reduzirem complexidade sem criar roteadores pequenos demais:
+- concluido neste ciclo: os blocos coesos de catalogos, bases externas e socios sairam para `backend/routes/adminCatalogRoutes.mjs`, `backend/routes/adminExternalBaseRoutes.mjs` e `backend/routes/adminMemberRoutes.mjs`
+- reavaliar depois: usuarios, classificacoes e presets continuam juntos enquanto a divisao criar roteadores pequenos demais:
   - users
   - labels
   - presets
@@ -709,8 +710,8 @@ Teste a reforcar:
 ## 14. Sequencia pratica de refatoracao
 
 1. Concluido: quebrar `backend/validators/payloadValidators.mjs` por dominio.
-2. Em andamento: dividir `backend/routes/adminRoutes.mjs` apenas por dominios coesos depois da padronizacao de erro e auditoria; catalogos, bases externas e socios ja sairam para handlers proprios.
-3. Depois: revisar `backend/services/formsService.mjs` e `backend/services/adminService.mjs` com foco em regras duplicadas e seguranca.
+2. Concluido neste ciclo: `backend/routes/adminRoutes.mjs` teve erro/auditoria padronizados e os blocos coesos de catalogos, bases externas e socios extraidos.
+3. Em andamento: revisar `backend/services/formsService.mjs` e `backend/services/adminService.mjs` com foco em regras duplicadas e seguranca.
 4. Depois: separar `frontend/src/screens/createFormDomain.js` em modulos menores.
 5. Depois: limpar `frontend/src/App.jsx`, `frontend/src/AppViewport.jsx` e `frontend/src/AppShellContent.jsx`.
 6. Depois: remover duplicacao de defaults e modes entre frontend/admin/backend.
