@@ -257,10 +257,12 @@ Checklist operacional:
 - iniciado: payload e estado de aplicacao de template sairam para `frontend/src/screens/createFormTemplates.js`, com reexports preservados no dominio historico
 - iniciado: estado inicial, selecao de formato e retorno de salvamento sairam para `frontend/src/screens/createFormState.js`, com reexports preservados no dominio historico
 - iniciado: transicao entre modos estruturais saiu para `frontend/src/screens/createFormModeTransition.js`, com reexport preservado no dominio historico
+- iniciado: estado derivado do editor saiu para `frontend/src/screens/createFormDerivedState.js`, com reexport preservado no dominio historico
+- iniciado: payload final do formulario saiu para `frontend/src/screens/createFormPayload.js`, com reexport preservado no dominio historico
 - remover duplicacao de `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS`, `SCALE_PRESETS` e `FORM_MODES` com outros arquivos
 - manter a normalizacao de `person_select` e `memberBinding` concentrada no helper extraido
 - separar o que e regra de formulario do que e regra de UI
-- manter `buildCreateFormPayload` e `buildCreateFormTemplatePayload` como saídas finais, nao como lugar de toda a logica
+- manter `buildCreateFormPayload` e `buildCreateFormTemplatePayload` como saidas finais, nao como lugar de toda a logica
 
 Teste a reforcar:
 - `tests/ui/createFormDomain.test.js`

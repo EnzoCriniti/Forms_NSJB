@@ -70,7 +70,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/screens/CreateFormScreen.jsx`
   Editor principal de formulario, com modos `nucleo` e `geral`, campos da biblioteca, presets e configuracoes de resultados.
 - `frontend/src/screens/createFormDomain.js`
-  Regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Inclui presets, estado inicial do editor e de duplicacao, estado e transicoes do draft de campo, patches de escala, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, normalizacao de base e sincronizacao de resultados.
+  Barramento historico das regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Para novas alteracoes, prefira o modulo especifico: defaults, member bindings, templates, state, mode transition, derived state, scale draft, list helpers, results config, field draft, field save ou payload.
 - `frontend/src/lib/forms.js`
   Helpers de modo estrutural, base central, origem de selecao e validacao ligada ao formulario.
 - `shared/formRules.mjs`

@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
-  buildCreateFormPayload,
+  buildCreateFormDerivedState as buildCreateFormDerivedStateFromDomain,
+  buildCreateFormPayload as buildCreateFormPayloadFromDomain,
 } from "../../frontend/src/screens/createFormDomain.js";
+import { buildCreateFormPayload } from "../../frontend/src/screens/createFormPayload.js";
 import {
   buildPresetTitle,
   createDefaultPresenceFields,
@@ -18,6 +20,7 @@ import {
   buildCreateFormSaveOutcome,
 } from "../../frontend/src/screens/createFormState.js";
 import { buildCreateFormModeTransition } from "../../frontend/src/screens/createFormModeTransition.js";
+import { buildCreateFormDerivedState } from "../../frontend/src/screens/createFormDerivedState.js";
 import {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -48,6 +51,11 @@ import {
 } from "../../frontend/src/screens/createFormFieldSave.js";
 
 describe("createFormDomain", () => {
+  it("preserva reexports de compatibilidade do dominio historico", () => {
+    expect(buildCreateFormPayloadFromDomain).toBe(buildCreateFormPayload);
+    expect(buildCreateFormDerivedStateFromDomain).toBe(buildCreateFormDerivedState);
+  });
+
   it("monta o titulo padrao do evento", () => {
     expect(buildPresetTitle("presenca", { title: "Sessao", date: "2026-05-18" })).toBe("Presenca Sessao - 18/05/2026");
     expect(buildPresetTitle("escala_organ", { date: "2026-05-18" })).toBe("Escala da Organ - 18/05/2026");
@@ -309,6 +317,29 @@ describe("createFormDomain", () => {
     expect(transition.totalExpected).toBe("");
     expect(transition.resultsConfig.formMode).toBe(FORM_MODES.GERAL);
     expect(transition.fields.some(field => field.type === "person_select")).toBe(false);
+  });
+
+  it("deriva catalogo de campos sem oferecer base central no modo geral", () => {
+    const derived = buildCreateFormDerivedState({
+      format: "presenca",
+      formMode: FORM_MODES.GERAL,
+      fields: [],
+      fieldCatalog: [
+        { id: 1, type: "person_select", selectionSource: { kind: "members" } },
+        { id: 2, type: "person_select", selectionSource: { kind: "external_base", externalBaseId: 4 } },
+        { id: 3, type: "text" },
+      ],
+      resultsConfig: { totalsLayout: [] },
+      editingFieldId: null,
+      nFieldMode: "local",
+      nType: "person_select",
+      nCatalogId: "",
+      nLabel: "",
+    });
+
+    expect(derived.filteredFieldCatalog.map(item => item.id)).toEqual([2, 3]);
+    expect(derived.filteredFieldTypes.some(type => type.v === "person_select")).toBe(false);
+    expect(derived.isFieldSaveDisabled).toBe(true);
   });
 
   it("aplica template preservando os dados principais do formulario", () => {

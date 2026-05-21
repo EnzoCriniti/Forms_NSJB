@@ -2,6 +2,49 @@
 
 Este documento resume a divisao de responsabilidades do NSJB Forms depois da separacao entre frontend, backend, dados e Docker.
 
+## Pratica de desenvolvimento
+
+O projeto segue uma arquitetura modular monolito com camadas claras. A regra pratica e:
+
+- frontend monta a experiencia e orquestra telas
+- backend valida, aplica regra de negocio e persiste
+- shared guarda apenas regra realmente comum e pura
+- docs registram contratos, decisoes e ordem de evolucao
+
+Isso significa que a forma correta de evoluir o projeto nao e reescrever tudo de uma vez, e sim cortar por responsabilidade, mantendo o contrato atual e validando cada etapa.
+
+### Regras inegociaveis
+
+- Nao misture apresentacao, orquestracao, regra de negocio e persistencia no mesmo arquivo quando for possivel separar.
+- Nao mude comportamento visivel sem teste cobrindo a regressao.
+- Nao altere contrato publico de API ou de tela sem ajustar frontend, backend, teste e documentacao.
+- Nao crie abstracoes genericas antes de existir repeticao real.
+- Nao duplicar regra entre frontend e backend se a mesma decisao puder ficar em um helper puro compartilhado.
+- Nao aumentar o tamanho de um arquivo grande sem antes reduzir sua responsabilidade.
+
+### Ordem de trabalho segura
+
+1. Identificar o arquivo hub e a responsabilidade que sera retirada.
+2. Extrair uma fatia pequena da regra.
+3. Atualizar os consumidores diretos.
+4. Cobrir com teste.
+5. Conferir que o fluxo principal continua igual.
+6. Somente entao partir para o proximo corte.
+
+### O que cada camada pode fazer
+
+- `frontend/src/App.jsx` e telas de shell: coordenacao global e composicao.
+- `frontend/src/screens/`: fluxos de pagina e controller visual.
+- `frontend/src/features/`: blocos de dominio e UI mais especifica.
+- `frontend/src/components/`: primitives e componentes realmente compartilhados.
+- `frontend/src/lib/`: helpers puros, cliente HTTP e funcoes de apoio.
+- `backend/routes/`: entrada HTTP e resposta.
+- `backend/services/`: regra de negocio e orquestracao de dominio.
+- `backend/repositories/`: consultas e persistencia.
+- `backend/validators/`: validacao estrutural de entrada.
+- `backend/core/`: utilitarios de dominio reutilizaveis.
+- `shared/`: regra pura compartilhada entre frontend e backend.
+
 ## Leitura rapida
 
 - [docs/DIAGRAMAS.md](DIAGRAMAS.md) mostra a visao visual.
@@ -59,5 +102,8 @@ Este documento resume a divisao de responsabilidades do NSJB Forms depois da sep
 - Nao duplique chamadas HTTP fora de `frontend/src/lib/api.js`.
 - Nao mova responsabilidade de persistencia para services.
 - Nao misture validacao estrutural com regra de negocio.
+- Nao permita que um arquivo novo comece a acumular mais de uma responsabilidade sem justificativa.
+- Quando um corte alterar fluxo, documente a mudanca no mesmo ciclo.
+- Quando uma mudanca tocar backend e frontend, trate como duas etapas e valide o contrato entre elas.
 - Para um desenho mais visual, consulte [docs/DIAGRAMAS.md](DIAGRAMAS.md).
 - Para o resumo de uso e operacao, use o `README.md` da raiz.

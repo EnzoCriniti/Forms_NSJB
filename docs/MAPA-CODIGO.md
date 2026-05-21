@@ -32,6 +32,9 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/components/CreateFormFieldPreview.jsx` - previa isolada do campo em criacao de formulario.
 - `frontend/src/components/CreateFormLivePreview.jsx` - previa do formulario completo durante a criacao.
 - `frontend/src/components/CreateFormTemplateBar.jsx` - barra de selecao de template na criacao de formulario.
+- `frontend/src/screens/createFormDomain.js` - barramento historico dos helpers puros de criacao de formulario.
+- `frontend/src/screens/createFormPayload.js` - montagem do payload final salvo pela criacao de formulario.
+- `frontend/src/screens/createFormDerivedState.js` - estado derivado do editor de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/screens/EventsScreen.jsx` - tela de eventos, formularios vinculados e aba de mensagens.
 - `frontend/src/screens/EventMessageEditorScreen.jsx` - editor de mensagens vinculadas a eventos.

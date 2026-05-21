@@ -173,6 +173,10 @@ Mapa curto das areas mais mexidas por agentes.
   Estado inicial, selecao de formato e retorno de salvamento do editor de formulario.
 - `frontend/src/screens/createFormModeTransition.js`
   Transicao entre modos estruturais na criacao de formulario.
+- `frontend/src/screens/createFormDerivedState.js`
+  Estado derivado do editor: catalogos ativos, disponibilidade de tipos, origem de selecao e flags de salvamento.
+- `frontend/src/screens/createFormPayload.js`
+  Payload final da criacao de formulario enviado para a API, incluindo normalizacao de presenca e configuracao de resultados.
 - `frontend/src/screens/createFormScaleDraft.js`
   Helpers puros do rascunho de escala na criacao de formulario: secoes locais e patches de catalogo/modo.
 - `frontend/src/screens/createFormListHelpers.js`
