@@ -534,7 +534,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - primeiro padronizar erro e auditoria com helper comum, sem quebrar o arquivo fisicamente antes da hora
-- iniciado: `backend/routes/adminRouteHelpers.mjs` centraliza envio de erro e auditoria de mutacoes administrativas; aplicado nas rotas de usuario, classificacoes, presets, socios e configuracao de socios
+- iniciado: `backend/routes/adminRouteHelpers.mjs` centraliza envio de erro e auditoria de mutacoes administrativas; aplicado nas rotas de usuario, classificacoes, presets, socios, configuracao de socios e sincronizacao de socios
 - depois que o helper estiver estabilizado, reavaliar se ainda vale quebrar o arquivo por dominio:
   - users
   - labels

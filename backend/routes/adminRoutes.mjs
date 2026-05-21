@@ -357,11 +357,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const result = await syncMembersFromSource();
       sendJson(res, 200, result);
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_sync_members",
-        status: "success",
         screen: "configuracoes",
         entityType: "people",
         entityId: null,
@@ -373,19 +371,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_sync_members",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "people",
         entityId: null,
         entityLabel: "Socios",
-        message: error.message,
+        message: "Base de socios sincronizada.",
         metadata: {},
-      });
+      }, error);
     }
     return true;
   }

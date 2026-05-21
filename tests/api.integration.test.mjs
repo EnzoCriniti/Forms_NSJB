@@ -475,6 +475,19 @@ test("admin members config endpoint returns validation errors with fallback 400"
   }
 });
 
+test("admin members sync endpoint returns service errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const syncRes = await authedJson(ctx.baseUrl, "/api/members-config/sync", {}, adminToken);
+    assert.equal(syncRes.status, 400);
+    const payload = await syncRes.json();
+    assert.match(payload.error, /Configure a URL do Google Sheets antes de sincronizar/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {
