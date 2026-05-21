@@ -410,6 +410,22 @@ test("admin user endpoint returns validation errors with fallback 400", async ()
   }
 });
 
+test("admin label endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidLabelRes = await authedJson(ctx.baseUrl, "/api/labels", {
+      name: "",
+      color: "#fff000",
+    }, adminToken);
+    assert.equal(invalidLabelRes.status, 400);
+    const payload = await invalidLabelRes.json();
+    assert.match(payload.error, /Nome da classificacao e obrigatorio/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {

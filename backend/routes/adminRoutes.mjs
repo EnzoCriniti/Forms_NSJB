@@ -131,11 +131,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validateLabelPayload(body);
       const labels = await saveLabel(body);
       sendJson(res, 200, { labels });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_label",
-        status: "success",
         screen: "configuracoes",
         entityType: "label",
         entityId: body.id || null,
@@ -148,23 +146,21 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_label",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "label",
         entityId: body?.id || null,
         entityLabel: body?.name || null,
-        message: error.message,
+        message: "Classificacao gravada.",
         metadata: {
           labelId: body?.id || null,
           name: body?.name || null,
           color: body?.color || null,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -176,11 +172,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const labels = await deleteLabel(labelId);
       sendJson(res, 200, { labels });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_label",
-        status: "success",
         screen: "configuracoes",
         entityType: "label",
         entityId: labelId,
@@ -189,19 +183,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         metadata: { labelId },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_label",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "label",
         entityId: labelId,
         entityLabel: null,
-        message: error.message,
+        message: "Classificacao excluida.",
         metadata: { labelId },
-      });
+      }, error);
     }
     return true;
   }
