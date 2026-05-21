@@ -14,9 +14,7 @@ import {
   buildFieldDraftFromExistingField,
   buildOpenFieldDraft,
   buildPresetTitle,
-  addTotalLayoutField,
   createDefaultPresenceFields,
-  createDefaultResultsConfig,
   normalizePeopleBaseBindings,
 } from "../../frontend/src/screens/createFormDomain.js";
 import {
@@ -32,6 +30,10 @@ import {
   toggleFieldShow,
   updateListItemAtIndex,
 } from "../../frontend/src/screens/createFormListHelpers.js";
+import {
+  addTotalLayoutField,
+  createDefaultResultsConfig,
+} from "../../frontend/src/screens/createFormResultsConfig.js";
 
 describe("createFormDomain", () => {
   it("monta o titulo padrao do evento", () => {
