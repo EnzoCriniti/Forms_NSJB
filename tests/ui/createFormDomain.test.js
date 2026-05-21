@@ -14,11 +14,6 @@ import {
   buildFieldDraftFromExistingField,
   buildOpenFieldDraft,
   buildPresetTitle,
-  toggleFieldShow,
-  removeFieldById,
-  updateListItemAtIndex,
-  removeListItemAtIndex,
-  appendListItem,
   addTotalLayoutField,
   createDefaultPresenceFields,
   createDefaultResultsConfig,
@@ -30,6 +25,13 @@ import {
   buildScaleModePatch,
   updateScaleSection,
 } from "../../frontend/src/screens/createFormScaleDraft.js";
+import {
+  appendListItem,
+  removeFieldById,
+  removeListItemAtIndex,
+  toggleFieldShow,
+  updateListItemAtIndex,
+} from "../../frontend/src/screens/createFormListHelpers.js";
 
 describe("createFormDomain", () => {
   it("monta o titulo padrao do evento", () => {

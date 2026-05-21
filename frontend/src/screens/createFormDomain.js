@@ -7,7 +7,6 @@ import {
   createLocalScaleSection,
   updateScaleSection,
 } from "./createFormScaleDraft";
-
 export {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -16,6 +15,15 @@ export {
   createLocalScaleSection,
   updateScaleSection,
 } from "./createFormScaleDraft";
+
+export {
+  appendListItem,
+  moveItem,
+  removeFieldById,
+  removeListItemAtIndex,
+  toggleFieldShow,
+  updateListItemAtIndex,
+} from "./createFormListHelpers";
 
 export const FIELD_TYPES = [
   { v: "person_select", l: "Seletor por base" },
@@ -408,29 +416,6 @@ export const ensurePrimaryMembersField = fields => {
   if (nextFields.some(isMembersSelectionField)) return nextFields;
   return [createDefaultMemberField(), ...nextFields];
 };
-
-export const moveItem = (items, index, direction) => {
-  const targetIndex = index + direction;
-  if (targetIndex < 0 || targetIndex >= items.length) return items;
-  const next = [...items];
-  const [item] = next.splice(index, 1);
-  next.splice(targetIndex, 0, item);
-  return next;
-};
-
-export const toggleFieldShow = (fields, fieldId) => fields.map(item => (
-  item.id === fieldId ? { ...item, show: !item.show } : item
-));
-
-export const removeFieldById = (fields, fieldId) => fields.filter(item => item.id !== fieldId);
-
-export const updateListItemAtIndex = (items, index, value) => items.map((item, itemIndex) => (
-  itemIndex === index ? value : item
-));
-
-export const removeListItemAtIndex = (items, index) => items.filter((_, itemIndex) => itemIndex !== index);
-
-export const appendListItem = (items, value = "") => [...items, value];
 
 export const addTotalLayoutField = (totalsLayout, field) => ([
   ...totalsLayout,
