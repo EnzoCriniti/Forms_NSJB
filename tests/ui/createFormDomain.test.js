@@ -8,10 +8,12 @@ import {
   buildCreateFormTemplateState,
   buildCreateFormSaveOutcome,
   buildCreateFormTemplatePayload,
-  buildPresetTitle,
-  createDefaultPresenceFields,
   normalizePeopleBaseBindings,
 } from "../../frontend/src/screens/createFormDomain.js";
+import {
+  buildPresetTitle,
+  createDefaultPresenceFields,
+} from "../../frontend/src/screens/createFormDefaults.js";
 import {
   appendScaleSection,
   buildScaleCatalogPatch,

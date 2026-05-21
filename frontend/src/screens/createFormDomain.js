@@ -1,4 +1,4 @@
-import { FORM_MODES, formatDate, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField } from "../lib/forms";
+import { FORM_MODES, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField } from "../lib/forms";
 import {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -11,7 +11,20 @@ import {
   createDefaultResultsConfig,
   syncResultsConfigWithFields,
 } from "./createFormResultsConfig";
+import {
+  FIELD_TYPES,
+  FORM_MODE_OPTIONS,
+  createDefaultMemberField,
+  createDefaultPresenceFields,
+} from "./createFormDefaults";
 import { getCatalogGridSchema } from "./createFormFieldDraft";
+export {
+  FIELD_TYPES,
+  FORM_MODE_OPTIONS,
+  buildPresetTitle,
+  createDefaultMemberField,
+  createDefaultPresenceFields,
+} from "./createFormDefaults";
 export {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -56,46 +69,6 @@ export {
   buildFieldValidation,
   mergeSavedField,
 } from "./createFormFieldSave";
-
-export const FIELD_TYPES = [
-  { v: "person_select", l: "Seletor por base" },
-  { v: "yes_no", l: "Sim / Nao" },
-  { v: "number", l: "Numerico" },
-  { v: "text", l: "Texto Curto" },
-  { v: "grid", l: "Grade / Matriz" },
-];
-
-export const FORM_MODE_OPTIONS = [
-  {
-    id: FORM_MODES.NUCLEO,
-    title: "Presenca do nucleo",
-    desc: "Ja nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
-    badge: "Base central ativa",
-    bullets: ["Campo Nome obrigatorio", "Resumo e faltantes liberados", "Filtro por grau nos resultados"],
-  },
-  {
-    id: FORM_MODES.GERAL,
-    title: "Formulario geral",
-    desc: "Nao usa a base central de socios. Permite campos livres e bases externas.",
-    badge: "Fluxo livre",
-    bullets: ["Sem nome fixo da base central", "Aceita bases externas no catalogo", "Sem logica de faltantes do nucleo"],
-  },
-];
-
-export const createDefaultMemberField = () => ({
-  id: Date.now(),
-  type: "person_select",
-  label: "Nome",
-  required: true,
-  show: true,
-  total: false,
-  selectionSource: { kind: "members" },
-  memberBinding: { source: "members", role: "primary" },
-});
-
-export const createDefaultPresenceFields = formMode => formMode === FORM_MODES.NUCLEO
-  ? [createDefaultMemberField()]
-  : [];
 
 export const normalizePresenceFieldsForMode = (fields, formMode) => (
   formMode === FORM_MODES.NUCLEO
@@ -248,18 +221,6 @@ export const buildCreateFormSaveOutcome = ({ form, isDuplicateMode = false }) =>
     ? "As alteracoes foram gravadas e ja estao disponiveis na listagem."
     : "O formulario foi salvo e ja esta disponivel na listagem.",
 });
-
-export const buildPresetTitle = (format, event) => {
-  const eventDate = event?.date ? ` - ${formatDate(event.date)}` : "";
-  if (format === "presenca") {
-    const eventTitle = String(event?.title || "").trim();
-    return `Presenca${eventTitle ? ` ${eventTitle}` : ""}${eventDate}`;
-  }
-  if (format === "escala_organ") {
-    return `Escala da Organ${eventDate}`;
-  }
-  return "";
-};
 
 export const stripMemberBinding = field => {
   const { memberBinding, ...rest } = field || {};
