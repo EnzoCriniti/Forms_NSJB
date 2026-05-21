@@ -13,27 +13,17 @@ import {
   isOptionalPositiveIntegerLike,
   isOptionalString,
 } from "./payloadValidatorPrimitives.mjs";
+import {
+  FIELD_TYPES,
+  validateSelectionSource,
+} from "./catalogPayloadValidators.mjs";
 
 const FORM_TYPES = ["presenca", "escala_organ"];
 const FORM_STATUS = ["rascunho", "aberto", "fechado", "arquivado"];
-const FIELD_TYPES = ["person_select", "yes_no", "number", "text", "grid"];
-const FIELD_CATEGORIES = ["presenca", "quantidade", "texto", "avaliacao", "outro"];
-const SCALE_TASK_CATEGORIES = ["cozinha", "limpeza", "organizacao", "sessao", "outro"];
 
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
 const MEMBER_BINDING_ROLES = ["primary", "secondary"];
-const SELECTION_SOURCE_KINDS = ["members", "external_base"];
 const FORM_MODES = ["nucleo", "geral"];
-
-const validateSelectionSource = (type, selectionSource) => {
-  if (selectionSource === undefined || selectionSource === null) return;
-  assert(isObject(selectionSource), "Origem de selecao do campo invalida.");
-  assert(type === "person_select", "Somente campos de pessoa podem usar origem de selecao.");
-  assert(SELECTION_SOURCE_KINDS.includes(selectionSource.kind), "Tipo de origem de selecao invalido.");
-  if (selectionSource.kind === "external_base") {
-    assert(isIdLike(selectionSource.externalBaseId), "Base externa vinculada invalida.");
-  }
-};
 
 const validateFieldDefinition = field => {
   assert(isObject(field), "Campo de formulario invalido.");
@@ -102,13 +92,6 @@ const validateResultsConfig = config => {
   }
 };
 
-const validateGridSchema = schema => {
-  assert(schema === undefined || isObject(schema), "Schema de grade invalido.");
-  if (!schema) return;
-  assert(schema.rows === undefined || Array.isArray(schema.rows), "Linhas da grade precisam ser um array.");
-  assert(schema.cols === undefined || Array.isArray(schema.cols), "Colunas da grade precisam ser um array.");
-};
-
 export const validateFormPayload = payload => {
   assert(isObject(payload), "Payload de formulario invalido.");
   assert(isIdLike(payload.id), "Id do formulario invalido.");
@@ -151,31 +134,6 @@ export const validatePresetPayload = payload => {
   for (const section of payload.scaleSections) validateScaleSectionTemplate(section);
 };
 
-export const validateFieldCatalogPayload = payload => {
-  assert(isObject(payload), "Payload de campo base invalido.");
-  assert(isIdLike(payload.id), "Id do campo base invalido.");
-  assert(isNonEmptyString(payload.key), "Chave do campo base e obrigatoria.");
-  assert(isNonEmptyString(payload.name), "Nome do campo base e obrigatorio.");
-  assert(FIELD_TYPES.includes(payload.type), "Tipo do campo base invalido.");
-  assert(FIELD_CATEGORIES.includes(payload.category), "Categoria do campo base invalida.");
-  assert(isNonEmptyString(payload.defaultLabel), "Rotulo padrao do campo base e obrigatorio.");
-  validateGridSchema(payload.gridSchema);
-  validateSelectionSource(payload.type, payload.selectionSource);
-  assert(isOptionalString(payload.description), "Descricao do campo base invalida.");
-  assert(payload.active === undefined || typeof payload.active === "boolean", "Status do campo base invalido.");
-};
-
-export const validateScaleTaskCatalogPayload = payload => {
-  assert(isObject(payload), "Payload de tarefa base invalido.");
-  assert(isIdLike(payload.id), "Id da tarefa base invalido.");
-  assert(isNonEmptyString(payload.key), "Chave da tarefa base e obrigatoria.");
-  assert(isNonEmptyString(payload.name), "Nome da tarefa base e obrigatorio.");
-  assert(SCALE_TASK_CATEGORIES.includes(payload.category), "Categoria da tarefa base invalida.");
-  assert(isNonEmptyString(payload.defaultLabel), "Rotulo padrao da tarefa base e obrigatorio.");
-  assert(isOptionalString(payload.description), "Descricao da tarefa base invalida.");
-  assert(payload.active === undefined || typeof payload.active === "boolean", "Status da tarefa base invalido.");
-};
-
 export const validateDeleteId = (value, label) => {
   assert(Number.isInteger(Number(value)) && Number(value) > 0, `${label} invalido.`);
   return Number(value);
@@ -188,6 +146,11 @@ export {
   validatePeoplePayload,
   validateUserPayload,
 } from "./adminPayloadValidators.mjs";
+
+export {
+  validateFieldCatalogPayload,
+  validateScaleTaskCatalogPayload,
+} from "./catalogPayloadValidators.mjs";
 
 export {
   validateEventPayload,

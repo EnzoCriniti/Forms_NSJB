@@ -29,6 +29,10 @@ import {
   validateUserPayload as validateUserPayloadFromAdminModule,
 } from "../backend/validators/adminPayloadValidators.mjs";
 import {
+  validateFieldCatalogPayload as validateFieldCatalogPayloadFromCatalogModule,
+  validateScaleTaskCatalogPayload as validateScaleTaskCatalogPayloadFromCatalogModule,
+} from "../backend/validators/catalogPayloadValidators.mjs";
+import {
   validateEventPayload,
 } from "../backend/validators/eventPayloadValidators.mjs";
 import {
@@ -314,4 +318,40 @@ test("admin payload validators reject malformed payloads from the admin module",
   assert.throws(() => validatePeoplePayloadFromAdminModule({ people: [{ name: "Maria", active: "sim" }] }), /Status do socio invalido/);
   assert.throws(() => validateMembersConfigPayloadFromAdminModule({ syncFrequencyHours: 0 }), /syncFrequencyHours invalido/);
   assert.throws(() => validateExternalBasePayload({ name: "Base", items: [{ active: "sim" }] }), /Status do item da base externa invalido/);
+});
+
+test("catalog payload validators accept valid payloads from the catalog module", () => {
+  assert.doesNotThrow(() => validateFieldCatalogPayloadFromCatalogModule({
+    key: "campo base",
+    name: "Campo Base",
+    type: "person_select",
+    category: "presenca",
+    defaultLabel: "Pessoa",
+    selectionSource: { kind: "members" },
+    active: true,
+  }));
+  assert.doesNotThrow(() => validateScaleTaskCatalogPayloadFromCatalogModule({
+    key: "tarefa base",
+    name: "Tarefa Base",
+    category: "cozinha",
+    defaultLabel: "Tarefa",
+    active: true,
+  }));
+});
+
+test("catalog payload validators reject malformed payloads from the catalog module", () => {
+  assert.throws(() => validateFieldCatalogPayloadFromCatalogModule({
+    key: "campo",
+    name: "Campo",
+    type: "text",
+    category: "texto",
+    defaultLabel: "Campo",
+    selectionSource: { kind: "members" },
+  }), /Somente campos de pessoa podem usar origem de selecao/);
+  assert.throws(() => validateScaleTaskCatalogPayloadFromCatalogModule({
+    key: "tarefa",
+    name: "Tarefa",
+    category: "x",
+    defaultLabel: "Tarefa",
+  }), /Categoria da tarefa base invalida/);
 });
