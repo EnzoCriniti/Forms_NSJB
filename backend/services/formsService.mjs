@@ -14,54 +14,17 @@ import {
 } from "../repositories/formsRepository.mjs";
 import { getEscalaByFormId, upsertEscalaRecord } from "../repositories/escalaRepository.mjs";
 import { getFormDeleteKeyStatus, verifyFormDeleteKey } from "./adminService.mjs";
+import {
+  assertPresenceFormModeFields,
+  normalizeResultsConfig,
+  resolveFormMode,
+} from "./formModeRules.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
   error.statusCode = statusCode;
   error.code = code;
   return error;
-};
-
-const FORM_MODES = {
-  NUCLEO: "nucleo",
-  GERAL: "geral",
-};
-
-const getSelectionSourceKind = field => {
-  if (!field || field.type !== "person_select") return null;
-  return field?.selectionSource?.kind === "external_base" ? "external_base" : "members";
-};
-
-const isMembersSelectionField = field => getSelectionSourceKind(field) === "members";
-
-const resolveFormMode = (type, resultsConfig, fieldDefinitions) => {
-  if (type !== "presenca") return FORM_MODES.GERAL;
-  if (resultsConfig?.formMode && Object.values(FORM_MODES).includes(resultsConfig.formMode)) {
-    return resultsConfig.formMode;
-  }
-  return (fieldDefinitions || []).some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL;
-};
-
-const normalizeTotalLayoutStyle = style => {
-  if (style === "bar" || style === "split") return "split";
-  if (style === "metric" || style === "number") return "number";
-  return style;
-};
-
-const normalizeResultsConfig = (config, formMode) => {
-  if (!config || typeof config !== "object") {
-    return formMode ? { formMode } : {};
-  }
-  return {
-    ...config,
-    formMode,
-    totalsLayout: Array.isArray(config.totalsLayout)
-      ? config.totalsLayout.map(item => ({
-          ...item,
-          style: normalizeTotalLayoutStyle(item?.style),
-        }))
-      : [],
-  };
 };
 
 const isPastClosingDate = closing => {
@@ -103,12 +66,7 @@ export const saveForm = async payload => {
   if (!values.title?.trim()) throw new Error("Titulo e obrigatorio.");
   if (!["presenca", "escala_organ"].includes(values.type)) throw new Error("Tipo de formulario invalido.");
   if (!["rascunho", "aberto", "fechado", "arquivado"].includes(values.status)) throw new Error("Status invalido.");
-  if (values.type === "presenca" && formMode === FORM_MODES.GERAL && values.fieldDefinitions.some(isMembersSelectionField)) {
-    throw new Error("Formulario geral nao pode usar a base central de socios.");
-  }
-  if (values.type === "presenca" && formMode === FORM_MODES.NUCLEO && !values.fieldDefinitions.some(isMembersSelectionField)) {
-    throw new Error("Presenca do nucleo precisa manter o campo principal da base central.");
-  }
+  assertPresenceFormModeFields(values, formMode);
 
   // Reabrir um formulario vencido deve prevalecer sobre o fechamento antigo.
   if (existingForm && existingForm.status !== "aberto" && values.status === "aberto" && isPastClosingDate(values.closing)) {
