@@ -17,7 +17,6 @@ import {
 
 const FORM_TYPES = ["presenca", "escala_organ"];
 const FORM_STATUS = ["rascunho", "aberto", "fechado", "arquivado"];
-const EVENT_STATUS = ["rascunho", "pronto", "publicado", "encerrado"];
 const USER_ROLES = ["admin", "viewer"];
 const FIELD_TYPES = ["person_select", "yes_no", "number", "text", "grid"];
 const FIELD_CATEGORIES = ["presenca", "quantidade", "texto", "avaliacao", "outro"];
@@ -149,22 +148,6 @@ export const validateFormPayload = payload => {
     assert(Array.isArray(payload.scaleSections), "Formulario de escala precisa de scaleSections.");
     for (const section of payload.scaleSections) validateScaleSectionTemplate(section);
   }
-};
-
-export const validateEventPayload = payload => {
-  assert(isObject(payload), "Payload de evento invalido.");
-  assert(isIdLike(payload.id), "Id do evento invalido.");
-  assert(isNonEmptyString(payload.title), "Nome do evento e obrigatorio.");
-  assert(isOptionalString(payload.description), "Descricao do evento invalida.");
-  assert(isOptionalString(payload.date), "Data do evento invalida.");
-  assert(isOptionalString(payload.opening), "Abertura do evento invalida.");
-  assert(isOptionalString(payload.closing), "Fechamento do evento invalido.");
-  assert(payload.status === undefined || EVENT_STATUS.includes(payload.status), "Status do evento invalido.");
-  assert(Array.isArray(payload.formIds), "Formularios do evento precisam ser um array.");
-  for (const formId of payload.formIds) {
-    assert(Number.isInteger(Number(formId)) && Number(formId) > 0, "Formulario do evento invalido.");
-  }
-  assert(payload.messageConfig === undefined || payload.messageConfig === null || isObject(payload.messageConfig), "Configuracao de mensagem do evento invalida.");
 };
 
 export const validateResponsePayload = payload => {
@@ -308,6 +291,10 @@ export const validateDeleteId = (value, label) => {
   assert(Number.isInteger(Number(value)) && Number(value) > 0, `${label} invalido.`);
   return Number(value);
 };
+
+export {
+  validateEventPayload,
+} from "./eventPayloadValidators.mjs";
 
 export {
   validateEventMessagePayload,

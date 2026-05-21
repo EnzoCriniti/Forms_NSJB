@@ -22,6 +22,9 @@ import {
   validateMembersConfigPayload,
 } from "../backend/validators/payloadValidators.mjs";
 import {
+  validateEventPayload,
+} from "../backend/validators/eventPayloadValidators.mjs";
+import {
   validateEventMessagePayload,
   validateMessageTemplatePayload,
   validateMessagingConfigPayload,
@@ -214,4 +217,29 @@ test("security payload validators reject malformed payloads", () => {
   assert.throws(() => validateAuthLoginPayload({ username: "admin", password: "" }), /Senha e obrigatoria/);
   assert.throws(() => validateSecurityFormDeleteKeyPayload({}), /Chave mestra e obrigatoria/);
   assert.throws(() => validateSecurityFormDeleteKeyUpdatePayload({ currentMasterKey: 123, newMasterKey: "nova" }), /Chave mestra atual invalida/);
+});
+
+test("event payload validator accepts valid payloads from the event module", () => {
+  assert.doesNotThrow(() => validateEventPayload({
+    title: "Evento",
+    description: "",
+    date: "2026-05-21",
+    opening: null,
+    closing: null,
+    status: "rascunho",
+    formIds: [1, "2"],
+    messageConfig: {},
+  }));
+});
+
+test("event payload validator rejects invalid status and linked forms", () => {
+  assert.throws(() => validateEventPayload({
+    title: "Evento",
+    status: "aberto",
+    formIds: [],
+  }), /Status do evento invalido/);
+  assert.throws(() => validateEventPayload({
+    title: "Evento",
+    formIds: [0],
+  }), /Formulario do evento invalido/);
 });
