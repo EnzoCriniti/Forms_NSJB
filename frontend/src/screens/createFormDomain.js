@@ -1,4 +1,21 @@
 import { FORM_MODES, formatDate, getFormMode, getPeopleBaseFieldRole, getScalePersonLimit, hasLinkedPeopleField, isMembersSelectionField } from "../lib/forms";
+import {
+  appendScaleSection,
+  buildScaleCatalogPatch,
+  buildScaleModePatch,
+  createDefaultScaleSections,
+  createLocalScaleSection,
+  updateScaleSection,
+} from "./createFormScaleDraft";
+
+export {
+  appendScaleSection,
+  buildScaleCatalogPatch,
+  buildScaleModePatch,
+  createDefaultScaleSections,
+  createLocalScaleSection,
+  updateScaleSection,
+} from "./createFormScaleDraft";
 
 export const FIELD_TYPES = [
   { v: "person_select", l: "Seletor por base" },
@@ -50,10 +67,6 @@ export const createDefaultMemberField = () => ({
 export const createDefaultPresenceFields = formMode => formMode === FORM_MODES.NUCLEO
   ? [createDefaultMemberField()]
   : [];
-
-export const createDefaultScaleSections = () => [];
-
-export const createLocalScaleSection = () => ({ source: "local", title: "Nova secao", responsaveis: 1, auxiliares: 2 });
 
 export const buildFieldDraftDefaults = ({ hasPrimaryLinkedField = false } = {}) => ({
   editingFieldId: null,
@@ -410,25 +423,6 @@ export const toggleFieldShow = (fields, fieldId) => fields.map(item => (
 ));
 
 export const removeFieldById = (fields, fieldId) => fields.filter(item => item.id !== fieldId);
-
-export const updateScaleSection = (sections, index, patch) => sections.map((section, sectionIndex) => (
-  sectionIndex === index ? { ...section, ...patch } : section
-));
-
-export const appendScaleSection = sections => [...sections, createLocalScaleSection()];
-
-export const buildScaleModePatch = mode => (
-  mode === "local"
-    ? { source: "local", catalogTaskId: "", catalogKey: "", catalogName: "" }
-    : { source: "catalog" }
-);
-
-export const buildScaleCatalogPatch = (catalogId, activeScaleTaskCatalog = []) => {
-  const catalogItem = activeScaleTaskCatalog.find(item => String(item.id) === String(catalogId));
-  return catalogItem
-    ? { source: "catalog", catalogTaskId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name, title: catalogItem.defaultLabel }
-    : { source: "catalog", catalogTaskId: "", catalogKey: "", catalogName: "" };
-};
 
 export const updateListItemAtIndex = (items, index, value) => items.map((item, itemIndex) => (
   itemIndex === index ? value : item

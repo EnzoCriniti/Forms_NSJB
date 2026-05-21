@@ -8,8 +8,6 @@ import {
   buildCreateFormTemplateState,
   buildCreateFormSaveOutcome,
   buildCreateFormTemplatePayload,
-  buildScaleCatalogPatch,
-  buildScaleModePatch,
   buildFieldDraftDefaults,
   buildAppliedCatalogFieldDraft,
   buildFieldDraftFromCatalogItem,
@@ -18,8 +16,6 @@ import {
   buildPresetTitle,
   toggleFieldShow,
   removeFieldById,
-  updateScaleSection,
-  appendScaleSection,
   updateListItemAtIndex,
   removeListItemAtIndex,
   appendListItem,
@@ -28,6 +24,12 @@ import {
   createDefaultResultsConfig,
   normalizePeopleBaseBindings,
 } from "../../frontend/src/screens/createFormDomain.js";
+import {
+  appendScaleSection,
+  buildScaleCatalogPatch,
+  buildScaleModePatch,
+  updateScaleSection,
+} from "../../frontend/src/screens/createFormScaleDraft.js";
 
 describe("createFormDomain", () => {
   it("monta o titulo padrao do evento", () => {
