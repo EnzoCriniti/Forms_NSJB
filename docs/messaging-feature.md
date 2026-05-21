@@ -334,7 +334,7 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Render correto de placeholders no preview
 
 ### Fase 12 — polimento
-- [ ] Auditoria via `auditLogService` (criar / disparar / cancelar mensagem)
+- [x] Auditoria via `auditLogService` (criar / disparar / cancelar mensagem)
 - [x] Atualizar `docs/FUNCIONALIDADES.md` e `docs/MAPA-CODIGO.md`
 - [ ] Atualizar mapa de cores/icones se necessário
 

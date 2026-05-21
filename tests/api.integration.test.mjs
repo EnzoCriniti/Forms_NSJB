@@ -1542,6 +1542,12 @@ test("event message type 1 dispatch grava log e marca disparada", async () => {
     assert.equal(logs.length, 1);
     assert.equal(logs[0].mode, "manual");
     assert.equal(logs[0].dispatcherVersion, "log-only-1");
+
+    await wait(50);
+    const auditLogs = await readAuditLogs(ctx.db, "WHERE category = ? AND action IN (?, ?) ORDER BY id ASC", ["messages", "create_event_message", "dispatch_event_message"]);
+    assert.equal(auditLogs.length, 2);
+    assert.deepEqual(auditLogs.map(log => log.action), ["create_event_message", "dispatch_event_message"]);
+    assert.ok(auditLogs.every(log => log.status === "success"));
   } finally {
     await ctx.cleanup();
   }
@@ -1720,6 +1726,12 @@ test("event message cancel e delete via API", async () => {
     const cancelRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/cancel`, {}, adminToken);
     assert.equal(cancelRes.status, 200);
     assert.equal((await cancelRes.json()).message.status, "cancelada");
+
+    await wait(50);
+    const cancelLogs = await readAuditLogs(ctx.db, "WHERE category = ? AND action = ?", ["messages", "cancel_event_message"]);
+    assert.equal(cancelLogs.length, 1);
+    assert.equal(cancelLogs[0].status, "success");
+    assert.equal(Number(cancelLogs[0].entity_id), message.id);
 
     const cancelAgainRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/cancel`, {}, adminToken);
     assert.equal(cancelAgainRes.status, 400);
