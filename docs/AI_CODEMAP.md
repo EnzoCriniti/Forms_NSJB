@@ -169,6 +169,8 @@ Mapa curto das areas mais mexidas por agentes.
   Mutacoes puras de listas usadas pelo editor de criacao de formulario.
 - `frontend/src/screens/createFormResultsConfig.js`
   Layout de totais e sincronizacao da configuracao de resultados da criacao de formulario.
+- `frontend/src/screens/createFormFieldDraft.js`
+  Defaults de grade, presets e transicoes do rascunho de campo da criacao de formulario.
 - `frontend/src/screens/createFormPanels.jsx`
   Barramento dos paineis reutilizaveis da criacao de formulario.
   Este arquivo agora apenas reexporta os blocos por dominio.
