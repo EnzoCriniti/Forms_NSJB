@@ -25,6 +25,9 @@ import {
   validateEventPayload,
 } from "../backend/validators/eventPayloadValidators.mjs";
 import {
+  validateResponsePayload as validateResponsePayloadFromModule,
+} from "../backend/validators/responsePayloadValidators.mjs";
+import {
   validateEventMessagePayload,
   validateMessageTemplatePayload,
   validateMessagingConfigPayload,
@@ -242,4 +245,25 @@ test("event payload validator rejects invalid status and linked forms", () => {
     title: "Evento",
     formIds: [0],
   }), /Formulario do evento invalido/);
+});
+
+test("response payload validator accepts valid payloads from the response module", () => {
+  assert.doesNotThrow(() => validateResponsePayloadFromModule({
+    formId: "1",
+    respondentName: "Maria",
+    respondentGrau: null,
+    values: { 1: "Sim" },
+  }));
+});
+
+test("response payload validator rejects malformed payloads from the response module", () => {
+  assert.throws(() => validateResponsePayloadFromModule({
+    formId: 1,
+    respondentName: "Maria",
+    values: [],
+  }), /Valores da resposta precisam ser um objeto/);
+  assert.throws(() => validateResponsePayloadFromModule({
+    respondentName: "Maria",
+    values: {},
+  }), /formId invalido/);
 });
