@@ -327,15 +327,15 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] 4 testes unitarios cobrindo: vencida com auto on (`dispatched`), flag global desligada (`marked_ready`, sem log), flag por mensagem desligada (`marked_ready`), agendada no futuro (ignorada)
 
 ### Fase 11 — testes UI
-- [ ] Aba Mensagens só aparece quando elegível
+- [x] Aba Mensagens só aparece quando elegível
 - [ ] Wizard cria, agenda e dispara mensagem (log gerado)
 - [x] Banner aparece sem `phoneColumn`
 - [x] Editar agendada / cancelar
-- [ ] Render correto de placeholders no preview
+- [x] Render correto de placeholders no preview
 
 ### Fase 12 — polimento
 - [ ] Auditoria via `auditLogService` (criar / disparar / cancelar mensagem)
-- [ ] Atualizar `docs/FUNCIONALIDADES.md` e `docs/MAPA-CODIGO.md`
+- [x] Atualizar `docs/FUNCIONALIDADES.md` e `docs/MAPA-CODIGO.md`
 - [ ] Atualizar mapa de cores/icones se necessário
 
 ## 15. Decisões pendentes (resolver durante a implementação)

@@ -18,6 +18,7 @@ O NSJB Forms centraliza a operacao de:
 
 - formularios de presenca
 - formularios de escala
+- eventos e mensagens operacionais em modo log-only
 - resultados e acompanhamento
 - administracao da base e configuracoes
 
@@ -121,6 +122,7 @@ Como essa area funciona:
 - gerencia presets
 - gerencia catalogo de campos base
 - gerencia catalogo de tarefas base de escala
+- configura modelos, presets e base publica de mensagens
 - configura a chave mestra de exclusao de formularios
 - consulta logs de auditoria
 
@@ -131,12 +133,31 @@ Como essa area funciona:
 3. as alteracoes entram no mesmo banco oficial da stack
 4. a auditoria registra operacoes relevantes para consulta posterior
 
-### 7. Bootstrap e inicio
+### 7. Eventos e mensagens
+
+- agrupa formularios vinculados a um evento
+- permite publicar eventos e abrir formularios associados
+- permite criar mensagens de anuncio, lembrete de presenca e lembrete de vagas em aberto
+- usa modelos reutilizaveis, presets de pessoas e configuracao global de grupo/base publica
+- calcula destinatarios a partir da base central de socios, respostas e escala
+- registra disparos em log-only, sem envio real por WhatsApp nesta etapa
+- processa mensagens agendadas pelo orquestrador quando a stack esta ativa
+
+Como essa area funciona:
+
+1. o admin cria ou seleciona um evento com formulario de presenca ou escala
+2. a aba de mensagens aparece apenas quando existe formulario elegivel
+3. o editor valida tipo, formulario alvo, telefone configurado e agendamento
+4. o preview renderiza placeholders e mostra destinatarios calculados
+5. o disparo registra o texto e os destinatarios no historico da mensagem
+
+### 8. Bootstrap e inicio
 
 - carrega dados iniciais ao abrir a aplicacao
 - restaura sessao salva localmente
 - resolve o formulario publico via slug
 - carrega respostas e escala conforme a tela ativa
+- carrega eventos, modelos, presets e configuracao de mensagens
 
 Como essa area funciona:
 
@@ -145,7 +166,7 @@ Como essa area funciona:
 3. o usuario cai na ultima tela ativa ou no fluxo publico correto
 4. o sistema usa isso para evitar telas vazias ou estados inconsistentes
 
-### 8. Persistencia
+### 9. Persistencia
 
 - o banco oficial e PostgreSQL no Docker
 - o backend continua com uma camada de acesso separada por repository

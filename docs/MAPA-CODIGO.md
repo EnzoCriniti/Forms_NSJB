@@ -33,6 +33,11 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/components/CreateFormLivePreview.jsx` - previa do formulario completo durante a criacao.
 - `frontend/src/components/CreateFormTemplateBar.jsx` - barra de selecao de template na criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
+- `frontend/src/screens/EventsScreen.jsx` - tela de eventos, formularios vinculados e aba de mensagens.
+- `frontend/src/screens/EventMessageEditorScreen.jsx` - editor de mensagens vinculadas a eventos.
+- `frontend/src/screens/EventMessageDetailScreen.jsx` - preview, disparo log-only, cancelamento e historico de mensagens.
+- `frontend/src/features/events/components/eventsPanels.jsx` - blocos visuais compartilhados de eventos.
+- `frontend/src/features/events/components/eventMessagesPanels.jsx` - blocos de destinatarios, agendamento, preview e logs de mensagens.
 - `frontend/src/features/members/MemberListConfigModal.jsx` - configuracao da base central de socios e origem externa sincronizada.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
@@ -59,10 +64,18 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/routes/systemRoutes.mjs` - autenticacao, health, bootstrap e auditoria.
 - `backend/routes/formRoutes.mjs` - formularios, respostas e escala.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
+- `backend/routes/eventRoutes.mjs` - CRUD, publicacao e rotas de mensagens de eventos.
 - `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth e auditoria.
 - `backend/services/` - regras de negocio.
+- `backend/services/eventMessagesService.mjs` - regras de mensagens por evento, preview, dispatch log-only e agendamento.
+- `backend/services/messageRecipientsService.mjs` - calculo de destinatarios de mensagens por respostas, presets e vagas da escala.
+- `backend/services/messagingConfigService.mjs` - configuracao global de mensagens.
 - `backend/services/membersSyncService.mjs` - sincronizacao da base central de socios com a origem externa.
 - `backend/repositories/` - acesso ao banco.
+- `backend/repositories/eventMessagesRepository.mjs` - persistencia das mensagens por evento.
+- `backend/repositories/messageDispatchLogRepository.mjs` - historico append-only dos disparos log-only.
+- `backend/repositories/messageTemplatesRepository.mjs` - modelos reutilizaveis de mensagens.
+- `backend/repositories/personPresetsRepository.mjs` - presets de destinatarios.
 - `backend/repositories/peopleRepository.mjs` - base central de socios e metadados de sincronizacao.
 - `backend/validators/` - validacao estrutural.
 - `backend/core/` - utilitarios compartilhados.
@@ -83,6 +96,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - Listagem interna: `frontend/src/screens/FormListScreen.jsx`.
 - Criacao e edicao: `frontend/src/screens/CreateFormScreen.jsx` - vinculo de campos a base central ou bases externas.
 - Configuracoes: `frontend/src/screens/SettingsScreen.jsx`.
+- Eventos e mensagens: `frontend/src/screens/EventsScreen.jsx`, `EventMessageEditorScreen.jsx` e `EventMessageDetailScreen.jsx`.
 - Resultados: `frontend/src/screens/ResultsScreen.jsx`.
 - Admin: `frontend/src/features/admin/AdminSettingsModal.jsx`.
 - API: `backend/routes/apiRouter.mjs`.
