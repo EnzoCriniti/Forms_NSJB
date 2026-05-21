@@ -1328,6 +1328,13 @@ test("escala endpoint persists sections and bootstrap reflects it", async () => 
     assert.equal(createRes.status, 200);
     const created = await createRes.json();
 
+    const initialDetailRes = await fetch(`${ctx.baseUrl}/api/forms/${created.form.id}/escala`);
+    assert.equal(initialDetailRes.status, 200);
+    const initialDetailPayload = await initialDetailRes.json();
+    assert.equal(initialDetailPayload.sections[0].title, "Cozinha");
+    assert.equal(initialDetailPayload.sections[0].slots.length, 2);
+    assert.ok(initialDetailPayload.sections[0].slots.every(slot => slot.person === ""));
+
     const escalaRes = await authedJson(ctx.baseUrl, `/api/escala/${created.form.id}`, {
         sections: [
           {

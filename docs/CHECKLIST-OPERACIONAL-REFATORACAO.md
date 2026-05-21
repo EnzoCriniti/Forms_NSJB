@@ -576,6 +576,7 @@ Checklist operacional:
 - separar validacao de save, resolucao de modo e inicializacao de escala
 - iniciado: resolucao de modo, normalizacao de `resultsConfig` e regra da base central de socios sairam para `backend/services/formModeRules.mjs`
 - iniciado: preparo e validacao do registro persistido por `saveForm` sairam para `backend/services/formSaveRules.mjs`
+- iniciado: inicializacao das secoes de formularios de escala saiu para `backend/services/formScaleInitializer.mjs`
 - mover regras compartilhadas de modo/base para um helper comum do backend
 - manter a regra de `nucleo` e `geral` em um unico lugar e com teste claro
 - extrair a logica de reabertura de formulario vencido se ela crescer

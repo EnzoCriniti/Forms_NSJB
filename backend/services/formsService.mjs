@@ -4,7 +4,7 @@
  * @responsibility Validar e persistir formularios dinamicos e suas escalas iniciais.
  */
 
-import { buildScaleSections, normalizeSlug } from "../core/forms.mjs";
+import { normalizeSlug } from "../core/forms.mjs";
 import { database } from "../database/index.mjs";
 import {
   deleteFormRecordWithDependencies,
@@ -12,9 +12,9 @@ import {
   findFormById,
   upsertFormRecord,
 } from "../repositories/formsRepository.mjs";
-import { getEscalaByFormId, upsertEscalaRecord } from "../repositories/escalaRepository.mjs";
 import { getFormDeleteKeyStatus, verifyFormDeleteKey } from "./adminService.mjs";
 import { buildFormSaveValues } from "./formSaveRules.mjs";
+import { initializeFormScaleSections } from "./formScaleInitializer.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
@@ -49,10 +49,7 @@ export const saveForm = async payload => {
 
   const formId = await upsertFormRecord(values);
 
-  if (values.type === "escala_organ") {
-    const currentSections = await getEscalaByFormId(formId);
-    await upsertEscalaRecord(formId, currentSections.length ? currentSections : buildScaleSections(values.scaleSections));
-  }
+  await initializeFormScaleSections(formId, values);
 
   return findFormById(formId);
 };
