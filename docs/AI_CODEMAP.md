@@ -74,6 +74,8 @@ Mapa curto das areas mais mexidas por agentes.
   Regras de formulario com forte acoplamento ao contrato de presenca, modo estrutural e chave mestra.
 - `backend/services/formModeRules.mjs`
   Regras backend de modo estrutural, base central de socios e normalizacao de `resultsConfig` usadas ao salvar formularios.
+- `backend/services/formSaveRules.mjs`
+  Preparo e validacao do registro persistido pelo save de formularios antes do upsert.
 
 ## Autenticacao
 
