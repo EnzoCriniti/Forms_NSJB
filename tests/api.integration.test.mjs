@@ -488,6 +488,35 @@ test("admin members sync endpoint returns service errors with fallback 400", asy
   }
 });
 
+test("admin external bases endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidExternalBaseRes = await authedJson(ctx.baseUrl, "/api/external-bases", {
+      name: "Base",
+      items: [{ active: "sim" }],
+    }, adminToken);
+    assert.equal(invalidExternalBaseRes.status, 400);
+    const payload = await invalidExternalBaseRes.json();
+    assert.match(payload.error, /Status do item da base externa invalido/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("admin external base sync endpoint returns service errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const syncRes = await authedJson(ctx.baseUrl, "/api/external-bases/999/sync", {}, adminToken);
+    assert.equal(syncRes.status, 400);
+    const payload = await syncRes.json();
+    assert.match(payload.error, /Base externa nao encontrada/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {

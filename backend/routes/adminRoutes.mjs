@@ -394,11 +394,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validateExternalBasePayload(body);
       const externalBases = await saveExternalBase(body);
       sendJson(res, 200, { externalBases });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_save_external_base",
-        status: "success",
         screen: "configuracoes",
         entityType: "external-base",
         entityId: body.id || null,
@@ -411,23 +409,21 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_save_external_base",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "external-base",
         entityId: body?.id || null,
         entityLabel: body?.name || null,
-        message: error.message,
+        message: "Base externa gravada.",
         metadata: {
           baseId: body?.id || null,
           name: body?.name || null,
           sourceType: body?.sourceType || null,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -439,11 +435,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const externalBases = await deleteExternalBase(baseId);
       sendJson(res, 200, { externalBases });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_external_base",
-        status: "success",
         screen: "configuracoes",
         entityType: "external-base",
         entityId: baseId,
@@ -452,19 +446,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         metadata: { baseId },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_external_base",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "external-base",
         entityId: baseId,
         entityLabel: null,
-        message: error.message,
+        message: "Base externa excluida.",
         metadata: { baseId },
-      });
+      }, error);
     }
     return true;
   }
@@ -476,11 +468,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const result = await syncExternalBase(baseId);
       sendJson(res, 200, result);
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_sync_external_base",
-        status: "success",
         screen: "configuracoes",
         entityType: "external-base",
         entityId: baseId,
@@ -492,19 +482,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_sync_external_base",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "external-base",
         entityId: baseId,
         entityLabel: null,
-        message: error.message,
+        message: "Base externa sincronizada.",
         metadata: { baseId },
-      });
+      }, error);
     }
     return true;
   }
