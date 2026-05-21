@@ -105,8 +105,3 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - Para Docker e operacao: `docker/README.md`.
 - Para entender as funcionalidades da aplicacao: `docs/FUNCIONALIDADES.md`.
 - Para ver os fluxos visuais da aplicacao: `docs/DIAGRAMAS.md`.
-
-## Observacao sobre historico
-
-- `docs/IA-LOG.md` e historico legivel de mudancas assistidas e pode conter caminhos antigos.
-- Documentacao viva deve preferir os caminhos atuais acima.

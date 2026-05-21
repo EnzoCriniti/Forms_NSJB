@@ -132,7 +132,6 @@ Esta documentacao e viva. Quando o projeto avancar, ajuste os textos, diagramas 
 - [docs/GUIA-TECNICO.md](docs/GUIA-TECNICO.md) - decisoes e operacao.
 - [docs/MANUTENCAO.md](docs/MANUTENCAO.md) - regras de manutencao.
 - [docs/briefing-original.md](docs/briefing-original.md) - briefing inicial.
-- [docs/IA-LOG.md](docs/IA-LOG.md) - historico curto das alteracoes assistidas.
 
 ## Contas de teste
 
