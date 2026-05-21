@@ -37,6 +37,7 @@ const baseProps = {
   messageTemplates: [],
   personPresets: [],
   people: [],
+  membersConfig: { phoneColumn: "C" },
   messagingConfig: baseMessagingConfig,
 };
 
@@ -104,6 +105,22 @@ describe("EventMessageEditorScreen", () => {
       windowOption: "morning_of_closing",
       config: expect.objectContaining({ formId: 1, recipients: { mode: "auto" } }),
     }));
+  });
+
+  it("avisa quando tipo DM nao tem coluna de telefone configurada", () => {
+    render(
+      <EventMessageEditorScreen
+        {...baseProps}
+        eventForms={[presenca]}
+        membersConfig={{ phoneColumn: "" }}
+        onSave={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Tipo da mensagem"), { target: { value: "fill_reminder" } });
+
+    expect(screen.getByText(/Coluna de telefone nao configurada/)).toBeInTheDocument();
   });
 
   it("usa preset de pessoas no tipo 2 quando selecionado", async () => {

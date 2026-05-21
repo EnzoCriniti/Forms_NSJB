@@ -154,6 +154,7 @@ export const AppShellContent = ({ app }) => {
             messageTemplates={messageTemplates}
             personPresets={personPresets}
             people={people}
+            membersConfig={membersConfig}
             messagingConfig={messagingConfig}
             onSave={payload => handleSaveEventMessage(activeEvent.id, payload)}
             onCancel={saved => {

@@ -74,6 +74,7 @@ export const EventMessageEditorScreen = ({
   messageTemplates = [],
   personPresets = [],
   people = [],
+  membersConfig = {},
   messagingConfig,
   onSave,
   onCancel,
@@ -87,7 +88,7 @@ export const EventMessageEditorScreen = ({
     setDraft(buildInitialDraft(message, eligibleTypes, eventForms));
   }, [message?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const phoneColumnConfigured = Boolean(messagingConfig?.publicBaseUrl !== undefined && people.some(person => person.phone));
+  const phoneColumnConfigured = Boolean(membersConfig?.phoneColumn);
   const targetForms = useMemo(() => eventForms.filter(form => TYPE_TO_FORM_TYPE[draft.type]?.includes(form.type)), [eventForms, draft.type]);
   const compatibleTemplates = useMemo(() => messageTemplates.filter(template => template.type === draft.type), [messageTemplates, draft.type]);
   const isDmType = DM_TYPES.includes(draft.type);
@@ -201,6 +202,10 @@ export const EventMessageEditorScreen = ({
 
         {isDmType && !messagingConfig?.publicBaseUrl && (
           <FeedbackBanner tone="info" message="URL publica do app nao configurada — os links wa.me geraram caminhos relativos. Defina em Configuracoes > Mensagens." />
+        )}
+
+        {isDmType && !phoneColumnConfigured && (
+          <FeedbackBanner tone="info" message="Coluna de telefone nao configurada. Defina em Configuracoes > Membros antes de criar lembretes por mensagem direta." />
         )}
 
         {draft.type !== "new_scale" && (
