@@ -80,6 +80,8 @@ Mapa curto das areas mais mexidas por agentes.
   Inicializa secoes de formularios de escala sem sobrescrever secoes ja persistidas.
 - `backend/services/formDeleteKeyService.mjs`
   Hash, persistencia e verificacao da chave mestra usada para excluir formularios.
+- `backend/services/adminCatalogService.mjs`
+  CRUD administrativo de campos e tarefas base, com normalizacao das chaves e grids do catalogo.
 
 ## Autenticacao
 

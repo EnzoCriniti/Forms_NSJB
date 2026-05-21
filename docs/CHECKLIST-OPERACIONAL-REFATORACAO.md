@@ -593,11 +593,10 @@ Problemas que precisam ser corrigidos:
 - `normalizeKey` e `normalizeGridSchema` ficam nesse modulo apesar de poderem ser helpers reutilizaveis
 
 Checklist operacional:
-- separar a seguranca da chave mestra em um service proprio
-- iniciado: hashing, status, gravacao e verificacao da chave mestra sairam para `backend/services/formDeleteKeyService.mjs`
-- separar os CRUDs administrativos por area
-- iniciado: CRUD de campos e tarefas base saiu para `backend/services/adminCatalogService.mjs`
-- manter a normalizacao de chave e grid schema em helper compartilhado se realmente for usada em mais de um lugar
+- concluido neste ciclo: hashing, status, gravacao e verificacao da chave mestra sairam para `backend/services/formDeleteKeyService.mjs`
+- concluido neste ciclo: CRUD de campos e tarefas base saiu para `backend/services/adminCatalogService.mjs`
+- reavaliar depois: separar usuarios, classificacoes, presets e socios apenas se `adminService.mjs` voltar a crescer
+- manter a normalizacao de chave e grid schema junto do catalogo enquanto nao houver outro consumidor
 - reduzir a dependencia cruzada entre catalogo, people, external bases e security
 
 Teste a reforcar:
