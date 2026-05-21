@@ -39,12 +39,8 @@ import {
   validateUserPayload,
 } from "../validators/payloadValidators.mjs";
 import {
-  auditLevelFromError,
-  auditStatusFromError,
   readBody,
   requireAdmin,
-  sendKnownError,
-  writeAudit,
 } from "./requestHelpers.mjs";
 
 export const handleAdminRoutes = async (req, res, url) => {

@@ -533,9 +533,8 @@ Problemas que precisam ser corrigidos:
 - a auditoria manual por entidade esta copiada muitas vezes com metadados muito parecidos
 
 Checklist operacional:
-- primeiro padronizar erro e auditoria com helper comum, sem quebrar o arquivo fisicamente antes da hora
-- iniciado: `backend/routes/adminRouteHelpers.mjs` centraliza envio de erro e auditoria de mutacoes administrativas; aplicado nas rotas de usuario, classificacoes, presets, socios, configuracao de socios, sincronizacao de socios, bases externas e catalogos
-- depois que o helper estiver estabilizado, reavaliar se ainda vale quebrar o arquivo por dominio:
+- concluido: erro e auditoria de mutacoes administrativas foram padronizados em `backend/routes/adminRouteHelpers.mjs` nas rotas de usuario, classificacoes, presets, socios, configuracao de socios, sincronizacao de socios, bases externas e catalogos
+- proximo corte: reavaliar se ainda vale quebrar o arquivo por dominio; so dividir se reduzir complexidade sem criar roteadores pequenos demais:
   - users
   - labels
   - presets
