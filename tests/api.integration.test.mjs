@@ -394,6 +394,22 @@ test("admin endpoints require admin credentials", async () => {
   }
 });
 
+test("admin user endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidUserRes = await authedJson(ctx.baseUrl, "/api/users", {
+      username: "",
+      role: "viewer",
+    }, adminToken);
+    assert.equal(invalidUserRes.status, 400);
+    const payload = await invalidUserRes.json();
+    assert.match(payload.error, /Username do usuario e obrigatorio/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {

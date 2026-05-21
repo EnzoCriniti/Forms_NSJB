@@ -6,6 +6,10 @@
 
 import { sendJson } from "../core/http.mjs";
 import {
+  sendAdminMutationError,
+  writeAdminMutationAudit,
+} from "./adminRouteHelpers.mjs";
+import {
   saveUser,
   deleteUser,
   saveLabel,
@@ -52,11 +56,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validateUserPayload(body);
       const users = await saveUser(body);
       sendJson(res, 200, { users });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_user",
-        status: "success",
         screen: "configuracoes",
         entityType: "user",
         entityId: body.id || null,
@@ -69,27 +71,21 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      if (!error?.statusCode) {
-        sendJson(res, 400, { error: error.message });
-      } else {
-        sendKnownError(res, error);
-      }
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_user",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "user",
         entityId: body?.id || null,
         entityLabel: body?.name || body?.username || null,
-        message: error.message,
+        message: "Usuario gravado.",
         metadata: {
           userId: body?.id || null,
           username: body?.username || null,
           role: body?.role || null,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -101,11 +97,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const users = await deleteUser(userId);
       sendJson(res, 200, { users });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_user",
-        status: "success",
         screen: "configuracoes",
         entityType: "user",
         entityId: userId,
@@ -114,19 +108,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         metadata: { userId },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_user",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "user",
         entityId: userId,
         entityLabel: null,
-        message: error.message,
+        message: "Usuario excluido.",
         metadata: { userId },
-      });
+      }, error);
     }
     return true;
   }
