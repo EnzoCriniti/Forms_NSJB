@@ -5,10 +5,7 @@ import {
   FORM_MODE_OPTIONS,
 } from "./createFormDefaults";
 import {
-  ensurePrimaryMembersField,
-  normalizePeopleBaseBindings,
   normalizePresenceFieldsForMode,
-  removeMembersBaseFields,
 } from "./createFormMemberBindings";
 export {
   FIELD_TYPES,
@@ -77,6 +74,7 @@ export {
   buildCreateFormInitialState,
   buildCreateFormSaveOutcome,
 } from "./createFormState";
+export { buildCreateFormModeTransition } from "./createFormModeTransition";
 
 export const buildCreateFormPayload = ({
   form,
@@ -115,47 +113,6 @@ export const buildCreateFormPayload = ({
       ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)
       : { ...resultsConfig, maxAssignmentsPerPerson: scaleLimit },
     scaleSections: format === "escala_organ" ? scaleDraft : [],
-  };
-};
-
-export const buildCreateFormModeTransition = ({
-  nextMode,
-  fields,
-  currentNFieldMode,
-  currentNType,
-  currentNCatalogId,
-  currentResultsConfig,
-  filteredFieldCatalog = [],
-}) => {
-  const normalizedFields = nextMode === FORM_MODES.NUCLEO
-    ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
-    : normalizePeopleBaseBindings(removeMembersBaseFields(fields));
-
-  let nextType = currentNType;
-  let nextCatalogId = currentNCatalogId;
-
-  if (nextMode === FORM_MODES.GERAL && currentNFieldMode === "local" && currentNType === "person_select") {
-    nextType = "yes_no";
-  }
-
-  if (nextMode === FORM_MODES.GERAL && currentNFieldMode === "catalog") {
-    const selectedCatalogItem = filteredFieldCatalog.find(item => String(item.id) === String(currentNCatalogId));
-    if (selectedCatalogItem?.type === "person_select" && selectedCatalogItem?.selectionSource?.kind !== "external_base") {
-      nextCatalogId = "";
-      nextType = "yes_no";
-    }
-  }
-
-  return {
-    fields: normalizedFields,
-    resultsConfig: syncResultsConfigWithFields({
-      ...currentResultsConfig,
-      formMode: nextMode,
-      showLinkedRoster: nextMode === FORM_MODES.NUCLEO ? currentResultsConfig.showLinkedRoster : false,
-    }, normalizedFields),
-    nextType,
-    nextCatalogId,
-    totalExpected: nextMode === FORM_MODES.GERAL ? "" : undefined,
   };
 };
 

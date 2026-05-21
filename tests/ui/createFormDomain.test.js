@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import { FORM_MODES } from "../../frontend/src/lib/forms";
 import {
   buildCreateFormPayload,
-  buildCreateFormModeTransition,
 } from "../../frontend/src/screens/createFormDomain.js";
 import {
   buildPresetTitle,
@@ -18,6 +17,7 @@ import {
   buildCreateFormInitialState,
   buildCreateFormSaveOutcome,
 } from "../../frontend/src/screens/createFormState.js";
+import { buildCreateFormModeTransition } from "../../frontend/src/screens/createFormModeTransition.js";
 import {
   appendScaleSection,
   buildScaleCatalogPatch,
