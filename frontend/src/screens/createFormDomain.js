@@ -14,9 +14,14 @@ import {
 import {
   FIELD_TYPES,
   FORM_MODE_OPTIONS,
-  createDefaultMemberField,
   createDefaultPresenceFields,
 } from "./createFormDefaults";
+import {
+  ensurePrimaryMembersField,
+  normalizePeopleBaseBindings,
+  normalizePresenceFieldsForMode,
+  removeMembersBaseFields,
+} from "./createFormMemberBindings";
 import { getCatalogGridSchema } from "./createFormFieldDraft";
 export {
   FIELD_TYPES,
@@ -25,6 +30,13 @@ export {
   createDefaultMemberField,
   createDefaultPresenceFields,
 } from "./createFormDefaults";
+export {
+  ensurePrimaryMembersField,
+  normalizePeopleBaseBindings,
+  normalizePresenceFieldsForMode,
+  removeMembersBaseFields,
+  stripMemberBinding,
+} from "./createFormMemberBindings";
 export {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -69,12 +81,6 @@ export {
   buildFieldValidation,
   mergeSavedField,
 } from "./createFormFieldSave";
-
-export const normalizePresenceFieldsForMode = (fields, formMode) => (
-  formMode === FORM_MODES.NUCLEO
-    ? normalizePeopleBaseBindings(ensurePrimaryMembersField(fields))
-    : normalizePeopleBaseBindings(removeMembersBaseFields(fields))
-);
 
 export const buildCreateFormPayload = ({
   form,
@@ -222,19 +228,6 @@ export const buildCreateFormSaveOutcome = ({ form, isDuplicateMode = false }) =>
     : "O formulario foi salvo e ja esta disponivel na listagem.",
 });
 
-export const stripMemberBinding = field => {
-  const { memberBinding, ...rest } = field || {};
-  return rest;
-};
-
-export const removeMembersBaseFields = fields => (fields || []).filter(field => !isMembersSelectionField(field));
-
-export const ensurePrimaryMembersField = fields => {
-  const nextFields = Array.isArray(fields) ? [...fields] : [];
-  if (nextFields.some(isMembersSelectionField)) return nextFields;
-  return [createDefaultMemberField(), ...nextFields];
-};
-
 export const buildCreateFormModeTransition = ({
   nextMode,
   fields,
@@ -365,23 +358,4 @@ export const buildCreateFormDerivedState = ({
     activeModeOption,
     isFieldSaveDisabled,
   };
-};
-
-export const normalizePeopleBaseBindings = nextFields => {
-  const personFields = nextFields.filter(isMembersSelectionField);
-  if (personFields.length === 0) return nextFields.map(stripMemberBinding);
-
-  const explicitPrimary = personFields.find(field => field?.memberBinding?.role === "primary");
-  const fallbackPrimary = explicitPrimary || personFields[0];
-
-  return nextFields.map(field => {
-    if (field.type !== "person_select" || !isMembersSelectionField(field)) return stripMemberBinding(field);
-    return {
-      ...field,
-      memberBinding: {
-        source: "members",
-        role: String(field.id) === String(fallbackPrimary.id) ? "primary" : "secondary",
-      },
-    };
-  });
 };
