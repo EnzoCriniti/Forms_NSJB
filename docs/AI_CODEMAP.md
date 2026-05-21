@@ -163,6 +163,8 @@ Mapa curto das areas mais mexidas por agentes.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/createFormDomain.js`
   Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor e de duplicacao, estado e transicoes do draft de campo, patches de escala, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
+- `frontend/src/screens/createFormDefaults.js`
+  Opcoes iniciais, campos padrao e titulo preset da criacao de formulario.
 - `frontend/src/screens/createFormScaleDraft.js`
   Helpers puros do rascunho de escala na criacao de formulario: secoes locais e patches de catalogo/modo.
 - `frontend/src/screens/createFormListHelpers.js`
