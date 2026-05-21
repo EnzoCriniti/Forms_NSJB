@@ -5,15 +5,17 @@ import {
   buildCreateFormFormatSelectionState,
   buildCreateFormPayload,
   buildCreateFormModeTransition,
-  buildCreateFormTemplateState,
   buildCreateFormSaveOutcome,
-  buildCreateFormTemplatePayload,
 } from "../../frontend/src/screens/createFormDomain.js";
 import {
   buildPresetTitle,
   createDefaultPresenceFields,
 } from "../../frontend/src/screens/createFormDefaults.js";
 import { normalizePeopleBaseBindings } from "../../frontend/src/screens/createFormMemberBindings.js";
+import {
+  buildCreateFormTemplatePayload,
+  buildCreateFormTemplateState,
+} from "../../frontend/src/screens/createFormTemplates.js";
 import {
   appendScaleSection,
   buildScaleCatalogPatch,

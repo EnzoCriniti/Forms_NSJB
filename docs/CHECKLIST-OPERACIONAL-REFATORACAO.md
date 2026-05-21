@@ -254,6 +254,7 @@ Checklist operacional:
 - iniciado: payload intermediario, validacao e merge do salvamento de campo sairam para `frontend/src/screens/createFormFieldSave.js`, com reexports preservados no dominio historico
 - iniciado: opcoes iniciais, campos padrao e titulo preset sairam para `frontend/src/screens/createFormDefaults.js`, com reexports preservados no dominio historico
 - iniciado: normalizacao de `person_select` e `memberBinding` saiu para `frontend/src/screens/createFormMemberBindings.js`, com reexports preservados no dominio historico
+- iniciado: payload e estado de aplicacao de template sairam para `frontend/src/screens/createFormTemplates.js`, com reexports preservados no dominio historico
 - remover duplicacao de `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS`, `SCALE_PRESETS` e `FORM_MODES` com outros arquivos
 - manter a normalizacao de `person_select` e `memberBinding` concentrada no helper extraido
 - separar o que e regra de formulario do que e regra de UI
