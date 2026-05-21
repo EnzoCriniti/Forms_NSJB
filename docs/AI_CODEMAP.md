@@ -165,6 +165,8 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers puros da criacao de formulario: defaults, presets, normalizacao de base, estado inicial do editor e de duplicacao, estado e transicoes do draft de campo, patches de escala, mutacoes reutilizaveis de listas, montagem/merge de campos, payload final, sincronizacao de resultados e transicoes de modo/template.
 - `frontend/src/screens/createFormScaleDraft.js`
   Helpers puros do rascunho de escala na criacao de formulario: secoes locais e patches de catalogo/modo.
+- `frontend/src/screens/createFormListHelpers.js`
+  Mutacoes puras de listas usadas pelo editor de criacao de formulario.
 - `frontend/src/screens/createFormPanels.jsx`
   Barramento dos paineis reutilizaveis da criacao de formulario.
   Este arquivo agora apenas reexporta os blocos por dominio.
