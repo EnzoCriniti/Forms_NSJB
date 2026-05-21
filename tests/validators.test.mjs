@@ -33,6 +33,10 @@ import {
   validateScaleTaskCatalogPayload as validateScaleTaskCatalogPayloadFromCatalogModule,
 } from "../backend/validators/catalogPayloadValidators.mjs";
 import {
+  validateFormPayload as validateFormPayloadFromFormModule,
+  validatePresetPayload as validatePresetPayloadFromFormModule,
+} from "../backend/validators/formPayloadValidators.mjs";
+import {
   validateEventPayload,
 } from "../backend/validators/eventPayloadValidators.mjs";
 import {
@@ -354,4 +358,43 @@ test("catalog payload validators reject malformed payloads from the catalog modu
     category: "x",
     defaultLabel: "Tarefa",
   }), /Categoria da tarefa base invalida/);
+});
+
+test("form payload validators accept valid payloads from the form module", () => {
+  assert.doesNotThrow(() => validateFormPayloadFromFormModule({
+    type: "presenca",
+    status: "aberto",
+    title: "Formulario Teste",
+    labels: [],
+    fieldDefinitions: [
+      { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+    ],
+    resultsConfig: { formMode: "nucleo", totalsLayout: [] },
+  }));
+  assert.doesNotThrow(() => validatePresetPayloadFromFormModule({
+    type: "escala_organ",
+    name: "Preset",
+    labels: [],
+    fieldDefinitions: [],
+    scaleSections: [{ title: "Cozinha", responsaveis: 1, auxiliares: 0 }],
+  }));
+});
+
+test("form payload validators reject malformed payloads from the form module", () => {
+  assert.throws(() => validateFormPayloadFromFormModule({
+    type: "presenca",
+    status: "aberto",
+    title: "Formulario Teste",
+    labels: [],
+    fieldDefinitions: [
+      { id: 1, type: "number", label: "Qtd", required: true, show: true, total: false, validation: { min: 10, max: 1 } },
+    ],
+  }), /Regras de validacao invalidas/);
+  assert.throws(() => validatePresetPayloadFromFormModule({
+    type: "escala_organ",
+    name: "Preset",
+    labels: [],
+    fieldDefinitions: [],
+    scaleSections: [{ title: "", responsaveis: 1, auxiliares: 0 }],
+  }), /Secao de escala precisa de titulo/);
 });
