@@ -445,6 +445,36 @@ test("admin preset endpoint returns validation errors with fallback 400", async 
   }
 });
 
+test("admin people endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidPeopleRes = await authedJson(ctx.baseUrl, "/api/people", {
+      people: [{ name: "Maria", active: "sim" }],
+    }, adminToken, "PUT");
+    assert.equal(invalidPeopleRes.status, 400);
+    const payload = await invalidPeopleRes.json();
+    assert.match(payload.error, /Status do socio invalido/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("admin members config endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidMembersConfigRes = await authedJson(ctx.baseUrl, "/api/members-config", {
+      syncFrequencyHours: 0,
+    }, adminToken, "PUT");
+    assert.equal(invalidMembersConfigRes.status, 400);
+    const payload = await invalidMembersConfigRes.json();
+    assert.match(payload.error, /syncFrequencyHours invalido/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {

@@ -281,11 +281,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validatePeoplePayload(body);
       const people = await savePeople(body.people || []);
       sendJson(res, 200, { people });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_update_members_config",
-        status: "success",
         screen: "configuracoes",
         entityType: "people",
         entityId: null,
@@ -296,21 +294,19 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_update_members_config",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "people",
         entityId: null,
         entityLabel: "Socios",
-        message: error.message,
+        message: "Lista de socios atualizada.",
         metadata: {
           peopleCount: Array.isArray(body?.people) ? body.people.length : 0,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -323,11 +319,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validateMembersConfigPayload(body);
       const membersConfig = await saveMembersConfig(body);
       sendJson(res, 200, { membersConfig });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_update_members_config",
-        status: "success",
         screen: "configuracoes",
         entityType: "members-config",
         entityId: "membersConfig",
@@ -339,22 +333,20 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_update_members_config",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "members-config",
         entityId: "membersConfig",
         entityLabel: "Configuracao de socios",
-        message: error.message,
+        message: "Configuracao de socios atualizada.",
         metadata: {
           sheetUrl: body?.sheetUrl || null,
           range: body?.range || null,
         },
-      });
+      }, error);
     }
     return true;
   }
