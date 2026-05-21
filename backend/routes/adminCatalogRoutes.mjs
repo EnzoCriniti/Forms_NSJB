@@ -10,7 +10,7 @@ import {
   deleteScaleTaskCatalogItem,
   saveFieldCatalogItem,
   saveScaleTaskCatalogItem,
-} from "../services/adminService.mjs";
+} from "../services/adminCatalogService.mjs";
 import {
   validateDeleteId,
   validateFieldCatalogPayload,

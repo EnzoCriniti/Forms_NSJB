@@ -596,6 +596,7 @@ Checklist operacional:
 - separar a seguranca da chave mestra em um service proprio
 - iniciado: hashing, status, gravacao e verificacao da chave mestra sairam para `backend/services/formDeleteKeyService.mjs`
 - separar os CRUDs administrativos por area
+- iniciado: CRUD de campos e tarefas base saiu para `backend/services/adminCatalogService.mjs`
 - manter a normalizacao de chave e grid schema em helper compartilhado se realmente for usada em mais de um lugar
 - reduzir a dependencia cruzada entre catalogo, people, external bases e security
 
