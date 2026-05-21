@@ -189,23 +189,6 @@ export const validateEscalaClaimPayload = payload => {
   assert(isNonEmptyString(payload.person), "Nome da inscricao invalido.");
 };
 
-export const validateFormDeleteKeyPayload = payload => {
-  assert(isObject(payload), "Payload da chave mestra invalido.");
-  assert(isNonEmptyString(payload.masterKey), "Chave mestra e obrigatoria.");
-};
-
-export const validateFormDeleteKeyUpdatePayload = payload => {
-  assert(isObject(payload), "Payload da chave mestra invalido.");
-  assert(isOptionalString(payload.currentMasterKey), "Chave mestra atual invalida.");
-  assert(isNonEmptyString(payload.newMasterKey), "Nova chave mestra e obrigatoria.");
-};
-
-export const validateAuthLoginPayload = payload => {
-  assert(isObject(payload), "Payload de autenticacao invalido.");
-  assert(isNonEmptyString(payload.username), "Username e obrigatorio.");
-  assert(isNonEmptyString(payload.password), "Senha e obrigatoria.");
-};
-
 export const validateUserPayload = payload => {
   assert(isObject(payload), "Payload de usuario invalido.");
   assert(isIdLike(payload.id), "Id do usuario invalido.");
@@ -332,3 +315,9 @@ export {
   validateMessagingConfigPayload,
   validatePersonPresetPayload,
 } from "./messagingPayloadValidators.mjs";
+
+export {
+  validateAuthLoginPayload,
+  validateFormDeleteKeyPayload,
+  validateFormDeleteKeyUpdatePayload,
+} from "./securityPayloadValidators.mjs";

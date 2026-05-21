@@ -27,6 +27,11 @@ import {
   validateMessagingConfigPayload,
   validatePersonPresetPayload,
 } from "../backend/validators/messagingPayloadValidators.mjs";
+import {
+  validateAuthLoginPayload,
+  validateFormDeleteKeyPayload as validateSecurityFormDeleteKeyPayload,
+  validateFormDeleteKeyUpdatePayload as validateSecurityFormDeleteKeyUpdatePayload,
+} from "../backend/validators/securityPayloadValidators.mjs";
 
 test("validateFormPayload accepts a valid presence form", () => {
   assert.doesNotThrow(() => validateFormPayload({
@@ -196,4 +201,17 @@ test("messaging payload validators reject invalid recipient settings", () => {
     templateId: 1,
     windowOption: "amanha",
   }), /Janela de agendamento invalida/);
+});
+
+test("security payload validators accept valid payloads from the security module", () => {
+  assert.doesNotThrow(() => validateAuthLoginPayload({ username: "admin", password: "123" }));
+  assert.doesNotThrow(() => validateSecurityFormDeleteKeyPayload({ masterKey: "segredo" }));
+  assert.doesNotThrow(() => validateSecurityFormDeleteKeyUpdatePayload({ currentMasterKey: "antiga", newMasterKey: "nova" }));
+  assert.doesNotThrow(() => validateSecurityFormDeleteKeyUpdatePayload({ newMasterKey: "nova" }));
+});
+
+test("security payload validators reject malformed payloads", () => {
+  assert.throws(() => validateAuthLoginPayload({ username: "admin", password: "" }), /Senha e obrigatoria/);
+  assert.throws(() => validateSecurityFormDeleteKeyPayload({}), /Chave mestra e obrigatoria/);
+  assert.throws(() => validateSecurityFormDeleteKeyUpdatePayload({ currentMasterKey: 123, newMasterKey: "nova" }), /Chave mestra atual invalida/);
 });
