@@ -206,11 +206,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validatePresetPayload(body);
       const presets = await savePreset(body);
       sendJson(res, 200, { presets });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_preset",
-        status: "success",
         screen: "configuracoes",
         entityType: "preset",
         entityId: body.id || null,
@@ -223,23 +221,21 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_preset",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "preset",
         entityId: body?.id || null,
         entityLabel: body?.name || null,
-        message: error.message,
+        message: "Template gravado.",
         metadata: {
           presetId: body?.id || null,
           name: body?.name || null,
           type: body?.type || null,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -251,11 +247,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const presets = await deletePreset(presetId);
       sendJson(res, 200, { presets });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_preset",
-        status: "success",
         screen: "configuracoes",
         entityType: "preset",
         entityId: presetId,
@@ -264,19 +258,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         metadata: { presetId },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_preset",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "preset",
         entityId: presetId,
         entityLabel: null,
-        message: error.message,
+        message: "Template excluido.",
         metadata: { presetId },
-      });
+      }, error);
     }
     return true;
   }

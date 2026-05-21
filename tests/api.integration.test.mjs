@@ -426,6 +426,25 @@ test("admin label endpoint returns validation errors with fallback 400", async (
   }
 });
 
+test("admin preset endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidPresetRes = await authedJson(ctx.baseUrl, "/api/presets", {
+      type: "presenca",
+      name: "",
+      labels: [],
+      fieldDefinitions: [],
+      scaleSections: [],
+    }, adminToken);
+    assert.equal(invalidPresetRes.status, 400);
+    const payload = await invalidPresetRes.json();
+    assert.match(payload.error, /Nome do preset e obrigatorio/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {
