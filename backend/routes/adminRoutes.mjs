@@ -1,7 +1,7 @@
 /**
  * @file backend/routes/adminRoutes.mjs
  * @summary Rotas administrativas da API.
- * @responsibility Concentrar usuarios, classificacoes, presets e catalogos em um modulo proprio.
+ * @responsibility Agregar rotas administrativas ainda mantidas juntas e encaminhar subdominios extraidos.
  */
 
 import { sendJson } from "../core/http.mjs";

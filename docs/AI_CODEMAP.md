@@ -46,6 +46,8 @@ Mapa curto das areas mais mexidas por agentes.
   Rotas administrativas de campos e tarefas dos catalogos base, extraidas de `adminRoutes.mjs`.
 - `backend/routes/adminExternalBaseRoutes.mjs`
   Rotas administrativas de CRUD e sincronizacao das bases externas, extraidas de `adminRoutes.mjs`.
+- `backend/routes/adminMemberRoutes.mjs`
+  Rotas administrativas da lista de socios, configuracao de origem e sincronizacao, extraidas de `adminRoutes.mjs`.
 - `backend/routes/adminRouteHelpers.mjs`
   Helpers especificos das rotas administrativas para envio de erro e auditoria de mutacoes.
 - `backend/validators/payloadValidators.mjs`

@@ -709,7 +709,7 @@ Teste a reforcar:
 ## 14. Sequencia pratica de refatoracao
 
 1. Concluido: quebrar `backend/validators/payloadValidators.mjs` por dominio.
-2. Em andamento: dividir `backend/routes/adminRoutes.mjs` apenas por dominios coesos depois da padronizacao de erro e auditoria; catalogos e bases externas ja sairam para handlers proprios.
+2. Em andamento: dividir `backend/routes/adminRoutes.mjs` apenas por dominios coesos depois da padronizacao de erro e auditoria; catalogos, bases externas e socios ja sairam para handlers proprios.
 3. Depois: revisar `backend/services/formsService.mjs` e `backend/services/adminService.mjs` com foco em regras duplicadas e seguranca.
 4. Depois: separar `frontend/src/screens/createFormDomain.js` em modulos menores.
 5. Depois: limpar `frontend/src/App.jsx`, `frontend/src/AppViewport.jsx` e `frontend/src/AppShellContent.jsx`.
