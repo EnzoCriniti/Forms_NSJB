@@ -30,6 +30,43 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/api.js`
   Cliente HTTP usado pelos CRUDs administrativos.
 
+## Refatoracao estrutural
+
+- `docs/CHECKLIST-OPERACIONAL-REFATORACAO.md`
+  Checklist operacional com pente fino por arquivo real, usado como guia principal de limpeza estrutural.
+- `frontend/src/App.jsx`
+  Hub principal do frontend. Ainda concentra sessao, bootstrap, rotas, preferencias visuais e handlers de quase todas as entidades.
+- `frontend/src/screens/createFormDomain.js`
+  Hub mais denso da criacao de formulario. Reune defaults, drafts, payloads, transicoes de modo e regras de normalizacao.
+- `frontend/src/features/admin/adminSettingsShared.jsx`
+  Hub auxiliar da central administrativa. Ainda mistura constantes, preview, paginacao, grade e auditoria.
+- `backend/routes/adminRoutes.mjs`
+  Maior alvo de modularizacao no backend. Repete padrao de validacao, mutacao e auditoria em muitos handlers.
+- `backend/routes/adminRouteHelpers.mjs`
+  Helpers especificos das rotas administrativas para envio de erro e auditoria de mutacoes.
+- `backend/validators/payloadValidators.mjs`
+  Agregador historico dos validadores de payload. Mantem reexports para compatibilidade e o helper transversal `validateDeleteId`.
+- `backend/validators/formPayloadValidators.mjs`
+  Validadores de formularios e presets, incluindo campos, resultados e secoes template de escala.
+- `backend/validators/adminPayloadValidators.mjs`
+  Validadores administrativos de usuarios, classificacoes, socios, configuracao de socios e bases externas, reexportados pelo agregador historico.
+- `backend/validators/catalogPayloadValidators.mjs`
+  Validadores de catalogos administrativos, com os helpers compartilhados de tipo de campo, origem de selecao e schema de grade.
+- `backend/validators/escalaPayloadValidators.mjs`
+  Validadores estruturais de escala e inscricao em slot, reexportados pelo agregador historico.
+- `backend/validators/eventPayloadValidators.mjs`
+  Validador estrutural de eventos, reexportado pelo agregador historico.
+- `backend/validators/responsePayloadValidators.mjs`
+  Validador estrutural de respostas de formulario, reexportado pelo agregador historico.
+- `backend/validators/messagingPayloadValidators.mjs`
+  Validadores de mensagens administrativas: templates, presets de pessoas, configuracao global e mensagens de evento.
+- `backend/validators/securityPayloadValidators.mjs`
+  Validadores de autenticacao e chave mestra, reexportados pelo agregador historico.
+- `backend/validators/payloadValidatorPrimitives.mjs`
+  Predicados estruturais compartilhados pelos validadores de payload.
+- `backend/services/formsService.mjs`
+  Regras de formulario com forte acoplamento ao contrato de presenca, modo estrutural e chave mestra.
+
 ## Autenticacao
 
 - `frontend/src/App.jsx`
@@ -57,6 +94,7 @@ Mapa curto das areas mais mexidas por agentes.
   `FieldControl` centraliza rotulos, controles e textos auxiliares de campos repetidos.
   `NotePanel` cobre caixas de aviso e explicacao que aparecem em mais de uma tela.
   `SplitSection` organiza telas administrativas em duas colunas para edicao e listagem.
+  Este arquivo nao deve concentrar componentes publicos de dominio; `frontend/src/components/publicUi.jsx` e a fonte de verdade para a UI publica, e os reexports aqui existem apenas como transicao.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topos publicos e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
@@ -186,7 +224,7 @@ Mapa curto das areas mais mexidas por agentes.
   Orquestra os CRUDs administrativos e os catalogos globais.
 - `backend/services/formsService.mjs`
   Valida o modo estrutural dos formularios de presenca: `geral` nao aceita base central de socios e `nucleo` exige campo principal dessa base.
-- `backend/validators/payloadValidators.mjs`
+- `backend/validators/formPayloadValidators.mjs`
   Aceita `resultsConfig.formMode` com os valores `nucleo` e `geral`.
 
 ## Testes ligados a essa area

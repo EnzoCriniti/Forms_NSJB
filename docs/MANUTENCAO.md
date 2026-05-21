@@ -44,20 +44,8 @@ Guia unico para manter o projeto consistente, refatorar sem perder o foco e regi
 
 ## Backlog de refatoracao
 
-- Fechar a evolucao dos `presets` para deixar claro quando eles sao template de formulario e quando viram catalogo reutilizavel da operacao.
-- Evoluir o frontend para suportar campos vinculados a fontes diferentes da base central de socios, sem acoplar a UI a uma origem unica.
-- Organizar o editor de campos para exibir origem, vinculo e comportamento esperado antes de salvar.
-- Reduzir ainda mais `frontend/src/App.jsx` para ficar so como orquestrador.
-- Extrair o restante do fluxo de carregamento e selecao de tela para helpers puros.
-- Quebrar `frontend/src/screens/FormListScreen.jsx` em componentes menores de item, filtros e acoes.
-- Quebrar `frontend/src/screens/ResultsScreen.jsx` em blocos menores de resumo, lista e edicao.
-- Revisar `frontend/src/screens/CreateFormScreen.jsx` para separar edicao de formulario, preview e regras de validacao.
-- Revisar `frontend/src/screens/PublicFormScreen.jsx` e `frontend/src/screens/PublicEscalaScreen.jsx` para remover blocos visuais repetidos.
-- Dividir `backend/routes/formRoutes.mjs` em handlers menores por subdominio.
-- Dividir `backend/routes/adminRoutes.mjs` em partes menores para usuarios, catalogos e configuracoes criticas.
-- Extrair helpers repetidos de auditoria e erro para evitar copy/paste entre rotas.
-- Continuar a limpeza de referencias historicas que nao ajudam no fluxo atual.
-- Remover documentos obsoletos quando deixarem de agregar contexto.
+- O checklist detalhado de refatoracao e modularizacao agora vive em `docs/CHECKLIST-OPERACIONAL-REFATORACAO.md`.
+- Use esse arquivo como backlog operacional e mantenha este resumo apenas como ponte para o plano maior.
 
 ## Limpeza final
 
