@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
+import { Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
 import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 import { CatalogManagementPanel } from "./adminCatalogPanels";
@@ -14,17 +14,6 @@ import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
 import { SecurityPanel } from "./adminSecurityPanels";
 import { AdminSettingsHeader } from "./adminShellPanels";
 import { AuditLogsPanel, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
-
-const inputStyle = {
-  width: "100%",
-  minHeight: 42,
-  padding: "10px 12px",
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: 10,
-  background: COLORS.surface,
-  color: COLORS.text,
-  boxShadow: "var(--shadow-sm)",
-};
 
 const emptyUser = { name: "", username: "", password: "", role: "viewer" };
 const emptyLabel = { name: "", color: "#2e7d32" };

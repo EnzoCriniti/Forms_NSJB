@@ -6,19 +6,8 @@
 
 import React from "react";
 import { Btn, COLORS, FieldControl, NotePanel, SplitSection } from "../../components/ui";
-import { AdminField, PaginatedList } from "./adminSettingsShared";
+import { ADMIN_INPUT_STYLE, AdminField, PaginatedList } from "./adminSettingsShared";
 import { ROLES } from "../../lib/auth";
-
-const inputStyle = {
-  width: "100%",
-  minHeight: 42,
-  padding: "10px 12px",
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: 10,
-  background: COLORS.surface,
-  color: COLORS.text,
-  boxShadow: "var(--shadow-sm)",
-};
 
 export const UsersManagementPanel = ({
   userDraft,
@@ -36,16 +25,16 @@ export const UsersManagementPanel = ({
     left={(
       <div style={{ display: "grid", gap: 10 }}>
         <AdminField>
-          <input value={userDraft.name} onChange={e => setUserDraft({ ...userDraft, name: e.target.value })} placeholder="Nome exibido" style={inputStyle} />
+          <input value={userDraft.name} onChange={e => setUserDraft({ ...userDraft, name: e.target.value })} placeholder="Nome exibido" style={ADMIN_INPUT_STYLE} />
         </AdminField>
         <AdminField>
-          <input value={userDraft.username} onChange={e => setUserDraft({ ...userDraft, username: e.target.value })} placeholder="Usuario de login" style={inputStyle} />
+          <input value={userDraft.username} onChange={e => setUserDraft({ ...userDraft, username: e.target.value })} placeholder="Usuario de login" style={ADMIN_INPUT_STYLE} />
         </AdminField>
         <AdminField>
-          <input value={userDraft.password} onChange={e => setUserDraft({ ...userDraft, password: e.target.value })} placeholder={userDraft.id ? "Nova senha (opcional)" : "Senha"} type="password" style={inputStyle} />
+          <input value={userDraft.password} onChange={e => setUserDraft({ ...userDraft, password: e.target.value })} placeholder={userDraft.id ? "Nova senha (opcional)" : "Senha"} type="password" style={ADMIN_INPUT_STYLE} />
         </AdminField>
         <AdminField>
-          <select value={userDraft.role} onChange={e => setUserDraft({ ...userDraft, role: e.target.value })} style={inputStyle}>
+          <select value={userDraft.role} onChange={e => setUserDraft({ ...userDraft, role: e.target.value })} style={ADMIN_INPUT_STYLE}>
             <option value="viewer">Visualizador</option>
             <option value="admin">Administrativo</option>
           </select>
@@ -96,34 +85,34 @@ export const ExternalBasesPanel = ({
           Cadastre uma lista externa sincronizada para usar em campos do formulario. Essas bases nao substituem a base central de socios.
         </NotePanel>
         <FieldControl label="Seletor por base">
-          <input value={externalBaseDraft.name} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, name: e.target.value })} placeholder="Ex: Congregacoes, Turnos, Equipes" style={inputStyle} />
+          <input value={externalBaseDraft.name} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, name: e.target.value })} placeholder="Ex: Congregacoes, Turnos, Equipes" style={ADMIN_INPUT_STYLE} />
         </FieldControl>
         <FieldControl label="Descricao">
-          <textarea value={externalBaseDraft.description} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, description: e.target.value })} placeholder="Explique onde essa base sera usada no sistema." rows={3} style={inputStyle} />
+          <textarea value={externalBaseDraft.description} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, description: e.target.value })} placeholder="Explique onde essa base sera usada no sistema." rows={3} style={ADMIN_INPUT_STYLE} />
         </FieldControl>
         <FieldControl label="Link publico do Google Sheets">
-          <input value={externalBaseDraft.sheetUrl} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={inputStyle} />
+          <input value={externalBaseDraft.sheetUrl} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={ADMIN_INPUT_STYLE} />
         </FieldControl>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <FieldControl label="Aba / intervalo">
-            <input value={externalBaseDraft.range} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, range: e.target.value })} placeholder="Itens!A:B" style={inputStyle} />
+            <input value={externalBaseDraft.range} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, range: e.target.value })} placeholder="Itens!A:B" style={ADMIN_INPUT_STYLE} />
           </FieldControl>
           <FieldControl label="Frequencia da sincronizacao (horas)">
-            <input type="number" min="1" value={externalBaseDraft.syncFrequencyHours || 24} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, syncFrequencyHours: Number(e.target.value) || 24 })} style={inputStyle} />
+            <input type="number" min="1" value={externalBaseDraft.syncFrequencyHours || 24} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, syncFrequencyHours: Number(e.target.value) || 24 })} style={ADMIN_INPUT_STYLE} />
           </FieldControl>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 8 }}>
           <FieldControl label="Coluna do valor">
-            <input value={externalBaseDraft.valueColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, valueColumn: e.target.value })} placeholder="A" style={inputStyle} />
+            <input value={externalBaseDraft.valueColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, valueColumn: e.target.value })} placeholder="A" style={ADMIN_INPUT_STYLE} />
           </FieldControl>
           <FieldControl label="Coluna do rotulo">
-            <input value={externalBaseDraft.labelColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, labelColumn: e.target.value })} placeholder="B" style={inputStyle} />
+            <input value={externalBaseDraft.labelColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, labelColumn: e.target.value })} placeholder="B" style={ADMIN_INPUT_STYLE} />
           </FieldControl>
           <FieldControl label="Coluna da descricao">
-            <input value={externalBaseDraft.descriptionColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, descriptionColumn: e.target.value })} placeholder="C" style={inputStyle} />
+            <input value={externalBaseDraft.descriptionColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, descriptionColumn: e.target.value })} placeholder="C" style={ADMIN_INPUT_STYLE} />
           </FieldControl>
           <FieldControl label="Coluna de ativo">
-            <input value={externalBaseDraft.activeColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, activeColumn: e.target.value })} placeholder="D" style={inputStyle} />
+            <input value={externalBaseDraft.activeColumn} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, activeColumn: e.target.value })} placeholder="D" style={ADMIN_INPUT_STYLE} />
           </FieldControl>
         </div>
         <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>

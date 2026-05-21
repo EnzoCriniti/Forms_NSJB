@@ -28,6 +28,7 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Normalizacao do bootstrap, selecao do formulario ativo, operacoes reutilizaveis de lista e respostas de API, listas aninhadas no estado, ordenacao de eventos, metricas de formularios/escala e alternancia de itens fixados por usuario.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
+  Tambem exporta `ADMIN_INPUT_STYLE`, estilo padrao de inputs para paineis administrativos.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   Painel reutilizavel da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`

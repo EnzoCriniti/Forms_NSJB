@@ -35,9 +35,9 @@ Checklist operacional para continuar a refatoracao sem depender de decisoes gran
 
 ## Administracao
 
-- [ ] Revisar wrappers repetidos entre `frontend/src/features/admin/*`.
-- [ ] Consolidar somente wrappers com comportamento equivalente.
-- [ ] Validar com `test:ui -- adminCatalog messagingSettingsPanel` e `build`.
+- [x] Revisar wrappers repetidos entre `frontend/src/features/admin/*`.
+- [x] Consolidar somente wrappers com comportamento equivalente.
+- [x] Validar com `test:ui -- adminCatalog messagingSettingsPanel` e `build`.
 
 ## Estilos
 

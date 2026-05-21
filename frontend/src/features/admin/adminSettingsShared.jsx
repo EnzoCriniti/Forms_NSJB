@@ -9,6 +9,16 @@ import { COLORS, Btn, FeedbackBanner, FieldControl, NotePanel, SurfacePanel, res
 import { fetchAuditLogs } from "../../lib/api";
 
 export const PAGE_SIZE = 6;
+export const ADMIN_INPUT_STYLE = {
+  width: "100%",
+  minHeight: 42,
+  padding: "10px 12px",
+  border: `1px solid ${COLORS.border}`,
+  borderRadius: 10,
+  background: COLORS.surface,
+  color: COLORS.text,
+  boxShadow: "var(--shadow-sm)",
+};
 export const DEFAULT_GRID_ROWS = ["Opcao 1", "Opcao 2"];
 export const DEFAULT_GRID_COLS = ["0", "1", "2", "3"];
 export const SCALE_PRESETS = [

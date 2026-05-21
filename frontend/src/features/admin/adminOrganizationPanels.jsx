@@ -6,7 +6,7 @@
 
 import React from "react";
 import { Btn, COLORS, FieldControl, NotePanel, SplitSection, SurfacePanel } from "../../components/ui";
-import { PaginatedList } from "./adminSettingsShared";
+import { ADMIN_INPUT_STYLE, PaginatedList } from "./adminSettingsShared";
 
 export const LabelsPanel = ({
   labelDraft,
@@ -23,10 +23,10 @@ export const LabelsPanel = ({
     left={(
       <div style={{ display: "grid", gap: 12 }}>
         <FieldControl label="Nome da classificacao">
-          <input value={labelDraft.name} onChange={e => setLabelDraft({ ...labelDraft, name: e.target.value })} placeholder="Nome da classificacao" style={inputStyle} />
+          <input value={labelDraft.name} onChange={e => setLabelDraft({ ...labelDraft, name: e.target.value })} placeholder="Nome da classificacao" style={ADMIN_INPUT_STYLE} />
         </FieldControl>
         <FieldControl label="Cor">
-          <input value={labelDraft.color} onChange={e => setLabelDraft({ ...labelDraft, color: e.target.value })} type="color" style={{ ...inputStyle, padding: 4, height: 44, minHeight: 44, boxSizing: "border-box", overflow: "hidden" }} />
+          <input value={labelDraft.color} onChange={e => setLabelDraft({ ...labelDraft, color: e.target.value })} type="color" style={{ ...ADMIN_INPUT_STYLE, padding: 4, height: 44, minHeight: 44, boxSizing: "border-box", overflow: "hidden" }} />
         </FieldControl>
         <div style={{ display: "flex", gap: 8 }}>
           <Btn onClick={submitLabel} loading={busyAction === "label"}>{labelDraft.id ? "Salvar classificacao" : "Criar classificacao"}</Btn>
@@ -103,14 +103,3 @@ export const TemplatesPanel = ({
     )}
   />
 );
-
-const inputStyle = {
-  width: "100%",
-  minHeight: 42,
-  padding: "10px 12px",
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: 10,
-  background: COLORS.surface,
-  color: COLORS.text,
-  boxShadow: "var(--shadow-sm)",
-};

@@ -50,6 +50,7 @@ Checklist novo para organizar pastas, reduzir arquivos grandes e unificar duplic
   - componentes publicos extraidos para `frontend/src/components/publicUi.jsx` e reexportados por `ui.jsx`
 - [ ] `frontend/src/features/admin/*`
   - revisar wrappers e blocos repetidos entre abas do admin
+  - estilo padrao de inputs administrativos centralizado em `ADMIN_INPUT_STYLE` de `frontend/src/features/admin/adminSettingsShared.jsx`
 - [ ] `frontend/src/styles.css`
   - mapear blocos de estilo repetidos
   - avaliar divisao por arquivos menores se houver ganho claro

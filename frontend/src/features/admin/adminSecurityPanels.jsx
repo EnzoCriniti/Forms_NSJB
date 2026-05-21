@@ -6,17 +6,7 @@
 
 import React from "react";
 import { Btn, COLORS, FeedbackBanner, FieldControl, SplitSection, SurfacePanel } from "../../components/ui";
-
-const inputStyle = {
-  width: "100%",
-  minHeight: 42,
-  padding: "10px 12px",
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: 10,
-  background: COLORS.surface,
-  color: COLORS.text,
-  boxShadow: "var(--shadow-sm)",
-};
+import { ADMIN_INPUT_STYLE } from "./adminSettingsShared";
 
 export const SecurityPanel = ({
   formDeleteKeyConfigured,
@@ -46,7 +36,7 @@ export const SecurityPanel = ({
               value={securityDraft.currentMasterKey}
               onChange={e => setSecurityDraft({ ...securityDraft, currentMasterKey: e.target.value })}
               placeholder="Chave mestra atual"
-              style={inputStyle}
+              style={ADMIN_INPUT_STYLE}
             />
           </FieldControl>
         )}
@@ -56,7 +46,7 @@ export const SecurityPanel = ({
             value={securityDraft.newMasterKey}
             onChange={e => setSecurityDraft({ ...securityDraft, newMasterKey: e.target.value })}
             placeholder="Nova chave mestra"
-            style={inputStyle}
+            style={ADMIN_INPUT_STYLE}
           />
         </FieldControl>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
