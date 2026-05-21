@@ -41,7 +41,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Hub auxiliar da central administrativa. Ainda mistura constantes, preview, paginacao, grade e auditoria.
 - `backend/routes/adminRoutes.mjs`
-  Maior alvo de modularizacao no backend. Repete padrao de validacao, mutacao e auditoria em muitos handlers.
+  Agregador das rotas administrativas ainda nao extraidas por dominio.
+- `backend/routes/adminCatalogRoutes.mjs`
+  Rotas administrativas de campos e tarefas dos catalogos base, extraidas de `adminRoutes.mjs`.
 - `backend/routes/adminRouteHelpers.mjs`
   Helpers especificos das rotas administrativas para envio de erro e auditoria de mutacoes.
 - `backend/validators/payloadValidators.mjs`
