@@ -1630,6 +1630,74 @@ test("event message type 2 bloqueia sem phoneColumn e libera ao configurar", asy
   }
 });
 
+test("event message type 3 bloqueia preview quando escala nao tem vaga aberta", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+
+    const updateMembersRes = await authedJson(ctx.baseUrl, "/api/members-config", {
+      sourceType: "google_sheets",
+      nameColumn: "B",
+      grauColumn: "A",
+      phoneColumn: "C",
+      range: "Socios!A:C",
+      syncEnabled: true,
+      syncFrequencyHours: 24,
+    }, adminToken, "PUT");
+    assert.equal(updateMembersRes.status, 200);
+
+    const scaleRes = await authedJson(ctx.baseUrl, "/api/forms", {
+      type: "escala_organ",
+      status: "aberto",
+      title: "Escala Sem Vaga",
+      sessionName: "Sessao Escala",
+      labels: [],
+      totalExpected: 0,
+      fieldDefinitions: [],
+      resultsConfig: {},
+      scaleSections: [{ title: "Sala", responsaveis: 1, auxiliares: 1 }],
+    }, adminToken);
+    assert.equal(scaleRes.status, 200);
+    const scaleForm = (await scaleRes.json()).form;
+
+    const saveEscalaRes = await authedJson(ctx.baseUrl, `/api/escala/${scaleForm.id}`, {
+      sections: [
+        {
+          title: "Sala",
+          color: "#ffcdd2",
+          slots: [
+            { role: "Responsavel", person: "Maria" },
+            { role: "Auxiliar", person: "Joao" },
+          ],
+        },
+      ],
+    }, adminToken, "PUT");
+    assert.equal(saveEscalaRes.status, 200);
+
+    const eventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento Escala",
+      date: "2026-06-12",
+      formIds: [scaleForm.id],
+    }, adminToken);
+    assert.equal(eventRes.status, 200);
+    const event = (await eventRes.json()).event;
+
+    const createRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "open_slots",
+      body: "Ola {{person.name}}, ainda temos vagas em {{form.title}}",
+      config: { formId: scaleForm.id },
+    }, adminToken);
+    assert.equal(createRes.status, 200);
+    const message = (await createRes.json()).message;
+
+    const previewRes = await authedFetch(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/preview`, adminToken);
+    assert.equal(previewRes.status, 400);
+    assert.equal((await previewRes.json()).code, "ESCALA_WITHOUT_OPEN_SLOTS");
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("event message cancel e delete via API", async () => {
   const ctx = await startServer();
   try {

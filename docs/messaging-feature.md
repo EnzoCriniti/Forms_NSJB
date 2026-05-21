@@ -306,7 +306,7 @@ Trocar o `dispatcher` injetado em `messageDispatcherService.mjs`:
 - [x] Flag `autoDispatchEnabled` por mensagem
 - [x] Banner de elegibilidade quando evento nao tem formulario compativel
 - [x] Aviso quando `publicBaseUrl` esta vazia (links wa.me ficarao relativos)
-- [ ] Bloqueio explicito de tipo 3 quando escala nao tem slot vago (validacao virá no preview/dispatch da fase 9)
+- [x] Bloqueio explicito de tipo 3 quando escala nao tem slot vago (validacao no preview/dispatch)
 
 ### Fase 9 — detalhe da mensagem ✅
 - [x] `EventMessageDetailScreen` carrega preview e logs sob demanda
