@@ -517,6 +517,43 @@ test("admin external base sync endpoint returns service errors with fallback 400
   }
 });
 
+test("admin field catalog endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidFieldRes = await authedJson(ctx.baseUrl, "/api/field-catalog", {
+      key: "",
+      name: "Campo",
+      type: "text",
+      category: "texto",
+      defaultLabel: "Campo",
+    }, adminToken);
+    assert.equal(invalidFieldRes.status, 400);
+    const payload = await invalidFieldRes.json();
+    assert.match(payload.error, /Chave do campo base e obrigatoria/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("admin scale task catalog endpoint returns validation errors with fallback 400", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const invalidTaskRes = await authedJson(ctx.baseUrl, "/api/scale-task-catalog", {
+      key: "tarefa",
+      name: "",
+      category: "cozinha",
+      defaultLabel: "Tarefa",
+    }, adminToken);
+    assert.equal(invalidTaskRes.status, 400);
+    const payload = await invalidTaskRes.json();
+    assert.match(payload.error, /Nome da tarefa base e obrigatorio/);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("audit logs endpoint is restricted to admin and supports filters", async () => {
   const ctx = await startServer();
   try {

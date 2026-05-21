@@ -505,11 +505,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validateFieldCatalogPayload(body);
       const fieldCatalog = await saveFieldCatalogItem(body);
       sendJson(res, 200, { fieldCatalog });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_field_catalog",
-        status: "success",
         screen: "configuracoes",
         entityType: "field-catalog",
         entityId: body.id || null,
@@ -524,17 +522,15 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_field_catalog",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "field-catalog",
         entityId: body?.id || null,
         entityLabel: body?.name || null,
-        message: error.message,
+        message: "Campo base gravado.",
         metadata: {
           fieldId: body?.id || null,
           key: body?.key || null,
@@ -542,7 +538,7 @@ export const handleAdminRoutes = async (req, res, url) => {
           type: body?.type || null,
           category: body?.category || null,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -554,11 +550,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const fieldCatalog = await deleteFieldCatalogItem(fieldId);
       sendJson(res, 200, { fieldCatalog });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_field_catalog",
-        status: "success",
         screen: "configuracoes",
         entityType: "field-catalog",
         entityId: fieldId,
@@ -567,19 +561,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         metadata: { fieldId },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_field_catalog",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "field-catalog",
         entityId: fieldId,
         entityLabel: null,
-        message: error.message,
+        message: "Campo base excluido.",
         metadata: { fieldId },
-      });
+      }, error);
     }
     return true;
   }
@@ -592,11 +584,9 @@ export const handleAdminRoutes = async (req, res, url) => {
       validateScaleTaskCatalogPayload(body);
       const scaleTaskCatalog = await saveScaleTaskCatalogItem(body);
       sendJson(res, 200, { scaleTaskCatalog });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_scale_task_catalog",
-        status: "success",
         screen: "configuracoes",
         entityType: "scale-task-catalog",
         entityId: body.id || null,
@@ -610,24 +600,22 @@ export const handleAdminRoutes = async (req, res, url) => {
         },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_create_scale_task_catalog",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "scale-task-catalog",
         entityId: body?.id || null,
         entityLabel: body?.name || null,
-        message: error.message,
+        message: "Tarefa base gravada.",
         metadata: {
           taskId: body?.id || null,
           key: body?.key || null,
           name: body?.name || null,
           category: body?.category || null,
         },
-      });
+      }, error);
     }
     return true;
   }
@@ -639,11 +627,9 @@ export const handleAdminRoutes = async (req, res, url) => {
     try {
       const scaleTaskCatalog = await deleteScaleTaskCatalogItem(taskId);
       sendJson(res, 200, { scaleTaskCatalog });
-      writeAudit(req, auth, {
-        level: "info",
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_scale_task_catalog",
-        status: "success",
         screen: "configuracoes",
         entityType: "scale-task-catalog",
         entityId: taskId,
@@ -652,19 +638,17 @@ export const handleAdminRoutes = async (req, res, url) => {
         metadata: { taskId },
       });
     } catch (error) {
-      sendKnownError(res, error);
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
+      sendAdminMutationError(res, error);
+      writeAdminMutationAudit(req, auth, {
         category: "admin",
         action: "admin_delete_scale_task_catalog",
-        status: auditStatusFromError(error),
         screen: "configuracoes",
         entityType: "scale-task-catalog",
         entityId: taskId,
         entityLabel: null,
-        message: error.message,
+        message: "Tarefa base excluida.",
         metadata: { taskId },
-      });
+      }, error);
     }
     return true;
   }
