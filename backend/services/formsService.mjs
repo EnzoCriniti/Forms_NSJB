@@ -14,11 +14,7 @@ import {
 } from "../repositories/formsRepository.mjs";
 import { getEscalaByFormId, upsertEscalaRecord } from "../repositories/escalaRepository.mjs";
 import { getFormDeleteKeyStatus, verifyFormDeleteKey } from "./adminService.mjs";
-import {
-  assertPresenceFormModeFields,
-  normalizeResultsConfig,
-  resolveFormMode,
-} from "./formModeRules.mjs";
+import { buildFormSaveValues } from "./formSaveRules.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
@@ -44,29 +40,7 @@ export const saveForm = async payload => {
 
   const existingForm = payload.id ? await findFormById(payload.id) : null;
 
-  const formMode = resolveFormMode(payload.type, payload.resultsConfig, payload.fieldDefinitions);
-  const values = {
-    id: payload.id,
-    slug,
-    type: payload.type,
-    status: payload.status,
-    title: payload.title,
-    sessionName: payload.sessionName || "",
-    description: payload.description || "",
-    date: payload.date || null,
-    closing: payload.closing || null,
-    closingText: payload.closingText || "",
-    totalExpected: Number(payload.totalExpected || 0),
-    labels: payload.labels || [],
-    fieldDefinitions: payload.fieldDefinitions || [],
-    resultsConfig: normalizeResultsConfig(payload.resultsConfig, formMode),
-    scaleSections: payload.scaleSections || [],
-  };
-
-  if (!values.title?.trim()) throw new Error("Titulo e obrigatorio.");
-  if (!["presenca", "escala_organ"].includes(values.type)) throw new Error("Tipo de formulario invalido.");
-  if (!["rascunho", "aberto", "fechado", "arquivado"].includes(values.status)) throw new Error("Status invalido.");
-  assertPresenceFormModeFields(values, formMode);
+  const values = buildFormSaveValues(payload, slug);
 
   // Reabrir um formulario vencido deve prevalecer sobre o fechamento antigo.
   if (existingForm && existingForm.status !== "aberto" && values.status === "aberto" && isPastClosingDate(values.closing)) {
