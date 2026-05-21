@@ -62,12 +62,6 @@ Mapa curto das areas mais mexidas por agentes.
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`, a decisao pura de navegacao interna e seletores derivados do shell.
 - `docs/REUSO.md`
   Indice rapido para agentes encontrarem componentes, helpers e telas antes de recriar comportamento ja existente.
-- `docs/REFACTOR_CHECKLIST.md`
-  Checklist por etapas com o que ja foi concluido e os proximos passos de refatoracao.
-- `docs/REFACTOR_STRUCTURE_CHECKLIST.md`
-  Checklist novo focado em organizacao de pastas, reducao de duplicacao e unificacao de blocos compartilhados.
-- `docs/REFACTOR_EXECUTION_CHECKLIST.md`
-  Checklist operacional granular para continuar os lotes de refatoracao sem replanejamento a cada tarefa.
 
 ## Listagem
 
