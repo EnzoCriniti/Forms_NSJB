@@ -76,6 +76,8 @@ Mapa curto das areas mais mexidas por agentes.
   Regras backend de modo estrutural, base central de socios e normalizacao de `resultsConfig` usadas ao salvar formularios.
 - `backend/services/formSaveRules.mjs`
   Preparo e validacao do registro persistido pelo save de formularios antes do upsert.
+- `backend/services/formScaleInitializer.mjs`
+  Inicializa secoes de formularios de escala sem sobrescrever secoes ja persistidas.
 
 ## Autenticacao
 
