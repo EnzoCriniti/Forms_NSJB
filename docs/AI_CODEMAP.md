@@ -72,6 +72,8 @@ Mapa curto das areas mais mexidas por agentes.
   Predicados estruturais compartilhados pelos validadores de payload.
 - `backend/services/formsService.mjs`
   Regras de formulario com forte acoplamento ao contrato de presenca, modo estrutural e chave mestra.
+- `backend/services/formModeRules.mjs`
+  Regras backend de modo estrutural, base central de socios e normalizacao de `resultsConfig` usadas ao salvar formularios.
 
 ## Autenticacao
 
