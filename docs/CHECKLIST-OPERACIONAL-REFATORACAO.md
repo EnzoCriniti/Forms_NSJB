@@ -573,13 +573,12 @@ Problemas que precisam ser corrigidos:
 - a regra de `FORM_MODES` e de `person_select` esta duplicada em relacao ao frontend
 
 Checklist operacional:
-- separar validacao de save, resolucao de modo e inicializacao de escala
-- iniciado: resolucao de modo, normalizacao de `resultsConfig` e regra da base central de socios sairam para `backend/services/formModeRules.mjs`
-- iniciado: preparo e validacao do registro persistido por `saveForm` sairam para `backend/services/formSaveRules.mjs`
-- iniciado: inicializacao das secoes de formularios de escala saiu para `backend/services/formScaleInitializer.mjs`
+- concluido neste ciclo: resolucao de modo, normalizacao de `resultsConfig` e regra da base central de socios sairam para `backend/services/formModeRules.mjs`
+- concluido neste ciclo: preparo e validacao do registro persistido por `saveForm` sairam para `backend/services/formSaveRules.mjs`
+- concluido neste ciclo: inicializacao das secoes de formularios de escala saiu para `backend/services/formScaleInitializer.mjs`
+- reavaliar depois: extrair a logica de reabertura de formulario vencido apenas se ela crescer
 - mover regras compartilhadas de modo/base para um helper comum do backend
 - manter a regra de `nucleo` e `geral` em um unico lugar e com teste claro
-- extrair a logica de reabertura de formulario vencido se ela crescer
 
 Teste a reforcar:
 - `tests/api.integration.test.mjs`

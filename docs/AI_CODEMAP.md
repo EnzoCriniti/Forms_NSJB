@@ -78,6 +78,8 @@ Mapa curto das areas mais mexidas por agentes.
   Preparo e validacao do registro persistido pelo save de formularios antes do upsert.
 - `backend/services/formScaleInitializer.mjs`
   Inicializa secoes de formularios de escala sem sobrescrever secoes ja persistidas.
+- `backend/services/formDeleteKeyService.mjs`
+  Hash, persistencia e verificacao da chave mestra usada para excluir formularios.
 
 ## Autenticacao
 
