@@ -9,6 +9,7 @@ import {
   sendAdminMutationError,
   writeAdminMutationAudit,
 } from "./adminRouteHelpers.mjs";
+import { handleAdminCatalogRoutes } from "./adminCatalogRoutes.mjs";
 import {
   saveUser,
   deleteUser,
@@ -22,20 +23,14 @@ import {
   saveExternalBase,
   deleteExternalBase,
   syncExternalBase,
-  saveFieldCatalogItem,
-  deleteFieldCatalogItem,
-  saveScaleTaskCatalogItem,
-  deleteScaleTaskCatalogItem,
 } from "../services/adminService.mjs";
 import {
   validateDeleteId,
   validateExternalBasePayload,
-  validateFieldCatalogPayload,
   validateLabelPayload,
   validateMembersConfigPayload,
   validatePeoplePayload,
   validatePresetPayload,
-  validateScaleTaskCatalogPayload,
   validateUserPayload,
 } from "../validators/payloadValidators.mjs";
 import {
@@ -44,6 +39,10 @@ import {
 } from "./requestHelpers.mjs";
 
 export const handleAdminRoutes = async (req, res, url) => {
+  if (await handleAdminCatalogRoutes(req, res, url)) {
+    return true;
+  }
+
   if (req.method === "POST" && url.pathname === "/api/users") {
     const auth = await requireAdmin(req, res);
     if (!auth) return true;
@@ -488,162 +487,6 @@ export const handleAdminRoutes = async (req, res, url) => {
         entityLabel: null,
         message: "Base externa sincronizada.",
         metadata: { baseId },
-      }, error);
-    }
-    return true;
-  }
-
-  if (req.method === "POST" && url.pathname === "/api/field-catalog") {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
-    const body = await readBody(req);
-    try {
-      validateFieldCatalogPayload(body);
-      const fieldCatalog = await saveFieldCatalogItem(body);
-      sendJson(res, 200, { fieldCatalog });
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_create_field_catalog",
-        screen: "configuracoes",
-        entityType: "field-catalog",
-        entityId: body.id || null,
-        entityLabel: body.name || null,
-        message: "Campo base gravado.",
-        metadata: {
-          fieldId: body.id || null,
-          key: body.key || null,
-          name: body.name || null,
-          type: body.type || null,
-          category: body.category || null,
-        },
-      });
-    } catch (error) {
-      sendAdminMutationError(res, error);
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_create_field_catalog",
-        screen: "configuracoes",
-        entityType: "field-catalog",
-        entityId: body?.id || null,
-        entityLabel: body?.name || null,
-        message: "Campo base gravado.",
-        metadata: {
-          fieldId: body?.id || null,
-          key: body?.key || null,
-          name: body?.name || null,
-          type: body?.type || null,
-          category: body?.category || null,
-        },
-      }, error);
-    }
-    return true;
-  }
-
-  if (req.method === "DELETE" && url.pathname.startsWith("/api/field-catalog/")) {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
-    const fieldId = validateDeleteId(url.pathname.split("/").pop(), "Id do campo base");
-    try {
-      const fieldCatalog = await deleteFieldCatalogItem(fieldId);
-      sendJson(res, 200, { fieldCatalog });
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_delete_field_catalog",
-        screen: "configuracoes",
-        entityType: "field-catalog",
-        entityId: fieldId,
-        entityLabel: null,
-        message: "Campo base excluido.",
-        metadata: { fieldId },
-      });
-    } catch (error) {
-      sendAdminMutationError(res, error);
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_delete_field_catalog",
-        screen: "configuracoes",
-        entityType: "field-catalog",
-        entityId: fieldId,
-        entityLabel: null,
-        message: "Campo base excluido.",
-        metadata: { fieldId },
-      }, error);
-    }
-    return true;
-  }
-
-  if (req.method === "POST" && url.pathname === "/api/scale-task-catalog") {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
-    const body = await readBody(req);
-    try {
-      validateScaleTaskCatalogPayload(body);
-      const scaleTaskCatalog = await saveScaleTaskCatalogItem(body);
-      sendJson(res, 200, { scaleTaskCatalog });
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_create_scale_task_catalog",
-        screen: "configuracoes",
-        entityType: "scale-task-catalog",
-        entityId: body.id || null,
-        entityLabel: body.name || null,
-        message: "Tarefa base gravada.",
-        metadata: {
-          taskId: body.id || null,
-          key: body.key || null,
-          name: body.name || null,
-          category: body.category || null,
-        },
-      });
-    } catch (error) {
-      sendAdminMutationError(res, error);
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_create_scale_task_catalog",
-        screen: "configuracoes",
-        entityType: "scale-task-catalog",
-        entityId: body?.id || null,
-        entityLabel: body?.name || null,
-        message: "Tarefa base gravada.",
-        metadata: {
-          taskId: body?.id || null,
-          key: body?.key || null,
-          name: body?.name || null,
-          category: body?.category || null,
-        },
-      }, error);
-    }
-    return true;
-  }
-
-  if (req.method === "DELETE" && url.pathname.startsWith("/api/scale-task-catalog/")) {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
-    const taskId = validateDeleteId(url.pathname.split("/").pop(), "Id da tarefa base");
-    try {
-      const scaleTaskCatalog = await deleteScaleTaskCatalogItem(taskId);
-      sendJson(res, 200, { scaleTaskCatalog });
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_delete_scale_task_catalog",
-        screen: "configuracoes",
-        entityType: "scale-task-catalog",
-        entityId: taskId,
-        entityLabel: null,
-        message: "Tarefa base excluida.",
-        metadata: { taskId },
-      });
-    } catch (error) {
-      sendAdminMutationError(res, error);
-      writeAdminMutationAudit(req, auth, {
-        category: "admin",
-        action: "admin_delete_scale_task_catalog",
-        screen: "configuracoes",
-        entityType: "scale-task-catalog",
-        entityId: taskId,
-        entityLabel: null,
-        message: "Tarefa base excluida.",
-        metadata: { taskId },
       }, error);
     }
     return true;
