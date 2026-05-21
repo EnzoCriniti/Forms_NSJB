@@ -4,13 +4,10 @@
  * @responsibility Orquestrar usuarios, classificacoes, presets, socios e configuracoes.
  */
 
-import { randomBytes, pbkdf2Sync, timingSafeEqual } from "node:crypto";
 import { listUsers, findConflictingUserByUsername, upsertUserRecord, deleteUserRecord } from "../repositories/usersRepository.mjs";
 import { listLabels, upsertLabelRecord, deleteLabelRecord } from "../repositories/labelsRepository.mjs";
 import { listPresets, upsertPresetRecord, deletePresetRecord } from "../repositories/presetsRepository.mjs";
 import { listPeople, replacePeopleRecords } from "../repositories/peopleRepository.mjs";
-import { getJsonSetting, saveJsonSetting } from "../repositories/settingsRepository.mjs";
-import { nowIso } from "../database/shared.mjs";
 import {
   deleteFieldCatalogRecord,
   deleteScaleTaskCatalogRecord,
@@ -24,9 +21,6 @@ import {
 import { saveMembersConfig as saveMembersConfigSetting, syncMembersFromSource } from "./membersSyncService.mjs";
 import { deleteExternalBase as deleteExternalBaseSetting, listExternalBases, saveExternalBase as saveExternalBaseSetting, syncExternalBase } from "./externalBasesService.mjs";
 
-const MASTER_KEY_SETTING = "formDeleteKey";
-const MASTER_KEY_ITERATIONS = 210000;
-
 const normalizeKey = value => String(value || "")
   .trim()
   .toLowerCase()
@@ -39,41 +33,6 @@ const normalizeGridSchema = payload => ({
   rows: Array.isArray(payload?.rows) ? payload.rows.map(item => String(item || "").trim()).filter(Boolean) : [],
   cols: Array.isArray(payload?.cols) ? payload.cols.map(item => String(item || "").trim()).filter(Boolean) : [],
 });
-
-const makeError = (message, statusCode, code) => {
-  const error = new Error(message);
-  error.statusCode = statusCode;
-  error.code = code;
-  return error;
-};
-
-const readFormDeleteKeyRecord = async () => {
-  const record = await getJsonSetting(MASTER_KEY_SETTING, null);
-  if (!record || typeof record !== "object") return null;
-  if (!record.salt || !record.hash) return null;
-  return {
-    salt: String(record.salt),
-    hash: String(record.hash),
-    iterations: Number(record.iterations || MASTER_KEY_ITERATIONS),
-    updatedAt: record.updatedAt || null,
-  };
-};
-
-const hashFormDeleteKey = (masterKey, salt, iterations = MASTER_KEY_ITERATIONS) => pbkdf2Sync(
-  String(masterKey),
-  String(salt),
-  Number(iterations) || MASTER_KEY_ITERATIONS,
-  64,
-  "sha512",
-).toString("hex");
-
-const verifyMasterKey = (masterKey, record) => {
-  if (!record) return false;
-  const expected = Buffer.from(record.hash, "hex");
-  const received = Buffer.from(hashFormDeleteKey(masterKey, record.salt, record.iterations), "hex");
-  if (expected.length !== received.length) return false;
-  return timingSafeEqual(expected, received);
-};
 
 export const saveUser = async payload => {
   const username = String(payload.username || "").trim();
@@ -185,35 +144,3 @@ export const deleteScaleTaskCatalogItem = async id => {
   await deleteScaleTaskCatalogRecord(id);
   return listScaleTaskCatalog();
 };
-
-export const getFormDeleteKeyStatus = async () => ({
-  configured: Boolean(await readFormDeleteKeyRecord()),
-});
-
-export const saveFormDeleteKey = async payload => {
-  const currentRecord = await readFormDeleteKeyRecord();
-  const newMasterKey = String(payload.newMasterKey || "").trim();
-  if (!newMasterKey) throw makeError("Nova chave mestra e obrigatoria.", 400, "MASTER_KEY_REQUIRED");
-
-  if (currentRecord) {
-    const currentMasterKey = String(payload.currentMasterKey || "").trim();
-    if (!currentMasterKey) throw makeError("Chave mestra atual e obrigatoria.", 400, "MASTER_KEY_CURRENT_REQUIRED");
-    if (!verifyMasterKey(currentMasterKey, currentRecord)) {
-      throw makeError("Chave mestra atual incorreta.", 403, "MASTER_KEY_INVALID");
-    }
-  }
-
-  const salt = randomBytes(16).toString("hex");
-  await saveJsonSetting(MASTER_KEY_SETTING, {
-    version: 1,
-    algorithm: "pbkdf2-sha512",
-    iterations: MASTER_KEY_ITERATIONS,
-    salt,
-    hash: hashFormDeleteKey(newMasterKey, salt, MASTER_KEY_ITERATIONS),
-    updatedAt: nowIso(),
-  });
-
-  return getFormDeleteKeyStatus();
-};
-
-export const verifyFormDeleteKey = async masterKey => verifyMasterKey(masterKey, await readFormDeleteKeyRecord());

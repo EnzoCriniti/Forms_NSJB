@@ -7,7 +7,7 @@
 import { sendJson } from "../core/http.mjs";
 import { extractBearerToken, loginWithCredentials, logoutByToken } from "../services/authService.mjs";
 import { getBootstrap } from "../services/bootstrapService.mjs";
-import { getFormDeleteKeyStatus, saveFormDeleteKey } from "../services/adminService.mjs";
+import { getFormDeleteKeyStatus, saveFormDeleteKey } from "../services/formDeleteKeyService.mjs";
 import { listAuditLogs } from "../services/auditLogService.mjs";
 import { validateAuthLoginPayload, validateFormDeleteKeyUpdatePayload } from "../validators/payloadValidators.mjs";
 import {
