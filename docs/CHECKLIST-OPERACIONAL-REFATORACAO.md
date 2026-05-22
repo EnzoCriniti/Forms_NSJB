@@ -289,6 +289,12 @@ Checklist operacional:
 - concluido: consumidores de `ClosedPublicScreen`, `PublicTopCompact` e `PublicReadingToolbar` passaram a importar direto de `publicUi.jsx`
 - concluido: `PublicTop` foi removido depois da varredura confirmar ausencia de consumo real
 
+### `frontend/src/components/ResultsPresenceHeader.jsx` e `frontend/src/screens/resultsPanels.jsx`
+
+Checklist operacional:
+- concluido: `ResultsPresenceHeader.jsx` e o ponto unico do topo de resultados de presenca
+- concluido: `resultsPanels.jsx` apenas compoe `ResultsPresenceHeader`, sem duplicar toolbar publica, filtros de grau ou cards de resumo
+
 ### `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
 ### `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
 ### `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
