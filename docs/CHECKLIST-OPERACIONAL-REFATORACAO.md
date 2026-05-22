@@ -140,14 +140,14 @@ Teste a reforcar:
 
 Problemas que precisam ser corrigidos:
 - `PublicReadingToolbar` guarda preferencia local de tema e tamanho de fonte quando isso ja existe como comportamento global do app
-- `PublicTop` e `PublicTopCompact` repetem estrutura visual e estilo base
+- `PublicTopCompact` e o topo publico canonico
 - o arquivo conhece tanto persistencia de preferencias quanto navegacao publica
 
 Checklist operacional:
 - extrair a logica de leitura de preferencia para um helper compartilhado com o shell
 - criar um topo-base unico e especializar apenas variacoes de layout
 - manter `PublicReadingToolbar` somente como controle visual, sem assumir regra de storage se houver controller superior
-- reduzir duplicacao de markup entre `PublicTop` e `PublicTopCompact`
+- concluido: `PublicTop` sem consumo real foi removido; `PublicTopCompact` ficou como topo publico canonico
 - garantir que navegacao publica continue centralizada em `appShell.js`
 
 Teste a reforcar:
@@ -287,7 +287,7 @@ Checklist operacional:
 Checklist operacional:
 - concluido: `ui.jsx` deixou de reexportar componentes publicos de `publicUi.jsx`
 - concluido: consumidores de `ClosedPublicScreen`, `PublicTopCompact` e `PublicReadingToolbar` passaram a importar direto de `publicUi.jsx`
-- pendente: remover `PublicTop` se a varredura confirmar que ele continua sem uso real
+- concluido: `PublicTop` foi removido depois da varredura confirmar ausencia de consumo real
 
 ### `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
 ### `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`

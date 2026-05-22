@@ -112,7 +112,7 @@ Mapa curto das areas mais mexidas por agentes.
   `SplitSection` organiza telas administrativas em duas colunas para edicao e listagem.
   Este arquivo nao deve concentrar componentes publicos de dominio; `frontend/src/components/publicUi.jsx` e a fonte de verdade para a UI publica.
 - `frontend/src/components/publicUi.jsx`
-  Componentes compartilhados das telas publicas: barra de leitura, topos publicos e tela de formulario fechado.
+  Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`, a decisao pura de navegacao interna e seletores derivados do shell.
 - `docs/REUSO.md`

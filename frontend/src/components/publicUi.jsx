@@ -6,7 +6,6 @@
 
 import React, { useEffect, useState } from "react";
 import { formatDate, formatDateTime } from "../lib/forms";
-import { buildPublicFormPath } from "../lib/appShell";
 import { STORAGE_KEYS } from "../lib/appConstants";
 import { COLORS, Btn, Icon, ThemeIcon } from "./ui";
 
@@ -209,59 +208,6 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
       {descriptionText && (
         <p className="public-top-description">{descriptionText}</p>
       )}
-      </div>
-    </div>
-  );
-};
-
-export const PublicTop = ({ form, onBack }) => {
-  const [copied, setCopied] = useState(false);
-  const publicPath = buildPublicFormPath(form);
-  const copyTarget = publicPath ? `${window.location.href.split("#")[0]}${publicPath}` : "";
-
-  const handleCopy = async () => {
-    if (!copyTarget || !navigator?.clipboard?.writeText) return;
-    try {
-      await navigator.clipboard.writeText(copyTarget);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1400);
-    } catch {
-      setCopied(false);
-    }
-  };
-
-  return (
-    <div className="public-top" style={{ background: COLORS.primary, borderRadius: "16px 16px 0 0", padding: "24px", color: "#fff" }}>
-      <div className="public-top-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", alignItems: "center", gap: 18 }}>
-        <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.22)", fontSize: 11, fontWeight: 800, letterSpacing: 0.3, marginBottom: 12 }}>
-            <Icon name="link" size={12} />
-            Link público
-          </div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.02em" }}>{form?.title || "NSJB Forms"}</h1>
-          <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.84)", fontSize: 13 }}>{form?.type === "escala_organ" ? "Escala da Organ" : "Formulário de Presença"}</p>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12, alignItems: "center" }}>
-            {publicPath && (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", fontSize: 11, fontWeight: 700 }}>
-                <Icon name="share" size={12} />
-                {publicPath}
-              </span>
-            )}
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 10px", borderRadius: 999, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.18)", fontSize: 11, fontWeight: 700 }}>
-              <Icon name="form" size={12} />
-              NSJB Forms
-            </span>
-          </div>
-        </div>
-        <div className="public-top-meta" style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          <div style={{ textAlign: "left", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 12, padding: "10px 12px", minWidth: 180 }}>
-            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.72)", textTransform: "uppercase", fontWeight: 800 }}>Sessão</div>
-            <div style={{ fontSize: 14, fontWeight: 800 }}>{form?.sessionName || "Sessão"}</div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.84)", marginTop: 2 }}>{formatDate(form?.date)}</div>
-          </div>
-          {publicPath && <Btn v="secondary" sz="sm" icon="clipboard" onClick={handleCopy}>{copied ? "Link copiado" : "Copiar link"}</Btn>}
-          {onBack && <button onClick={onBack} style={{ border: "1px solid rgba(255,255,255,0.35)", color: "#fff", background: "rgba(255,255,255,0.1)", borderRadius: 10, padding: "10px 13px", cursor: "pointer", fontWeight: 700 }}>Painel</button>}
-        </div>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ Documento operacional para terminar a limpeza da aplicacao sem perder a divisao 
 ## Prioridade 0: Cortar o que ja esta sobrando
 
 - [x] Remover a dependencia circular entre `frontend/src/components/ui.jsx` e `frontend/src/components/publicUi.jsx`; `ui.jsx` deve ficar apenas com primitives genericos, e `publicUi.jsx` deve ser a fonte de verdade dos componentes publicos.
-- [ ] Escolher um unico fluxo canonico para o topo publico: manter `PublicTopCompact` e revisar se `PublicTop` ainda tem uso real; se nao tiver uso, remover o componente e seus testes associados.
+- [x] Escolher um unico fluxo canonico para o topo publico: manter `PublicTopCompact` e revisar se `PublicTop` ainda tem uso real; se nao tiver uso, remover o componente e seus testes associados.
 - [ ] Consolidar a responsabilidade de header de resultados entre `frontend/src/components/ResultsPresenceHeader.jsx` e `frontend/src/screens/resultsPanels.jsx`; se o header for realmente reutilizavel, ele deve ser o unico ponto de composicao dessa area.
 - [ ] Eliminar qualquer reexportacao "de compatibilidade" que nao esteja servindo transicao real; reexportacao de conveniencia que nao evita quebra concreta vira ruido e deve sair.
 - [ ] Revisar se existem componentes extraidos mas nao usados em producao; quando um componente so serve a si mesmo e nao e reaproveitado, ele deve voltar para a tela de origem ou ser removido.
@@ -92,7 +92,7 @@ Documento operacional para terminar a limpeza da aplicacao sem perder a divisao 
 
 ## Prioridade 7: Testes que precisam acompanhar a limpeza
 
-- [ ] Adicionar ou ajustar teste quando remover `PublicTop` ou qualquer outro componente publico morto.
+- [x] Adicionar ou ajustar teste quando remover `PublicTop` ou qualquer outro componente publico morto.
 - [ ] Cobrir o fluxo de navegacao do shell quando `App.jsx` for dividido, para evitar regressao de rotas internas e publicas.
 - [ ] Cobrir a unificacao entre `ResultsPresenceHeader`, `ResultsScreen` e `resultsPanels` se houver consolidacao de header.
 - [ ] Cobrir o frame compartilhado dos fluxos publicos quando `publicScreenFrame.jsx` mudar.
