@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, normalizeStoredSession, resolveAppNavigation } from "../../frontend/src/lib/appShell.js";
+import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, normalizeStoredSession, resolveAppNavigation, resolveAppViewportTargetState } from "../../frontend/src/lib/appShell.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -125,5 +125,36 @@ describe("appShell derived state", () => {
     expect(state.publicResultsView).toBe(true);
     expect(state.responsesByForm[2]).toEqual([{ id: 2 }]);
     expect(state.escalaByForm[2]).toEqual([{ title: "Sala" }]);
+  });
+});
+
+describe("appShell viewport target state", () => {
+  it("espera respostas de formulario de presenca interno", () => {
+    expect(resolveAppViewportTargetState({
+      screen: "respond",
+      activeForm: { id: 7, type: "presenca" },
+      responsesByForm: {},
+      escalaByForm: {},
+    })).toMatchObject({
+      targetForm: { id: 7, type: "presenca" },
+      waitingForTarget: true,
+    });
+  });
+
+  it("espera secoes de escala publica", () => {
+    expect(resolveAppViewportTargetState({
+      publicForm: { id: 8, type: "escala_organ", status: "aberto" },
+      responsesByForm: {},
+      escalaByForm: {},
+    }).waitingForTarget).toBe(true);
+  });
+
+  it("nao espera dados de formulario publico fechado fora da tela de resultados", () => {
+    expect(resolveAppViewportTargetState({
+      publicForm: { id: 9, type: "presenca", status: "fechado", closing: "2000-01-01T00:00" },
+      publicResultsView: false,
+      responsesByForm: {},
+      escalaByForm: {},
+    }).waitingForTarget).toBe(false);
   });
 });

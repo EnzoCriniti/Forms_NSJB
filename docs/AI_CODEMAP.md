@@ -115,6 +115,7 @@ Mapa curto das areas mais mexidas por agentes.
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`, a decisao pura de navegacao interna e seletores derivados do shell.
+  Tambem isola a decisao de carregamento do alvo de `AppViewport` em `resolveAppViewportTargetState`.
 - `docs/REUSO.md`
   Indice rapido para agentes encontrarem componentes, helpers e telas antes de recriar comportamento ja existente.
 

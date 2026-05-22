@@ -14,7 +14,7 @@ import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 import { AppShellContent } from "./AppShellContent";
 import { isFormClosedForPublic } from "./lib/forms";
-import { buildPublicFormPath, buildPublicFormResultsPath } from "./lib/appShell";
+import { buildPublicFormPath, buildPublicFormResultsPath, resolveAppViewportTargetState } from "./lib/appShell";
 
 export const AppViewport = ({
   app,
@@ -67,8 +67,14 @@ export const AppViewport = ({
     return <AppStatusScreen tone="error" title="Erro ao iniciar" message={error} actionLabel="Tentar novamente" onAction={() => refreshBootstrap({ preserveSelection: false })} />;
   }
 
-  const targetForm = publicForm || (["respond", "results"].includes(screen) ? activeForm : null);
-  const waitingForTarget = Boolean(targetForm) && !(publicForm && isFormClosedForPublic(publicForm) && !publicResultsView) && (targetForm.type === "escala_organ" ? !Object.prototype.hasOwnProperty.call(escalaByForm, targetForm.id) : !Object.prototype.hasOwnProperty.call(responsesByForm, targetForm.id));
+  const { waitingForTarget } = resolveAppViewportTargetState({
+    publicForm,
+    publicResultsView,
+    screen,
+    activeForm,
+    responsesByForm,
+    escalaByForm,
+  });
   if (waitingForTarget) {
     return <AppStatusScreen loading tone="loading" message="Carregando dados do formulario..." />;
   }

@@ -4,6 +4,8 @@
  * @responsibility Guardar funcoes de sessao, fontes e rascunhos que nao pertencem a tela.
  */
 
+import { isFormClosedForPublic } from "./forms";
+
 export const FONT_SCALE_MIN = 0.9;
 export const FONT_SCALE_MAX = 1.3;
 export const FONT_SCALE_STEP = 0.1;
@@ -125,6 +127,26 @@ export const buildAppShellDerivedState = ({
     publicForm,
     publicResultsEnabled: publicForm?.type === "presenca" && publicForm?.resultsConfig?.publicResultsEnabled === true,
     publicResultsView: publicRoute?.view === "results",
+  };
+};
+
+export const resolveAppViewportTargetState = ({
+  publicForm = null,
+  publicResultsView = false,
+  screen = "",
+  activeForm = null,
+  responsesByForm = {},
+  escalaByForm = {},
+}) => {
+  const targetForm = publicForm || (["respond", "results"].includes(screen) ? activeForm : null);
+  const skipClosedPublicFormLoad = publicForm && isFormClosedForPublic(publicForm) && !publicResultsView;
+  const hasTargetData = targetForm?.type === "escala_organ"
+    ? Object.prototype.hasOwnProperty.call(escalaByForm, targetForm.id)
+    : Object.prototype.hasOwnProperty.call(responsesByForm, targetForm?.id);
+
+  return {
+    targetForm,
+    waitingForTarget: Boolean(targetForm) && !skipClosedPublicFormLoad && !hasTargetData,
   };
 };
 
