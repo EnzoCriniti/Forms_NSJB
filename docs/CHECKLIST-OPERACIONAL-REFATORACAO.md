@@ -66,6 +66,7 @@ Checklist operacional:
 - manter aqui apenas estado global inevitavel: sessao, preferencia visual, rota publica, bootstrap bruto e selecao atual
 - revisar a dependência entre `screen`, `activeFormId`, `activeEventId`, `editingFormId` e `draftForm` para evitar sincronizacao implícita demais
 - centralizar os efeitos de persistencia de `session`, `theme`, `fontScale`, `pinnedFormsByUser` e `pinnedEventsByUser` em helpers separados
+- iniciado: leitura e aplicacao local de sessao, tema, fonte e pins sairam para `frontend/src/lib/appPreferences.js`
 - simplificar `refreshBootstrap`, `loadResponsesForForm` e `loadEscalaForForm` para um padrao unico de carregamento e erro
 
 Teste a reforcar:

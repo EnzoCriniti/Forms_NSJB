@@ -6,9 +6,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
-import { STORAGE_KEYS } from "./lib/appConstants";
 import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrap";
-import { loadStored, persist } from "./lib/storage";
 import {
   fetchBootstrap,
   fetchAuthMe,
@@ -52,6 +50,7 @@ import {
 } from "./lib/api";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
+import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import {
   buildDuplicateFormDraft,
   buildSaveFormPayloadFromExisting,
@@ -59,7 +58,6 @@ import {
   clampFontScale,
   FONT_SCALE_STEP,
   getPublicRouteFromLocation,
-  normalizeStoredSession,
   resolveAppNavigation,
   sanitizeUser,
 } from "./lib/appShell";
@@ -72,11 +70,11 @@ export default function App() {
   const [editingFormId, setEditingFormId] = useState(null);
   const [draftForm, setDraftForm] = useState(null);
   const [publicRoute, setPublicRoute] = useState(() => getPublicRouteFromLocation());
-  const [session, setSession] = useState(() => normalizeStoredSession(loadStored(STORAGE_KEYS.session, null)));
-  const [theme, setTheme] = useState(() => loadStored(STORAGE_KEYS.theme, "light"));
-  const [fontScale, setFontScale] = useState(() => Number(loadStored(STORAGE_KEYS.fontScale, 1)) || 1);
-  const [pinnedFormsByUser, setPinnedFormsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedForms, {}));
-  const [pinnedEventsByUser, setPinnedEventsByUser] = useState(() => loadStored(STORAGE_KEYS.pinnedEvents, {}));
+  const [session, setSession] = useState(loadInitialSession);
+  const [theme, setTheme] = useState(loadInitialTheme);
+  const [fontScale, setFontScale] = useState(loadInitialFontScale);
+  const [pinnedFormsByUser, setPinnedFormsByUser] = useState(loadInitialPinnedFormsByUser);
+  const [pinnedEventsByUser, setPinnedEventsByUser] = useState(loadInitialPinnedEventsByUser);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [bootstrap, setBootstrap] = useState(createEmptyBootstrap);
@@ -129,7 +127,7 @@ export default function App() {
 
   useEffect(() => {
     setAuthToken(authToken);
-    persist(STORAGE_KEYS.session, session);
+    persistSession(session);
   }, [authToken, session]);
 
   const refreshBootstrap = async ({ preserveSelection = true, silent = false, rethrow = false } = {}) => {
@@ -208,7 +206,7 @@ export default function App() {
       } catch {
         setSession(null);
         setAuthToken(null);
-        persist(STORAGE_KEYS.session, null);
+        persistSession(null);
       }
     };
 
@@ -218,28 +216,15 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    persist(STORAGE_KEYS.theme, theme);
+    applyThemePreference(theme);
   }, [theme]);
 
   useEffect(() => {
-    const scaleValue = String(fontScale);
-    document.documentElement.style.setProperty("--app-font-scale", scaleValue);
-    document.documentElement.dataset.fontScale = fontScale > 1 ? "large" : "normal";
-    persist(STORAGE_KEYS.fontScale, fontScale);
+    applyFontScalePreference(fontScale);
   }, [fontScale]);
 
   useEffect(() => {
-    const syncPreferences = event => {
-      const nextTheme = event?.detail?.theme;
-      const nextFontScale = event?.detail?.fontScale;
-      if (nextTheme === "light" || nextTheme === "dark") {
-        setTheme(nextTheme);
-      }
-      if (typeof nextFontScale === "number" && !Number.isNaN(nextFontScale)) {
-        setFontScale(clampFontScale(nextFontScale));
-      }
-    };
+    const syncPreferences = event => applyExternalPreferenceChange({ event, setTheme, setFontScale });
 
     window.addEventListener("nsjb-preferences-change", syncPreferences);
     return () => window.removeEventListener("nsjb-preferences-change", syncPreferences);
@@ -249,11 +234,11 @@ export default function App() {
   const decreaseFontScale = () => setFontScale(current => clampFontScale(current - FONT_SCALE_STEP));
 
   useEffect(() => {
-    persist(STORAGE_KEYS.pinnedForms, pinnedFormsByUser);
+    persistPinnedFormsByUser(pinnedFormsByUser);
   }, [pinnedFormsByUser]);
 
   useEffect(() => {
-    persist(STORAGE_KEYS.pinnedEvents, pinnedEventsByUser);
+    persistPinnedEventsByUser(pinnedEventsByUser);
   }, [pinnedEventsByUser]);
 
   useEffect(() => {
@@ -265,7 +250,7 @@ export default function App() {
   const invalidateSession = () => {
     setSession(null);
     setAuthToken(null);
-    persist(STORAGE_KEYS.session, null);
+    persistSession(null);
     setActiveFormId(null);
     setEditingFormId(null);
     setDraftForm(null);
