@@ -259,6 +259,7 @@ Checklist operacional:
 - iniciado: transicao entre modos estruturais saiu para `frontend/src/screens/createFormModeTransition.js`, com reexport preservado no dominio historico
 - iniciado: estado derivado do editor saiu para `frontend/src/screens/createFormDerivedState.js`, com reexport preservado no dominio historico
 - iniciado: payload final do formulario saiu para `frontend/src/screens/createFormPayload.js`, com reexport preservado no dominio historico
+- iniciado: `CreateFormScreen.jsx` passou a importar os modulos especificos `createForm*.js`, sem depender do barramento `createFormDomain.js`
 - remover duplicacao de `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS`, `SCALE_PRESETS` e `FORM_MODES` com outros arquivos
 - manter a normalizacao de `person_select` e `memberBinding` concentrada no helper extraido
 - separar o que e regra de formulario do que e regra de UI

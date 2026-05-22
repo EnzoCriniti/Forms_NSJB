@@ -11,40 +11,53 @@ import { FieldEditorPanel, FormBasicsPanel, FormContextPanel, FormFooterPanel, F
 import { FORM_MODES, getPeopleBaseFieldRole, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,
-  SCALE_PRESETS,
   FORM_MODE_OPTIONS,
   buildPresetTitle,
   createDefaultPresenceFields,
-  createDefaultResultsConfig,
-  createDefaultScaleSections,
-  buildCreateFormInitialState,
+} from "./createFormDefaults";
+import {
+  SCALE_PRESETS,
+  buildAppliedCatalogFieldDraft,
   buildFieldDraftDefaults,
   buildFieldDraftFromExistingField,
-  buildOpenFieldDraft,
-  buildAppliedCatalogFieldDraft,
-  buildFieldSavePayload,
-  buildCreateFormPayload,
-  buildCreateFormTemplatePayload,
-  mergeSavedField,
-  buildCreateFormModeTransition,
-  buildCreateFormTemplateState,
-  buildCreateFormDerivedState,
   buildFieldTypeTransition,
-  buildCreateFormFormatSelectionState,
-  buildCreateFormSaveOutcome,
-  moveItem,
-  toggleFieldShow,
-  removeFieldById,
-  updateScaleSection,
-  appendScaleSection,
-  buildScaleModePatch,
-  buildScaleCatalogPatch,
-  updateListItemAtIndex,
-  removeListItemAtIndex,
-  appendListItem,
-  addTotalLayoutField,
+  buildOpenFieldDraft,
+} from "./createFormFieldDraft";
+import {
+  buildFieldSavePayload,
+  mergeSavedField,
+} from "./createFormFieldSave";
+import {
   normalizePeopleBaseBindings,
-} from "./createFormDomain";
+} from "./createFormMemberBindings";
+import {
+  appendScaleSection,
+  buildScaleCatalogPatch,
+  buildScaleModePatch,
+  createDefaultScaleSections,
+  updateScaleSection,
+} from "./createFormScaleDraft";
+import {
+  appendListItem,
+  moveItem,
+  removeFieldById,
+  removeListItemAtIndex,
+  toggleFieldShow,
+  updateListItemAtIndex,
+} from "./createFormListHelpers";
+import {
+  addTotalLayoutField,
+  createDefaultResultsConfig,
+} from "./createFormResultsConfig";
+import {
+  buildCreateFormFormatSelectionState,
+  buildCreateFormInitialState,
+  buildCreateFormSaveOutcome,
+} from "./createFormState";
+import { buildCreateFormModeTransition } from "./createFormModeTransition";
+import { buildCreateFormDerivedState } from "./createFormDerivedState";
+import { buildCreateFormTemplatePayload, buildCreateFormTemplateState } from "./createFormTemplates";
+import { buildCreateFormPayload } from "./createFormPayload";
 
 export const CreateFormScreen = ({
   onNavigate,

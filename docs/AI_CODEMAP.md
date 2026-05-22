@@ -37,7 +37,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/App.jsx`
   Hub principal do frontend. Ainda concentra sessao, bootstrap, rotas, preferencias visuais e handlers de quase todas as entidades.
 - `frontend/src/screens/createFormDomain.js`
-  Hub mais denso da criacao de formulario. Reune defaults, drafts, payloads, transicoes de modo e regras de normalizacao.
+  Agregador historico da criacao de formulario. Mantem reexports de compatibilidade; novas alteracoes devem usar os modulos `createForm*.js` especificos.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Hub auxiliar da central administrativa. Ainda mistura constantes, preview, paginacao, grade e auditoria.
 - `backend/routes/adminRoutes.mjs`
@@ -162,7 +162,7 @@ Mapa curto das areas mais mexidas por agentes.
   No modo `nucleo`, o campo principal da base central de socios entra como base obrigatoria; no modo `geral`, essa base central fica bloqueada.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/createFormDomain.js`
-  Agregador historico e helpers ainda remanescentes da criacao de formulario: payload final e estado derivado.
+  Agregador historico da criacao de formulario. Mantem reexports de compatibilidade, mas a tela principal importa os modulos especificos diretamente.
 - `frontend/src/screens/createFormDefaults.js`
   Opcoes iniciais, campos padrao e titulo preset da criacao de formulario.
 - `frontend/src/screens/createFormMemberBindings.js`
