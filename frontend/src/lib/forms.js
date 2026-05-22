@@ -5,11 +5,9 @@
  */
 
 import { getScalePersonLimit, validateResponseValuesAgainstForm } from "../../../shared/formRules.mjs";
+import { FORM_MODES, FORM_MODE_VALUES } from "../../../shared/formModes.mjs";
 
-export const FORM_MODES = {
-  NUCLEO: "nucleo",
-  GERAL: "geral",
-};
+export { FORM_MODES };
 
 export const formatDate = value => {
   if (!value) return "";
@@ -86,7 +84,7 @@ export const getFieldSelectionSource = field => {
 
 export const getStoredFormMode = form => {
   const mode = form?.resultsConfig?.formMode;
-  return Object.values(FORM_MODES).includes(mode) ? mode : null;
+  return FORM_MODE_VALUES.includes(mode) ? mode : null;
 };
 
 export const isMembersSelectionField = field => getFieldSelectionSource(field)?.kind === "members";

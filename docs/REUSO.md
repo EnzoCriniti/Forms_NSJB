@@ -77,6 +77,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Defaults compartilhados para campos de grade: linhas, colunas e presets de escala.
 - `shared/formRules.mjs`
   Regras compartilhadas de validacao de respostas.
+- `shared/formModes.mjs`
+  Valores canonicos dos modos estruturais de presenca; use antes de recriar listas `nucleo/geral`.
 
 ## Eventos
 

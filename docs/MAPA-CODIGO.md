@@ -51,6 +51,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/data/` - dados estaticos da UI.
 - `frontend/src/styles.css` - tema e estilos globais.
 - `shared/formRules.mjs` - regras compartilhadas de validacao.
+- `shared/formModes.mjs` - valores canonicos dos modos estruturais de formularios de presenca.
 
 ## Convencoes de nomes
 

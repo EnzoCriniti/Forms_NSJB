@@ -211,9 +211,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/forms.js`
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.
-  Tambem resolve o modo estrutural com `FORM_MODES`, `getFormMode` e `getFormModeLabel`.
+  Tambem resolve o modo estrutural com `FORM_MODES`, reexportado de `shared/formModes.mjs`, `getFormMode` e `getFormModeLabel`.
 - `frontend/src/lib/gridDefaults.js`
   Fonte de verdade para linhas, colunas e presets padrao dos campos de grade usados na criacao de formulario e no admin.
+- `shared/formModes.mjs`
+  Valores canonicos dos modos estruturais `nucleo` e `geral`, compartilhados por frontend, backend e validadores.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 
@@ -267,7 +269,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `backend/services/formsService.mjs`
   Valida o modo estrutural dos formularios de presenca: `geral` nao aceita base central de socios e `nucleo` exige campo principal dessa base.
 - `backend/validators/formPayloadValidators.mjs`
-  Aceita `resultsConfig.formMode` com os valores `nucleo` e `geral`.
+  Aceita `resultsConfig.formMode` com os valores de `shared/formModes.mjs`.
 
 ## Testes ligados a essa area
 

@@ -4,10 +4,7 @@
  * @responsibility Resolver modo estrutural e normalizar configuracao de resultados ligada ao modo.
  */
 
-const FORM_MODES = {
-  NUCLEO: "nucleo",
-  GERAL: "geral",
-};
+import { FORM_MODES, FORM_MODE_VALUES } from "../../shared/formModes.mjs";
 
 const getSelectionSourceKind = field => {
   if (!field || field.type !== "person_select") return null;
@@ -24,7 +21,7 @@ const normalizeTotalLayoutStyle = style => {
 
 export const resolveFormMode = (type, resultsConfig, fieldDefinitions) => {
   if (type !== "presenca") return FORM_MODES.GERAL;
-  if (resultsConfig?.formMode && Object.values(FORM_MODES).includes(resultsConfig.formMode)) {
+  if (resultsConfig?.formMode && FORM_MODE_VALUES.includes(resultsConfig.formMode)) {
     return resultsConfig.formMode;
   }
   return (fieldDefinitions || []).some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL;

@@ -8,6 +8,7 @@ import {
   FIELD_TYPES,
   validateSelectionSource,
 } from "./catalogPayloadValidators.mjs";
+import { FORM_MODE_VALUES } from "../../shared/formModes.mjs";
 import {
   assertPayload as assert,
   isIdLike,
@@ -22,7 +23,6 @@ const FORM_TYPES = ["presenca", "escala_organ"];
 const FORM_STATUS = ["rascunho", "aberto", "fechado", "arquivado"];
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
 const MEMBER_BINDING_ROLES = ["primary", "secondary"];
-const FORM_MODES = ["nucleo", "geral"];
 
 const validateFieldDefinition = field => {
   assert(isObject(field), "Campo de formulario invalido.");
@@ -79,7 +79,7 @@ const validateResultsConfig = config => {
   assert(config.searchEnabled === undefined || typeof config.searchEnabled === "boolean", "searchEnabled invalido.");
   assert(config.showLinkedRoster === undefined || typeof config.showLinkedRoster === "boolean", "showLinkedRoster invalido.");
   assert(config.blockDuplicatePersonResponses === undefined || typeof config.blockDuplicatePersonResponses === "boolean", "blockDuplicatePersonResponses invalido.");
-  assert(config.formMode === undefined || FORM_MODES.includes(config.formMode), "formMode invalido.");
+  assert(config.formMode === undefined || FORM_MODE_VALUES.includes(config.formMode), "formMode invalido.");
   assert(config.maxAssignmentsPerPerson === undefined || isOptionalPositiveIntegerLike(config.maxAssignmentsPerPerson), "maxAssignmentsPerPerson invalido.");
   if (config.totalsLayout !== undefined) {
     assert(Array.isArray(config.totalsLayout), "totalsLayout invalido.");

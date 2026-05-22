@@ -261,7 +261,7 @@ Checklist operacional:
 - iniciado: payload final do formulario saiu para `frontend/src/screens/createFormPayload.js`, com reexport preservado no dominio historico
 - iniciado: `CreateFormScreen.jsx` passou a importar os modulos especificos `createForm*.js`, sem depender do barramento `createFormDomain.js`
 - iniciado: `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS` e `SCALE_PRESETS` sairam para `frontend/src/lib/gridDefaults.js`, compartilhado por criacao de formulario e admin
-- remover duplicacao remanescente de `FORM_MODES` com outros arquivos
+- iniciado: `FORM_MODES` saiu para `shared/formModes.mjs`, compartilhado por frontend, backend e validadores
 - manter a normalizacao de `person_select` e `memberBinding` concentrada no helper extraido
 - separar o que e regra de formulario do que e regra de UI
 - manter `buildCreateFormPayload` e `buildCreateFormTemplatePayload` como saidas finais, nao como lugar de toda a logica
