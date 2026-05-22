@@ -9,6 +9,7 @@ import {
   hasLoadedFormDetails,
   loadFormEscalaDetail,
   loadFormResponsesDetail,
+  refreshAppBootstrap,
   removeFormDetail,
   shouldSkipDetailLoad,
   upsertFormDetail,
@@ -90,5 +91,54 @@ describe("appDataLoad", () => {
     });
 
     expect(escalaDetails).toEqual({ 5: [{ title: "Nova" }] });
+  });
+
+  it("atualiza bootstrap e formulario ativo", async () => {
+    const setLoading = vi.fn();
+    const setError = vi.fn();
+    const setBootstrap = vi.fn();
+    const setActiveFormId = vi.fn();
+    const nextBootstrap = { forms: [{ id: 2, status: "aberto" }] };
+
+    const result = await refreshAppBootstrap({
+      activeFormId: 1,
+      currentUser: { id: 9, role: "admin" },
+      setLoading,
+      setError,
+      setBootstrap,
+      setActiveFormId,
+      fetchBootstrap: vi.fn(async () => ({ forms: nextBootstrap.forms })),
+      normalizeBootstrap: vi.fn(payload => payload),
+      pickActiveFormIdAfterBootstrap: vi.fn(() => 2),
+      visibleFormsFor: vi.fn((_, forms) => forms),
+    });
+
+    expect(result).toEqual(nextBootstrap);
+    expect(setLoading).toHaveBeenNthCalledWith(1, true);
+    expect(setLoading).toHaveBeenLastCalledWith(false);
+    expect(setError).toHaveBeenCalledWith("");
+    expect(setBootstrap).toHaveBeenCalledWith(nextBootstrap);
+    expect(setActiveFormId).toHaveBeenCalledWith(2);
+  });
+
+  it("preserva loading em refresh silencioso e retorna null em erro", async () => {
+    const setLoading = vi.fn();
+    const setError = vi.fn();
+
+    const result = await refreshAppBootstrap({
+      silent: true,
+      setLoading,
+      setError,
+      setBootstrap: vi.fn(),
+      setActiveFormId: vi.fn(),
+      fetchBootstrap: vi.fn(async () => { throw new Error("Falha"); }),
+      normalizeBootstrap: vi.fn(),
+      pickActiveFormIdAfterBootstrap: vi.fn(),
+      visibleFormsFor: vi.fn(),
+    });
+
+    expect(result).toBeNull();
+    expect(setLoading).not.toHaveBeenCalled();
+    expect(setError).toHaveBeenLastCalledWith("Falha");
   });
 });

@@ -50,7 +50,7 @@ import {
 } from "./lib/api";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
-import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
+import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import {
   buildDuplicateFormDraft,
@@ -133,27 +133,21 @@ export default function App() {
   }, [authToken, session]);
 
   const refreshBootstrap = async ({ preserveSelection = true, silent = false, rethrow = false } = {}) => {
-    if (!silent) setLoading(true);
-    setError("");
-    try {
-      const next = normalizeBootstrap(await fetchBootstrap());
-      setBootstrap(next);
-      const nextActiveFormId = pickActiveFormIdAfterBootstrap({
-        currentFormId: activeFormId,
-        currentUser,
-        forms: next.forms,
-        visibleForms: visibleFormsFor(currentUser, next.forms),
-        preserveSelection,
-      });
-      setActiveFormId(nextActiveFormId);
-      return next;
-    } catch (loadError) {
-      setError(loadError.message || "Erro ao carregar dados.");
-      if (rethrow) throw loadError;
-      return null;
-    } finally {
-      if (!silent) setLoading(false);
-    }
+    return refreshAppBootstrap({
+      preserveSelection,
+      silent,
+      rethrow,
+      activeFormId,
+      currentUser,
+      setLoading,
+      setError,
+      setBootstrap,
+      setActiveFormId,
+      fetchBootstrap,
+      normalizeBootstrap,
+      pickActiveFormIdAfterBootstrap,
+      visibleFormsFor,
+    });
   };
 
   const refreshFormDeleteKeyStatus = async () => {

@@ -70,6 +70,7 @@ Checklist operacional:
 - simplificar `refreshBootstrap`, `loadResponsesForForm` e `loadEscalaForForm` para um padrao unico de carregamento e erro
 - iniciado: decisao de detalhe para respostas/escala saiu para `resolveAppDetailLoadRequest` em `frontend/src/lib/appShell.js`
 - iniciado: loaders incrementais de respostas e escala sairam para `frontend/src/lib/appDataLoad.js`
+- iniciado: refresh de bootstrap saiu para `refreshAppBootstrap` em `frontend/src/lib/appDataLoad.js`
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`

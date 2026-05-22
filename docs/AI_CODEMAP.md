@@ -102,7 +102,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appBootstrap.js`
   Helpers puros do bootstrap inicial do frontend, incluindo normalizacao do payload, selecao do formulario ativo, operacoes reutilizaveis de lista e respostas de API, listas aninhadas no estado, ordenacao de eventos, metricas de formularios/escala e alternancia de itens fixados por usuario.
 - `frontend/src/lib/appDataLoad.js`
-  Helpers do carregamento incremental de respostas e escala por formulario, incluindo cache local e estado de detalhe em andamento.
+  Helpers do carregamento de dados do app: refresh do bootstrap e carregamento incremental de respostas/escala por formulario.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
