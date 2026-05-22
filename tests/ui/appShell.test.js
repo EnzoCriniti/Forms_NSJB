@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, normalizeStoredSession, resolveAppNavigation, resolveAppViewportTargetState } from "../../frontend/src/lib/appShell.js";
+import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, normalizeStoredSession, resolveAppDetailLoadRequest, resolveAppNavigation, resolveAppViewportTargetState } from "../../frontend/src/lib/appShell.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -156,5 +156,36 @@ describe("appShell viewport target state", () => {
       responsesByForm: {},
       escalaByForm: {},
     }).waitingForTarget).toBe(false);
+  });
+});
+
+describe("appShell detail load request", () => {
+  it("pede respostas quando formulario ativo ainda nao tem dados", () => {
+    expect(resolveAppDetailLoadRequest({
+      screen: "results",
+      activeForm: { id: 4, type: "presenca" },
+      responsesByForm: {},
+      escalaByForm: {},
+      detailLoading: null,
+    })).toEqual({ kind: "responses", formId: 4 });
+  });
+
+  it("pede escala quando formulario publico de escala ainda nao tem secoes", () => {
+    expect(resolveAppDetailLoadRequest({
+      publicForm: { id: 5, type: "escala_organ", status: "aberto" },
+      responsesByForm: {},
+      escalaByForm: {},
+      detailLoading: null,
+    })).toEqual({ kind: "escala", formId: 5 });
+  });
+
+  it("nao pede detalhe quando ja existe carregamento equivalente em andamento", () => {
+    expect(resolveAppDetailLoadRequest({
+      screen: "respond",
+      activeForm: { id: 6, type: "presenca" },
+      responsesByForm: {},
+      escalaByForm: {},
+      detailLoading: { kind: "responses", formId: 6 },
+    })).toBeNull();
   });
 });

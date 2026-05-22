@@ -150,6 +150,32 @@ export const resolveAppViewportTargetState = ({
   };
 };
 
+export const resolveAppDetailLoadRequest = ({
+  publicForm = null,
+  publicResultsView = false,
+  screen = "",
+  activeForm = null,
+  responsesByForm = {},
+  escalaByForm = {},
+  detailLoading = null,
+}) => {
+  const { targetForm, waitingForTarget } = resolveAppViewportTargetState({
+    publicForm,
+    publicResultsView,
+    screen,
+    activeForm,
+    responsesByForm,
+    escalaByForm,
+  });
+
+  if (!waitingForTarget) return null;
+  const kind = targetForm.type === "escala_organ" ? "escala" : "responses";
+  if (detailLoading?.kind === kind && detailLoading.formId === targetForm.id) {
+    return null;
+  }
+  return { kind, formId: targetForm.id };
+};
+
 export const clampFontScale = value => Math.min(FONT_SCALE_MAX, Math.max(FONT_SCALE_MIN, Number(value.toFixed(2))));
 
 export const PUBLIC_FORM_PATH_PREFIX = "/formularios/";

@@ -58,6 +58,7 @@ import {
   clampFontScale,
   FONT_SCALE_STEP,
   getPublicRouteFromLocation,
+  resolveAppDetailLoadRequest,
   resolveAppNavigation,
   sanitizeUser,
 } from "./lib/appShell";
@@ -269,17 +270,21 @@ export default function App() {
 
   useEffect(() => {
     if (error) return undefined;
-    const targetForm = publicForm || (["respond", "results"].includes(screen) ? activeForm : null);
-    if (!targetForm || (publicForm && isFormClosedForPublic(publicForm) && !publicResultsView)) return undefined;
+    const loadRequest = resolveAppDetailLoadRequest({
+      publicForm,
+      publicResultsView,
+      screen,
+      activeForm,
+      responsesByForm,
+      escalaByForm,
+      detailLoading,
+    });
+    if (!loadRequest) return undefined;
 
-    if (targetForm.type === "escala_organ") {
-      if (hasLoadedEscala(targetForm.id)) return undefined;
-      if (detailLoading?.kind === "escala" && detailLoading.formId === targetForm.id) return undefined;
-      loadEscalaForForm(targetForm.id);
+    if (loadRequest.kind === "escala") {
+      loadEscalaForForm(loadRequest.formId);
     } else {
-      if (hasLoadedResponses(targetForm.id)) return undefined;
-      if (detailLoading?.kind === "responses" && detailLoading.formId === targetForm.id) return undefined;
-      loadResponsesForForm(targetForm.id);
+      loadResponsesForForm(loadRequest.formId);
     }
 
     return undefined;
@@ -287,14 +292,14 @@ export default function App() {
     error,
     publicForm?.id,
     publicForm?.type,
+    publicForm?.status,
+    publicForm?.closing,
     publicResultsView,
     activeForm?.id,
     activeForm?.type,
     screen,
-    bootstrap.responsesByForm,
-    bootstrap.escalaByForm,
-    responseDetails,
-    escalaDetails,
+    responsesByForm,
+    escalaByForm,
     detailLoading?.kind,
     detailLoading?.formId,
   ]);

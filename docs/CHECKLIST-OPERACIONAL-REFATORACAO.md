@@ -68,6 +68,7 @@ Checklist operacional:
 - centralizar os efeitos de persistencia de `session`, `theme`, `fontScale`, `pinnedFormsByUser` e `pinnedEventsByUser` em helpers separados
 - iniciado: leitura e aplicacao local de sessao, tema, fonte e pins sairam para `frontend/src/lib/appPreferences.js`
 - simplificar `refreshBootstrap`, `loadResponsesForForm` e `loadEscalaForForm` para um padrao unico de carregamento e erro
+- iniciado: decisao de detalhe para respostas/escala saiu para `resolveAppDetailLoadRequest` em `frontend/src/lib/appShell.js`
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`
