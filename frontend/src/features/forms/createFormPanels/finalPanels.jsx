@@ -252,7 +252,7 @@ export const FormFooterPanel = ({
   </>
 );
 
-export const ResultsTotalRow = ({
+const ResultsTotalRow = ({
   field,
   index,
   resultsConfig,

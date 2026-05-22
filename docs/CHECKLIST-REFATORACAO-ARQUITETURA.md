@@ -24,7 +24,7 @@ Documento operacional para terminar a limpeza da aplicacao sem perder a divisao 
 - [x] Escolher um unico fluxo canonico para o topo publico: manter `PublicTopCompact` e revisar se `PublicTop` ainda tem uso real; se nao tiver uso, remover o componente e seus testes associados.
 - [x] Consolidar a responsabilidade de header de resultados entre `frontend/src/components/ResultsPresenceHeader.jsx` e `frontend/src/screens/resultsPanels.jsx`; se o header for realmente reutilizavel, ele deve ser o unico ponto de composicao dessa area.
 - [x] Eliminar qualquer reexportacao "de compatibilidade" que nao esteja servindo transicao real; reexportacao de conveniencia que nao evita quebra concreta vira ruido e deve sair.
-- [ ] Revisar se existem componentes extraidos mas nao usados em producao; quando um componente so serve a si mesmo e nao e reaproveitado, ele deve voltar para a tela de origem ou ser removido.
+- [x] Revisar se existem componentes extraidos mas nao usados em producao; quando um componente so serve a si mesmo e nao e reaproveitado, ele deve voltar para a tela de origem ou ser removido.
 
 ## Prioridade 1: Limpar o shell principal
 

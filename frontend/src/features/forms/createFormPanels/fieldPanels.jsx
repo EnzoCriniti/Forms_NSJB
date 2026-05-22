@@ -173,7 +173,7 @@ export const FieldEditorPanel = ({
   )
 );
 
-export const FieldEditorSourcePanel = ({
+const FieldEditorSourcePanel = ({
   inp,
   nFieldMode,
   nCatalogId,
@@ -221,7 +221,7 @@ export const FieldEditorSourcePanel = ({
   </div>
 );
 
-export const FieldEditorDefinitionPanel = ({
+const FieldEditorDefinitionPanel = ({
   inp,
   nType,
   nFieldMode,
@@ -293,7 +293,7 @@ export const FieldEditorDefinitionPanel = ({
   </div>
 );
 
-export const FieldEditorExtrasPanel = ({
+const FieldEditorExtrasPanel = ({
   inp,
   inpSm,
   nType,
@@ -391,7 +391,7 @@ export const FieldEditorExtrasPanel = ({
   </div>
 );
 
-export const FieldEditorActions = ({ isFieldSaveDisabled, isEditingField, onAddField, onResetFieldDraft }) => (
+const FieldEditorActions = ({ isFieldSaveDisabled, isEditingField, onAddField, onResetFieldDraft }) => (
   <div className="create-form-inline-actions" style={{ display: "flex", gap: 6 }}>
     <Btn sz="sm" onClick={onAddField} disabled={isFieldSaveDisabled}>{isEditingField ? "Salvar campo" : "Adicionar"}</Btn>
     <Btn v="ghost" sz="sm" onClick={onResetFieldDraft}>Cancelar</Btn>
@@ -400,7 +400,7 @@ export const FieldEditorActions = ({ isFieldSaveDisabled, isEditingField, onAddF
 
 const fieldStyle = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };
 
-export const FormFieldRow = ({
+const FormFieldRow = ({
   field,
   index,
   fields,

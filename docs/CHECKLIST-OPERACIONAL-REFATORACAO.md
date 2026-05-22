@@ -302,6 +302,7 @@ Checklist operacional:
 - nao trazer normalizacao, validação ou payload para os paineis
 - evitar que regras de catalogo ou mode transitions sejam reintroduzidas nos paineis
 - se um painel crescer demais, quebrar em subcomponentes menores por bloco
+- concluido: subcomponentes usados apenas dentro do proprio arquivo deixaram de ser exportados
 
 Teste a reforcar:
 - `tests/ui/createFormScreen.test.jsx`
