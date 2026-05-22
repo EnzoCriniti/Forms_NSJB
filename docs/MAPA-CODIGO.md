@@ -45,6 +45,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/lib/api.js` - cliente HTTP.
 - `frontend/src/lib/auth.js` - regras de permissao.
 - `frontend/src/lib/forms.js` - funcoes de apoio para formularios.
+- `frontend/src/lib/gridDefaults.js` - defaults compartilhados de campos de grade.
 - `frontend/src/lib/appShell.js` - funcoes puras do shell principal.
 - `frontend/src/lib/storage.js` - persistencia local.
 - `frontend/src/data/` - dados estaticos da UI.

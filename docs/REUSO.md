@@ -73,6 +73,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Barramento historico das regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Para novas alteracoes, prefira o modulo especifico: defaults, member bindings, templates, state, mode transition, derived state, scale draft, list helpers, results config, field draft, field save ou payload.
 - `frontend/src/lib/forms.js`
   Helpers de modo estrutural, base central, origem de selecao e validacao ligada ao formulario.
+- `frontend/src/lib/gridDefaults.js`
+  Defaults compartilhados para campos de grade: linhas, colunas e presets de escala.
 - `shared/formRules.mjs`
   Regras compartilhadas de validacao de respostas.
 

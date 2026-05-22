@@ -212,6 +212,8 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
   Tambem centraliza a leitura da origem `members` vs `external_base`.
   Tambem resolve o modo estrutural com `FORM_MODES`, `getFormMode` e `getFormModeLabel`.
+- `frontend/src/lib/gridDefaults.js`
+  Fonte de verdade para linhas, colunas e presets padrao dos campos de grade usados na criacao de formulario e no admin.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 

@@ -7,6 +7,7 @@
 import React, { useEffect, useState } from "react";
 import { COLORS, Btn, FeedbackBanner, FieldControl, NotePanel, SurfacePanel, resolveActionErrorMessage } from "../../components/ui";
 import { fetchAuditLogs } from "../../lib/api";
+import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, SCALE_PRESETS } from "../../lib/gridDefaults";
 
 export const PAGE_SIZE = 6;
 export const ADMIN_INPUT_STYLE = {
@@ -19,15 +20,6 @@ export const ADMIN_INPUT_STYLE = {
   color: COLORS.text,
   boxShadow: "var(--shadow-sm)",
 };
-export const DEFAULT_GRID_ROWS = ["Opcao 1", "Opcao 2"];
-export const DEFAULT_GRID_COLS = ["0", "1", "2", "3"];
-export const SCALE_PRESETS = [
-  { label: "0 a 3", cols: ["0", "1", "2", "3"] },
-  { label: "0 a 5", cols: ["0", "1", "2", "3", "4", "5"] },
-  { label: "1 a 5", cols: ["1", "2", "3", "4", "5"] },
-  { label: "Ruim / Bom", cols: ["Ruim", "Regular", "Bom", "Otimo"] },
-];
-
 export const fieldTypeLabels = {
   person_select: "Seletor por base",
   yes_no: "Sim / Nao",
