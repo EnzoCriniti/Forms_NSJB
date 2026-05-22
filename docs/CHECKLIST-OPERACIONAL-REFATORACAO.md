@@ -69,6 +69,7 @@ Checklist operacional:
 - iniciado: leitura e aplicacao local de sessao, tema, fonte e pins sairam para `frontend/src/lib/appPreferences.js`
 - simplificar `refreshBootstrap`, `loadResponsesForForm` e `loadEscalaForForm` para um padrao unico de carregamento e erro
 - iniciado: decisao de detalhe para respostas/escala saiu para `resolveAppDetailLoadRequest` em `frontend/src/lib/appShell.js`
+- iniciado: loaders incrementais de respostas e escala sairam para `frontend/src/lib/appDataLoad.js`
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`

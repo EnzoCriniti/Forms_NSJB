@@ -50,6 +50,7 @@ import {
 } from "./lib/api";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
+import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import {
   buildDuplicateFormDraft,
@@ -123,8 +124,8 @@ export default function App() {
     draftForm,
     publicRoute,
   ]);
-  const hasLoadedResponses = formId => Object.prototype.hasOwnProperty.call(bootstrap.responsesByForm || {}, formId) || Object.prototype.hasOwnProperty.call(responseDetails, formId);
-  const hasLoadedEscala = formId => Object.prototype.hasOwnProperty.call(bootstrap.escalaByForm || {}, formId) || Object.prototype.hasOwnProperty.call(escalaDetails, formId);
+  const hasLoadedResponses = formId => hasLoadedFormDetails({ bootstrapDetails: bootstrap.responsesByForm, details: responseDetails, formId });
+  const hasLoadedEscala = formId => hasLoadedFormDetails({ bootstrapDetails: bootstrap.escalaByForm, details: escalaDetails, formId });
 
   useEffect(() => {
     setAuthToken(authToken);
@@ -167,29 +168,30 @@ export default function App() {
   };
 
   const loadResponsesForForm = async formId => {
-    if (hasLoadedResponses(formId) || (detailLoading?.kind === "responses" && detailLoading.formId === formId)) return;
-    setDetailLoading({ kind: "responses", formId });
-    try {
-      const result = await fetchFormResponses(formId);
-      setResponseDetails(prev => ({ ...prev, [formId]: result.responses || [] }));
-    } catch (loadError) {
-      setError(loadError.message || "Erro ao carregar dados.");
-    } finally {
-      setDetailLoading(current => current && current.kind === "responses" && current.formId === formId ? null : current);
-    }
+    await loadFormResponsesDetail({
+      formId,
+      bootstrapResponsesByForm: bootstrap.responsesByForm,
+      responseDetails,
+      detailLoading,
+      setDetailLoading,
+      setResponseDetails,
+      setError,
+      fetchFormResponses,
+    });
   };
 
   const loadEscalaForForm = async (formId, { force = false } = {}) => {
-    if (!force && (hasLoadedEscala(formId) || (detailLoading?.kind === "escala" && detailLoading.formId === formId))) return;
-    setDetailLoading({ kind: "escala", formId });
-    try {
-      const result = await fetchFormEscala(formId);
-      setEscalaDetails(prev => ({ ...prev, [formId]: result.sections || [] }));
-    } catch (loadError) {
-      setError(loadError.message || "Erro ao carregar dados.");
-    } finally {
-      setDetailLoading(current => current && current.kind === "escala" && current.formId === formId ? null : current);
-    }
+    await loadFormEscalaDetail({
+      formId,
+      force,
+      bootstrapEscalaByForm: bootstrap.escalaByForm,
+      escalaDetails,
+      detailLoading,
+      setDetailLoading,
+      setEscalaDetails,
+      setError,
+      fetchFormEscala,
+    });
   };
 
   const refreshEscalaForForm = async formId => loadEscalaForForm(formId, { force: true });
@@ -460,16 +462,8 @@ export default function App() {
 
   const handleDeleteForm = async (formId, masterKey) => {
     const result = await deleteForm(formId, masterKey);
-    setResponseDetails(prev => {
-      const next = { ...prev };
-      delete next[formId];
-      return next;
-    });
-    setEscalaDetails(prev => {
-      const next = { ...prev };
-      delete next[formId];
-      return next;
-    });
+    setResponseDetails(prev => removeFormDetail(prev, formId));
+    setEscalaDetails(prev => removeFormDetail(prev, formId));
     await refreshBootstrap({ silent: true, rethrow: true });
     setBootstrap(prev => removeFormIdFromEvents(prev, formId));
     return result;
@@ -477,20 +471,20 @@ export default function App() {
 
   const handleSaveResponse = async payload => {
     const result = await saveResponse(payload);
-    setResponseDetails(prev => ({ ...prev, [payload.formId]: result.responses }));
+    setResponseDetails(prev => upsertFormDetail(prev, payload.formId, result.responses));
     setBootstrap(prev => updateBootstrapFormMetrics(prev, payload.formId, { responses: result.responses.length }));
   };
 
   const handleSaveEscala = async (formId, sections) => {
     const result = await saveEscala(formId, sections);
-    setEscalaDetails(prev => ({ ...prev, [formId]: result.sections }));
+    setEscalaDetails(prev => upsertFormDetail(prev, formId, result.sections));
     setBootstrap(prev => updateBootstrapFormMetrics(prev, formId, buildEscalaMetrics(result.sections)));
   };
 
   const handleClaimEscalaSlot = async (formId, sectionIndex, slotIndex, person) => {
     try {
       const result = await claimEscalaSlot(formId, sectionIndex, slotIndex, person);
-      setEscalaDetails(prev => ({ ...prev, [formId]: result.sections }));
+      setEscalaDetails(prev => upsertFormDetail(prev, formId, result.sections));
       setBootstrap(prev => updateBootstrapFormMetrics(prev, formId, buildEscalaMetrics(result.sections)));
       return result.sections;
     } catch (error) {
