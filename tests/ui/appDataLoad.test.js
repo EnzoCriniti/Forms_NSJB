@@ -10,6 +10,7 @@ import {
   loadFormEscalaDetail,
   loadFormResponsesDetail,
   refreshAppBootstrap,
+  refreshFormDeleteKeyConfiguredStatus,
   removeFormDetail,
   shouldSkipDetailLoad,
   upsertFormDetail,
@@ -140,5 +141,27 @@ describe("appDataLoad", () => {
     expect(result).toBeNull();
     expect(setLoading).not.toHaveBeenCalled();
     expect(setError).toHaveBeenLastCalledWith("Falha");
+  });
+
+  it("atualiza status da chave de exclusao de formulario", async () => {
+    const setFormDeleteKeyConfigured = vi.fn();
+    const result = await refreshFormDeleteKeyConfiguredStatus({
+      fetchFormDeleteKeyStatus: vi.fn(async () => ({ configured: true })),
+      setFormDeleteKeyConfigured,
+    });
+
+    expect(result).toEqual({ configured: true });
+    expect(setFormDeleteKeyConfigured).toHaveBeenCalledWith(true);
+  });
+
+  it("marca chave de exclusao como ausente quando status falha", async () => {
+    const setFormDeleteKeyConfigured = vi.fn();
+    const result = await refreshFormDeleteKeyConfiguredStatus({
+      fetchFormDeleteKeyStatus: vi.fn(async () => { throw new Error("Falha"); }),
+      setFormDeleteKeyConfigured,
+    });
+
+    expect(result).toBeNull();
+    expect(setFormDeleteKeyConfigured).toHaveBeenCalledWith(false);
   });
 });

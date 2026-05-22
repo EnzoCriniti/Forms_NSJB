@@ -50,7 +50,7 @@ import {
 } from "./lib/api";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
-import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
+import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import {
   buildDuplicateFormDraft,
@@ -151,14 +151,10 @@ export default function App() {
   };
 
   const refreshFormDeleteKeyStatus = async () => {
-    try {
-      const result = await fetchFormDeleteKeyStatus();
-      setFormDeleteKeyConfigured(Boolean(result.configured));
-      return result;
-    } catch {
-      setFormDeleteKeyConfigured(false);
-      return null;
-    }
+    return refreshFormDeleteKeyConfiguredStatus({
+      fetchFormDeleteKeyStatus,
+      setFormDeleteKeyConfigured,
+    });
   };
 
   const loadResponsesForForm = async formId => {
