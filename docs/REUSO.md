@@ -39,13 +39,6 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Painel reutilizavel da chave mestra administrativa.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   Chrome reutilizavel da central administrativa com abas e resumo da aba ativa.
-- `frontend/src/screens/createFormPanels.jsx`
-  Barramento dos paineis reutilizaveis da criacao de formulario.
-  Os paineis iniciais ficaram em `frontend/src/features/forms/createFormPanels/setupPanels.jsx`.
-  Os paineis de lista e editor de campos ficaram em `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`.
-  Os paineis finais de escala, resultados e rodape ficaram em `frontend/src/features/forms/createFormPanels/finalPanels.jsx`.
-  A pre-visualizacao publica tambem ficou em `FormPreviewPanel`, exportado por `frontend/src/features/forms/createFormPanels/finalPanels.jsx`.
-  As linhas de campos usam `FormFieldRow` e os totais configurados usam `ResultsTotalRow`.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`

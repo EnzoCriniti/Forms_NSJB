@@ -7,7 +7,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
-import { FieldEditorPanel, FormBasicsPanel, FormContextPanel, FormFooterPanel, FormHeaderPanel, FormModePanel, FormPreviewPanel, FormTypeSetupPanel, PresenceFieldsPanel, ScaleEditorPanel, ResultsConfigPanel } from "./createFormPanels";
+import { FormBasicsPanel, FormContextPanel, FormHeaderPanel, FormModePanel, FormTypeSetupPanel } from "../features/forms/createFormPanels/setupPanels";
+import { FieldEditorPanel, PresenceFieldsPanel } from "../features/forms/createFormPanels/fieldPanels";
+import { FormFooterPanel, FormPreviewPanel, ResultsConfigPanel, ScaleEditorPanel } from "../features/forms/createFormPanels/finalPanels";
 import { FORM_MODES, getPeopleBaseFieldRole, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
 import {
   FIELD_TYPES,

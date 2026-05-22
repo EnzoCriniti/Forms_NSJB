@@ -187,15 +187,13 @@ Mapa curto das areas mais mexidas por agentes.
   Defaults de grade, presets e transicoes do rascunho de campo da criacao de formulario.
 - `frontend/src/screens/createFormFieldSave.js`
   Payload intermediario, validacao e merge do salvamento de campos na criacao de formulario.
-- `frontend/src/screens/createFormPanels.jsx`
-  Barramento dos paineis reutilizaveis da criacao de formulario.
-  Este arquivo agora apenas reexporta os blocos por dominio.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
   Paineis finais da criacao de formulario: pre-visualizacao, escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
+  `CreateFormScreen.jsx` importa os paineis diretamente desses modulos, sem barramento intermediario.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/features/admin/adminAccessPanels.jsx`

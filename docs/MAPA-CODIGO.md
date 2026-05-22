@@ -35,6 +35,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/screens/createFormDomain.js` - barramento historico dos helpers puros de criacao de formulario.
 - `frontend/src/screens/createFormPayload.js` - montagem do payload final salvo pela criacao de formulario.
 - `frontend/src/screens/createFormDerivedState.js` - estado derivado do editor de formulario.
+- `frontend/src/features/forms/createFormPanels/` - paineis reutilizaveis importados diretamente pela tela de criacao de formulario.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/screens/EventsScreen.jsx` - tela de eventos, formularios vinculados e aba de mensagens.
 - `frontend/src/screens/EventMessageEditorScreen.jsx` - editor de mensagens vinculadas a eventos.

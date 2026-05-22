@@ -274,13 +274,11 @@ Teste a reforcar:
 ### `frontend/src/screens/createFormPanels.jsx`
 
 Situacao atual:
-- o arquivo esta correto como ponte de reexport
-- ele nao deveria voltar a acumular logica propria
+- removido depois que `CreateFormScreen.jsx` passou a importar os paineis diretamente dos modulos em `frontend/src/features/forms/createFormPanels/*`
 
 Checklist operacional:
-- manter como ponte fina enquanto os consumidores precisarem
-- remover o arquivo no futuro se os imports diretos substituirem a ponte sem quebrar testes
-- nao adicionar regra de negocio aqui
+- concluido: a ponte de reexport foi removida
+- nao recriar barramento intermediario sem necessidade concreta de compatibilidade
 
 ### `frontend/src/components/ui.jsx` e `frontend/src/components/publicUi.jsx`
 
