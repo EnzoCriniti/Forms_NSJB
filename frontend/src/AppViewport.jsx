@@ -16,6 +16,12 @@ import { AppShellContent } from "./AppShellContent";
 import { isFormClosedForPublic } from "./lib/forms";
 import { buildPublicFormPath, buildPublicFormResultsPath, resolveAppViewportTargetState } from "./lib/appShell";
 
+const PublicRoot = ({ children }) => (
+  <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+    {children}
+  </div>
+);
+
 export const AppViewport = ({
   app,
   loading,
@@ -82,18 +88,18 @@ export const AppViewport = ({
   if (publicForm && publicResultsView) {
     if (!publicResultsEnabled) {
       return (
-        <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+        <PublicRoot>
           <ClosedPublicScreen
             form={publicForm}
             onBack={currentUser ? backToPanel : null}
             title="Resultados públicos indisponíveis"
             message="Este formulário não está configurado para exibir resultados publicamente."
           />
-        </div>
+        </PublicRoot>
       );
     }
     return (
-      <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+      <PublicRoot>
         <ResultsScreen
           onNavigate={currentUser ? backToPanel : null}
           form={publicForm}
@@ -105,20 +111,20 @@ export const AppViewport = ({
           onSaveSections={() => {}}
           publicFormHref={buildPublicFormPath(publicForm)}
         />
-      </div>
+      </PublicRoot>
     );
   }
 
   if (publicForm) {
     const publicOnBack = currentUser ? backToPanel : null;
     return (
-      <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+      <PublicRoot>
         {isFormClosedForPublic(publicForm)
           ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} actionLabel={publicResultsEnabled ? "Resultados" : ""} actionHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} title={publicResultsEnabled ? "Formulário fechado" : "Formulário fechado"} message={publicResultsEnabled ? undefined : "Este formulário não está mais aceitando respostas."} />
           : publicForm.type === "escala_organ"
             ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => app.handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => app.handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
             : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={app.handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} resultsHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} />}
-      </div>
+      </PublicRoot>
     );
   }
 
