@@ -110,7 +110,7 @@ Mapa curto das areas mais mexidas por agentes.
   `FieldControl` centraliza rotulos, controles e textos auxiliares de campos repetidos.
   `NotePanel` cobre caixas de aviso e explicacao que aparecem em mais de uma tela.
   `SplitSection` organiza telas administrativas em duas colunas para edicao e listagem.
-  Este arquivo nao deve concentrar componentes publicos de dominio; `frontend/src/components/publicUi.jsx` e a fonte de verdade para a UI publica, e os reexports aqui existem apenas como transicao.
+  Este arquivo nao deve concentrar componentes publicos de dominio; `frontend/src/components/publicUi.jsx` e a fonte de verdade para a UI publica.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topos publicos e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
@@ -247,9 +247,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Fluxo publico da escala agora usa paineis reutilizaveis para metricas e lista de vagas.
 - `frontend/src/components/ui.jsx`
-  Toolbar de leitura das telas publicas, com ajuste de fonte, troca de tema persistidos no navegador e botao de voltar reutilizavel.
+  Primitives visuais compartilhados.
 - `frontend/src/components/publicUi.jsx`
-  Implementa a toolbar de leitura e os topos publicos reexportados por `frontend/src/components/ui.jsx`.
+  Implementa a toolbar de leitura, topos publicos e tela de formulario fechado.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
   Blocos mortos antigos de totalizacao, badges e topo de resultados foram removidos apos varredura de classes.

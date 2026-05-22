@@ -5,7 +5,8 @@
  */
 
 import React from "react";
-import { COLORS, Btn, PublicReadingToolbar } from "./ui";
+import { COLORS, Btn } from "./ui";
+import { PublicReadingToolbar } from "./publicUi";
 
 export const ResultsPresenceHeader = ({
   publicActionHref,

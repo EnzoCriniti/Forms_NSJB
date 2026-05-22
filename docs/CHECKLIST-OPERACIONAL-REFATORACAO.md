@@ -282,6 +282,13 @@ Checklist operacional:
 - remover o arquivo no futuro se os imports diretos substituirem a ponte sem quebrar testes
 - nao adicionar regra de negocio aqui
 
+### `frontend/src/components/ui.jsx` e `frontend/src/components/publicUi.jsx`
+
+Checklist operacional:
+- concluido: `ui.jsx` deixou de reexportar componentes publicos de `publicUi.jsx`
+- concluido: consumidores de `ClosedPublicScreen`, `PublicTopCompact` e `PublicReadingToolbar` passaram a importar direto de `publicUi.jsx`
+- pendente: remover `PublicTop` se a varredura confirmar que ele continua sem uso real
+
 ### `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
 ### `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
 ### `frontend/src/features/forms/createFormPanels/finalPanels.jsx`

@@ -5,7 +5,8 @@
  */
 
 import React from "react";
-import { COLORS, ClosedPublicScreen } from "./components/ui";
+import { COLORS } from "./components/ui";
+import { ClosedPublicScreen } from "./components/publicUi";
 import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 import { ResultsScreen } from "./screens/ResultsScreen";

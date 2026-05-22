@@ -12,8 +12,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Use `NotePanel` para avisos e textos auxiliares em caixa cinza/verde dentro dos formularios.
   Use `SplitSection` para montagens de duas colunas em areas administrativas.
 - `frontend/src/components/publicUi.jsx`
-  Use para componentes compartilhados das telas publicas: `PublicReadingToolbar`, `PublicTopCompact`, `PublicTop` e `ClosedPublicScreen`.
-  Esses componentes continuam reexportados por `frontend/src/components/ui.jsx` para compatibilidade.
+  Use para componentes compartilhados das telas publicas: `PublicReadingToolbar`, `PublicTopCompact` e `ClosedPublicScreen`.
+  Importe esses componentes diretamente deste arquivo.
 - `frontend/src/components/CreateFormFieldPreview.jsx`
   Previa isolada de campo para o editor de formulario.
 - `frontend/src/components/ResultsPresenceHeader.jsx`

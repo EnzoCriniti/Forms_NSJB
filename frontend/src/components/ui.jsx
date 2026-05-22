@@ -353,5 +353,3 @@ export const TypeBadge = ({ type }) => (
     {type === "escala_organ" ? "Escala da Organ" : "Presença"}
   </span>
 );
-
-export { ClosedPublicScreen, PublicReadingToolbar, PublicTop, PublicTopCompact } from "./publicUi";

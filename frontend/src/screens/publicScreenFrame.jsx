@@ -5,7 +5,8 @@
  */
 
 import React from "react";
-import { COLORS, PublicTopCompact, ScreenHeader } from "../components/ui";
+import { COLORS, ScreenHeader } from "../components/ui";
+import { PublicTopCompact } from "../components/publicUi";
 
 export const PublicScreenLayout = ({ maxWidth, children }) => (
   <div style={{ maxWidth, margin: "0 auto" }}>

@@ -13,7 +13,8 @@ import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
 import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
 import { SecurityPanel } from "./adminSecurityPanels";
 import { AdminSettingsHeader } from "./adminShellPanels";
-import { AuditLogsPanel, DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
+import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../lib/gridDefaults";
+import { AuditLogsPanel, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
 
 const emptyUser = { name: "", username: "", password: "", role: "viewer" };
 const emptyLabel = { name: "", color: "#2e7d32" };
