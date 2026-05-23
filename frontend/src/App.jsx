@@ -61,11 +61,11 @@ import {
   buildAppShellDerivedState,
   clampFontScale,
   FONT_SCALE_STEP,
-  getPublicRouteFromLocation,
   resolveAppDetailLoadRequest,
   resolveAppNavigation,
-  sanitizeUser,
 } from "./lib/appShell";
+import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
+import { sanitizeUser } from "./lib/appSession";
 
 export default function App() {
   const [screen, setScreen] = useState("list");

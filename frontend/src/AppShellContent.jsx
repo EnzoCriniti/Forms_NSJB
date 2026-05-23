@@ -7,7 +7,7 @@
 import React from "react";
 import { COLORS } from "./components/ui";
 import { canCreateForms } from "./lib/auth";
-import { buildPublicFormResultsPath } from "./lib/appShell";
+import { buildPublicFormResultsPath } from "./lib/appPublicRoutes";
 import { AppHeader } from "./components/AppHeader";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";

@@ -173,6 +173,8 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - separar em blocos menores: sessao, rotas publicas, navegação interna, draft de formulario
+- iniciado: builders e parser das rotas publicas sairam para `frontend/src/lib/appPublicRoutes.js`, com reexports preservados no agregador historico
+- iniciado: normalizacao da sessao armazenada e sanitizacao de usuario sairam para `frontend/src/lib/appSession.js`, com reexports preservados no agregador historico
 - manter `getPublicRouteFromLocation` como unica fonte de parse de rota publica
 - revisar se `buildDuplicateFormDraft` e `buildSaveFormPayloadFromExisting` pertencem mais ao dominio de formulario do que ao shell
 - manter `resolveAppNavigation` sem efeitos colaterais e com regras de permissao bem isoladas

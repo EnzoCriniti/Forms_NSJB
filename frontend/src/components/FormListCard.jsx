@@ -8,7 +8,7 @@ import React from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge } from "./ui";
 import { canCreateForms, canViewForm } from "../lib/auth";
 import { formatDate, formatDateTime, getFormMode, getFormModeLabel, hasLinkedPeopleField } from "../lib/forms";
-import { buildPublicFormPath } from "../lib/appShell";
+import { buildPublicFormPath } from "../lib/appPublicRoutes";
 
 const LIST_ACTION_STYLE = {
   width: 42,

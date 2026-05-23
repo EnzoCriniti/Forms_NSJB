@@ -5,7 +5,8 @@
  */
 
 import { STORAGE_KEYS } from "./appConstants";
-import { clampFontScale, normalizeStoredSession } from "./appShell";
+import { clampFontScale } from "./appShell";
+import { normalizeStoredSession } from "./appSession";
 import { loadStored, persist } from "./storage";
 
 export const loadInitialSession = () => normalizeStoredSession(loadStored(STORAGE_KEYS.session, null));

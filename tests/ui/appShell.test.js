@@ -5,7 +5,9 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildAppShellDerivedState, buildPublicEventFormPath, getPublicRouteFromLocation, normalizeStoredSession, resolveAppDetailLoadRequest, resolveAppNavigation, resolveAppViewportTargetState } from "../../frontend/src/lib/appShell.js";
+import { buildAppShellDerivedState, resolveAppDetailLoadRequest, resolveAppNavigation, resolveAppViewportTargetState } from "../../frontend/src/lib/appShell.js";
+import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../frontend/src/lib/appPublicRoutes.js";
+import { normalizeStoredSession } from "../../frontend/src/lib/appSession.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {

@@ -124,6 +124,10 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appShell.js`
   Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`, a decisao pura de navegacao interna e seletores derivados do shell.
   Tambem isola a decisao de carregamento do alvo de `AppViewport` em `resolveAppViewportTargetState` e a requisicao de detalhe em `resolveAppDetailLoadRequest`.
+- `frontend/src/lib/appPublicRoutes.js`
+  Fonte de verdade para builders e parser das rotas publicas canonicas `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
+- `frontend/src/lib/appSession.js`
+  Normalizacao da sessao armazenada e sanitizacao dos dados publicos do usuario no frontend.
 - `frontend/src/lib/appPreferences.js`
   Centraliza leitura e aplicacao local de sessao, tema, escala de fonte e itens fixados por usuario.
 - `docs/REUSO.md`

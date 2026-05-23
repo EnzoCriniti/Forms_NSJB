@@ -14,7 +14,8 @@ import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 import { AppShellContent } from "./AppShellContent";
 import { isFormClosedForPublic } from "./lib/forms";
-import { buildPublicFormPath, buildPublicFormResultsPath, resolveAppViewportTargetState } from "./lib/appShell";
+import { resolveAppViewportTargetState } from "./lib/appShell";
+import { buildPublicFormPath, buildPublicFormResultsPath } from "./lib/appPublicRoutes";
 
 const PublicRoot = ({ children }) => (
   <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
