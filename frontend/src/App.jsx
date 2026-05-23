@@ -55,17 +55,13 @@ import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
 import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
-import {
-  buildDuplicateFormDraft,
-  buildSaveFormPayloadFromExisting,
-  buildAppShellDerivedState,
-  clampFontScale,
-  FONT_SCALE_STEP,
-  resolveAppDetailLoadRequest,
-  resolveAppNavigation,
-} from "./lib/appShell";
+import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
+import { resolveAppNavigation } from "./lib/appNavigation";
 import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
 import { sanitizeUser } from "./lib/appSession";
+import { buildAppShellDerivedState } from "./lib/appShellDerivedState";
+import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
+import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 
 export default function App() {
   const [screen, setScreen] = useState("list");

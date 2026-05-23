@@ -14,7 +14,7 @@ import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 import { AppShellContent } from "./AppShellContent";
 import { isFormClosedForPublic } from "./lib/forms";
-import { resolveAppViewportTargetState } from "./lib/appShell";
+import { resolveAppViewportTargetState } from "./lib/appDetailTarget";
 import { buildPublicFormPath, buildPublicFormResultsPath } from "./lib/appPublicRoutes";
 
 const PublicRoot = ({ children }) => (

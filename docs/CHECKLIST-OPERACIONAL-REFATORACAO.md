@@ -175,6 +175,11 @@ Checklist operacional:
 - separar em blocos menores: sessao, rotas publicas, navegação interna, draft de formulario
 - iniciado: builders e parser das rotas publicas sairam para `frontend/src/lib/appPublicRoutes.js`, com reexports preservados no agregador historico
 - iniciado: normalizacao da sessao armazenada e sanitizacao de usuario sairam para `frontend/src/lib/appSession.js`, com reexports preservados no agregador historico
+- iniciado: duplicacao e payload de formulario existente sairam para `frontend/src/lib/appFormDrafts.js`, com reexports preservados no agregador historico
+- iniciado: decisao de navegacao interna saiu para `frontend/src/lib/appNavigation.js`, com reexports preservados no agregador historico
+- iniciado: seletores derivados do shell sairam para `frontend/src/lib/appShellDerivedState.js`, com reexports preservados no agregador historico
+- iniciado: decisao de carregamento de alvo/detalhe saiu para `frontend/src/lib/appDetailTarget.js`, com reexports preservados no agregador historico
+- iniciado: limites e normalizacao da escala de fonte sairam para `frontend/src/lib/appFontScale.js`, com reexports preservados no agregador historico
 - manter `getPublicRouteFromLocation` como unica fonte de parse de rota publica
 - revisar se `buildDuplicateFormDraft` e `buildSaveFormPayloadFromExisting` pertencem mais ao dominio de formulario do que ao shell
 - manter `resolveAppNavigation` sem efeitos colaterais e com regras de permissao bem isoladas

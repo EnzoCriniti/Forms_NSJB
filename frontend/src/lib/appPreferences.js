@@ -5,7 +5,7 @@
  */
 
 import { STORAGE_KEYS } from "./appConstants";
-import { clampFontScale } from "./appShell";
+import { clampFontScale } from "./appFontScale";
 import { normalizeStoredSession } from "./appSession";
 import { loadStored, persist } from "./storage";
 

@@ -122,12 +122,21 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
-  Centraliza helpers do shell, inclusive os caminhos publicos canonicos `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`, a decisao pura de navegacao interna e seletores derivados do shell.
-  Tambem isola a decisao de carregamento do alvo de `AppViewport` em `resolveAppViewportTargetState` e a requisicao de detalhe em `resolveAppDetailLoadRequest`.
+  Agregador historico dos helpers do shell principal. Mantem reexports de compatibilidade para modulos especificos.
 - `frontend/src/lib/appPublicRoutes.js`
   Fonte de verdade para builders e parser das rotas publicas canonicas `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 - `frontend/src/lib/appSession.js`
   Normalizacao da sessao armazenada e sanitizacao dos dados publicos do usuario no frontend.
+- `frontend/src/lib/appFormDrafts.js`
+  Helpers puros para duplicar formulario e montar payload de salvamento a partir de formulario existente.
+- `frontend/src/lib/appNavigation.js`
+  Decisao pura de navegacao interna do shell autenticado, incluindo bloqueios por permissao.
+- `frontend/src/lib/appShellDerivedState.js`
+  Seletores derivados do shell autenticado, incluindo listas mescladas, formulario/evento ativos, pins e rota publica resolvida.
+- `frontend/src/lib/appDetailTarget.js`
+  Decisao pura de carregamento dos dados de detalhe usados por `AppViewport` e pelos efeitos de `App.jsx`.
+- `frontend/src/lib/appFontScale.js`
+  Limites, passo e normalizacao da escala de fonte do app.
 - `frontend/src/lib/appPreferences.js`
   Centraliza leitura e aplicacao local de sessao, tema, escala de fonte e itens fixados por usuario.
 - `docs/REUSO.md`
