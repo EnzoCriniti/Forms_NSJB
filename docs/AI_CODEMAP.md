@@ -100,7 +100,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e as telas internas apos o login.
 - `frontend/src/lib/appBootstrap.js`
-  Helpers puros do bootstrap inicial do frontend, incluindo normalizacao do payload, selecao do formulario ativo, operacoes reutilizaveis de lista e respostas de API, listas aninhadas no estado, ordenacao de eventos, metricas de formularios/escala e alternancia de itens fixados por usuario.
+  Helpers puros do bootstrap inicial do frontend, agora focado em normalizacao do payload e selecao do formulario ativo. Mantem reexports de compatibilidade para helpers ja extraidos.
+- `frontend/src/lib/appBootstrapLists.js`
+  Operacoes puras de listas do bootstrap, incluindo substituicao, upsert, remocao, listas aninhadas, ordenacao de eventos e remocao de formulario dos eventos.
+- `frontend/src/lib/appBootstrapMetrics.js`
+  Calculo e atualizacao de metricas de formularios e escala no bootstrap.
+- `frontend/src/lib/appPinning.js`
+  Helpers puros para alternar e remover itens fixados por usuario.
 - `frontend/src/lib/appDataLoad.js`
   Helpers do carregamento de dados do app: refresh do bootstrap, status da chave de exclusao e carregamento incremental de respostas/escala por formulario.
 - `frontend/src/components/AppHeader.jsx`

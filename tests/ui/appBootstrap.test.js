@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildEscalaMetrics, createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap, removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, removePinnedIdForUser, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, togglePinnedIdForUser, updateBootstrapFormMetrics, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrap";
+import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "../../frontend/src/lib/appBootstrap";
+import { removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, upsertBootstrapListItem, upsertNestedBootstrapItem } from "../../frontend/src/lib/appBootstrapLists";
+import { buildEscalaMetrics, updateBootstrapFormMetrics } from "../../frontend/src/lib/appBootstrapMetrics";
+import { removePinnedIdForUser, togglePinnedIdForUser } from "../../frontend/src/lib/appPinning";
 
 describe("appBootstrap helpers", () => {
   it("cria a estrutura vazia padrao", () => {

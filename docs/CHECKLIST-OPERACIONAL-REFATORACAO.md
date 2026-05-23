@@ -189,8 +189,11 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - separar normalizacao de bootstrap das operacoes de mutacao
+- iniciado: operacoes de listas do bootstrap sairam para `frontend/src/lib/appBootstrapLists.js`, com reexports preservados no agregador historico
 - mover metricas de escala e de formulario para um helper de calculo proprio
+- iniciado: metricas de formularios e escala sairam para `frontend/src/lib/appBootstrapMetrics.js`, com reexports preservados no agregador historico
 - isolar helpers de pinning por usuario em um arquivo menor
+- iniciado: helpers de pinning por usuario sairam para `frontend/src/lib/appPinning.js`, com reexports preservados no agregador historico
 - separar utilitarios de listas simples dos utilitarios de listas aninhadas
 - manter `pickActiveFormIdAfterBootstrap` como selecao pura, sem depender de mutacoes laterais
 
