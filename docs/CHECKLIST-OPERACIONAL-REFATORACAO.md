@@ -64,6 +64,7 @@ Checklist operacional:
 - separar as acoes por dominio: forms, events, admin, messaging, people, security
 - reduzir o objeto `shellApp` e entregar props por bloco de tela
 - manter aqui apenas estado global inevitavel: sessao, preferencia visual, rota publica, bootstrap bruto e selecao atual
+- iniciado: montagem dos itens de navegacao saiu para `frontend/src/lib/appNav.js`
 - revisar a dependência entre `screen`, `activeFormId`, `activeEventId`, `editingFormId` e `draftForm` para evitar sincronizacao implícita demais
 - centralizar os efeitos de persistencia de `session`, `theme`, `fontScale`, `pinnedFormsByUser` e `pinnedEventsByUser` em helpers separados
 - iniciado: leitura e aplicacao local de sessao, tema, fonte e pins sairam para `frontend/src/lib/appPreferences.js`
@@ -113,6 +114,7 @@ Checklist operacional:
 - extrair a montagem de cada fluxo para um componente/adapter proprio
 - manter a tela atual apenas como orquestradora do shell autenticado
 - eliminar filtros inline desnecessarios, como `forms.filter(...)` repetidos na renderizacao
+- iniciado: seletores pequenos de mensagens/eventos e detalhes de formulario sairam para `frontend/src/lib/appShellContentSelectors.js`
 
 Teste a reforcar:
 - `tests/ui/appDashboardFlow.test.jsx`

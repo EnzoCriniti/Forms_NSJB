@@ -62,6 +62,7 @@ import { sanitizeUser } from "./lib/appSession";
 import { buildAppShellDerivedState } from "./lib/appShellDerivedState";
 import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
 import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
+import { buildAppNavItems } from "./lib/appNav";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -635,12 +636,7 @@ export default function App() {
   };
 
 
-  const nav = currentUser
-    ? [
-        ...(canCreateForms(currentUser) ? [{ key: "dashboard", icon: "chart", label: "Dashboard" }] : []),
-        { key: "events", icon: "calendar", label: "Eventos" },
-      ]
-    : [];
+  const nav = buildAppNavItems({ currentUser, canCreateForms });
 
   const shellApp = {
     nav,

@@ -95,10 +95,14 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/App.jsx`
   Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile. Contas logadas respondem formularios pela tela interna `respond`; links publicos continuam em `#/formularios/<id>`.
   Handlers simples de CRUD que recebem listas do bootstrap passam pelo helper local `applyBootstrapListResult`.
+- `frontend/src/lib/appNav.js`
+  Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e as telas internas apos o login.
+- `frontend/src/lib/appShellContentSelectors.js`
+  Seletores pequenos usados por `AppShellContent.jsx` para mensagens/eventos ativos e detalhes de respostas/escala.
 - `frontend/src/lib/appBootstrap.js`
   Helpers puros do bootstrap inicial do frontend, agora focado em normalizacao do payload e selecao do formulario ativo. Mantem reexports de compatibilidade para helpers ja extraidos.
 - `frontend/src/lib/appBootstrapLists.js`

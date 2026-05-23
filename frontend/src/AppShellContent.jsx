@@ -19,6 +19,7 @@ import { ResultsScreen } from "./screens/ResultsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
+import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "./lib/appShellContentSelectors";
 
 export const AppShellContent = ({ app }) => {
   const {
@@ -149,8 +150,8 @@ export const AppShellContent = ({ app }) => {
         {screen === "eventMessageEditor" && currentUser && activeEvent && (
           <EventMessageEditorScreen
             event={activeEvent}
-            eventForms={forms.filter(form => (activeEvent.formIds || []).includes(form.id))}
-            message={(activeEvent.messages || []).find(item => item.id === activeMessageId) || null}
+            eventForms={selectEventForms(forms, activeEvent)}
+            message={selectEventMessage(activeEvent, activeMessageId)}
             messageTemplates={messageTemplates}
             personPresets={personPresets}
             people={people}
@@ -171,7 +172,7 @@ export const AppShellContent = ({ app }) => {
         {screen === "eventMessageDetail" && currentUser && activeEvent && activeMessageId && (
           <EventMessageDetailScreen
             event={activeEvent}
-            message={(activeEvent.messages || []).find(item => item.id === activeMessageId) || null}
+            message={selectEventMessage(activeEvent, activeMessageId)}
             onMessageUpdated={applyMessageUpdate}
             onMessageDeleted={id => { applyMessageDeletion(id); app.setActiveMessageId(null); app.setScreen("events"); }}
             onEdit={() => app.setScreen("eventMessageEditor")}
@@ -253,8 +254,8 @@ export const AppShellContent = ({ app }) => {
           <ResultsScreen
             onNavigate={onNavigate}
             form={activeForm}
-            responses={app.responsesByForm[activeForm.id] || []}
-            sections={app.escalaByForm[activeForm.id] || []}
+            responses={selectFormResponses(app.responsesByForm, activeForm.id)}
+            sections={selectFormSections(app.escalaByForm, activeForm.id)}
             people={people}
             user={currentUser}
             labels={labels}
@@ -264,7 +265,7 @@ export const AppShellContent = ({ app }) => {
         {screen === "respond" && activeForm && activeForm.type === "presenca" && (
           <PublicFormScreen
             form={activeForm}
-            responses={app.responsesByForm[activeForm.id] || []}
+            responses={selectFormResponses(app.responsesByForm, activeForm.id)}
             onSaveResponse={app.handleSaveResponse}
             onBack={() => onNavigate("list")}
             people={people}
@@ -278,7 +279,7 @@ export const AppShellContent = ({ app }) => {
             form={activeForm}
             onBack={() => onNavigate("list")}
             people={people}
-            sections={app.escalaByForm[activeForm.id] || []}
+            sections={selectFormSections(app.escalaByForm, activeForm.id)}
             onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
             onClaimSlot={(sectionIndex, slotIndex, person) => handleClaimEscalaSlot(activeForm.id, sectionIndex, slotIndex, person)}
             variant="internal"

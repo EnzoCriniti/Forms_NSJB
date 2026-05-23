@@ -10,6 +10,8 @@ import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../fron
 import { normalizeStoredSession } from "../../frontend/src/lib/appSession.js";
 import { buildAppShellDerivedState } from "../../frontend/src/lib/appShellDerivedState.js";
 import { resolveAppDetailLoadRequest, resolveAppViewportTargetState } from "../../frontend/src/lib/appDetailTarget.js";
+import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "../../frontend/src/lib/appShellContentSelectors.js";
+import { buildAppNavItems } from "../../frontend/src/lib/appNav.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -191,5 +193,35 @@ describe("appShell detail load request", () => {
       escalaByForm: {},
       detailLoading: { kind: "responses", formId: 6 },
     })).toBeNull();
+  });
+});
+
+describe("appShell content selectors", () => {
+  it("seleciona formularios e mensagem vinculados ao evento ativo", () => {
+    const forms = [{ id: 1 }, { id: 2 }, { id: 3 }];
+    const event = { formIds: [2, 3], messages: [{ id: 10 }, { id: 11 }] };
+
+    expect(selectEventForms(forms, event)).toEqual([{ id: 2 }, { id: 3 }]);
+    expect(selectEventMessage(event, 11)).toEqual({ id: 11 });
+  });
+
+  it("retorna listas vazias para detalhes de formulario ainda ausentes", () => {
+    expect(selectFormResponses({}, 1)).toEqual([]);
+    expect(selectFormSections({}, 1)).toEqual([]);
+  });
+});
+
+describe("app navigation items", () => {
+  it("monta navegacao conforme permissao do usuario", () => {
+    const canCreateForms = user => user?.role === "admin";
+
+    expect(buildAppNavItems({ currentUser: null, canCreateForms })).toEqual([]);
+    expect(buildAppNavItems({ currentUser: { role: "viewer" }, canCreateForms })).toEqual([
+      { key: "events", icon: "calendar", label: "Eventos" },
+    ]);
+    expect(buildAppNavItems({ currentUser: { role: "admin" }, canCreateForms })).toEqual([
+      { key: "dashboard", icon: "chart", label: "Dashboard" },
+      { key: "events", icon: "calendar", label: "Eventos" },
+    ]);
   });
 });
