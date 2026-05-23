@@ -91,6 +91,93 @@ export const buildPresenceStats = ({
   ];
 };
 
+export const buildPresenceTableRows = ({ responses = [], people = [], showLinkedRows = false }) => {
+  if (!showLinkedRows) {
+    return responses.map(response => ({
+      key: response.id || `${response.respondentGrau}-${response.respondentName}`,
+      grau: response.respondentGrau || "",
+      name: response.respondentName || "",
+      status: "Respondido",
+      response,
+    }));
+  }
+
+  const responseByName = new Map(responses.map(response => [response.respondentName, response]));
+  return people.map(person => ({
+    key: `${person.grau}-${person.name}`,
+    grau: person.grau || "",
+    name: person.name || "",
+    status: responseByName.has(person.name) ? "Respondido" : "Pendente",
+    response: responseByName.get(person.name) || null,
+  }));
+};
+
+export const buildPresenceBaseResponses = ({ responses = [], people = [], showLinkedRows = false }) => {
+  if (!showLinkedRows) {
+    return responses;
+  }
+
+  const peopleNames = new Set(people.map(person => person.name));
+  return responses.filter(response => peopleNames.has(response.respondentName));
+};
+
+export const buildPresenceTotals = ({ columns = [], responses = [], getFieldValue }) => {
+  const result = {};
+  for (const col of columns) {
+    if (col.type === "yes_no") {
+      result[col.id] = {
+        sim: responses.filter(response => getFieldValue(response, col.id) === "Sim").length,
+        nao: responses.filter(response => NO_VALUES.includes(getFieldValue(response, col.id))).length,
+      };
+    } else if (col.type === "number") {
+      result[col.id] = {
+        sum: responses.reduce((sum, response) => sum + Number(getFieldValue(response, col.id) || 0), 0),
+      };
+    }
+  }
+  return result;
+};
+
+export const buildPresenceTotalsLayout = ({ columns = [], totalsLayout = [] }) => {
+  const configured = totalsLayout
+    .map(item => ({ ...item, field: columns.find(col => String(col.id) === String(item.fieldId)) }))
+    .filter(item => item.field);
+
+  if (configured.length > 0) return configured;
+
+  return columns
+    .filter(col => col.total)
+    .map(col => ({ fieldId: col.id, style: col.type === "yes_no" ? "split" : "number", field: col }));
+};
+
+export const buildPresenceTableMinWidth = ({ columnsLength = 0, showLinkedRows = false }) => {
+  const base = showLinkedRows ? 350 : 240;
+  const dynamic = columnsLength * 160;
+  return Math.max(960, base + dynamic);
+};
+
+export const buildPresenceFilterButtons = ({ columns = [], linkedPeople = false, showLinkedRows = false }) => {
+  const items = [{ id: "name", label: "Nome", type: "text" }];
+
+  if (linkedPeople) {
+    items.unshift({ id: "grau", label: "Grau", type: "select" });
+  }
+
+  if (showLinkedRows) {
+    items.push({ id: "status", label: "Status", type: "select" });
+  }
+
+  for (const col of columns) {
+    items.push({
+      id: String(col.id),
+      label: col.label,
+      type: ["yes_no", "select", "radio"].includes(col.type) ? "select" : "text",
+    });
+  }
+
+  return items;
+};
+
 export const buildActiveFilterOptions = ({
   activeFilter,
   columnSearches,

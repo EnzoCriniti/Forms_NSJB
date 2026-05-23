@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { buildActiveFilterOptions, buildEscalaCsv, buildPresenceCsv, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "../../frontend/src/screens/resultsDomain";
+import { buildActiveFilterOptions, buildEscalaCsv, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, compareGrauOptions, formatResultFieldValue } from "../../frontend/src/screens/resultsDomain";
 
 describe("resultsDomain", () => {
   it("ordena grau por prioridade canonica", () => {
@@ -55,6 +55,66 @@ describe("resultsDomain", () => {
       linkedPeople: true,
       peopleLength: 4,
     })[1].l).toBe("Campos totalizaveis");
+  });
+
+  it("monta linhas de tabela com ou sem base vinculada", () => {
+    const responses = [{ id: 1, respondentGrau: "QM", respondentName: "Maria" }];
+    expect(buildPresenceTableRows({ responses, showLinkedRows: false })).toEqual([
+      { key: 1, grau: "QM", name: "Maria", status: "Respondido", response: responses[0] },
+    ]);
+
+    expect(buildPresenceTableRows({
+      responses,
+      people: [{ grau: "QM", name: "Maria" }, { grau: "CDC", name: "Joao" }],
+      showLinkedRows: true,
+    })).toEqual([
+      { key: "QM-Maria", grau: "QM", name: "Maria", status: "Respondido", response: responses[0] },
+      { key: "CDC-Joao", grau: "CDC", name: "Joao", status: "Pendente", response: null },
+    ]);
+  });
+
+  it("filtra respostas base e totaliza colunas configuradas", () => {
+    const responses = [
+      { respondentName: "Maria", 2: "Sim", 3: 2 },
+      { respondentName: "Extra", 2: "Nao", 3: 5 },
+    ];
+
+    expect(buildPresenceBaseResponses({
+      responses,
+      people: [{ name: "Maria" }],
+      showLinkedRows: true,
+    })).toEqual([responses[0]]);
+
+    expect(buildPresenceTotals({
+      columns: [{ id: 2, type: "yes_no" }, { id: 3, type: "number" }],
+      responses,
+      getFieldValue: (response, fieldId) => response[fieldId],
+    })).toEqual({
+      2: { sim: 1, nao: 1 },
+      3: { sum: 7 },
+    });
+  });
+
+  it("monta layout de totais, largura minima e filtros da presenca", () => {
+    const columns = [
+      { id: 2, label: "Vai?", type: "yes_no", total: true },
+      { id: 3, label: "Obs", type: "text", total: false },
+    ];
+
+    expect(buildPresenceTotalsLayout({ columns, totalsLayout: [] })).toEqual([
+      { fieldId: 2, style: "split", field: columns[0] },
+    ]);
+    expect(buildPresenceTotalsLayout({ columns, totalsLayout: [{ fieldId: 3, style: "metric" }] })).toEqual([
+      { fieldId: 3, style: "metric", field: columns[1] },
+    ]);
+    expect(buildPresenceTableMinWidth({ columnsLength: 2, showLinkedRows: true })).toBe(960);
+    expect(buildPresenceFilterButtons({ columns, linkedPeople: true, showLinkedRows: true })).toEqual([
+      { id: "grau", label: "Grau", type: "select" },
+      { id: "name", label: "Nome", type: "text" },
+      { id: "status", label: "Status", type: "select" },
+      { id: "2", label: "Vai?", type: "select" },
+      { id: "3", label: "Obs", type: "text" },
+    ]);
   });
 
   it("monta csv de presenca com valores formatados", () => {

@@ -9,7 +9,7 @@ import { COLORS, Icon, resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
-import { NO_VALUES, TABLE_ZOOM_STEP, clampTableZoom, buildActiveFilterOptions, buildEscalaCsv, buildPresenceCsv, buildPresenceStats, compareGrauOptions, formatResultFieldValue } from "./resultsDomain";
+import { NO_VALUES, TABLE_ZOOM_STEP, clampTableZoom, buildActiveFilterOptions, buildEscalaCsv, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, compareGrauOptions, formatResultFieldValue } from "./resultsDomain";
 
 export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
@@ -47,36 +47,9 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     }
   };
 
-  const tableRows = useMemo(() => {
-    if (!showLinkedRows) {
-      return responses.map(response => ({
-        key: response.id || `${response.respondentGrau}-${response.respondentName}`,
-        grau: response.respondentGrau || "",
-        name: response.respondentName || "",
-        status: "Respondido",
-        response,
-      }));
-    }
+  const tableRows = useMemo(() => buildPresenceTableRows({ responses, people, showLinkedRows }), [people, responses, showLinkedRows]);
 
-    const responseByName = new Map(responses.map(response => [response.respondentName, response]));
-    const rosterRows = people.map(person => ({
-      key: `${person.grau}-${person.name}`,
-      grau: person.grau || "",
-      name: person.name || "",
-      status: responseByName.has(person.name) ? "Respondido" : "Pendente",
-      response: responseByName.get(person.name) || null,
-    }));
-    return rosterRows;
-  }, [people, responses, showLinkedRows]);
-
-  const baseResponses = useMemo(() => {
-    if (!showLinkedRows) {
-      return responses;
-    }
-
-    const peopleNames = new Set(people.map(person => person.name));
-    return responses.filter(response => peopleNames.has(response.respondentName));
-  }, [people, responses, showLinkedRows]);
+  const baseResponses = useMemo(() => buildPresenceBaseResponses({ responses, people, showLinkedRows }), [people, responses, showLinkedRows]);
 
   const grauOptions = useMemo(() => {
     const values = [...new Set(tableRows.map(row => String(row.grau || "").trim()).filter(Boolean))];
@@ -158,62 +131,13 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     return data;
   }, [filteredRows, sortCol, sortDir]);
 
-  const totals = useMemo(() => {
-    const result = {};
-    for (const col of columns) {
-      if (col.type === "yes_no") {
-        result[col.id] = {
-          sim: filteredResponses.filter(response => getFieldValue(response, col.id) === "Sim").length,
-          nao: filteredResponses.filter(response => NO_VALUES.includes(getFieldValue(response, col.id))).length,
-        };
-      } else if (col.type === "number") {
-        result[col.id] = {
-          sum: filteredResponses.reduce((sum, response) => sum + Number(getFieldValue(response, col.id) || 0), 0),
-        };
-      }
-    }
-    return result;
-  }, [columns, filteredResponses]);
+  const totals = useMemo(() => buildPresenceTotals({ columns, responses: filteredResponses, getFieldValue }), [columns, filteredResponses]);
 
-  const totalsLayout = useMemo(() => {
-    const configured = resultsConfig.totalsLayout
-      .map(item => ({ ...item, field: columns.find(col => String(col.id) === String(item.fieldId)) }))
-      .filter(item => item.field);
+  const totalsLayout = useMemo(() => buildPresenceTotalsLayout({ columns, totalsLayout: resultsConfig.totalsLayout }), [columns, resultsConfig.totalsLayout]);
 
-    if (configured.length > 0) return configured;
+  const tableMinWidth = useMemo(() => buildPresenceTableMinWidth({ columnsLength: columns.length, showLinkedRows }), [columns.length, showLinkedRows]);
 
-    return columns
-      .filter(col => col.total)
-      .map(col => ({ fieldId: col.id, style: col.type === "yes_no" ? "split" : "number", field: col }));
-  }, [columns, resultsConfig.totalsLayout]);
-
-  const tableMinWidth = useMemo(() => {
-    const base = showLinkedRows ? 350 : 240;
-    const dynamic = columns.length * 160;
-    return Math.max(960, base + dynamic);
-  }, [columns.length, showLinkedRows]);
-
-  const filterButtons = useMemo(() => {
-    const items = [{ id: "name", label: "Nome", type: "text" }];
-
-    if (linkedPeople) {
-      items.unshift({ id: "grau", label: "Grau", type: "select" });
-    }
-
-    if (showLinkedRows) {
-      items.push({ id: "status", label: "Status", type: "select" });
-    }
-
-    for (const col of columns) {
-      items.push({
-        id: String(col.id),
-        label: col.label,
-        type: ["yes_no", "select", "radio"].includes(col.type) ? "select" : "text",
-      });
-    }
-
-    return items;
-  }, [columns, linkedPeople, showLinkedRows]);
+  const filterButtons = useMemo(() => buildPresenceFilterButtons({ columns, linkedPeople, showLinkedRows }), [columns, linkedPeople, showLinkedRows]);
 
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
