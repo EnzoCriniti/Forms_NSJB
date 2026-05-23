@@ -90,6 +90,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - extrair gates nomeados para loading, erro, login e rota publica
+- iniciado: renderizacao das rotas publicas saiu para `frontend/src/AppPublicViewport.jsx`
 - remover o `style` inline repetido do wrapper publico e usar layout compartilhado
 - iniciado: wrapper publico repetido saiu para o componente local `PublicRoot` em `AppViewport.jsx`
 - isolar a decisao de `waitingForTarget` em um helper puro

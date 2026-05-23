@@ -99,6 +99,8 @@ Mapa curto das areas mais mexidas por agentes.
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
+- `frontend/src/AppPublicViewport.jsx`
+  Renderizacao das rotas publicas de formulario, escala e resultados, delegada por `AppViewport.jsx`.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e as telas internas apos o login.
 - `frontend/src/lib/appShellContentSelectors.js`
