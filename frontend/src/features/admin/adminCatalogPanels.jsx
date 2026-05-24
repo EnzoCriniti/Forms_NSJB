@@ -7,7 +7,11 @@
 import React from "react";
 import { Btn, COLORS, FieldControl, NotePanel, SplitSection, SurfacePanel } from "../../components/ui";
 import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../lib/gridDefaults";
-import { ADMIN_INPUT_STYLE, AdminField, FieldCatalogPreview, GridSchemaEditor, PaginatedList, fieldCategoryLabels, fieldTypeLabels, getExternalBaseName, normalizeIdentifier, taskCategoryLabels } from "./adminSettingsShared";
+import { AdminField } from "./adminField";
+import { FieldCatalogPreview } from "./adminFieldPreview";
+import { GridSchemaEditor } from "./adminGridSchemaEditor";
+import { PaginatedList } from "./adminPaginatedList";
+import { ADMIN_INPUT_STYLE, fieldCategoryLabels, fieldTypeLabels, getExternalBaseName, normalizeIdentifier, taskCategoryLabels } from "./adminSettingsConstants";
 
 export const CatalogManagementPanel = ({
   catalogMode,

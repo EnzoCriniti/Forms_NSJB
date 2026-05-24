@@ -6,8 +6,10 @@
 
 import React from "react";
 import { Btn, COLORS, FieldControl, NotePanel, SplitSection } from "../../components/ui";
-import { ADMIN_INPUT_STYLE, AdminField, PaginatedList } from "./adminSettingsShared";
 import { ROLES } from "../../lib/auth";
+import { AdminField } from "./adminField";
+import { PaginatedList } from "./adminPaginatedList";
+import { ADMIN_INPUT_STYLE } from "./adminSettingsConstants";
 
 export const UsersManagementPanel = ({
   userDraft,

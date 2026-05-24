@@ -33,7 +33,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   Chrome compartilhado da central administrativa, com a barra de abas e o resumo da aba ativa.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
-  Agregador historico dos helpers compartilhados do admin. Mantem reexports de compatibilidade para modulos menores.
+  Agregador historico dos helpers compartilhados do admin. Mantem reexports de compatibilidade; os paineis administrativos ja consomem os modulos menores diretamente.
 - `frontend/src/features/admin/adminSettingsConstants.js`
   Constantes, labels e normalizadores compartilhados da area administrativa.
 - `frontend/src/features/admin/adminPaginatedList.jsx`
@@ -60,7 +60,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade; novas alteracoes devem usar os modulos `createForm*.js` especificos.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
-  Hub auxiliar da central administrativa. Ainda mistura constantes, preview, paginacao, grade e auditoria.
+  Hub auxiliar historico da central administrativa. Hoje fica como camada de compatibilidade para constantes, preview, paginacao, grade, auditoria e wrapper de campo ja extraidos.
 - `backend/routes/adminRoutes.mjs`
   Agregador das rotas administrativas ainda nao extraidas por dominio.
 - `backend/routes/adminCatalogRoutes.mjs`

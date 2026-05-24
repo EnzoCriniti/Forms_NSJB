@@ -6,7 +6,8 @@
 
 import React from "react";
 import { Btn, COLORS, FieldControl, NotePanel, SplitSection, SurfacePanel } from "../../components/ui";
-import { ADMIN_INPUT_STYLE, PaginatedList } from "./adminSettingsShared";
+import { PaginatedList } from "./adminPaginatedList";
+import { ADMIN_INPUT_STYLE } from "./adminSettingsConstants";
 
 export const LabelsPanel = ({
   labelDraft,

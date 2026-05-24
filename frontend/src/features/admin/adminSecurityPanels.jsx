@@ -6,7 +6,7 @@
 
 import React from "react";
 import { Btn, COLORS, FeedbackBanner, FieldControl, SplitSection, SurfacePanel } from "../../components/ui";
-import { ADMIN_INPUT_STYLE } from "./adminSettingsShared";
+import { ADMIN_INPUT_STYLE } from "./adminSettingsConstants";
 
 export const SecurityPanel = ({
   formDeleteKeyConfigured,
