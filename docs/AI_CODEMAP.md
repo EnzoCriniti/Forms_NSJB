@@ -145,6 +145,8 @@ Mapa curto das areas mais mexidas por agentes.
   Limites, passo e normalizacao da escala de fonte do app.
 - `frontend/src/lib/appPreferences.js`
   Centraliza leitura e aplicacao local de sessao, tema, escala de fonte e itens fixados por usuario.
+- `frontend/src/lib/downloadCsv.js`
+  Utilitario compartilhado para gerar download de CSV no navegador.
 - `docs/REUSO.md`
   Indice rapido para agentes encontrarem componentes, helpers e telas antes de recriar comportamento ja existente.
 

@@ -7,6 +7,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { COLORS, Icon, resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
+import { downloadCsv } from "../lib/downloadCsv";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
 import { NO_VALUES, TABLE_ZOOM_STEP, addEscalaSlot, assignEscalaSlotPerson, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildEscalaMetrics, buildEscalaNames, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clampTableZoom, clearEscalaSlotPerson, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, patchEscalaSlot, sortPresenceRows } from "./resultsDomain";
@@ -119,15 +120,7 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
       getFieldValue,
       formatFieldValue: formatResultFieldValue,
     });
-    const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${form.slug}-resultados.csv`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    downloadCsv({ csv, filename: `${form.slug}-resultados.csv` });
     setFeedback({ tone: "success", message: "CSV exportado com sucesso." });
   };
 
@@ -283,15 +276,7 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
 
   const exportCsv = () => {
     const csv = buildEscalaCsv(sections);
-    const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${form.slug}-escala.csv`;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    downloadCsv({ csv, filename: `${form.slug}-escala.csv` });
     setFeedback({ tone: "success", message: "CSV exportado com sucesso." });
   };
 
