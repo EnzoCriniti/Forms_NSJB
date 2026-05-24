@@ -9,7 +9,7 @@ import { COLORS, Icon, resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
-import { NO_VALUES, TABLE_ZOOM_STEP, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clampTableZoom, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, sortPresenceRows } from "./resultsDomain";
+import { NO_VALUES, TABLE_ZOOM_STEP, addEscalaSlot, assignEscalaSlotPerson, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildEscalaMetrics, buildEscalaNames, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clampTableZoom, clearEscalaSlotPerson, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, patchEscalaSlot, sortPresenceRows } from "./resultsDomain";
 
 export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
@@ -215,9 +215,8 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   const [feedback, setFeedback] = useState(null);
   const [busyAction, setBusyAction] = useState(null);
   const [pendingRemoval, setPendingRemoval] = useState(null);
-  const names = people.map(person => person.name);
-  const total = sections.reduce((sum, section) => sum + section.slots.length, 0);
-  const filled = sections.reduce((sum, section) => sum + section.slots.filter(slot => slot.person).length, 0);
+  const names = buildEscalaNames(people);
+  const { total, filled } = buildEscalaMetrics(sections);
 
   const persistSections = async (next, successMessage = "Alterações salvas.") => {
     setFeedback({ tone: "loading", message: "Salvando escala..." });
@@ -227,10 +226,7 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
 
   const signup = async () => {
     if (!signName || !selSlot) return;
-    const next = sections.map((section, sectionIndex) => sectionIndex === selSlot.sectionIndex ? {
-      ...section,
-      slots: section.slots.map((slot, slotIndex) => slotIndex === selSlot.slotIndex ? { ...slot, person: signName } : slot),
-    } : section);
+    const next = assignEscalaSlotPerson(sections, selSlot.sectionIndex, selSlot.slotIndex, signName);
     setBusyAction("signup");
     try {
       await persistSections(next, "Vaga preenchida com sucesso.");
@@ -249,10 +245,7 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   const confirmRemoval = async () => {
     if (!pendingRemoval) return;
     const { sectionIndex, slotIndex } = pendingRemoval;
-    const next = sections.map((section, currentSectionIndex) => currentSectionIndex === sectionIndex ? {
-      ...section,
-      slots: section.slots.map((slot, currentSlotIndex) => currentSlotIndex === slotIndex ? { ...slot, person: "" } : slot),
-    } : section);
+    const next = clearEscalaSlotPerson(sections, sectionIndex, slotIndex);
     setBusyAction("remove");
     try {
       await persistSections(next, "Vaga excluída com sucesso.");
@@ -265,10 +258,7 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   };
 
   const updateSlot = async (sectionIndex, slotIndex, patch) => {
-    const next = sections.map((section, currentSectionIndex) => currentSectionIndex === sectionIndex ? {
-      ...section,
-      slots: section.slots.map((slot, currentSlotIndex) => currentSlotIndex === slotIndex ? { ...slot, ...patch } : slot),
-    } : section);
+    const next = patchEscalaSlot(sections, sectionIndex, slotIndex, patch);
     setBusyAction("update");
     try {
       await persistSections(next);
@@ -280,7 +270,7 @@ const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }
   };
 
   const addSlot = async sectionIndex => {
-    const next = sections.map((section, currentSectionIndex) => currentSectionIndex === sectionIndex ? { ...section, slots: [...section.slots, { role: "Auxiliar", person: "" }] } : section);
+    const next = addEscalaSlot(sections, sectionIndex);
     setBusyAction("add");
     try {
       await persistSections(next);

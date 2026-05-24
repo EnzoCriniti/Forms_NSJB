@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, compareGrauOptions, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, sortPresenceRows } from "../../frontend/src/screens/resultsDomain";
+import { addEscalaSlot, assignEscalaSlotPerson, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildEscalaMetrics, buildEscalaNames, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clearEscalaSlotPerson, compareGrauOptions, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, patchEscalaSlot, sortPresenceRows } from "../../frontend/src/screens/resultsDomain";
 
 describe("resultsDomain", () => {
   it("ordena grau por prioridade canonica", () => {
@@ -176,5 +176,19 @@ describe("resultsDomain", () => {
     ]);
 
     expect(csv).toBe('"Secao";"Funcao";"Pessoa";"Status"\n"Sala";"Responsavel";"Maria";"Preenchida"\n"Sala";"Auxiliar";"";"Pendente"');
+  });
+
+  it("monta metricas e mutacoes puras da escala", () => {
+    const sections = [
+      { title: "Sala", slots: [{ role: "Responsavel", person: "Maria" }, { role: "Auxiliar", person: "" }] },
+      { title: "Entrada", slots: [{ role: "Apoio", person: "" }] },
+    ];
+
+    expect(buildEscalaMetrics(sections)).toEqual({ total: 3, filled: 1 });
+    expect(buildEscalaNames([{ name: "Maria" }, { name: "Joao" }])).toEqual(["Maria", "Joao"]);
+    expect(assignEscalaSlotPerson(sections, 0, 1, "Joao")[0].slots[1].person).toBe("Joao");
+    expect(clearEscalaSlotPerson(sections, 0, 0)[0].slots[0].person).toBe("");
+    expect(patchEscalaSlot(sections, 1, 0, { role: "Recepcao" })[1].slots[0].role).toBe("Recepcao");
+    expect(addEscalaSlot(sections, 1)[1].slots).toHaveLength(2);
   });
 });
