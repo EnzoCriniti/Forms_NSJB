@@ -176,6 +176,8 @@ Mapa curto das areas mais mexidas por agentes.
   Montagem do objeto entregue ao viewport e ao shell autenticado a partir de blocos de estado, dados, acoes e setters.
 - `frontend/src/lib/appLifecycleEffects.js`
   Hook dos efeitos de ciclo de vida do shell principal: persistencia, bootstrap inicial, rota publica, detalhes e validacao de sessao.
+- `frontend/src/lib/appSessionActions.js`
+  Acoes de sessao, logout local, navegacao interna e escala de fonte do shell principal.
 - `frontend/src/lib/appNavigation.js`
   Decisao pura de navegacao interna do shell autenticado, incluindo bloqueios por permissao.
 - `frontend/src/lib/appShellDerivedState.js`

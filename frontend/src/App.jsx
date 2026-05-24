@@ -53,7 +53,7 @@ import {
 } from "./lib/api";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
-import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
+import { loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
 import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm, startEventFormCreation } from "./lib/appFormActions";
@@ -68,6 +68,7 @@ import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 import { buildAppNavItems } from "./lib/appNav";
 import { buildShellApp } from "./lib/appShellObject";
 import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
+import { invalidateAppSession, loginAppSession, logoutAppSession, navigateAppScreen, updateAppFontScale } from "./lib/appSessionActions";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -129,9 +130,6 @@ export default function App() {
     draftForm,
     publicRoute,
   ]);
-  const hasLoadedResponses = formId => hasLoadedFormDetails({ bootstrapDetails: bootstrap.responsesByForm, details: responseDetails, formId });
-  const hasLoadedEscala = formId => hasLoadedFormDetails({ bootstrapDetails: bootstrap.escalaByForm, details: escalaDetails, formId });
-
   const refreshBootstrap = async ({ preserveSelection = true, silent = false, rethrow = false } = {}) => {
     return refreshAppBootstrap({
       preserveSelection,
@@ -186,17 +184,19 @@ export default function App() {
 
   const refreshEscalaForForm = async formId => loadEscalaForForm(formId, { force: true });
 
-  const increaseFontScale = () => setFontScale(current => clampFontScale(current + FONT_SCALE_STEP));
-  const decreaseFontScale = () => setFontScale(current => clampFontScale(current - FONT_SCALE_STEP));
+  const increaseFontScale = () => updateAppFontScale({ direction: "increase", setFontScale, clampFontScale, fontScaleStep: FONT_SCALE_STEP });
+  const decreaseFontScale = () => updateAppFontScale({ direction: "decrease", setFontScale, clampFontScale, fontScaleStep: FONT_SCALE_STEP });
 
   const invalidateSession = () => {
-    setSession(null);
-    setAuthToken(null);
-    persistSession(null);
-    setActiveFormId(null);
-    setEditingFormId(null);
-    setDraftForm(null);
-    setScreen("list");
+    invalidateAppSession({
+      persistSession,
+      setActiveFormId,
+      setAuthToken,
+      setDraftForm,
+      setEditingFormId,
+      setScreen,
+      setSession,
+    });
   };
 
   useAppLifecycleEffects({
@@ -238,44 +238,27 @@ export default function App() {
   });
 
   const login = async (username, password) => {
-    const result = await loginWithCredentials({ username, password });
-    setSession({
-      user: result.user,
-      token: result.token,
-      expiresAt: result.expiresAt || null,
-    });
-    return result.user;
+    return loginAppSession({ username, password, loginWithCredentials, setSession });
   };
 
   const logout = async () => {
-    try {
-      await logoutAuth();
-    } catch {
-      // Logout local continua efetivo mesmo se a revogacao remota falhar.
-    }
-    invalidateSession();
+    await logoutAppSession({ logoutAuth, invalidateSession });
   };
 
   const navigate = (nextScreen, form) => {
-    const decision = resolveAppNavigation({
+    navigateAppScreen({
       nextScreen,
       form,
       activeForm,
       currentUser,
       canCreateForms,
       canViewForm,
+      resolveAppNavigation,
+      setActiveFormId,
+      setDraftForm,
+      setEditingFormId,
+      setScreen,
     });
-
-    if (decision.clearDraft) {
-      setDraftForm(null);
-    }
-    if (Object.prototype.hasOwnProperty.call(decision, "editingFormId")) {
-      setEditingFormId(decision.editingFormId);
-    }
-    if (decision.activeFormId) {
-      setActiveFormId(decision.activeFormId);
-    }
-    setScreen(decision.screen);
   };
 
   const handleSaveForm = async payload => {
