@@ -13,7 +13,7 @@ import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
 import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
 import { SecurityPanel } from "./adminSecurityPanels";
 import { AdminSettingsHeader } from "./adminShellPanels";
-import { AuditLogsPanel } from "./adminSettingsShared";
+import { AuditLogsPanel } from "./adminAuditLogsPanel";
 
 export const AdminSettingsContent = ({
   isScreen,

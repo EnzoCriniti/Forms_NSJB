@@ -4,7 +4,7 @@
  * @responsibility Montar payloads puros de submit usados pelo AdminSettingsModal.
  */
 
-import { normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
+import { normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsConstants";
 
 export const buildAdminUserPayload = userDraft => ({
   ...userDraft,

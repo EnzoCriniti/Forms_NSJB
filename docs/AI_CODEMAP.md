@@ -33,8 +33,19 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   Chrome compartilhado da central administrativa, com a barra de abas e o resumo da aba ativa.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
-  Helpers compartilhados do admin, incluindo listas paginadas, preview de campo, editor de matriz e painel de auditoria.
-  Tambem centraliza `ADMIN_INPUT_STYLE` para campos dos paineis administrativos.
+  Agregador historico dos helpers compartilhados do admin. Mantem reexports de compatibilidade para modulos menores.
+- `frontend/src/features/admin/adminSettingsConstants.js`
+  Constantes, labels e normalizadores compartilhados da area administrativa.
+- `frontend/src/features/admin/adminPaginatedList.jsx`
+  Lista paginada compartilhada dos paineis administrativos.
+- `frontend/src/features/admin/adminFieldPreview.jsx`
+  Preview visual de campos base do catalogo administrativo.
+- `frontend/src/features/admin/adminGridSchemaEditor.jsx`
+  Editor de linhas, colunas e presets dos campos de grade do admin.
+- `frontend/src/features/admin/adminAuditLogsPanel.jsx`
+  Painel de auditoria administrativa com filtros, carregamento e tabela.
+- `frontend/src/features/admin/adminField.jsx`
+  Wrapper simples para campos dos paineis administrativos.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
   Configuracao da base sincronizada de socios, mapeamento de colunas e preview da base atual.
 - `frontend/src/lib/api.js`

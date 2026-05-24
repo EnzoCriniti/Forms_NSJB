@@ -516,6 +516,7 @@ Checklist operacional:
   - editor de grade
   - logs de auditoria
   - lista paginada
+- iniciado: constantes/labels/normalizadores, lista paginada, preview, editor de grade, auditoria e wrapper de campo sairam para modulos `adminSettingsConstants.js`, `adminPaginatedList.jsx`, `adminFieldPreview.jsx`, `adminGridSchemaEditor.jsx`, `adminAuditLogsPanel.jsx` e `adminField.jsx`
 - remover duplicacao de `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS` e `SCALE_PRESETS`
 - extrair a query de auditoria e o estado de filtros para um helper proprio
 - manter `normalizeIdentifier` e `normalizeFieldSelectionSource` apenas se continuarem sendo especificos da area admin
