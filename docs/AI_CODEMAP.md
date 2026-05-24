@@ -171,7 +171,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/uiHeader.jsx`
   Header interno compartilhado `ScreenHeader`, usado por telas autenticadas e reexportado por `ui.jsx` para compatibilidade.
 - `frontend/src/components/publicUi.jsx`
-  Agregador e composicao das telas publicas: reexporta o topo publico canonico e concentra a tela de formulario fechado.
+  Agregador historico da UI publica. Mantem reexports de compatibilidade para tela fechada, barra de leitura e topo compacto.
+- `frontend/src/components/ClosedPublicScreen.jsx`
+  Tela publica de formulario fechado, usando `PublicTopCompact` e mensagem/fechamento do formulario.
 - `frontend/src/components/PublicReadingToolbar.jsx`
   Barra publica de ajustes de leitura, consumindo o helper de preferencias publicas e reexportada por `publicUi.jsx` para compatibilidade.
 - `frontend/src/components/PublicTopCompact.jsx`

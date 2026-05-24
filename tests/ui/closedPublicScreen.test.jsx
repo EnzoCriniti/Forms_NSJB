@@ -1,0 +1,43 @@
+/**
+ * @file tests/ui/closedPublicScreen.test.jsx
+ * @summary Testes da tela publica de formulario fechado.
+ * @responsibility Cobrir mensagem padrao, texto customizado, fechamento e topo apos extracao de publicUi.jsx.
+ */
+
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { ClosedPublicScreen } from "../../frontend/src/components/ClosedPublicScreen.jsx";
+
+const form = {
+  id: 1,
+  title: "Formulario Publico",
+  date: "2026-05-10",
+  type: "presenca",
+  closing: "2026-05-12T19:30",
+};
+
+describe("ClosedPublicScreen", () => {
+  it("renderiza topo, titulo padrao, mensagem padrao e fechamento", () => {
+    render(<ClosedPublicScreen form={form} />);
+
+    expect(screen.getByRole("heading", { name: "Formulario Publico - 10/05/2026" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Formulário fechado" })).toBeInTheDocument();
+    expect(screen.getByText("Este formulário não está mais aceitando respostas.")).toBeInTheDocument();
+    expect(screen.getByText("Fechamento: 12/05/2026 19:30")).toBeInTheDocument();
+  });
+
+  it("prioriza titulo, mensagem e texto de fechamento customizados", () => {
+    render(
+      <ClosedPublicScreen
+        form={{ ...form, closingText: "Encerrado pela secretaria." }}
+        title="Inscrições encerradas"
+        message="Procure a organização."
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Inscrições encerradas" })).toBeInTheDocument();
+    expect(screen.getByText("Procure a organização.")).toBeInTheDocument();
+    expect(screen.queryByText("Encerrado pela secretaria.")).not.toBeInTheDocument();
+  });
+});
