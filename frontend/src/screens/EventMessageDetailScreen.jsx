@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Btn, COLORS, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
 import { MessageLogsPanel, MessagePreviewPanel } from "../features/events/components/eventMessageDetailPanels";
+import { getEventMessageConfirmProps, isEventMessageCancellable, isEventMessageDispatchable, isEventMessageEditable, splitPreviewRecipients } from "./eventMessageDomain";
 import {
   cancelEventMessage as apiCancelEventMessage,
   deleteEventMessage as apiDeleteEventMessage,
@@ -15,10 +16,6 @@ import {
   fetchEventMessage,
   fetchEventMessagePreview,
 } from "../lib/api";
-
-const isEditable = status => ["rascunho", "agendada"].includes(status);
-const isCancellable = status => ["rascunho", "agendada", "pronta"].includes(status);
-const isDispatchable = status => ["rascunho", "agendada", "pronta"].includes(status);
 
 const formatDateTime = value => {
   if (!value) return "";
@@ -161,8 +158,8 @@ export const EventMessageDetailScreen = ({
     );
   }
 
-  const recipientsActive = (preview?.recipients || []).filter(item => !item.skipped);
-  const recipientsSkipped = (preview?.recipients || []).filter(item => item.skipped);
+  const { recipientsActive, recipientsSkipped } = splitPreviewRecipients(preview);
+  const confirmProps = getEventMessageConfirmProps(confirmAction);
 
   return (
     <div>
@@ -177,16 +174,16 @@ export const EventMessageDetailScreen = ({
         )}
         actions={(
           <>
-            {isEditable(message.status) && onEdit && (
+            {isEventMessageEditable(message.status) && onEdit && (
               <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>
             )}
-            {isCancellable(message.status) && (
+            {isEventMessageCancellable(message.status) && (
               <Btn v="secondary" icon="close" onClick={() => requestConfirm("cancel")} loading={busyAction === "cancel"} disabled={Boolean(busyAction)}>Cancelar</Btn>
             )}
             {message.status === "cancelada" && (
               <Btn v="danger" icon="trash" onClick={() => requestConfirm("delete")} loading={busyAction === "delete"} disabled={Boolean(busyAction)}>Excluir</Btn>
             )}
-            {isDispatchable(message.status) && (
+            {isEventMessageDispatchable(message.status) && (
               <Btn icon="share" onClick={() => requestConfirm("dispatch")} loading={busyAction === "dispatch"} disabled={Boolean(busyAction)}>Disparar agora</Btn>
             )}
           </>
@@ -218,7 +215,7 @@ export const EventMessageDetailScreen = ({
 
       <ConfirmModal
         open={Boolean(confirmAction)}
-        title={confirmAction === "dispatch" ? "Disparar mensagem" : confirmAction === "cancel" ? "Cancelar mensagem" : "Excluir mensagem"}
+        title={confirmProps.title}
         message={
           confirmAction === "dispatch"
             ? "No modo log-only nada e enviado de fato — apenas o disparo e registrado no historico e o status passa a 'disparada'. Confirma?"
@@ -226,8 +223,8 @@ export const EventMessageDetailScreen = ({
               ? "Cancelar move a mensagem para o estado 'cancelada' e impede edicoes e disparos futuros. Continuar?"
               : "Excluir remove a mensagem e o historico de logs associado. Continuar?"
         }
-        confirmLabel={confirmAction === "delete" ? "Excluir" : confirmAction === "cancel" ? "Cancelar mensagem" : "Disparar"}
-        tone={confirmAction === "delete" ? "danger" : confirmAction === "cancel" ? "warning" : "primary"}
+        confirmLabel={confirmProps.confirmLabel}
+        tone={confirmProps.tone}
         onCancel={closeConfirm}
         onConfirm={runConfirm}
       />

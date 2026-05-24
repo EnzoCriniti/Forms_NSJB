@@ -5,7 +5,17 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { buildEventMessageSavePayload, buildEventMessageTypePatch, buildInitialEventMessageDraft, eligibleTypesForEvent } from "../../frontend/src/screens/eventMessageDomain";
+import {
+  buildEventMessageSavePayload,
+  buildEventMessageTypePatch,
+  buildInitialEventMessageDraft,
+  eligibleTypesForEvent,
+  getEventMessageConfirmProps,
+  isEventMessageCancellable,
+  isEventMessageDispatchable,
+  isEventMessageEditable,
+  splitPreviewRecipients,
+} from "../../frontend/src/screens/eventMessageDomain";
 
 const presenca = { id: 1, type: "presenca", title: "Presenca" };
 const escala = { id: 2, type: "escala_organ", title: "Escala" };
@@ -122,6 +132,45 @@ describe("eventMessageDomain", () => {
       config: {},
       autoDispatchEnabled: false,
       scheduledFor: new Date("2026-05-20T10:00").toISOString(),
+    });
+  });
+
+  it("classifica acoes permitidas por status da mensagem", () => {
+    expect(isEventMessageEditable("rascunho")).toBe(true);
+    expect(isEventMessageEditable("pronta")).toBe(false);
+    expect(isEventMessageCancellable("pronta")).toBe(true);
+    expect(isEventMessageCancellable("disparada")).toBe(false);
+    expect(isEventMessageDispatchable("agendada")).toBe(true);
+    expect(isEventMessageDispatchable("cancelada")).toBe(false);
+  });
+
+  it("separa destinatarios ativos e ignorados do preview", () => {
+    const split = splitPreviewRecipients({
+      recipients: [
+        { key: "1", skipped: false },
+        { key: "2", skipped: true },
+      ],
+    });
+
+    expect(split.recipientsActive).toEqual([{ key: "1", skipped: false }]);
+    expect(split.recipientsSkipped).toEqual([{ key: "2", skipped: true }]);
+  });
+
+  it("resolve textos de confirmacao por acao", () => {
+    expect(getEventMessageConfirmProps("dispatch")).toMatchObject({
+      title: "Disparar mensagem",
+      confirmLabel: "Disparar",
+      tone: "primary",
+    });
+    expect(getEventMessageConfirmProps("cancel")).toMatchObject({
+      title: "Cancelar mensagem",
+      confirmLabel: "Cancelar mensagem",
+      tone: "warning",
+    });
+    expect(getEventMessageConfirmProps("delete")).toMatchObject({
+      title: "Excluir mensagem",
+      confirmLabel: "Excluir",
+      tone: "danger",
     });
   });
 });

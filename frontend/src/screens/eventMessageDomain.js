@@ -14,6 +14,12 @@ export const TYPE_TO_FORM_TYPE = {
 
 export const DM_TYPES = ["fill_reminder", "open_slots"];
 
+export const isEventMessageEditable = status => ["rascunho", "agendada"].includes(status);
+
+export const isEventMessageCancellable = status => ["rascunho", "agendada", "pronta"].includes(status);
+
+export const isEventMessageDispatchable = status => ["rascunho", "agendada", "pronta"].includes(status);
+
 export const eligibleTypesForEvent = forms => {
   const types = new Set(forms.filter(form => ELIGIBLE_FORM_TYPES.includes(form.type)).map(form => form.type));
   return Object.keys(TYPE_TO_FORM_TYPE).filter(type => TYPE_TO_FORM_TYPE[type].some(formType => types.has(formType)));
@@ -96,3 +102,22 @@ export const buildEventMessageSavePayload = draft => {
 
   return payload;
 };
+
+export const splitPreviewRecipients = preview => {
+  const recipients = preview?.recipients || [];
+  return {
+    recipientsActive: recipients.filter(item => !item.skipped),
+    recipientsSkipped: recipients.filter(item => item.skipped),
+  };
+};
+
+export const getEventMessageConfirmProps = action => ({
+  title: action === "dispatch" ? "Disparar mensagem" : action === "cancel" ? "Cancelar mensagem" : "Excluir mensagem",
+  message: action === "dispatch"
+    ? "No modo log-only nada e enviado de fato — apenas o disparo e registrado no historico e o status passa a 'disparada'. Confirma?"
+    : action === "cancel"
+      ? "Cancelar move a mensagem para o estado 'cancelada' e impede edicoes e disparos futuros. Continuar?"
+      : "Excluir remove a mensagem e o historico de logs associado. Continuar?",
+  confirmLabel: action === "delete" ? "Excluir" : action === "cancel" ? "Cancelar mensagem" : "Disparar",
+  tone: action === "delete" ? "danger" : action === "cancel" ? "warning" : "primary",
+});

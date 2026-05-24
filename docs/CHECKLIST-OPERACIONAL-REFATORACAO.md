@@ -472,7 +472,7 @@ Teste a reforcar:
 ### `frontend/src/screens/EventMessageEditorScreen.jsx`
 
 Checklist operacional:
-- iniciado: tipos elegiveis, draft inicial, transicao de tipo e payload de salvamento sairam para `frontend/src/screens/eventMessageDomain.js`
+- iniciado: tipos elegiveis, draft inicial, transicao de tipo, payload de salvamento, regras de status e confirmacao sairam para `frontend/src/screens/eventMessageDomain.js`
 - manter a tela como composicao do editor, feedback e submit
 - novas regras de mensagem devem entrar em helper puro antes de chegar na UI
 
