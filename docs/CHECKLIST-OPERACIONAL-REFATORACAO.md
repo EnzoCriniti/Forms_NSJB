@@ -342,6 +342,7 @@ Checklist operacional:
 - extrair o controller de presenca de resultados para um helper ou hook proprio
 - iniciado: montagem de linhas, respostas base e totalizacao da presenca sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: layout de totais, filtros e largura minima da tabela de presenca sairam para `frontend/src/screens/resultsDomain.js`
+- iniciado: filtros por grau/coluna, ordenacao e resumo de totais da presenca sairam para `frontend/src/screens/resultsDomain.js`
 - extrair o controller de escala para um helper separado
 - reduzir o arquivo para escolher entre dois fluxos e montar os dados já derivados
 - evitar duplicacao entre calculo de totais e exibicao de tabela

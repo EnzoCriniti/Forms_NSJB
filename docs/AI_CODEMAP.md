@@ -259,7 +259,7 @@ Mapa curto das areas mais mexidas por agentes.
   A toolbar da planilha de presenca tambem ficou isolada em `PresenceResultsToolbar`.
 - `frontend/src/screens/resultsDomain.js`
   Helpers puros da planilha de resultados: ordenacao de grau, filtros ativos, estatisticas, formatacao e geracao de CSV.
-  Tambem concentra montagem de linhas/base de respostas, totalizacao, filtros e medidas da planilha de presenca.
+  Tambem concentra montagem de linhas/base de respostas, totalizacao, filtros, ordenacao e medidas da planilha de presenca.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
   No modo interno, usa apenas um topo leve de contexto e nao expÃµe atalho visual para resultados.

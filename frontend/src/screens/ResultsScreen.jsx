@@ -9,7 +9,7 @@ import { COLORS, Icon, resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
-import { NO_VALUES, TABLE_ZOOM_STEP, clampTableZoom, buildActiveFilterOptions, buildEscalaCsv, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, compareGrauOptions, formatResultFieldValue } from "./resultsDomain";
+import { NO_VALUES, TABLE_ZOOM_STEP, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clampTableZoom, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, sortPresenceRows } from "./resultsDomain";
 
 export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
@@ -51,85 +51,21 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
 
   const baseResponses = useMemo(() => buildPresenceBaseResponses({ responses, people, showLinkedRows }), [people, responses, showLinkedRows]);
 
-  const grauOptions = useMemo(() => {
-    const values = [...new Set(tableRows.map(row => String(row.grau || "").trim()).filter(Boolean))];
-    return values.sort(compareGrauOptions);
-  }, [tableRows]);
+  const grauOptions = useMemo(() => buildPresenceGrauOptions({ tableRows }), [tableRows]);
 
-  const filteredRows = useMemo(() => {
-    const grauFilter = String(selectedGrau || "todos").trim();
-    const rowsByGrau = grauFilter === "todos"
-      ? tableRows
-      : tableRows.filter(row => String(row.grau || "") === grauFilter);
-    const activeFilters = Object.entries(columnSearches).filter(([, value]) => String(value || "").trim());
-    if (!resultsConfig.searchEnabled || activeFilters.length === 0) return rowsByGrau;
-    return rowsByGrau.filter(row => activeFilters.every(([columnId, rawValue]) => {
-      const normalized = String(rawValue).trim().toLowerCase();
-      if (columnId === "grau") return String(row.grau || "").toLowerCase().includes(normalized);
-      if (columnId === "name") return String(row.name || "").toLowerCase().includes(normalized);
-      if (columnId === "status") return String(row.status || "").toLowerCase().includes(normalized);
-      const column = columns.find(item => String(item.id) === String(columnId));
-      return String(formatResultFieldValue(getFieldValue(row.response, columnId), column?.type)).toLowerCase().includes(normalized);
-    }));
-  }, [columnSearches, columns, resultsConfig.searchEnabled, selectedGrau, tableRows]);
+  const filteredRows = useMemo(() => filterPresenceRows({
+    tableRows,
+    selectedGrau,
+    columnSearches,
+    columns,
+    searchEnabled: resultsConfig.searchEnabled,
+    getFieldValue,
+    formatFieldValue: formatResultFieldValue,
+  }), [columnSearches, columns, resultsConfig.searchEnabled, selectedGrau, tableRows]);
 
-  const filteredResponses = useMemo(() => {
-    if (selectedGrau === "todos") {
-      return baseResponses;
-    }
+  const filteredResponses = useMemo(() => filterPresenceResponses({ baseResponses, selectedGrau, tableRows }), [baseResponses, selectedGrau, tableRows]);
 
-    return baseResponses.filter(response => {
-      const responseGrau = String(
-        response?.grau ??
-          response?.grade ??
-          response?.personGrau ??
-          response?.person?.grau ??
-          response?.linkedPerson?.grau ??
-          response?.row?.grau ??
-          response?.student?.grau ??
-          ""
-      ).trim().toLowerCase();
-
-      if (responseGrau) {
-        return responseGrau === selectedGrau;
-      }
-
-      const responseName = String(
-        response?.nome ?? response?.name ?? response?.personName ?? response?.participantName ?? ""
-      ).trim().toLowerCase();
-
-      if (!responseName) {
-        return false;
-      }
-
-      return tableRows.some(row => {
-        const rowGrau = String(row?.grau ?? "").trim().toLowerCase();
-        const rowName = String(row?.nome ?? row?.name ?? "").trim().toLowerCase();
-        return rowGrau === selectedGrau && rowName === responseName;
-      });
-    });
-  }, [baseResponses, selectedGrau, tableRows]);
-
-  const sorted = useMemo(() => {
-    const data = [...filteredRows];
-    if (!sortCol) return data;
-    data.sort((a, b) => {
-      const getSortValue = row => {
-        if (sortCol === "grau") return row.grau || "";
-        if (sortCol === "name") return row.name || "";
-        if (sortCol === "status") return row.status || "";
-        return getFieldValue(row.response, sortCol);
-      };
-      const va = getSortValue(a);
-      const vb = getSortValue(b);
-      if (typeof va === "string" || typeof vb === "string") {
-        const comparison = String(va || "").localeCompare(String(vb || ""), "pt-BR");
-        return sortDir === "asc" ? comparison : -comparison;
-      }
-      return sortDir === "asc" ? Number(va || 0) - Number(vb || 0) : Number(vb || 0) - Number(va || 0);
-    });
-    return data;
-  }, [filteredRows, sortCol, sortDir]);
+  const sorted = useMemo(() => sortPresenceRows({ rows: filteredRows, sortCol, sortDir, getFieldValue }), [filteredRows, sortCol, sortDir]);
 
   const totals = useMemo(() => buildPresenceTotals({ columns, responses: filteredResponses, getFieldValue }), [columns, filteredResponses]);
 
@@ -222,13 +158,7 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
   });
 
 
-  const totalsWithSummary = totalsLayout.map(item => {
-    const col = item.field;
-    return {
-      ...item,
-      summary: col ? totals[col.id] : null,
-    };
-  });
+  const totalsWithSummary = attachPresenceTotalsSummary({ totalsLayout, totals });
 
   return (
     <PresenceResultsPanel
