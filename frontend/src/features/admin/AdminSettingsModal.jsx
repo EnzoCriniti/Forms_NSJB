@@ -13,16 +13,16 @@ import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
 import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
 import { SecurityPanel } from "./adminSecurityPanels";
 import { AdminSettingsHeader } from "./adminShellPanels";
-import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../lib/gridDefaults";
 import { AuditLogsPanel, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
-
-const emptyUser = { name: "", username: "", password: "", role: "viewer" };
-const emptyLabel = { name: "", color: "#2e7d32" };
-const emptyFieldCatalog = { key: "", name: "", type: "yes_no", category: "presenca", defaultLabel: "", gridSchema: { rows: DEFAULT_GRID_ROWS, cols: DEFAULT_GRID_COLS }, selectionSource: { kind: "members" }, description: "", active: true };
-const emptyScaleTaskCatalog = { key: "", name: "", category: "cozinha", defaultLabel: "", description: "", active: true };
-const emptyExternalBase = { name: "", description: "", sourceType: "google_sheets", sheetUrl: "", range: "Itens!A:B", valueColumn: "A", labelColumn: "B", descriptionColumn: "", activeColumn: "", syncEnabled: true, syncFrequencyHours: 24, active: true, items: [] };
-const emptySecurityDraft = { currentMasterKey: "", newMasterKey: "" };
-
+import {
+  buildAdminSettingsTabs,
+  emptyExternalBaseDraft,
+  emptyFieldCatalogDraft,
+  emptyLabelDraft,
+  emptyScaleTaskCatalogDraft,
+  emptySecurityDraft,
+  emptyUserDraft,
+} from "./adminSettingsDefaults";
 
 export const AdminSettingsModal = ({
   users,
@@ -63,27 +63,17 @@ export const AdminSettingsModal = ({
   mode = "modal",
 }) => {
   const [tab, setTab] = useState("users");
-  const [userDraft, setUserDraft] = useState(emptyUser);
-  const [labelDraft, setLabelDraft] = useState(emptyLabel);
-  const [fieldCatalogDraft, setFieldCatalogDraft] = useState(emptyFieldCatalog);
-  const [scaleTaskDraft, setScaleTaskDraft] = useState(emptyScaleTaskCatalog);
-  const [externalBaseDraft, setExternalBaseDraft] = useState(emptyExternalBase);
+  const [userDraft, setUserDraft] = useState(emptyUserDraft);
+  const [labelDraft, setLabelDraft] = useState(emptyLabelDraft);
+  const [fieldCatalogDraft, setFieldCatalogDraft] = useState(emptyFieldCatalogDraft);
+  const [scaleTaskDraft, setScaleTaskDraft] = useState(emptyScaleTaskCatalogDraft);
+  const [externalBaseDraft, setExternalBaseDraft] = useState(emptyExternalBaseDraft);
   const [securityDraft, setSecurityDraft] = useState(emptySecurityDraft);
   const [catalogMode, setCatalogMode] = useState("fields");
   const [feedback, setFeedback] = useState(null);
   const [busyAction, setBusyAction] = useState(null);
   const [pendingDelete, setPendingDelete] = useState(null);
-  const tabs = [
-    { key: "users", label: "Acessos", description: "Usuarios e perfis" },
-    { key: "members", label: "Base de socios", description: "Fonte sincronizada e mapeamento" },
-    { key: "external-bases", label: "Bases externas", description: "Listas sincronizadas para campos do formulario" },
-    { key: "catalog", label: "Campos e tarefas", description: "Biblioteca reutilizavel" },
-    { key: "labels", label: "Classificacoes", description: "Etiquetas dos formularios" },
-    { key: "presets", label: "Templates", description: "Templates de formulario" },
-    { key: "messages", label: "Mensagens", description: "Modelos, presets e disparo" },
-    { key: "security", label: "Exclusao segura", description: "Chave mestra" },
-    ...(currentUser?.role === "admin" ? [{ key: "audit", label: "Historico", description: "Auditoria do sistema" }] : []),
-  ];
+  const tabs = buildAdminSettingsTabs(currentUser);
   const activeTab = tabs.find(item => item.key === tab) || tabs[0];
 
   const requestDelete = (title, message, confirmLabel, onConfirm) => {
@@ -97,7 +87,7 @@ export const AdminSettingsModal = ({
     setFeedback({ tone: "loading", message: isEdit ? "Salvando usuario..." : "Criando usuario..." });
     try {
       await onSaveUser({ ...userDraft, name: userDraft.name.trim() || userDraft.username.trim(), username: userDraft.username.trim() });
-      setUserDraft(emptyUser);
+      setUserDraft(emptyUserDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -113,7 +103,7 @@ export const AdminSettingsModal = ({
     setFeedback({ tone: "loading", message: isEdit ? "Salvando classificacao..." : "Criando classificacao..." });
     try {
       await onSaveLabel({ ...labelDraft, name: labelDraft.name.trim(), createdBy: labelDraft.createdBy || currentUser?.name || "Admin" });
-      setLabelDraft(emptyLabel);
+      setLabelDraft(emptyLabelDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -129,7 +119,7 @@ export const AdminSettingsModal = ({
     setFeedback({ tone: "loading", message: isEdit ? "Salvando base externa..." : "Criando base externa..." });
     try {
       await onSaveExternalBase({ ...externalBaseDraft, name: externalBaseDraft.name.trim(), description: String(externalBaseDraft.description || "").trim() });
-      setExternalBaseDraft(emptyExternalBase);
+      setExternalBaseDraft(emptyExternalBaseDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alteracoes salvas." : "Criado com sucesso." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -144,7 +134,7 @@ export const AdminSettingsModal = ({
     setFeedback({ tone: "loading", message: "Sincronizando base externa..." });
     try {
       const result = await onSyncExternalBase(id);
-      setExternalBaseDraft({ ...emptyExternalBase, ...(result.externalBase || externalBaseDraft) });
+      setExternalBaseDraft({ ...emptyExternalBaseDraft, ...(result.externalBase || externalBaseDraft) });
       setFeedback({ tone: "success", message: `${result.importedCount} opcao(oes) sincronizadas.` });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -163,7 +153,7 @@ export const AdminSettingsModal = ({
     setFeedback({ tone: "loading", message: isEdit ? "Salvando campo base..." : "Criando campo base..." });
     try {
       await onSaveFieldCatalogItem({ ...fieldCatalogDraft, key: resolvedKey, ...(selectionSource ? { selectionSource } : {}) });
-      setFieldCatalogDraft(emptyFieldCatalog);
+      setFieldCatalogDraft(emptyFieldCatalogDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -180,7 +170,7 @@ export const AdminSettingsModal = ({
     setFeedback({ tone: "loading", message: isEdit ? "Salvando tarefa base..." : "Criando tarefa base..." });
     try {
       await onSaveScaleTaskCatalogItem({ ...scaleTaskDraft, key: resolvedKey });
-      setScaleTaskDraft(emptyScaleTaskCatalog);
+      setScaleTaskDraft(emptyScaleTaskCatalogDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -274,13 +264,13 @@ export const AdminSettingsModal = ({
             busyAction={busyAction}
             onDeleteFieldCatalogItem={onDeleteFieldCatalogItem}
             requestDelete={requestDelete}
-            onCancelFieldCatalog={() => setFieldCatalogDraft(emptyFieldCatalog)}
+            onCancelFieldCatalog={() => setFieldCatalogDraft(emptyFieldCatalogDraft)}
             scaleTaskDraft={scaleTaskDraft}
             setScaleTaskDraft={setScaleTaskDraft}
             scaleTaskCatalog={scaleTaskCatalog}
             submitScaleTask={submitScaleTask}
             onDeleteScaleTaskCatalogItem={onDeleteScaleTaskCatalogItem}
-            onCancelScaleTask={() => setScaleTaskDraft(emptyScaleTaskCatalog)}
+            onCancelScaleTask={() => setScaleTaskDraft(emptyScaleTaskCatalogDraft)}
           />
         )}
 

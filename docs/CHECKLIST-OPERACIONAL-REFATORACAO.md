@@ -486,6 +486,7 @@ Problemas que precisam ser corrigidos:
 Checklist operacional:
 - separar a orquestracao da modal dos submits por entidade
 - mover os drafts vazios para um arquivo de defaults compartilhado da area admin
+- iniciado: drafts vazios e tabs por perfil sairam para `frontend/src/features/admin/adminSettingsDefaults.js`
 - transformar o conjunto de tabs em registry de recursos, nao em um bloco enorme de condicoes
 - empurrar regras de normalizacao especificas para helpers de dominio, nao para a modal
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
