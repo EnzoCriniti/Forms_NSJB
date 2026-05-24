@@ -168,6 +168,8 @@ Mapa curto das areas mais mexidas por agentes.
   Botao compartilhado `Btn` com variantes, tamanhos, icones e estado de carregamento, reexportado por `ui.jsx` para compatibilidade.
 - `frontend/src/components/uiFeedback.jsx`
   Banner compartilhado de feedback para sucesso, erro, carregamento e aviso, reexportado por `ui.jsx` para compatibilidade.
+- `frontend/src/components/uiModal.jsx`
+  Modal compartilhado de confirmacao com acoes de cancelar/confirmar e tons de perigo ou aviso, reexportado por `ui.jsx` para compatibilidade.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
