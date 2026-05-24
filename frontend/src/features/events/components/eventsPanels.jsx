@@ -98,6 +98,46 @@ export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, savin
   </div>
 );
 
+export const EventDetailHeader = ({
+  event,
+  canManageEvents,
+  detailTab,
+  messagesEligible,
+  statusAction,
+  onBack,
+  onPublish,
+  onClose,
+  onEdit,
+  onCreateForm,
+  onCreateMessage,
+}) => (
+  <ScreenHeader
+    className="settings-top-card"
+    leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
+    titleContent={(
+      <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <h2 style={{ margin: 0, fontSize: 20 }}>{event.date ? `${event.title} - ${formatDate(event.date)}` : event.title}</h2>
+        <StatusBadge status={event.status} />
+      </div>
+    )}
+    actions={(
+      <>
+        {canManageEvents && event.status === "pronto" && onPublish && (
+          <Btn v="secondary" icon="check" onClick={onPublish} loading={statusAction === "publish"} disabled={Boolean(statusAction)}>Publicar</Btn>
+        )}
+        {canManageEvents && event.status === "publicado" && (
+          <Btn v="secondary" icon="lock" onClick={onClose} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
+        )}
+        {canManageEvents && <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>}
+        {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={onCreateForm} aria-label="Novo formulario" title="Novo formulario" />}
+        {canManageEvents && detailTab === "messages" && messagesEligible && onCreateMessage && (
+          <Btn icon="plus" onClick={onCreateMessage} aria-label="Nova mensagem" title="Nova mensagem" />
+        )}
+      </>
+    )}
+  />
+);
+
 export const EventDetailTabs = ({ activeTab, onChangeTab, formsCount, messagesCount, hasMessages }) => (
   <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
     <Btn v={activeTab === "forms" ? "primary" : "ghost"} sz="sm" onClick={() => onChangeTab("forms")}>
@@ -110,6 +150,23 @@ export const EventDetailTabs = ({ activeTab, onChangeTab, formsCount, messagesCo
     )}
   </div>
 );
+
+export const EventPaginationControls = ({ pagination, totalItems, onPrevious, onNext }) => {
+  if (totalItems <= pagination.pageItems.length) return null;
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
+      <div style={{ fontSize: 12, color: COLORS.textMuted }}>
+        Exibindo {pagination.rangeStart} a {pagination.rangeEnd} de {totalItems}
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        <Btn v="secondary" sz="sm" onClick={onPrevious} disabled={pagination.safePage === 1}>Anterior</Btn>
+        <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {pagination.safePage} de {pagination.totalPages}</div>
+        <Btn v="secondary" sz="sm" onClick={onNext} disabled={pagination.safePage === pagination.totalPages}>Proxima</Btn>
+      </div>
+    </div>
+  );
+};
 
 export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, onOpen }) => {
   if (!eligible) {

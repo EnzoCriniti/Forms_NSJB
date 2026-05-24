@@ -5,10 +5,9 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, ScreenHeader, StatusBadge, resolveActionErrorMessage } from "../components/ui";
-import { formatDate } from "../lib/forms";
-import { EventCard, EventDetailTabs, EventEditorPanel, EventFormsList, EventMessagesPanel } from "../features/events/components/eventsPanels";
-import { EVENT_PAGE_SIZE, buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateItems, selectEventForms, sortEvents } from "./eventsDomain";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { EventCard, EventDetailHeader, EventDetailTabs, EventEditorPanel, EventFormsList, EventMessagesPanel, EventPaginationControls } from "../features/events/components/eventsPanels";
+import { buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateItems, selectEventForms, sortEvents } from "./eventsDomain";
 
 export const EventsScreen = ({
   events = [],
@@ -164,30 +163,18 @@ export const EventsScreen = ({
     return (
       <div>
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-        <ScreenHeader
-          className="settings-top-card"
-          leading={<Btn v="ghost" icon="back" onClick={() => setMode("list")} aria-label="Voltar" />}
-          titleContent={(
-            <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              <h2 style={{ margin: 0, fontSize: 20 }}>{selectedEvent.date ? `${selectedEvent.title} - ${formatDate(selectedEvent.date)}` : selectedEvent.title}</h2>
-              <StatusBadge status={selectedEvent.status} />
-            </div>
-          )}
-          actions={(
-            <>
-              {canManageEvents && selectedEvent.status === "pronto" && onPublishEvent && (
-                <Btn v="secondary" icon="check" onClick={publish} loading={statusAction === "publish"} disabled={Boolean(statusAction)}>Publicar</Btn>
-              )}
-              {canManageEvents && selectedEvent.status === "publicado" && (
-                <Btn v="secondary" icon="lock" onClick={close} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
-              )}
-              {canManageEvents && <Btn v="secondary" icon="edit" onClick={() => editEvent(selectedEvent)}>Editar</Btn>}
-              {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={() => onCreateFormInEvent(selectedEvent)} aria-label="Novo formulario" title="Novo formulario" />}
-              {canManageEvents && detailTab === "messages" && messagesEligible && onCreateEventMessage && (
-                <Btn icon="plus" onClick={() => onCreateEventMessage(selectedEvent)} aria-label="Nova mensagem" title="Nova mensagem" />
-              )}
-            </>
-          )}
+        <EventDetailHeader
+          event={selectedEvent}
+          canManageEvents={canManageEvents}
+          detailTab={detailTab}
+          messagesEligible={messagesEligible}
+          statusAction={statusAction}
+          onBack={() => setMode("list")}
+          onPublish={onPublishEvent ? publish : null}
+          onClose={close}
+          onEdit={() => editEvent(selectedEvent)}
+          onCreateForm={() => onCreateFormInEvent(selectedEvent)}
+          onCreateMessage={onCreateEventMessage ? () => onCreateEventMessage(selectedEvent) : null}
         />
         <EventDetailTabs
           activeTab={detailTab}
@@ -222,18 +209,12 @@ export const EventsScreen = ({
               onArchiveForm={onArchiveForm}
               onDeleteForm={onDeleteForm}
             />
-            {eventForms.length > EVENT_PAGE_SIZE && (
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-                <div style={{ fontSize: 12, color: COLORS.textMuted }}>
-                  Exibindo {formsPagination.rangeStart} a {formsPagination.rangeEnd} de {eventForms.length}
-                </div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.max(1, current - 1))} disabled={formsPagination.safePage === 1}>Anterior</Btn>
-                  <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {formsPagination.safePage} de {formsPagination.totalPages}</div>
-                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))} disabled={formsPagination.safePage === formsPagination.totalPages}>Proxima</Btn>
-                </div>
-              </div>
-            )}
+            <EventPaginationControls
+              pagination={formsPagination}
+              totalItems={eventForms.length}
+              onPrevious={() => setFormsPage(current => Math.max(1, current - 1))}
+              onNext={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))}
+            />
           </div>
         )}
       </div>
@@ -266,18 +247,12 @@ export const EventsScreen = ({
             onTogglePinned={onTogglePinnedEvent}
           />
         ))}
-        {sortedEvents.length > EVENT_PAGE_SIZE && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-            <div style={{ fontSize: 12, color: COLORS.textMuted }}>
-              Exibindo {eventsPagination.rangeStart} a {eventsPagination.rangeEnd} de {sortedEvents.length}
-            </div>
-            <div style={{ display: "flex", gap: 8 }}>
-              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.max(1, current - 1))} disabled={eventsPagination.safePage === 1}>Anterior</Btn>
-              <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {eventsPagination.safePage} de {eventsPagination.totalPages}</div>
-              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))} disabled={eventsPagination.safePage === eventsPagination.totalPages}>Proxima</Btn>
-            </div>
-          </div>
-        )}
+        <EventPaginationControls
+          pagination={eventsPagination}
+          totalItems={sortedEvents.length}
+          onPrevious={() => setEventsPage(current => Math.max(1, current - 1))}
+          onNext={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))}
+        />
       </div>
       <ConfirmModal
         open={Boolean(pendingDelete)}
