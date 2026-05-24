@@ -187,6 +187,7 @@ Checklist operacional:
 - extrair a logica de leitura de preferencia para um helper compartilhado com o shell
 - iniciado: leitura/aplicacao local de tema e fonte dos controles publicos saiu para `frontend/src/lib/publicReadingPreferences.js`
 - criar um topo-base unico e especializar apenas variacoes de layout
+- iniciado: `PublicTopCompact` saiu para `frontend/src/components/PublicTopCompact.jsx`, com reexport preservado em `publicUi.jsx`
 - iniciado: `PublicReadingToolbar` saiu para `frontend/src/components/PublicReadingToolbar.jsx`, com reexport preservado em `publicUi.jsx`
 - concluido: `PublicReadingToolbar` ficou somente como controle visual, consumindo helpers de preferencia sem manipular storage diretamente
 - concluido: `PublicTop` sem consumo real foi removido; `PublicTopCompact` ficou como topo publico canonico
