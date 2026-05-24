@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import { resolveActionErrorMessage } from "./uiErrors";
 import { Icon, ThemeIcon } from "./uiIcons";
 
 export const COLORS = {
@@ -25,32 +26,11 @@ export const COLORS = {
   textMuted: "var(--text-muted)",
 };
 
-export { Icon, ThemeIcon };
+export { Icon, ThemeIcon, resolveActionErrorMessage };
 
 export const Badge = ({ label, small, labels = [] }) => {
   const item = typeof label === "object" ? label : labels.find(entry => entry.id === label);
   return <span className="ui-badge" style={{ background: item?.color || "var(--text-secondary)", color: "#fff", padding: small ? "3px 8px" : "4px 10px", whiteSpace: "nowrap" }}>{item?.name || ""}</span>;
-};
-
-export const resolveActionErrorMessage = error => {
-  const message = String(error?.message || "").trim();
-  if (error?.code === "AUTH_INVALID_PAYLOAD" || /usuario e senha sao obrigatorios/i.test(message)) {
-    return "Informe usuário e senha.";
-  }
-  if (error?.code === "AUTH_INVALID_CREDENTIALS" || /usuario ou senha invalidos/i.test(message)) {
-    return "Usuário ou senha inválidos.";
-  }
-  if (error?.code === "AUTH_ADMIN_SESSION_ACTIVE" || /administrador conectado em outro dispositivo/i.test(message)) {
-    return "Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o timeout de inatividade.";
-  }
-  const isNetworkError = !error?.status && /fetch|network|failed to fetch|networkerror/i.test(message);
-  if (isNetworkError) {
-    return "Falha de comunicação com a API. Verifique a conexão e tente novamente.";
-  }
-  if (error?.status === 409 && error?.code === "ESCALA_CONFLICT") {
-    return message || "A vaga já foi preenchida por outra pessoa. Recarregue a página e tente novamente.";
-  }
-  return message || "Não foi possível concluir a operação. Tente novamente.";
 };
 
 export const StatusBadge = ({ status }) => {

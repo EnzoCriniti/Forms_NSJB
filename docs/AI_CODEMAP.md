@@ -158,6 +158,8 @@ Mapa curto das areas mais mexidas por agentes.
   Este arquivo nao deve concentrar componentes publicos de dominio; `frontend/src/components/publicUi.jsx` e a fonte de verdade para a UI publica.
 - `frontend/src/components/uiIcons.jsx`
   Mapa e renderizacao dos icones base usados por `Icon` e `ThemeIcon`, reexportados por `ui.jsx` para compatibilidade.
+- `frontend/src/components/uiErrors.js`
+  Normalizador compartilhado das mensagens de erro exibidas pela UI em acoes assincronas.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
