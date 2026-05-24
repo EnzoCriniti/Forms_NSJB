@@ -9,89 +9,45 @@ import { AuditLogsPanel } from "./adminAuditLogsPanel";
 
 export const AdminSettingsTabPanel = ({
   tab,
-  users,
-  labels,
-  presets,
-  fieldCatalog,
-  scaleTaskCatalog,
-  membersConfig,
-  externalBases,
-  people,
-  currentUser,
-  userDraft,
-  setUserDraft,
-  labelDraft,
-  setLabelDraft,
-  fieldCatalogDraft,
-  setFieldCatalogDraft,
-  scaleTaskDraft,
-  setScaleTaskDraft,
-  externalBaseDraft,
-  setExternalBaseDraft,
-  securityDraft,
-  setSecurityDraft,
-  catalogMode,
-  setCatalogMode,
-  busyAction,
-  requestDelete,
-  onDeleteUser,
-  onDeleteLabel,
-  onDeletePreset,
-  onDeleteFieldCatalogItem,
-  onDeleteScaleTaskCatalogItem,
-  onSaveMembersConfig,
-  onDeleteExternalBase,
-  onSyncMembersConfig,
-  formDeleteKeyConfigured,
-  messagingConfig,
-  messageTemplates,
-  personPresets,
-  onSaveMessagingConfig,
-  onSaveMessageTemplate,
-  onDeleteMessageTemplate,
-  onSavePersonPreset,
-  onDeletePersonPreset,
-  submitUser,
-  submitLabel,
-  submitExternalBase,
-  submitExternalBaseSync,
-  submitFieldCatalog,
-  submitScaleTask,
-  submitSecurity,
-  onCancelSecurity,
-  onCancelFieldCatalog,
-  onCancelScaleTask,
+  access,
+  catalog,
+  members,
+  organization,
+  security,
+  messaging,
+  audit,
+  shared,
 }) => {
   if (tab === "users") {
     return (
       <UsersManagementPanel
-        userDraft={userDraft}
-        setUserDraft={setUserDraft}
-        submitUser={submitUser}
-        busyAction={busyAction}
-        users={users}
-        requestDelete={requestDelete}
-        onDeleteUser={onDeleteUser}
-        currentUser={currentUser}
+        userDraft={access.userDraft}
+        setUserDraft={access.setUserDraft}
+        submitUser={access.submitUser}
+        busyAction={shared.busyAction}
+        users={access.users}
+        requestDelete={shared.requestDelete}
+        onDeleteUser={access.onDeleteUser}
+        currentUser={audit.currentUser}
       />
     );
   }
 
   if (tab === "members") {
-    return <MemberListConfigModalContent config={membersConfig} people={people} onSave={onSaveMembersConfig} onSync={onSyncMembersConfig} />;
+    return <MemberListConfigModalContent config={members.membersConfig} people={members.people} onSave={members.onSaveMembersConfig} onSync={members.onSyncMembersConfig} />;
   }
 
   if (tab === "external-bases") {
     return (
       <ExternalBasesPanel
-        externalBaseDraft={externalBaseDraft}
-        setExternalBaseDraft={setExternalBaseDraft}
-        submitExternalBase={submitExternalBase}
-        submitExternalBaseSync={submitExternalBaseSync}
-        busyAction={busyAction}
-        externalBases={externalBases}
-        requestDelete={requestDelete}
-        onDeleteExternalBase={onDeleteExternalBase}
+        externalBaseDraft={access.externalBaseDraft}
+        setExternalBaseDraft={access.setExternalBaseDraft}
+        submitExternalBase={access.submitExternalBase}
+        submitExternalBaseSync={access.submitExternalBaseSync}
+        busyAction={shared.busyAction}
+        externalBases={access.externalBases}
+        requestDelete={shared.requestDelete}
+        onDeleteExternalBase={access.onDeleteExternalBase}
       />
     );
   }
@@ -99,12 +55,12 @@ export const AdminSettingsTabPanel = ({
   if (tab === "security") {
     return (
       <SecurityPanel
-        formDeleteKeyConfigured={formDeleteKeyConfigured}
-        securityDraft={securityDraft}
-        setSecurityDraft={setSecurityDraft}
-        submitSecurity={submitSecurity}
-        busyAction={busyAction}
-        onCancelSecurity={onCancelSecurity}
+        formDeleteKeyConfigured={security.formDeleteKeyConfigured}
+        securityDraft={security.securityDraft}
+        setSecurityDraft={security.setSecurityDraft}
+        submitSecurity={security.submitSecurity}
+        busyAction={shared.busyAction}
+        onCancelSecurity={security.onCancelSecurity}
       />
     );
   }
@@ -112,23 +68,23 @@ export const AdminSettingsTabPanel = ({
   if (tab === "catalog") {
     return (
       <CatalogManagementPanel
-        catalogMode={catalogMode}
-        setCatalogMode={setCatalogMode}
-        fieldCatalogDraft={fieldCatalogDraft}
-        setFieldCatalogDraft={setFieldCatalogDraft}
-        externalBases={externalBases}
-        fieldCatalog={fieldCatalog}
-        submitFieldCatalog={submitFieldCatalog}
-        busyAction={busyAction}
-        onDeleteFieldCatalogItem={onDeleteFieldCatalogItem}
-        requestDelete={requestDelete}
-        onCancelFieldCatalog={onCancelFieldCatalog}
-        scaleTaskDraft={scaleTaskDraft}
-        setScaleTaskDraft={setScaleTaskDraft}
-        scaleTaskCatalog={scaleTaskCatalog}
-        submitScaleTask={submitScaleTask}
-        onDeleteScaleTaskCatalogItem={onDeleteScaleTaskCatalogItem}
-        onCancelScaleTask={onCancelScaleTask}
+        catalogMode={catalog.catalogMode}
+        setCatalogMode={catalog.setCatalogMode}
+        fieldCatalogDraft={catalog.fieldCatalogDraft}
+        setFieldCatalogDraft={catalog.setFieldCatalogDraft}
+        externalBases={access.externalBases}
+        fieldCatalog={catalog.fieldCatalog}
+        submitFieldCatalog={catalog.submitFieldCatalog}
+        busyAction={shared.busyAction}
+        onDeleteFieldCatalogItem={catalog.onDeleteFieldCatalogItem}
+        requestDelete={shared.requestDelete}
+        onCancelFieldCatalog={catalog.onCancelFieldCatalog}
+        scaleTaskDraft={catalog.scaleTaskDraft}
+        setScaleTaskDraft={catalog.setScaleTaskDraft}
+        scaleTaskCatalog={catalog.scaleTaskCatalog}
+        submitScaleTask={catalog.submitScaleTask}
+        onDeleteScaleTaskCatalogItem={catalog.onDeleteScaleTaskCatalogItem}
+        onCancelScaleTask={catalog.onCancelScaleTask}
       />
     );
   }
@@ -136,13 +92,13 @@ export const AdminSettingsTabPanel = ({
   if (tab === "labels") {
     return (
       <LabelsPanel
-        labelDraft={labelDraft}
-        setLabelDraft={setLabelDraft}
-        submitLabel={submitLabel}
-        busyAction={busyAction}
-        labels={labels}
-        requestDelete={requestDelete}
-        onDeleteLabel={onDeleteLabel}
+        labelDraft={organization.labelDraft}
+        setLabelDraft={organization.setLabelDraft}
+        submitLabel={organization.submitLabel}
+        busyAction={shared.busyAction}
+        labels={organization.labels}
+        requestDelete={shared.requestDelete}
+        onDeleteLabel={organization.onDeleteLabel}
       />
     );
   }
@@ -150,9 +106,9 @@ export const AdminSettingsTabPanel = ({
   if (tab === "presets") {
     return (
       <TemplatesPanel
-        presets={presets}
-        requestDelete={requestDelete}
-        onDeletePreset={onDeletePreset}
+        presets={organization.presets}
+        requestDelete={shared.requestDelete}
+        onDeletePreset={organization.onDeletePreset}
       />
     );
   }
@@ -160,20 +116,20 @@ export const AdminSettingsTabPanel = ({
   if (tab === "messages") {
     return (
       <MessagingSettingsPanel
-        messagingConfig={messagingConfig}
-        messageTemplates={messageTemplates}
-        personPresets={personPresets}
-        people={people}
-        onSaveMessagingConfig={onSaveMessagingConfig}
-        onSaveMessageTemplate={onSaveMessageTemplate}
-        onDeleteMessageTemplate={onDeleteMessageTemplate}
-        onSavePersonPreset={onSavePersonPreset}
-        onDeletePersonPreset={onDeletePersonPreset}
+        messagingConfig={messaging.messagingConfig}
+        messageTemplates={messaging.messageTemplates}
+        personPresets={messaging.personPresets}
+        people={members.people}
+        onSaveMessagingConfig={messaging.onSaveMessagingConfig}
+        onSaveMessageTemplate={messaging.onSaveMessageTemplate}
+        onDeleteMessageTemplate={messaging.onDeleteMessageTemplate}
+        onSavePersonPreset={messaging.onSavePersonPreset}
+        onDeletePersonPreset={messaging.onDeletePersonPreset}
       />
     );
   }
 
-  if (tab === "audit" && currentUser?.role === "admin") {
+  if (tab === "audit" && audit.currentUser?.role === "admin") {
     return <AuditLogsPanel />;
   }
 
