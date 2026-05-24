@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from "react";
-import { Btn, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
+import { Btn, ConfirmModal, FeedbackBanner } from "../../components/ui";
 import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
 import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
 import { CatalogManagementPanel } from "./adminCatalogPanels";
@@ -311,17 +311,15 @@ export const AdminSettingsModal = ({
           onCancel={() => setPendingDelete(null)}
           onConfirm={async () => {
             if (!pendingDelete) return;
-            setBusyAction("delete");
-            setFeedback({ tone: "loading", message: "Excluindo..." });
-            try {
-              await pendingDelete.onConfirm();
-              setFeedback({ tone: "success", message: "Excluído com sucesso." });
-              setPendingDelete(null);
-            } catch (error) {
-              setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-            } finally {
-              setBusyAction(null);
-            }
+            await runAdminSubmitAction({
+              actionKey: "delete",
+              loadingMessage: "Excluindo...",
+              successMessage: "Excluído com sucesso.",
+              setBusyAction,
+              setFeedback,
+              execute: pendingDelete.onConfirm,
+              onSuccess: () => setPendingDelete(null),
+            });
           }}
         />
       </div>

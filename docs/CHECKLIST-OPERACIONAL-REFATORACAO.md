@@ -490,7 +490,7 @@ Checklist operacional:
 - transformar o conjunto de tabs em registry de recursos, nao em um bloco enorme de condicoes
 - empurrar regras de normalizacao especificas para helpers de dominio, nao para a modal
 - iniciado: payloads de usuarios, classificacoes, bases externas, catalogos, tarefas e chave mestra sairam para `frontend/src/features/admin/adminSettingsPayloads.js`
-- iniciado: fluxo repetido de busy/feedback/sucesso/erro dos submits saiu para `frontend/src/features/admin/adminSettingsActions.js`
+- iniciado: fluxo repetido de busy/feedback/sucesso/erro dos submits e exclusoes confirmadas saiu para `frontend/src/features/admin/adminSettingsActions.js`
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
 - separar as responsabilidades de usuarios, socios, bases externas, catalogo, templates, mensagens, seguranca e auditoria
 
