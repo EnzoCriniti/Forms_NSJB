@@ -13,7 +13,7 @@ import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
 import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
 import { SecurityPanel } from "./adminSecurityPanels";
 import { AdminSettingsHeader } from "./adminShellPanels";
-import { AuditLogsPanel, normalizeFieldSelectionSource, normalizeIdentifier } from "./adminSettingsShared";
+import { AuditLogsPanel } from "./adminSettingsShared";
 import {
   buildAdminSettingsTabs,
   emptyExternalBaseDraft,
@@ -23,6 +23,14 @@ import {
   emptySecurityDraft,
   emptyUserDraft,
 } from "./adminSettingsDefaults";
+import {
+  buildAdminLabelPayload,
+  buildAdminUserPayload,
+  buildExternalBasePayload,
+  buildFieldCatalogPayload,
+  buildScaleTaskCatalogPayload,
+  buildSecurityPayload,
+} from "./adminSettingsPayloads";
 
 export const AdminSettingsModal = ({
   users,
@@ -86,7 +94,7 @@ export const AdminSettingsModal = ({
     setBusyAction("user");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando usuario..." : "Criando usuario..." });
     try {
-      await onSaveUser({ ...userDraft, name: userDraft.name.trim() || userDraft.username.trim(), username: userDraft.username.trim() });
+      await onSaveUser(buildAdminUserPayload(userDraft));
       setUserDraft(emptyUserDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -102,7 +110,7 @@ export const AdminSettingsModal = ({
     setBusyAction("label");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando classificacao..." : "Criando classificacao..." });
     try {
-      await onSaveLabel({ ...labelDraft, name: labelDraft.name.trim(), createdBy: labelDraft.createdBy || currentUser?.name || "Admin" });
+      await onSaveLabel(buildAdminLabelPayload(labelDraft, currentUser));
       setLabelDraft(emptyLabelDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -118,7 +126,7 @@ export const AdminSettingsModal = ({
     setBusyAction("externalBase");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando base externa..." : "Criando base externa..." });
     try {
-      await onSaveExternalBase({ ...externalBaseDraft, name: externalBaseDraft.name.trim(), description: String(externalBaseDraft.description || "").trim() });
+      await onSaveExternalBase(buildExternalBasePayload(externalBaseDraft));
       setExternalBaseDraft(emptyExternalBaseDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alteracoes salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -144,15 +152,14 @@ export const AdminSettingsModal = ({
   };
 
   const submitFieldCatalog = async () => {
-    const resolvedKey = normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel);
+    const { payload, key: resolvedKey, selectionSource } = buildFieldCatalogPayload(fieldCatalogDraft);
     if (!resolvedKey || !fieldCatalogDraft.name.trim() || !fieldCatalogDraft.defaultLabel.trim()) return;
     const isEdit = Boolean(fieldCatalogDraft.id);
-    const selectionSource = normalizeFieldSelectionSource(fieldCatalogDraft);
     if (fieldCatalogDraft.type === "person_select" && selectionSource?.kind === "external_base" && !selectionSource.externalBaseId) return;
     setBusyAction("fieldCatalog");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando campo base..." : "Criando campo base..." });
     try {
-      await onSaveFieldCatalogItem({ ...fieldCatalogDraft, key: resolvedKey, ...(selectionSource ? { selectionSource } : {}) });
+      await onSaveFieldCatalogItem(payload);
       setFieldCatalogDraft(emptyFieldCatalogDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -163,13 +170,13 @@ export const AdminSettingsModal = ({
   };
 
   const submitScaleTask = async () => {
-    const resolvedKey = normalizeIdentifier(scaleTaskDraft.key || scaleTaskDraft.name || scaleTaskDraft.defaultLabel);
+    const { payload, key: resolvedKey } = buildScaleTaskCatalogPayload(scaleTaskDraft);
     if (!resolvedKey || !scaleTaskDraft.name.trim() || !scaleTaskDraft.defaultLabel.trim()) return;
     const isEdit = Boolean(scaleTaskDraft.id);
     setBusyAction("scaleTask");
     setFeedback({ tone: "loading", message: isEdit ? "Salvando tarefa base..." : "Criando tarefa base..." });
     try {
-      await onSaveScaleTaskCatalogItem({ ...scaleTaskDraft, key: resolvedKey });
+      await onSaveScaleTaskCatalogItem(payload);
       setScaleTaskDraft(emptyScaleTaskCatalogDraft);
       setFeedback({ tone: "success", message: isEdit ? "Alterações salvas." : "Criado com sucesso." });
     } catch (error) {
@@ -184,10 +191,7 @@ export const AdminSettingsModal = ({
     setBusyAction("security");
     setFeedback({ tone: "loading", message: formDeleteKeyConfigured ? "Atualizando chave mestra..." : "Configurando chave mestra..." });
     try {
-      await onSaveFormDeleteKey({
-        currentMasterKey: formDeleteKeyConfigured ? securityDraft.currentMasterKey : undefined,
-        newMasterKey: securityDraft.newMasterKey,
-      });
+      await onSaveFormDeleteKey(buildSecurityPayload({ securityDraft, formDeleteKeyConfigured }));
       setSecurityDraft(emptySecurityDraft);
       setFeedback({ tone: "success", message: formDeleteKeyConfigured ? "Alteracoes salvas." : "Chave mestra configurada." });
     } catch (error) {

@@ -10,6 +10,8 @@ Mapa curto das areas mais mexidas por agentes.
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
 - `frontend/src/features/admin/adminSettingsDefaults.js`
   Defaults da central administrativa: drafts vazios de formularios internos e tabs por perfil.
+- `frontend/src/features/admin/adminSettingsPayloads.js`
+  Payloads puros da central administrativa para usuarios, classificacoes, bases externas, catalogos, tarefas e chave mestra.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
   Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets.
 - `frontend/src/features/admin/messagingSettingsPanels.jsx`
