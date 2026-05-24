@@ -252,7 +252,9 @@ Mapa curto das areas mais mexidas por agentes.
 ## Resultados e planilha
 
 - `frontend/src/screens/ResultsScreen.jsx`
-  Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
+  Roteador fino da tela de resultados. Escolhe entre resultados de presenca e escala.
+- `frontend/src/screens/PresenceResultsScreen.jsx`
+  Controller da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling.
 - `frontend/src/screens/EscalaResultsScreen.jsx`
   Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao.
 - `frontend/src/screens/publicScreenFrame.jsx`
