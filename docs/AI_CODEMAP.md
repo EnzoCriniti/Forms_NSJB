@@ -12,6 +12,8 @@ Mapa curto das areas mais mexidas por agentes.
   Controller da central administrativa: estado local, tabs, submits, cancelamentos e confirmacao de exclusao.
 - `frontend/src/features/admin/AdminSettingsContent.jsx`
   Composicao visual da central administrativa: abas, paineis e modal de exclusao.
+- `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
+  Resolve qual painel administrativo renderizar para a aba ativa, separando a selecao de abas do shell visual.
 - `frontend/src/features/admin/adminSettingsDefaults.js`
   Defaults da central administrativa: drafts vazios de formularios internos e tabs por perfil.
 - `frontend/src/features/admin/adminSettingsPayloads.js`

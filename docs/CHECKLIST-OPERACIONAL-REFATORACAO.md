@@ -526,8 +526,9 @@ Checklist operacional:
 - iniciado: payloads de usuarios, classificacoes, bases externas, catalogos, tarefas e chave mestra sairam para `frontend/src/features/admin/adminSettingsPayloads.js`
 - iniciado: fluxo repetido de busy/feedback/sucesso/erro dos submits e exclusoes confirmadas saiu para `frontend/src/features/admin/adminSettingsActions.js`
 - iniciado: composicao visual de abas, paineis e modal de exclusao saiu para `frontend/src/features/admin/AdminSettingsContent.jsx`
+- iniciado: selecao/renderizacao dos paineis por aba saiu para `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
 - iniciado: estado local, tabs, submits, cancelamentos e confirmacao de exclusao sairam para `frontend/src/features/admin/adminSettingsController.js`
-- pendente apos revisao: `AdminSettingsModal.jsx` esta fino, mas `AdminSettingsContent.jsx` ainda concentra a selecao de todas as abas e repassa muitas props; proximo corte deve usar adapters/registry por aba ou agrupar props por painel.
+- pendente apos revisao: `AdminSettingsContent.jsx` esta mais fino, mas `AdminSettingsTabPanel.jsx` ainda recebe muitas props; proximo corte deve agrupar props por painel ou usar adapters por aba apenas quando houver ganho claro.
 - pendente apos revisao: `adminSettingsController.js` ainda concentra drafts e submits de usuarios, classificacoes, catalogos, bases externas e seguranca; separar apenas quando houver ganho claro por dominio.
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
 - separar as responsabilidades de usuarios, socios, bases externas, catalogo, templates, mensagens, seguranca e auditoria

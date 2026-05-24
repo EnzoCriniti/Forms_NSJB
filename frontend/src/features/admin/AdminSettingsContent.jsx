@@ -6,14 +6,8 @@
 
 import React from "react";
 import { Btn, ConfirmModal, FeedbackBanner } from "../../components/ui";
-import { MemberListConfigModalContent } from "../members/MemberListConfigModal";
-import { MessagingSettingsPanel } from "./MessagingSettingsPanel";
-import { CatalogManagementPanel } from "./adminCatalogPanels";
-import { ExternalBasesPanel, UsersManagementPanel } from "./adminAccessPanels";
-import { LabelsPanel, TemplatesPanel } from "./adminOrganizationPanels";
-import { SecurityPanel } from "./adminSecurityPanels";
 import { AdminSettingsHeader } from "./adminShellPanels";
-import { AuditLogsPanel } from "./adminAuditLogsPanel";
+import { AdminSettingsTabPanel } from "./AdminSettingsTabPanel";
 
 export const AdminSettingsContent = ({
   isScreen,
@@ -93,102 +87,61 @@ export const AdminSettingsContent = ({
 
     {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
 
-    {tab === "users" && (
-      <UsersManagementPanel
-        userDraft={userDraft}
-        setUserDraft={setUserDraft}
-        submitUser={submitUser}
-        busyAction={busyAction}
-        users={users}
-        requestDelete={requestDelete}
-        onDeleteUser={onDeleteUser}
-        currentUser={currentUser}
-      />
-    )}
-
-    {tab === "members" && <MemberListConfigModalContent config={membersConfig} people={people} onSave={onSaveMembersConfig} onSync={onSyncMembersConfig} />}
-
-    {tab === "external-bases" && (
-      <ExternalBasesPanel
-        externalBaseDraft={externalBaseDraft}
-        setExternalBaseDraft={setExternalBaseDraft}
-        submitExternalBase={submitExternalBase}
-        submitExternalBaseSync={submitExternalBaseSync}
-        busyAction={busyAction}
-        externalBases={externalBases}
-        requestDelete={requestDelete}
-        onDeleteExternalBase={onDeleteExternalBase}
-      />
-    )}
-
-    {tab === "security" && (
-      <SecurityPanel
-        formDeleteKeyConfigured={formDeleteKeyConfigured}
-        securityDraft={securityDraft}
-        setSecurityDraft={setSecurityDraft}
-        submitSecurity={submitSecurity}
-        busyAction={busyAction}
-        onCancelSecurity={onCancelSecurity}
-      />
-    )}
-
-    {tab === "catalog" && (
-      <CatalogManagementPanel
-        catalogMode={catalogMode}
-        setCatalogMode={setCatalogMode}
-        fieldCatalogDraft={fieldCatalogDraft}
-        setFieldCatalogDraft={setFieldCatalogDraft}
-        externalBases={externalBases}
-        fieldCatalog={fieldCatalog}
-        submitFieldCatalog={submitFieldCatalog}
-        busyAction={busyAction}
-        onDeleteFieldCatalogItem={onDeleteFieldCatalogItem}
-        requestDelete={requestDelete}
-        onCancelFieldCatalog={onCancelFieldCatalog}
-        scaleTaskDraft={scaleTaskDraft}
-        setScaleTaskDraft={setScaleTaskDraft}
-        scaleTaskCatalog={scaleTaskCatalog}
-        submitScaleTask={submitScaleTask}
-        onDeleteScaleTaskCatalogItem={onDeleteScaleTaskCatalogItem}
-        onCancelScaleTask={onCancelScaleTask}
-      />
-    )}
-
-    {tab === "labels" && (
-      <LabelsPanel
-        labelDraft={labelDraft}
-        setLabelDraft={setLabelDraft}
-        submitLabel={submitLabel}
-        busyAction={busyAction}
-        labels={labels}
-        requestDelete={requestDelete}
-        onDeleteLabel={onDeleteLabel}
-      />
-    )}
-
-    {tab === "presets" && (
-      <TemplatesPanel
-        presets={presets}
-        requestDelete={requestDelete}
-        onDeletePreset={onDeletePreset}
-      />
-    )}
-
-    {tab === "messages" && (
-      <MessagingSettingsPanel
-        messagingConfig={messagingConfig}
-        messageTemplates={messageTemplates}
-        personPresets={personPresets}
-        people={people}
-        onSaveMessagingConfig={onSaveMessagingConfig}
-        onSaveMessageTemplate={onSaveMessageTemplate}
-        onDeleteMessageTemplate={onDeleteMessageTemplate}
-        onSavePersonPreset={onSavePersonPreset}
-        onDeletePersonPreset={onDeletePersonPreset}
-      />
-    )}
-
-    {tab === "audit" && currentUser?.role === "admin" && <AuditLogsPanel />}
+    <AdminSettingsTabPanel
+      tab={tab}
+      users={users}
+      labels={labels}
+      presets={presets}
+      fieldCatalog={fieldCatalog}
+      scaleTaskCatalog={scaleTaskCatalog}
+      membersConfig={membersConfig}
+      externalBases={externalBases}
+      people={people}
+      currentUser={currentUser}
+      userDraft={userDraft}
+      setUserDraft={setUserDraft}
+      labelDraft={labelDraft}
+      setLabelDraft={setLabelDraft}
+      fieldCatalogDraft={fieldCatalogDraft}
+      setFieldCatalogDraft={setFieldCatalogDraft}
+      scaleTaskDraft={scaleTaskDraft}
+      setScaleTaskDraft={setScaleTaskDraft}
+      externalBaseDraft={externalBaseDraft}
+      setExternalBaseDraft={setExternalBaseDraft}
+      securityDraft={securityDraft}
+      setSecurityDraft={setSecurityDraft}
+      catalogMode={catalogMode}
+      setCatalogMode={setCatalogMode}
+      busyAction={busyAction}
+      requestDelete={requestDelete}
+      onDeleteUser={onDeleteUser}
+      onDeleteLabel={onDeleteLabel}
+      onDeletePreset={onDeletePreset}
+      onDeleteFieldCatalogItem={onDeleteFieldCatalogItem}
+      onDeleteScaleTaskCatalogItem={onDeleteScaleTaskCatalogItem}
+      onSaveMembersConfig={onSaveMembersConfig}
+      onDeleteExternalBase={onDeleteExternalBase}
+      onSyncMembersConfig={onSyncMembersConfig}
+      formDeleteKeyConfigured={formDeleteKeyConfigured}
+      messagingConfig={messagingConfig}
+      messageTemplates={messageTemplates}
+      personPresets={personPresets}
+      onSaveMessagingConfig={onSaveMessagingConfig}
+      onSaveMessageTemplate={onSaveMessageTemplate}
+      onDeleteMessageTemplate={onDeleteMessageTemplate}
+      onSavePersonPreset={onSavePersonPreset}
+      onDeletePersonPreset={onDeletePersonPreset}
+      submitUser={submitUser}
+      submitLabel={submitLabel}
+      submitExternalBase={submitExternalBase}
+      submitExternalBaseSync={submitExternalBaseSync}
+      submitFieldCatalog={submitFieldCatalog}
+      submitScaleTask={submitScaleTask}
+      submitSecurity={submitSecurity}
+      onCancelSecurity={onCancelSecurity}
+      onCancelFieldCatalog={onCancelFieldCatalog}
+      onCancelScaleTask={onCancelScaleTask}
+    />
 
     <ConfirmModal
       open={Boolean(pendingDelete)}
