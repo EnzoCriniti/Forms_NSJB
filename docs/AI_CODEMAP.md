@@ -12,6 +12,8 @@ Mapa curto das areas mais mexidas por agentes.
   Defaults da central administrativa: drafts vazios de formularios internos e tabs por perfil.
 - `frontend/src/features/admin/adminSettingsPayloads.js`
   Payloads puros da central administrativa para usuarios, classificacoes, bases externas, catalogos, tarefas e chave mestra.
+- `frontend/src/features/admin/adminSettingsActions.js`
+  Helper do fluxo assíncrono dos submits administrativos: busy, feedback, sucesso e erro.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
   Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets.
 - `frontend/src/features/admin/messagingSettingsPanels.jsx`
