@@ -8,6 +8,8 @@ Mapa curto das areas mais mexidas por agentes.
   Tela dedicada da area administrativa. Encapsula o modal em modo tela.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
+- `frontend/src/features/admin/adminSettingsController.js`
+  Controller da central administrativa: estado local, tabs, submits, cancelamentos e confirmacao de exclusao.
 - `frontend/src/features/admin/AdminSettingsContent.jsx`
   Composicao visual da central administrativa: abas, paineis e modal de exclusao.
 - `frontend/src/features/admin/adminSettingsDefaults.js`
