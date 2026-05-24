@@ -185,6 +185,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - extrair a logica de leitura de preferencia para um helper compartilhado com o shell
+- iniciado: leitura/aplicacao local de tema e fonte dos controles publicos saiu para `frontend/src/lib/publicReadingPreferences.js`
 - criar um topo-base unico e especializar apenas variacoes de layout
 - manter `PublicReadingToolbar` somente como controle visual, sem assumir regra de storage se houver controller superior
 - concluido: `PublicTop` sem consumo real foi removido; `PublicTopCompact` ficou como topo publico canonico

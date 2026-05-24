@@ -6,7 +6,12 @@
 
 import React, { useEffect, useState } from "react";
 import { formatDate, formatDateTime } from "../lib/forms";
-import { STORAGE_KEYS } from "../lib/appConstants";
+import {
+  applyPublicReadingFontScalePreference,
+  applyPublicReadingThemePreference,
+  resolveInitialPublicReadingFontScale,
+  resolveInitialPublicReadingTheme,
+} from "../lib/publicReadingPreferences";
 import { COLORS, Btn, Icon, ThemeIcon } from "./ui";
 
 export const PublicReadingToolbar = ({
@@ -18,72 +23,26 @@ export const PublicReadingToolbar = ({
   onBack,
   backHref,
 }) => {
-  const resolveInitialTheme = () => {
-    if (theme) return theme;
-    if (typeof document !== "undefined" && document.documentElement.dataset.theme) {
-      return document.documentElement.dataset.theme;
-    }
-    if (typeof window !== "undefined") {
-      return window.localStorage?.getItem(STORAGE_KEYS.theme) || "light";
-    }
-    return "light";
-  };
-
-  const resolveInitialFontScale = () => {
-    if (fontScale) return Number(fontScale) || 1;
-    if (typeof window !== "undefined") {
-      const stored = Number(window.localStorage?.getItem(STORAGE_KEYS.fontScale));
-      if (!Number.isNaN(stored) && stored > 0) {
-        return stored;
-      }
-    }
-    return 1;
-  };
-
-  const [localTheme, setLocalTheme] = useState(resolveInitialTheme);
-  const [localFontScale, setLocalFontScale] = useState(resolveInitialFontScale);
+  const [localTheme, setLocalTheme] = useState(() => resolveInitialPublicReadingTheme(theme));
+  const [localFontScale, setLocalFontScale] = useState(() => resolveInitialPublicReadingFontScale(fontScale));
 
   useEffect(() => {
     if (theme) {
-      setLocalTheme(theme);
+      setLocalTheme(resolveInitialPublicReadingTheme(theme));
     }
   }, [theme]);
 
   useEffect(() => {
     if (fontScale) {
-      setLocalFontScale(Number(fontScale) || 1);
+      setLocalFontScale(resolveInitialPublicReadingFontScale(fontScale));
     }
   }, [fontScale]);
-
-  const applyTheme = nextTheme => {
-    if (typeof document !== "undefined") {
-      document.documentElement.dataset.theme = nextTheme;
-    }
-    if (typeof window !== "undefined") {
-      window.localStorage?.setItem(STORAGE_KEYS.theme, nextTheme);
-      window.dispatchEvent(new CustomEvent("nsjb-preferences-change", { detail: { theme: nextTheme } }));
-    }
-    setLocalTheme(nextTheme);
-  };
-
-  const applyFontScale = nextScale => {
-    const normalized = Math.min(1.3, Math.max(0.9, Number(nextScale) || 1));
-    if (typeof document !== "undefined") {
-      document.documentElement.style.setProperty("--app-font-scale", String(normalized));
-      document.documentElement.dataset.fontScale = normalized > 1 ? "large" : "normal";
-    }
-    if (typeof window !== "undefined") {
-      window.localStorage?.setItem(STORAGE_KEYS.fontScale, String(normalized));
-      window.dispatchEvent(new CustomEvent("nsjb-preferences-change", { detail: { fontScale: normalized } }));
-    }
-    setLocalFontScale(normalized);
-  };
 
   const handleDecrease = () => {
     if (onDecreaseFontScale) {
       onDecreaseFontScale();
     } else {
-      applyFontScale(localFontScale - 0.1);
+      setLocalFontScale(applyPublicReadingFontScalePreference(localFontScale - 0.1));
     }
   };
 
@@ -91,7 +50,7 @@ export const PublicReadingToolbar = ({
     if (onIncreaseFontScale) {
       onIncreaseFontScale();
     } else {
-      applyFontScale(localFontScale + 0.1);
+      setLocalFontScale(applyPublicReadingFontScalePreference(localFontScale + 0.1));
     }
   };
 
@@ -100,7 +59,7 @@ export const PublicReadingToolbar = ({
     if (onToggleTheme) {
       onToggleTheme();
     } else {
-      applyTheme(nextTheme);
+      setLocalTheme(applyPublicReadingThemePreference(nextTheme));
     }
   };
 

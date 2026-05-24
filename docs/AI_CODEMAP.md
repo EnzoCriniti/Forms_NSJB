@@ -172,6 +172,8 @@ Mapa curto das areas mais mexidas por agentes.
   Header interno compartilhado `ScreenHeader`, usado por telas autenticadas e reexportado por `ui.jsx` para compatibilidade.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
+- `frontend/src/lib/publicReadingPreferences.js`
+  Preferencias locais dos controles publicos de leitura, incluindo tema/fonte, storage legado e evento de sincronizacao com o shell.
 - `frontend/src/lib/appShell.js`
   Agregador historico dos helpers do shell principal. Mantem reexports de compatibilidade para modulos especificos.
 - `frontend/src/lib/appPublicRoutes.js`
