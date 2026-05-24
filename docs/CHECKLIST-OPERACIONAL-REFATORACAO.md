@@ -148,6 +148,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - separar primitives visuais em modulos menores por funcao: botao, badge, feedback, modal, layout, header
+- iniciado: badges de label, status e tipo sairam para `frontend/src/components/uiBadges.jsx`, com reexports preservados em `ui.jsx`
 - mover o mapa de icones para constante fora do render ou para arquivo proprio
 - iniciado: mapa e renderizacao de `Icon`/`ThemeIcon` sairam para `frontend/src/components/uiIcons.jsx`, com reexports preservados em `ui.jsx`
 - remover os reexports publicos daqui depois que os consumidores estiverem atualizados
@@ -157,6 +158,7 @@ Checklist operacional:
 - iniciado: `resolveActionErrorMessage` saiu para `frontend/src/components/uiErrors.js`, com reexport preservado em `ui.jsx`
 
 Teste a reforcar:
+- `tests/ui/uiBadges.test.jsx`
 - `tests/ui/uiErrors.test.js`
 - `tests/ui/uiTheme.test.js`
 - `tests/ui/appHeader.test.jsx`

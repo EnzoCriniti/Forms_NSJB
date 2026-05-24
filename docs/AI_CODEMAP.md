@@ -162,6 +162,8 @@ Mapa curto das areas mais mexidas por agentes.
   Normalizador compartilhado das mensagens de erro exibidas pela UI em acoes assincronas.
 - `frontend/src/components/uiTheme.js`
   Tokens compartilhados de cor da UI base, reexportados por `ui.jsx` para compatibilidade.
+- `frontend/src/components/uiBadges.jsx`
+  Badges compartilhados de label, status e tipo de formulario, reexportados por `ui.jsx` para compatibilidade.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`

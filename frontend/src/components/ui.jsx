@@ -5,30 +5,12 @@
  */
 
 import React from "react";
+import { Badge, StatusBadge, TypeBadge } from "./uiBadges";
 import { resolveActionErrorMessage } from "./uiErrors";
 import { Icon, ThemeIcon } from "./uiIcons";
 import { COLORS } from "./uiTheme";
 
-export { COLORS, Icon, ThemeIcon, resolveActionErrorMessage };
-
-export const Badge = ({ label, small, labels = [] }) => {
-  const item = typeof label === "object" ? label : labels.find(entry => entry.id === label);
-  return <span className="ui-badge" style={{ background: item?.color || "var(--text-secondary)", color: "#fff", padding: small ? "3px 8px" : "4px 10px", whiteSpace: "nowrap" }}>{item?.name || ""}</span>;
-};
-
-export const StatusBadge = ({ status }) => {
-  const map = {
-    aberto: { bg: COLORS.primaryLight, c: COLORS.accent, t: "Aberto" },
-    fechado: { bg: COLORS.dangerLight, c: COLORS.danger, t: "Fechado" },
-    rascunho: { bg: COLORS.warningLight, c: COLORS.warning, t: "Rascunho" },
-    pronto: { bg: COLORS.primaryLight, c: COLORS.primary, t: "Pronto" },
-    publicado: { bg: COLORS.primaryLight, c: COLORS.accent, t: "Publicado" },
-    encerrado: { bg: COLORS.surfaceAlt, c: COLORS.textSecondary, t: "Encerrado" },
-    arquivado: { bg: COLORS.surfaceAlt, c: COLORS.textSecondary, t: "Arquivado" },
-  };
-  const item = map[status] || map.rascunho;
-  return <span className="ui-badge" style={{ background: item.bg, color: item.c }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: item.c, flex: "0 0 auto" }} />{item.t}</span>;
-};
+export { Badge, COLORS, Icon, StatusBadge, ThemeIcon, TypeBadge, resolveActionErrorMessage };
 
 export const Btn = ({ children, v = "primary", sz = "md", icon, onClick, style: extra, disabled, loading = false, type = "button", className = "", ...props }) => {
   const pad = sz === "sm" ? "6px 12px" : sz === "lg" ? "12px 24px" : "8px 16px";
@@ -273,8 +255,3 @@ export const ConfirmModal = ({
   );
 };
 
-export const TypeBadge = ({ type }) => (
-  <span className="ui-badge" style={{ background: type === "escala_organ" ? "var(--type-scale-bg)" : COLORS.primaryLight, color: type === "escala_organ" ? "var(--type-scale-text)" : COLORS.primary }}>
-    {type === "escala_organ" ? "Escala da Organ" : "Presença"}
-  </span>
-);
