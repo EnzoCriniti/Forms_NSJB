@@ -460,6 +460,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - separar o que e editor, preview e historico se o arquivo continuar crescendo
+- iniciado: preview, destinatarios calculados e historico sairam para `frontend/src/features/events/components/eventMessageDetailPanels.jsx`
 - mover `toLocalDateTime` e logicas de data para um utilitario comum se reaproveitadas
 - manter o picker manual simples, sem trazer regra de selecao de destinatario para o painel geral
 - evitar misturar renderizacao do corpo da mensagem com montagem da lista de receptores

@@ -172,7 +172,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/events/components/eventsPanels.jsx`
   Componentes compartilhados da area de eventos: card, editor, cabecalho de detalhe, abas, listagem, paginacao, modal de exclusao, lista de formularios e mensagens.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`
-  Componentes compartilhados das mensagens de evento: destinatarios, agendamento, preview e historico.
+  Componentes compartilhados do editor de mensagens de evento: destinatarios, agendamento e picker manual.
+- `frontend/src/features/events/components/eventMessageDetailPanels.jsx`
+  Componentes compartilhados do detalhe de mensagens de evento: preview renderizado, destinatarios calculados e historico.
 - `frontend/src/screens/EventMessageEditorScreen.jsx`
   Editor de mensagens por evento; usa `membersConfig.phoneColumn` para avisar quando lembretes por DM ainda nao podem calcular telefone.
 - `frontend/src/screens/eventMessageDomain.js`

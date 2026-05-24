@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { Btn, COLORS, FeedbackBanner, Icon } from "../../../components/ui";
+import { COLORS } from "../../../components/ui";
 
 const panelStyle = {
   border: `1px solid ${COLORS.borderLight}`,
@@ -91,86 +91,6 @@ export const MessageSchedulePanel = ({ draft, selectedForm, inputStyle, onChange
   </fieldset>
 );
 
-export const MessagePreviewPanel = ({ loading, preview, copiedKey, onCopy, recipientsActive, recipientsSkipped }) => (
-  <div style={{ display: "grid", gap: 16 }}>
-    <div>
-      <h4 style={{ margin: "0 0 8px", fontSize: 13, color: COLORS.textSecondary }}>Corpo renderizado</h4>
-      {loading ? (
-        <div style={{ fontSize: 12, color: COLORS.textMuted }}>Carregando preview...</div>
-      ) : preview?.renderedBody ? (
-        <div style={{ position: "relative" }}>
-          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, fontFamily: "inherit", fontSize: 13, margin: 0 }}>
-            {preview.renderedBody}
-          </pre>
-          <div style={{ marginTop: 8 }}>
-            <Btn v="secondary" sz="sm" icon="link" onClick={() => onCopy(preview.renderedBody, "body")}>
-              {copiedKey === "body" ? "Copiado!" : "Copiar texto"}
-            </Btn>
-          </div>
-        </div>
-      ) : (
-        <div style={{ fontSize: 12, color: COLORS.textMuted }}>Preview indisponivel.</div>
-      )}
-    </div>
-
-    {!loading && preview && preview.kind === "group" && (
-      <div style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, fontSize: 13, color: COLORS.textSecondary }}>
-        Mensagem destinada ao grupo {preview.groupName ? <strong style={{ color: COLORS.text }}>{preview.groupName}</strong> : <em>(nome do grupo nao configurado)</em>}. Cole o texto acima no grupo do WhatsApp.
-      </div>
-    )}
-
-    {!loading && preview && preview.kind === "dm" && (
-      <div>
-        <h4 style={{ margin: "0 0 8px", fontSize: 13, color: COLORS.textSecondary }}>
-          Destinatarios ({recipientsActive.length} com telefone{recipientsSkipped.length > 0 ? `, ${recipientsSkipped.length} sem telefone` : ""})
-        </h4>
-        {recipientsActive.length === 0 && recipientsSkipped.length === 0 && (
-          <div style={{ fontSize: 12, color: COLORS.textMuted }}>Nenhum destinatario calculado.</div>
-        )}
-        <div style={{ display: "grid", gap: 6 }}>
-          {recipientsActive.map(recipient => (
-            <RecipientRow key={recipient.key || recipient.name} recipient={recipient} />
-          ))}
-          {recipientsSkipped.map(recipient => (
-            <RecipientRow key={`skipped-${recipient.key || recipient.name}`} recipient={recipient} skipped />
-          ))}
-        </div>
-      </div>
-    )}
-  </div>
-);
-
-export const MessageLogsPanel = ({ logs, formatDateTime }) => (
-  <section style={{ marginTop: 24 }}>
-    <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Historico de disparos</h3>
-    {logs.length === 0 ? (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-        Nenhum disparo registrado ainda.
-      </div>
-    ) : (
-      <div style={{ display: "grid", gap: 10 }}>
-        {logs.map(log => (
-          <div key={log.id} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, background: COLORS.surface }}>
-            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8, fontSize: 12, color: COLORS.textMuted }}>
-              <span>{formatDateTime(log.dispatchedAt)} - modo {log.mode}</span>
-              <span>{log.status} ({log.dispatcherVersion})</span>
-            </div>
-            <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 6, padding: 10, fontFamily: "inherit", fontSize: 12, margin: "8px 0 0" }}>
-              {log.renderedBody}
-            </pre>
-            {log.groupName && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>Grupo: {log.groupName}</div>}
-            {Array.isArray(log.recipients) && log.recipients.length > 0 && (
-              <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>
-                {log.recipients.filter(item => !item.skipped).length} destinatario(s){log.recipients.some(item => item.skipped) ? `, ${log.recipients.filter(item => item.skipped).length} ignorado(s)` : ""}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    )}
-  </section>
-);
-
 const ManualPersonPicker = ({ people, selected, onChange, inputStyle }) => {
   const [search, setSearch] = React.useState("");
   const sorted = React.useMemo(() => [...people].sort((a, b) => String(a.name).localeCompare(String(b.name), "pt-BR")), [people]);
@@ -208,26 +128,6 @@ const ManualPersonPicker = ({ people, selected, onChange, inputStyle }) => {
     </div>
   );
 };
-
-const RecipientRow = ({ recipient, skipped = false }) => (
-  <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", border: skipped ? `1px dashed ${COLORS.border}` : `1px solid ${COLORS.borderLight}`, borderRadius: 8, background: skipped ? COLORS.surfaceAlt : COLORS.surface, opacity: skipped ? 0.7 : 1, flexWrap: "wrap" }}>
-    <div style={{ minWidth: 0, flex: 1 }}>
-      <strong style={{ fontSize: 13 }}>{recipient.name}</strong>
-      {recipient.grau && <span style={{ fontSize: 11, color: COLORS.textMuted, marginLeft: 6 }}>({recipient.grau})</span>}
-      <div style={{ fontSize: 11, color: skipped ? COLORS.warning : COLORS.textMuted }}>{recipient.phone || "sem telefone"}</div>
-    </div>
-    {recipient.waLink && !skipped && (
-      <a
-        href={recipient.waLink}
-        target="_blank"
-        rel="noreferrer"
-        style={{ fontSize: 12, color: COLORS.primary, textDecoration: "none", padding: "6px 10px", border: `1px solid ${COLORS.primary}`, borderRadius: 6, display: "inline-flex", alignItems: "center", gap: 4 }}
-      >
-        <Icon name="share" size={12} /> wa.me
-      </a>
-    )}
-  </div>
-);
 
 const toLocalDateTime = isoValue => {
   if (!isoValue) return "";

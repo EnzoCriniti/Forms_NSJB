@@ -5,9 +5,9 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react";
-import { Btn, COLORS, ConfirmModal, FeedbackBanner, Icon, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { Btn, COLORS, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
-import { MessageLogsPanel, MessagePreviewPanel } from "../features/events/components/eventMessagesPanels";
+import { MessageLogsPanel, MessagePreviewPanel } from "../features/events/components/eventMessageDetailPanels";
 import {
   cancelEventMessage as apiCancelEventMessage,
   deleteEventMessage as apiDeleteEventMessage,
