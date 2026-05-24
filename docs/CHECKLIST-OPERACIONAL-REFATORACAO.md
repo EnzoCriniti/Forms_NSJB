@@ -79,6 +79,8 @@ Checklist operacional:
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
 - iniciado: efeitos de ciclo de vida do shell sairam para `frontend/src/lib/appLifecycleEffects.js`
 - iniciado: acoes de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionActions.js`
+- pendente apos revisao: `App.jsx` ainda importa muitas funcoes da API e mantem wrappers finos para quase todos os dominios; proximo corte deve agrupar esses handlers por controller/hook ou reduzir a montagem manual antes de criar novas acoes ali.
+- pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; reavaliar se o shell pode receber blocos por dominio para reduzir acoplamento entre `App.jsx`, `AppViewport` e `AppShellContent`.
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`
@@ -147,6 +149,7 @@ Problemas que precisam ser corrigidos:
 Checklist operacional:
 - separar primitives visuais em modulos menores por funcao: botao, badge, feedback, modal, layout, header
 - mover o mapa de icones para constante fora do render ou para arquivo proprio
+- iniciado: mapa e renderizacao de `Icon`/`ThemeIcon` sairam para `frontend/src/components/uiIcons.jsx`, com reexports preservados em `ui.jsx`
 - remover os reexports publicos daqui depois que os consumidores estiverem atualizados
 - manter `COLORS` em um ponto unico de tema, sem virar dependencia acidental de tudo
 - revisar se `resolveActionErrorMessage` deve ficar com UI ou com um helper de erro comum
@@ -504,6 +507,8 @@ Checklist operacional:
 - iniciado: fluxo repetido de busy/feedback/sucesso/erro dos submits e exclusoes confirmadas saiu para `frontend/src/features/admin/adminSettingsActions.js`
 - iniciado: composicao visual de abas, paineis e modal de exclusao saiu para `frontend/src/features/admin/AdminSettingsContent.jsx`
 - iniciado: estado local, tabs, submits, cancelamentos e confirmacao de exclusao sairam para `frontend/src/features/admin/adminSettingsController.js`
+- pendente apos revisao: `AdminSettingsModal.jsx` esta fino, mas `AdminSettingsContent.jsx` ainda concentra a selecao de todas as abas e repassa muitas props; proximo corte deve usar adapters/registry por aba ou agrupar props por painel.
+- pendente apos revisao: `adminSettingsController.js` ainda concentra drafts e submits de usuarios, classificacoes, catalogos, bases externas e seguranca; separar apenas quando houver ganho claro por dominio.
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
 - separar as responsabilidades de usuarios, socios, bases externas, catalogo, templates, mensagens, seguranca e auditoria
 
@@ -559,6 +564,8 @@ Checklist operacional:
 - manter estes arquivos como UI de dominio
 - nao reintroduzir submit, validacao ou persistencia diretamente neles
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
+- pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar editor de campo, lista de campos, editor de tarefa e lista de tarefas.
+- pendente apos revisao: `messagingSettingsPanels.jsx` ainda concentra editor, preview e listas de presets/modelos; manter como proximo alvo pequeno da area de mensagens administrativas.
 
 ## 8. Backend - roteamento e entrada HTTP
 
