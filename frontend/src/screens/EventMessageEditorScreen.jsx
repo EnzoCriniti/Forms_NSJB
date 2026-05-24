@@ -8,14 +8,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Btn, COLORS, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
 import { MessageRecipientsPanel, MessageSchedulePanel } from "../features/events/components/eventMessagesPanels";
-
-const ELIGIBLE_FORM_TYPES = ["presenca", "escala_organ"];
-const TYPE_TO_FORM_TYPE = {
-  new_scale: ["presenca", "escala_organ"],
-  fill_reminder: ["presenca"],
-  open_slots: ["escala_organ"],
-};
-const DM_TYPES = ["fill_reminder", "open_slots"];
+import { DM_TYPES, TYPE_TO_FORM_TYPE, buildEventMessageSavePayload, buildEventMessageTypePatch, buildInitialEventMessageDraft, eligibleTypesForEvent } from "./eventMessageDomain";
 
 const inputStyle = {
   width: "100%",
@@ -27,45 +20,6 @@ const inputStyle = {
   fontSize: 13,
   boxSizing: "border-box",
 };
-
-const eligibleTypesForEvent = forms => {
-  const types = new Set(forms.filter(form => ELIGIBLE_FORM_TYPES.includes(form.type)).map(form => form.type));
-  return Object.keys(TYPE_TO_FORM_TYPE).filter(type => TYPE_TO_FORM_TYPE[type].some(formType => types.has(formType)));
-};
-
-const buildInitialDraft = (message, eligibleTypes, eventForms) => {
-  if (message) {
-    return {
-      id: message.id,
-      type: message.type,
-      templateId: message.templateId || "",
-      body: message.body || "",
-      formId: message.config?.formId || "",
-      recipientsMode: message.config?.recipients?.mode || "auto",
-      recipientsPresetId: message.config?.recipients?.presetId || "",
-      recipientsPersonKeys: message.config?.recipients?.personKeys || [],
-      scheduledFor: message.scheduledFor || "",
-      windowOption: message.windowOption || "",
-      autoDispatchEnabled: message.autoDispatchEnabled !== false,
-    };
-  }
-  const defaultType = eligibleTypes[0] || "new_scale";
-  const candidate = eventForms.find(form => TYPE_TO_FORM_TYPE[defaultType]?.includes(form.type));
-  return {
-    id: null,
-    type: defaultType,
-    templateId: "",
-    body: "",
-    formId: defaultType !== "new_scale" ? (candidate?.id || "") : "",
-    recipientsMode: "auto",
-    recipientsPresetId: "",
-    recipientsPersonKeys: [],
-    scheduledFor: "",
-    windowOption: "",
-    autoDispatchEnabled: true,
-  };
-};
-
 
 export const EventMessageEditorScreen = ({
   event,
@@ -80,12 +34,12 @@ export const EventMessageEditorScreen = ({
   onCancel,
 }) => {
   const eligibleTypes = useMemo(() => eligibleTypesForEvent(eventForms), [eventForms]);
-  const [draft, setDraft] = useState(() => buildInitialDraft(message, eligibleTypes, eventForms));
+  const [draft, setDraft] = useState(() => buildInitialEventMessageDraft(message, eligibleTypes, eventForms));
   const [feedback, setFeedback] = useState(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    setDraft(buildInitialDraft(message, eligibleTypes, eventForms));
+    setDraft(buildInitialEventMessageDraft(message, eligibleTypes, eventForms));
   }, [message?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const phoneColumnConfigured = Boolean(membersConfig?.phoneColumn);
@@ -108,14 +62,7 @@ export const EventMessageEditorScreen = ({
   };
 
   const switchType = nextType => {
-    const candidate = eventForms.find(form => TYPE_TO_FORM_TYPE[nextType]?.includes(form.type));
-    updateDraft({
-      type: nextType,
-      templateId: "",
-      formId: nextType !== "new_scale" ? (candidate?.id || "") : "",
-      windowOption: nextType === "fill_reminder" ? draft.windowOption : "",
-      recipientsMode: nextType === "fill_reminder" ? "auto" : draft.recipientsMode,
-    });
+    updateDraft(buildEventMessageTypePatch({ nextType, currentDraft: draft, eventForms }));
   };
 
   const submit = async () => {
@@ -130,33 +77,7 @@ export const EventMessageEditorScreen = ({
     setSaving(true);
     setFeedback({ tone: "loading", message: draft.id ? "Salvando mensagem..." : "Criando mensagem..." });
     try {
-      const config = {};
-      if (draft.type !== "new_scale") {
-        config.formId = Number(draft.formId);
-      }
-      if (draft.type === "fill_reminder") {
-        if (draft.recipientsMode === "preset") {
-          config.recipients = { mode: "preset", presetId: Number(draft.recipientsPresetId) };
-        } else if (draft.recipientsMode === "manual") {
-          config.recipients = { mode: "manual", personKeys: draft.recipientsPersonKeys };
-        } else {
-          config.recipients = { mode: "auto" };
-        }
-      }
-      const payload = {
-        id: draft.id || undefined,
-        type: draft.type,
-        templateId: draft.templateId ? Number(draft.templateId) : undefined,
-        body: draft.body,
-        config,
-        autoDispatchEnabled: draft.autoDispatchEnabled,
-      };
-      if (draft.type === "fill_reminder" && draft.windowOption) {
-        payload.windowOption = draft.windowOption;
-      } else if (draft.scheduledFor) {
-        payload.scheduledFor = new Date(draft.scheduledFor).toISOString();
-      }
-      const saved = await onSave(payload);
+      const saved = await onSave(buildEventMessageSavePayload(draft));
       setFeedback({ tone: "success", message: "Mensagem salva." });
       if (onCancel) onCancel(saved);
     } catch (error) {

@@ -468,6 +468,13 @@ Teste a reforcar:
 - `tests/ui/eventMessageEditor.test.jsx`
 - `tests/ui/eventMessageDetail.test.jsx`
 
+### `frontend/src/screens/EventMessageEditorScreen.jsx`
+
+Checklist operacional:
+- iniciado: tipos elegiveis, draft inicial, transicao de tipo e payload de salvamento sairam para `frontend/src/screens/eventMessageDomain.js`
+- manter a tela como composicao do editor, feedback e submit
+- novas regras de mensagem devem entrar em helper puro antes de chegar na UI
+
 ### `frontend/src/features/admin/AdminSettingsModal.jsx`
 
 Problemas que precisam ser corrigidos:
