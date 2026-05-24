@@ -4,7 +4,7 @@
  * @responsibility Carregar bootstrap, manter sessao/tema e conectar telas com a API.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
 import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "./lib/appBootstrap";
 import { removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrapLists";
@@ -67,6 +67,7 @@ import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
 import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 import { buildAppNavItems } from "./lib/appNav";
 import { buildShellApp } from "./lib/appShellObject";
+import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -131,11 +132,6 @@ export default function App() {
   const hasLoadedResponses = formId => hasLoadedFormDetails({ bootstrapDetails: bootstrap.responsesByForm, details: responseDetails, formId });
   const hasLoadedEscala = formId => hasLoadedFormDetails({ bootstrapDetails: bootstrap.escalaByForm, details: escalaDetails, formId });
 
-  useEffect(() => {
-    setAuthToken(authToken);
-    persistSession(session);
-  }, [authToken, session]);
-
   const refreshBootstrap = async ({ preserveSelection = true, silent = false, rethrow = false } = {}) => {
     return refreshAppBootstrap({
       preserveSelection,
@@ -190,59 +186,8 @@ export default function App() {
 
   const refreshEscalaForForm = async formId => loadEscalaForForm(formId, { force: true });
 
-  useEffect(() => {
-    const restoreSession = async () => {
-      if (!session) return;
-      try {
-        const result = await fetchAuthMe();
-        setSession({
-          user: result.user || session.user,
-          token: session.token,
-          expiresAt: result.expiresAt || session.expiresAt || null,
-        });
-      } catch {
-        setSession(null);
-        setAuthToken(null);
-        persistSession(null);
-      }
-    };
-
-    refreshBootstrap({ preserveSelection: false });
-    refreshFormDeleteKeyStatus();
-    restoreSession();
-  }, []);
-
-  useEffect(() => {
-    applyThemePreference(theme);
-  }, [theme]);
-
-  useEffect(() => {
-    applyFontScalePreference(fontScale);
-  }, [fontScale]);
-
-  useEffect(() => {
-    const syncPreferences = event => applyExternalPreferenceChange({ event, setTheme, setFontScale });
-
-    window.addEventListener("nsjb-preferences-change", syncPreferences);
-    return () => window.removeEventListener("nsjb-preferences-change", syncPreferences);
-  }, []);
-
   const increaseFontScale = () => setFontScale(current => clampFontScale(current + FONT_SCALE_STEP));
   const decreaseFontScale = () => setFontScale(current => clampFontScale(current - FONT_SCALE_STEP));
-
-  useEffect(() => {
-    persistPinnedFormsByUser(pinnedFormsByUser);
-  }, [pinnedFormsByUser]);
-
-  useEffect(() => {
-    persistPinnedEventsByUser(pinnedEventsByUser);
-  }, [pinnedEventsByUser]);
-
-  useEffect(() => {
-    if (currentUser && screen === "list") {
-      setScreen("events");
-    }
-  }, [currentUser?.id, currentUser?.role, screen]);
 
   const invalidateSession = () => {
     setSession(null);
@@ -254,79 +199,43 @@ export default function App() {
     setScreen("list");
   };
 
-  useEffect(() => {
-    const syncPublicRoute = () => setPublicRoute(getPublicRouteFromLocation());
-    window.addEventListener("hashchange", syncPublicRoute);
-    window.addEventListener("popstate", syncPublicRoute);
-    return () => {
-      window.removeEventListener("hashchange", syncPublicRoute);
-      window.removeEventListener("popstate", syncPublicRoute);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (error) return undefined;
-    const loadRequest = resolveAppDetailLoadRequest({
-      publicForm,
-      publicResultsView,
-      screen,
-      activeForm,
-      responsesByForm,
-      escalaByForm,
-      detailLoading,
-    });
-    if (!loadRequest) return undefined;
-
-    if (loadRequest.kind === "escala") {
-      loadEscalaForForm(loadRequest.formId);
-    } else {
-      loadResponsesForForm(loadRequest.formId);
-    }
-
-    return undefined;
-  }, [
+  useAppLifecycleEffects({
+    activeForm,
+    applyExternalPreferenceChange,
+    applyFontScalePreference,
+    applyThemePreference,
+    authToken,
+    currentUser,
+    detailLoading,
     error,
-    publicForm?.id,
-    publicForm?.type,
-    publicForm?.status,
-    publicForm?.closing,
-    publicResultsView,
-    activeForm?.id,
-    activeForm?.type,
-    screen,
-    responsesByForm,
     escalaByForm,
-    detailLoading?.kind,
-    detailLoading?.formId,
-  ]);
-
-  useEffect(() => {
-    if (!authToken) return undefined;
-
-    let mounted = true;
-    const validateSession = async () => {
-      try {
-        const result = await fetchAuthMe();
-        if (!mounted) return;
-        setSession(prev => prev ? {
-          ...prev,
-          user: result.user || prev.user,
-          expiresAt: result.expiresAt || prev.expiresAt || null,
-        } : prev);
-      } catch (error) {
-        if (!mounted) return;
-        if (error?.status === 401 || error?.status === 403) {
-          invalidateSession();
-        }
-      }
-    };
-
-    const timer = window.setInterval(validateSession, 30000);
-    return () => {
-      mounted = false;
-      window.clearInterval(timer);
-    };
-  }, [authToken, publicForm]);
+    fetchAuthMe,
+    fontScale,
+    getPublicRouteFromLocation,
+    invalidateSession,
+    loadEscalaForForm,
+    loadResponsesForForm,
+    persistPinnedEventsByUser,
+    persistPinnedFormsByUser,
+    persistSession,
+    pinnedEventsByUser,
+    pinnedFormsByUser,
+    publicForm,
+    publicResultsView,
+    refreshBootstrap,
+    refreshFormDeleteKeyStatus,
+    resolveAppDetailLoadRequest,
+    responsesByForm,
+    screen,
+    session,
+    setAuthToken,
+    setFontScale,
+    setPublicRoute,
+    setScreen,
+    setSession,
+    setTheme,
+    theme,
+  });
 
   const login = async (username, password) => {
     const result = await loginWithCredentials({ username, password });

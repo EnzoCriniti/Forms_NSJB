@@ -77,6 +77,7 @@ Checklist operacional:
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
 - iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
+- iniciado: efeitos de ciclo de vida do shell sairam para `frontend/src/lib/appLifecycleEffects.js`
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`
