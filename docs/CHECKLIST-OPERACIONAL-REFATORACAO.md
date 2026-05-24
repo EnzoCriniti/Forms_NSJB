@@ -152,11 +152,13 @@ Checklist operacional:
 - iniciado: mapa e renderizacao de `Icon`/`ThemeIcon` sairam para `frontend/src/components/uiIcons.jsx`, com reexports preservados em `ui.jsx`
 - remover os reexports publicos daqui depois que os consumidores estiverem atualizados
 - manter `COLORS` em um ponto unico de tema, sem virar dependencia acidental de tudo
+- iniciado: `COLORS` saiu para `frontend/src/components/uiTheme.js`, com reexport preservado em `ui.jsx`
 - revisar se `resolveActionErrorMessage` deve ficar com UI ou com um helper de erro comum
 - iniciado: `resolveActionErrorMessage` saiu para `frontend/src/components/uiErrors.js`, com reexport preservado em `ui.jsx`
 
 Teste a reforcar:
 - `tests/ui/uiErrors.test.js`
+- `tests/ui/uiTheme.test.js`
 - `tests/ui/appHeader.test.jsx`
 - `tests/ui/resultsPresenceHeader.test.jsx`
 - `tests/ui/createFormTemplateBar.test.jsx`

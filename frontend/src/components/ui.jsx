@@ -7,26 +7,9 @@
 import React from "react";
 import { resolveActionErrorMessage } from "./uiErrors";
 import { Icon, ThemeIcon } from "./uiIcons";
+import { COLORS } from "./uiTheme";
 
-export const COLORS = {
-  primary: "var(--primary)",
-  primaryLight: "var(--primary-light)",
-  primaryDark: "var(--primary-dark)",
-  accent: "var(--accent)",
-  danger: "var(--danger)",
-  dangerLight: "var(--danger-light)",
-  warning: "var(--warning)",
-  warningLight: "var(--warning-light)",
-  surface: "var(--surface)",
-  surfaceAlt: "var(--surface-alt)",
-  border: "var(--border)",
-  borderLight: "var(--border-light)",
-  text: "var(--text)",
-  textSecondary: "var(--text-secondary)",
-  textMuted: "var(--text-muted)",
-};
-
-export { Icon, ThemeIcon, resolveActionErrorMessage };
+export { COLORS, Icon, ThemeIcon, resolveActionErrorMessage };
 
 export const Badge = ({ label, small, labels = [] }) => {
   const item = typeof label === "object" ? label : labels.find(entry => entry.id === label);
