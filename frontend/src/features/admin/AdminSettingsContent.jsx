@@ -188,7 +188,7 @@ export const AdminSettingsContent = ({
       />
     )}
 
-    {tab === "audit" && currentUser?.role === "admin" && <AuditLogsPanel currentUser={currentUser} />}
+    {tab === "audit" && currentUser?.role === "admin" && <AuditLogsPanel />}
 
     <ConfirmModal
       open={Boolean(pendingDelete)}

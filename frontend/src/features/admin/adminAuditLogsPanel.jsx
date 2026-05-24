@@ -1,93 +1,24 @@
 /**
  * @file frontend/src/features/admin/adminAuditLogsPanel.jsx
  * @summary Painel de auditoria da central administrativa.
- * @responsibility Carregar, filtrar e renderizar logs de auditoria.
+ * @responsibility Renderizar filtros, paginacao e tabela de logs de auditoria.
  */
 
-import React, { useEffect, useState } from "react";
-import { Btn, COLORS, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
-import { fetchAuditLogs } from "../../lib/api";
+import React from "react";
+import { Btn, COLORS, FeedbackBanner } from "../../components/ui";
+import { AUDIT_LOGS_PAGE_SIZE, useAuditLogsController } from "./adminAuditLogsState";
 import { ADMIN_INPUT_STYLE } from "./adminSettingsConstants";
 
-const emptyAuditFilters = {
-  from: "",
-  to: "",
-  level: "",
-  category: "",
-  action: "",
-  status: "",
-  screen: "",
-  actor: "",
-  entityType: "",
-  entityId: "",
-  search: "",
-};
-
-export const AuditLogsPanel = ({ currentUser }) => {
-  const [draftFilters, setDraftFilters] = useState(emptyAuditFilters);
-  const [appliedFilters, setAppliedFilters] = useState(emptyAuditFilters);
-  const [page, setPage] = useState(1);
-  const [state, setState] = useState({
-    loading: true,
-    error: null,
-    items: [],
-    total: 0,
-  });
-
-  useEffect(() => {
-    let active = true;
-
-    const load = async () => {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      try {
-        const payload = await fetchAuditLogs({
-          ...appliedFilters,
-          limit: 10,
-          offset: (page - 1) * 10,
-        });
-        if (!active) return;
-        setState({
-          loading: false,
-          error: null,
-          items: Array.isArray(payload.items) ? payload.items : [],
-          total: Number(payload.total || 0),
-        });
-      } catch (error) {
-        if (!active) return;
-        setState(prev => ({
-          ...prev,
-          loading: false,
-          error: resolveActionErrorMessage(error),
-        }));
-      }
-    };
-
-    load();
-
-    return () => {
-      active = false;
-    };
-  }, [appliedFilters, page]);
-
-  const updateFilter = (key, value) => {
-    setDraftFilters(prev => ({ ...prev, [key]: value }));
-  };
-
-  const applyFilters = () => {
-    setPage(1);
-    setAppliedFilters(draftFilters);
-  };
-
-  const clearFilters = () => {
-    setPage(1);
-    setDraftFilters(emptyAuditFilters);
-    setAppliedFilters(emptyAuditFilters);
-  };
-
-  const totalPages = Math.max(1, Math.ceil(state.total / 10));
-  const safePage = Math.min(page, totalPages);
-  const fromIndex = state.total === 0 ? 0 : ((safePage - 1) * 10) + 1;
-  const toIndex = Math.min(safePage * 10, state.total);
+export const AuditLogsPanel = () => {
+  const {
+    draftFilters,
+    state,
+    setPage,
+    updateFilter,
+    applyFilters,
+    clearFilters,
+    pagination: { totalPages, safePage, fromIndex, toIndex },
+  } = useAuditLogsController();
 
   return (
     <section style={{ display: "grid", gap: 14 }}>
@@ -123,7 +54,7 @@ export const AuditLogsPanel = ({ currentUser }) => {
 
       {!state.loading && !state.error && state.items.length > 0 && <AuditTable items={state.items} />}
 
-      {!state.loading && !state.error && state.total > 10 && (
+      {!state.loading && !state.error && state.total > AUDIT_LOGS_PAGE_SIZE && (
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
           <span style={{ fontSize: 11, color: COLORS.textMuted }}>
             {fromIndex}-{toIndex} de {state.total}

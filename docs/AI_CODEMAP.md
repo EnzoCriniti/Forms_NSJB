@@ -44,6 +44,8 @@ Mapa curto das areas mais mexidas por agentes.
   Editor de linhas, colunas e presets dos campos de grade do admin.
 - `frontend/src/features/admin/adminAuditLogsPanel.jsx`
   Painel de auditoria administrativa com filtros, carregamento e tabela.
+- `frontend/src/features/admin/adminAuditLogsState.js`
+  Estado, query e paginacao dos logs de auditoria administrativa.
 - `frontend/src/features/admin/adminField.jsx`
   Wrapper simples para campos dos paineis administrativos.
 - `frontend/src/features/members/MemberListConfigModal.jsx`
