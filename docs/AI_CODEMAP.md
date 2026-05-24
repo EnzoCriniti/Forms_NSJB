@@ -168,6 +168,8 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers puros para duplicar formulario e montar payload de salvamento a partir de formulario existente.
 - `frontend/src/lib/appFormActions.js`
   Acoes do shell principal para criar, duplicar, salvar, arquivar, excluir, responder e atualizar escala de formularios.
+- `frontend/src/lib/appAdminActions.js`
+  Acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos e mensagens.
 - `frontend/src/lib/appNavigation.js`
   Decisao pura de navegacao interna do shell autenticado, incluindo bloqueios por permissao.
 - `frontend/src/lib/appShellDerivedState.js`

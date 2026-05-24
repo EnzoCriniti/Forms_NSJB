@@ -74,6 +74,7 @@ Checklist operacional:
 - iniciado: refresh de bootstrap saiu para `refreshAppBootstrap` em `frontend/src/lib/appDataLoad.js`
 - iniciado: refresh do status da chave de exclusao saiu para `refreshFormDeleteKeyConfiguredStatus` em `frontend/src/lib/appDataLoad.js`
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
+- iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`

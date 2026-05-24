@@ -57,6 +57,7 @@ import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, re
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
 import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm, startEventFormCreation } from "./lib/appFormActions";
+import { applyAppMessageDeletion, applyAppMessageUpdate, deleteAppListResult, deleteAppMessageTemplate, deleteAppPersonPreset, deleteAppUser, openAppEventMessageDetail, openAppEventMessageEditor, saveAppEventMessage, saveAppListResult, saveAppMembersConfig, saveAppMessageTemplate, saveAppMessagingConfig, saveAppPersonPreset, saveAppUser, syncAppMembersConfig } from "./lib/appAdminActions";
 import { resolveAppNavigation } from "./lib/appNavigation";
 import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
 import { sanitizeUser } from "./lib/appSession";
@@ -517,153 +518,107 @@ export default function App() {
   };
 
   const handleSaveUser = async user => {
-    const result = await saveUser(user);
-    applyBootstrapListResult("users", result);
-    if (currentUser?.id === user.id) {
-      const refreshed = result.users.find(item => item.id === user.id);
-      setSession(prev => prev ? {
-        ...prev,
-        user: sanitizeUser(refreshed || currentUser),
-      } : prev);
-    }
-    return { ok: true };
+    return saveAppUser({ user, currentUser, saveUser, applyBootstrapListResult, sanitizeUser, setSession });
   };
 
   const handleDeleteUser = async id => {
-    const result = await deleteUser(id);
-    applyBootstrapListResult("users", result);
-    if (currentUser?.id === id) {
-      await logout();
-    }
+    await deleteAppUser({ id, currentUser, deleteUser, applyBootstrapListResult, logout });
   };
 
   const handleSaveLabel = async label => {
-    const result = await saveLabel(label);
-    applyBootstrapListResult("labels", result);
+    await saveAppListResult({ payload: label, key: "labels", saveFn: saveLabel, applyBootstrapListResult });
   };
 
   const handleDeleteLabel = async id => {
-    const result = await deleteLabel(id);
-    applyBootstrapListResult("labels", result);
+    await deleteAppListResult({ id, key: "labels", deleteFn: deleteLabel, applyBootstrapListResult });
   };
 
   const handleSavePreset = async preset => {
-    const result = await savePreset(preset);
-    applyBootstrapListResult("presets", result);
+    await saveAppListResult({ payload: preset, key: "presets", saveFn: savePreset, applyBootstrapListResult });
   };
 
   const handleDeletePreset = async id => {
-    const result = await deletePreset(id);
-    applyBootstrapListResult("presets", result);
+    await deleteAppListResult({ id, key: "presets", deleteFn: deletePreset, applyBootstrapListResult });
   };
 
   const handleSavePeople = async nextPeople => {
-    const result = await savePeople(nextPeople);
-    applyBootstrapListResult("people", result);
+    await saveAppListResult({ payload: nextPeople, key: "people", saveFn: savePeople, applyBootstrapListResult });
   };
 
   const handleSaveMembersConfig = async nextConfig => {
-    const result = await saveMembersConfig(nextConfig);
-    setBootstrap(prev => replaceBootstrapListFromResult(prev, "membersConfig", result));
-    return result;
+    return saveAppMembersConfig({ nextConfig, saveMembersConfig, setBootstrap, replaceBootstrapListFromResult });
   };
 
   const handleSaveMessagingConfig = async nextConfig => {
-    const result = await saveMessagingConfig(nextConfig);
-    setBootstrap(prev => replaceBootstrapList(prev, "messagingConfig", result.config));
-    return result.config;
+    return saveAppMessagingConfig({ nextConfig, saveMessagingConfig, setBootstrap, replaceBootstrapList });
   };
 
   const handleSaveMessageTemplate = async template => {
-    const result = await saveMessageTemplate(template);
-    setBootstrap(prev => upsertBootstrapListItem(prev, "messageTemplates", result.template));
-    return result.template;
+    return saveAppMessageTemplate({ template, saveMessageTemplate, setBootstrap, upsertBootstrapListItem });
   };
 
   const handleDeleteMessageTemplate = async id => {
-    await deleteMessageTemplate(id);
-    setBootstrap(prev => removeBootstrapListItem(prev, "messageTemplates", item => item.id === id));
+    await deleteAppMessageTemplate({ id, deleteMessageTemplate, setBootstrap, removeBootstrapListItem });
   };
 
   const handleSavePersonPreset = async preset => {
-    const result = await savePersonPreset(preset);
-    setBootstrap(prev => upsertBootstrapListItem(prev, "personPresets", result.preset));
-    return result.preset;
+    return saveAppPersonPreset({ preset, savePersonPreset, setBootstrap, upsertBootstrapListItem });
   };
 
   const handleDeletePersonPreset = async id => {
-    await deletePersonPreset(id);
-    setBootstrap(prev => removeBootstrapListItem(prev, "personPresets", item => item.id === id));
+    await deleteAppPersonPreset({ id, deletePersonPreset, setBootstrap, removeBootstrapListItem });
   };
 
   const handleSaveEventMessage = async (eventId, payload) => {
-    const result = await saveEventMessage(eventId, payload);
-    setBootstrap(prev => upsertNestedBootstrapItem(prev, "events", event => event.id === eventId, "messages", result.message, { prepend: !payload?.id }));
-    return result.message;
+    return saveAppEventMessage({ eventId, payload, saveEventMessage, setBootstrap, upsertNestedBootstrapItem });
   };
 
   const openEventMessageEditor = (event, message = null) => {
-    setActiveEventId(event.id);
-    setActiveMessageId(message?.id || null);
-    setScreen("eventMessageEditor");
+    openAppEventMessageEditor({ event, message, setActiveEventId, setActiveMessageId, setScreen });
   };
 
   const openEventMessageDetail = (event, message) => {
-    setActiveEventId(event.id);
-    setActiveMessageId(message.id);
-    setScreen("eventMessageDetail");
+    openAppEventMessageDetail({ event, message, setActiveEventId, setActiveMessageId, setScreen });
   };
 
   const applyMessageUpdate = updated => {
-    setBootstrap(prev => upsertNestedBootstrapItem(prev, "events", event => event.id === updated.eventId, "messages", updated));
+    applyAppMessageUpdate({ updated, setBootstrap, upsertNestedBootstrapItem });
   };
 
   const applyMessageDeletion = messageId => {
-    setBootstrap(prev => removeNestedBootstrapItem(prev, "events", () => true, "messages", item => item.id === messageId));
+    applyAppMessageDeletion({ messageId, setBootstrap, removeNestedBootstrapItem });
   };
 
   const handleSyncMembersConfig = async () => {
-    const result = await syncMembersConfig();
-    setBootstrap(prev => replaceBootstrapList(replaceBootstrapList(prev, "people", result.people), "membersConfig", result.membersConfig));
-    return result;
+    return syncAppMembersConfig({ syncMembersConfig, setBootstrap, replaceBootstrapList });
   };
 
   const handleSaveExternalBase = async base => {
-    const result = await saveExternalBase(base);
-    applyBootstrapListResult("externalBases", result);
-    return result;
+    return saveAppListResult({ payload: base, key: "externalBases", saveFn: saveExternalBase, applyBootstrapListResult });
   };
 
   const handleDeleteExternalBase = async id => {
-    const result = await deleteExternalBase(id);
-    applyBootstrapListResult("externalBases", result);
-    return result;
+    return deleteAppListResult({ id, key: "externalBases", deleteFn: deleteExternalBase, applyBootstrapListResult });
   };
 
   const handleSyncExternalBase = async id => {
-    const result = await syncExternalBase(id);
-    applyBootstrapListResult("externalBases", result);
-    return result;
+    return saveAppListResult({ payload: id, key: "externalBases", saveFn: syncExternalBase, applyBootstrapListResult });
   };
 
   const handleSaveFieldCatalogItem = async item => {
-    const result = await saveFieldCatalogItem(item);
-    applyBootstrapListResult("fieldCatalog", result);
+    await saveAppListResult({ payload: item, key: "fieldCatalog", saveFn: saveFieldCatalogItem, applyBootstrapListResult });
   };
 
   const handleDeleteFieldCatalogItem = async id => {
-    const result = await deleteFieldCatalogItem(id);
-    applyBootstrapListResult("fieldCatalog", result);
+    await deleteAppListResult({ id, key: "fieldCatalog", deleteFn: deleteFieldCatalogItem, applyBootstrapListResult });
   };
 
   const handleSaveScaleTaskCatalogItem = async item => {
-    const result = await saveScaleTaskCatalogItem(item);
-    applyBootstrapListResult("scaleTaskCatalog", result);
+    await saveAppListResult({ payload: item, key: "scaleTaskCatalog", saveFn: saveScaleTaskCatalogItem, applyBootstrapListResult });
   };
 
   const handleDeleteScaleTaskCatalogItem = async id => {
-    const result = await deleteScaleTaskCatalogItem(id);
-    applyBootstrapListResult("scaleTaskCatalog", result);
+    await deleteAppListResult({ id, key: "scaleTaskCatalog", deleteFn: deleteScaleTaskCatalogItem, applyBootstrapListResult });
   };
 
 
