@@ -75,6 +75,8 @@ Checklist operacional:
 - iniciado: refresh do status da chave de exclusao saiu para `refreshFormDeleteKeyConfiguredStatus` em `frontend/src/lib/appDataLoad.js`
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
+- iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
+- iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`

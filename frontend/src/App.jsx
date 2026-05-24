@@ -58,6 +58,7 @@ import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePref
 import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
 import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm, startEventFormCreation } from "./lib/appFormActions";
 import { applyAppMessageDeletion, applyAppMessageUpdate, deleteAppListResult, deleteAppMessageTemplate, deleteAppPersonPreset, deleteAppUser, openAppEventMessageDetail, openAppEventMessageEditor, saveAppEventMessage, saveAppListResult, saveAppMembersConfig, saveAppMessageTemplate, saveAppMessagingConfig, saveAppPersonPreset, saveAppUser, syncAppMembersConfig } from "./lib/appAdminActions";
+import { deleteAppEvent, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "./lib/appEventActions";
 import { resolveAppNavigation } from "./lib/appNavigation";
 import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
 import { sanitizeUser } from "./lib/appSession";
@@ -65,6 +66,7 @@ import { buildAppShellDerivedState } from "./lib/appShellDerivedState";
 import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
 import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 import { buildAppNavItems } from "./lib/appNav";
+import { buildShellApp } from "./lib/appShellObject";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -384,29 +386,45 @@ export default function App() {
   };
 
   const handleSaveEvent = async payload => {
-    const response = await saveEvent(payload);
-    setBootstrap(prev => replaceBootstrapList(prev, "events", sortBootstrapEventsByDateDesc([
-      response.event,
-      ...(prev.events || []).filter(event => event.id !== response.event.id),
-    ])));
-    return response.event;
+    return saveAppEvent({
+      payload,
+      saveEvent,
+      setBootstrap,
+      replaceBootstrapList,
+      sortBootstrapEventsByDateDesc,
+    });
   };
 
   const handlePublishEvent = async id => {
-    const response = await publishEvent(id);
-    setBootstrap(prev => upsertBootstrapListItem(prev, "events", response.event));
-    return response.event;
+    return publishAppEvent({
+      id,
+      publishEvent,
+      setBootstrap,
+      upsertBootstrapListItem,
+    });
   };
 
   const handleDeleteEvent = async id => {
-    await deleteEvent(id);
-    setPinnedEventsByUser(prev => removePinnedIdForUser(prev, currentUser?.id, id));
-    setBootstrap(prev => removeBootstrapListItem(prev, "events", event => event.id === id));
-    if (activeEventId === id) setActiveEventId(null);
+    await deleteAppEvent({
+      id,
+      activeEventId,
+      currentUser,
+      deleteEvent,
+      removeBootstrapListItem,
+      removePinnedIdForUser,
+      setActiveEventId,
+      setBootstrap,
+      setPinnedEventsByUser,
+    });
   };
 
   const handleTogglePinnedEvent = eventId => {
-    setPinnedEventsByUser(prev => togglePinnedIdForUser(prev, currentUser?.id, eventId));
+    toggleAppPinnedEvent({
+      eventId,
+      currentUser,
+      setPinnedEventsByUser,
+      togglePinnedIdForUser,
+    });
   };
 
   const handleCreateFormInEvent = event => {
@@ -624,95 +642,105 @@ export default function App() {
 
   const nav = buildAppNavItems({ currentUser, canCreateForms });
 
-  const shellApp = {
-    nav,
-    screen,
-    currentUser,
-    theme,
-    fontScale,
-    onNavigate: navigate,
-    onIncreaseFontScale: increaseFontScale,
-    onDecreaseFontScale: decreaseFontScale,
-    onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
-    onOpenSettings: () => navigate("settings"),
-    onLogin: login,
-    onLogout: logout,
-    publicForm,
-    publicRoute,
-    publicResultsEnabled,
-    publicResultsView,
-    forms,
-    labels,
-    people,
-    presets,
-    fieldCatalog,
-    scaleTaskCatalog,
-    events,
-    messageTemplates,
-    personPresets,
-    messagingConfig,
-    pinnedEventIds,
-    pinnedFormIds,
-    activeEventId,
-    activeMessageId,
-    activeEvent,
-    activeForm,
-    editingForm,
-    draftForm,
-    membersConfig,
-    externalBases,
-    users,
-    formDeleteKeyConfigured,
-    responsesByForm,
-    escalaByForm,
-    handleSaveEvent,
-    handlePublishEvent,
-    handleDeleteEvent,
-    handleTogglePinnedEvent,
-    handleCreateFormInEvent,
-    handleDuplicateForm,
-    handleArchiveForm,
-    handleTogglePinnedForm,
-    handleDeleteForm,
-    handleSaveEventMessage,
-    applyMessageUpdate,
-    applyMessageDeletion,
-    handleSaveEscala,
-    handleClaimEscalaSlot,
-    handleSaveUser,
-    handleDeleteUser,
-    handleSaveLabel,
-    handleDeleteLabel,
-    handleSavePreset,
-    handleDeletePreset,
-    handleSaveMembersConfig,
-    handleSyncMembersConfig,
-    handleSaveExternalBase,
-    handleDeleteExternalBase,
-    handleSyncExternalBase,
-    handleSavePeople,
-    handleSaveFieldCatalogItem,
-    handleDeleteFieldCatalogItem,
-    handleSaveScaleTaskCatalogItem,
-    handleDeleteScaleTaskCatalogItem,
-    handleSaveFormDeleteKey,
-    handleSaveMessagingConfig,
-    handleSaveMessageTemplate,
-    handleDeleteMessageTemplate,
-    handleSavePersonPreset,
-    handleDeletePersonPreset,
-    setActiveMessageId,
-    setActiveEventId,
-    setScreen,
-    setDraftForm,
-    setEditingFormId,
-    setActiveFormId,
-    canCreateForms,
-    handleSaveForm,
-    openEventMessageEditor,
-    openEventMessageDetail,
-    handleSaveResponse,
-  };
+  const shellApp = buildShellApp({
+    state: {
+      nav,
+      screen,
+      currentUser,
+      theme,
+      fontScale,
+      publicForm,
+      publicRoute,
+      publicResultsEnabled,
+      publicResultsView,
+      pinnedEventIds,
+      pinnedFormIds,
+      activeEventId,
+      activeMessageId,
+      activeEvent,
+      activeForm,
+      editingForm,
+      draftForm,
+      formDeleteKeyConfigured,
+    },
+    data: {
+      forms,
+      labels,
+      people,
+      presets,
+      fieldCatalog,
+      scaleTaskCatalog,
+      events,
+      messageTemplates,
+      personPresets,
+      messagingConfig,
+      membersConfig,
+      externalBases,
+      users,
+      responsesByForm,
+      escalaByForm,
+    },
+    actions: {
+      onNavigate: navigate,
+      onIncreaseFontScale: increaseFontScale,
+      onDecreaseFontScale: decreaseFontScale,
+      onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
+      onOpenSettings: () => navigate("settings"),
+      onLogin: login,
+      onLogout: logout,
+      handleSaveEvent,
+      handlePublishEvent,
+      handleDeleteEvent,
+      handleTogglePinnedEvent,
+      handleCreateFormInEvent,
+      handleDuplicateForm,
+      handleArchiveForm,
+      handleTogglePinnedForm,
+      handleDeleteForm,
+      handleSaveEventMessage,
+      applyMessageUpdate,
+      applyMessageDeletion,
+      handleSaveEscala,
+      handleClaimEscalaSlot,
+      handleSaveUser,
+      handleDeleteUser,
+      handleSaveLabel,
+      handleDeleteLabel,
+      handleSavePreset,
+      handleDeletePreset,
+      handleSaveMembersConfig,
+      handleSyncMembersConfig,
+      handleSaveExternalBase,
+      handleDeleteExternalBase,
+      handleSyncExternalBase,
+      handleSavePeople,
+      handleSaveFieldCatalogItem,
+      handleDeleteFieldCatalogItem,
+      handleSaveScaleTaskCatalogItem,
+      handleDeleteScaleTaskCatalogItem,
+      handleSaveFormDeleteKey,
+      handleSaveMessagingConfig,
+      handleSaveMessageTemplate,
+      handleDeleteMessageTemplate,
+      handleSavePersonPreset,
+      handleDeletePersonPreset,
+      handleSaveForm,
+      openEventMessageEditor,
+      openEventMessageDetail,
+      handleSaveResponse,
+    },
+    setters: {
+      setActiveMessageId,
+      setActiveEventId,
+      setScreen,
+      setDraftForm,
+      setEditingFormId,
+      setActiveFormId,
+    },
+    permissions: {
+      canCreateForms,
+    },
+  });
 
   return (
     <AppViewport

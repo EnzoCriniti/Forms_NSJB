@@ -170,6 +170,10 @@ Mapa curto das areas mais mexidas por agentes.
   Acoes do shell principal para criar, duplicar, salvar, arquivar, excluir, responder e atualizar escala de formularios.
 - `frontend/src/lib/appAdminActions.js`
   Acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos e mensagens.
+- `frontend/src/lib/appEventActions.js`
+  Acoes do shell principal para salvar, publicar, excluir e fixar eventos.
+- `frontend/src/lib/appShellObject.js`
+  Montagem do objeto entregue ao viewport e ao shell autenticado a partir de blocos de estado, dados, acoes e setters.
 - `frontend/src/lib/appNavigation.js`
   Decisao pura de navegacao interna do shell autenticado, incluindo bloqueios por permissao.
 - `frontend/src/lib/appShellDerivedState.js`
