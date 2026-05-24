@@ -122,6 +122,8 @@ Mapa curto das areas mais mexidas por agentes.
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
+- `frontend/src/AppViewportGates.jsx`
+  Gates visuais do viewport principal para loading, erro, espera de detalhe e login.
 - `frontend/src/AppPublicViewport.jsx`
   Renderizacao das rotas publicas de formulario, escala e resultados, delegada por `AppViewport.jsx`.
 - `frontend/src/AppShellContent.jsx`
@@ -164,6 +166,8 @@ Mapa curto das areas mais mexidas por agentes.
   Seletores derivados do shell autenticado, incluindo listas mescladas, formulario/evento ativos, pins e rota publica resolvida.
 - `frontend/src/lib/appDetailTarget.js`
   Decisao pura de carregamento dos dados de detalhe usados por `AppViewport` e pelos efeitos de `App.jsx`.
+- `frontend/src/lib/appViewportNavigation.js`
+  Efeitos de navegacao ao sair de rotas publicas do viewport principal.
 - `frontend/src/lib/appFontScale.js`
   Limites, passo e normalizacao da escala de fonte do app.
 - `frontend/src/lib/appPreferences.js`

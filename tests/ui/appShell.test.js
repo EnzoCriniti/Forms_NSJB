@@ -4,7 +4,7 @@
  * @responsibility Cobrir rotas publicas canonicas.
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { resolveAppNavigation } from "../../frontend/src/lib/appNavigation.js";
 import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../frontend/src/lib/appPublicRoutes.js";
 import { normalizeStoredSession } from "../../frontend/src/lib/appSession.js";
@@ -12,6 +12,7 @@ import { buildAppShellDerivedState } from "../../frontend/src/lib/appShellDerive
 import { resolveAppDetailLoadRequest, resolveAppViewportTargetState } from "../../frontend/src/lib/appDetailTarget.js";
 import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "../../frontend/src/lib/appShellContentSelectors.js";
 import { buildAppNavItems } from "../../frontend/src/lib/appNav.js";
+import { resetPublicRouteNavigation } from "../../frontend/src/lib/appViewportNavigation.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -193,6 +194,40 @@ describe("appShell detail load request", () => {
       escalaByForm: {},
       detailLoading: { kind: "responses", formId: 6 },
     })).toBeNull();
+  });
+});
+
+describe("appViewport navigation", () => {
+  it("limpa rota publica e volta visitantes para lista", () => {
+    const setPublicRoute = vi.fn();
+    const setScreen = vi.fn();
+    const windowRef = {
+      location: { pathname: "/formularios/abc", hash: "#/formularios/abc" },
+      history: { pushState: vi.fn() },
+    };
+
+    resetPublicRouteNavigation({ setPublicRoute, setScreen, windowRef });
+
+    expect(windowRef.history.pushState).toHaveBeenCalledWith(null, "", "/");
+    expect(windowRef.location.hash).toBe("");
+    expect(setPublicRoute).toHaveBeenCalledWith(null);
+    expect(setScreen).toHaveBeenCalledWith("list");
+  });
+
+  it("limpa rota publica e volta usuarios logados para eventos", () => {
+    const setPublicRoute = vi.fn();
+    const setScreen = vi.fn();
+    const windowRef = {
+      location: { pathname: "/", hash: "#/formularios/abc" },
+      history: { pushState: vi.fn() },
+    };
+
+    resetPublicRouteNavigation({ currentUser: { id: 1 }, setPublicRoute, setScreen, windowRef });
+
+    expect(windowRef.history.pushState).not.toHaveBeenCalled();
+    expect(windowRef.location.hash).toBe("");
+    expect(setPublicRoute).toHaveBeenCalledWith(null);
+    expect(setScreen).toHaveBeenCalledWith("events");
   });
 });
 

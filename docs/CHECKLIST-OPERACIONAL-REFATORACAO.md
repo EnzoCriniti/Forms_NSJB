@@ -91,10 +91,12 @@ Problemas que precisam ser corrigidos:
 Checklist operacional:
 - extrair gates nomeados para loading, erro, login e rota publica
 - iniciado: renderizacao das rotas publicas saiu para `frontend/src/AppPublicViewport.jsx`
+- iniciado: gates visuais de loading, erro, detalhe e login sairam para `frontend/src/AppViewportGates.jsx`
 - remover o `style` inline repetido do wrapper publico e usar layout compartilhado
 - iniciado: wrapper publico repetido saiu para o componente local `PublicRoot` em `AppViewport.jsx`
 - isolar a decisao de `waitingForTarget` em um helper puro
-- iniciado: decisao de `waitingForTarget` saiu para `resolveAppViewportTargetState` em `frontend/src/lib/appShell.js`
+- iniciado: decisao de `waitingForTarget` saiu para `resolveAppViewportTargetState` em `frontend/src/lib/appDetailTarget.js`
+- iniciado: efeito de saida da rota publica saiu para `frontend/src/lib/appViewportNavigation.js`
 - manter `AppViewport` como roteador visual, nao como local de regra de negocio
 - reduzir a dependência direta de `screen` e `activeForm` neste ponto
 
