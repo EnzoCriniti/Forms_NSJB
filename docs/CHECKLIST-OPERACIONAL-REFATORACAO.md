@@ -118,6 +118,8 @@ Checklist operacional:
 - manter a tela atual apenas como orquestradora do shell autenticado
 - eliminar filtros inline desnecessarios, como `forms.filter(...)` repetidos na renderizacao
 - iniciado: seletores pequenos de mensagens/eventos e detalhes de formulario sairam para `frontend/src/lib/appShellContentSelectors.js`
+- iniciado: adapters dos fluxos internos de resultados e resposta sairam para `frontend/src/AppShellFormFlows.jsx`
+- iniciado: adapters dos fluxos internos de mensagens de evento sairam para `frontend/src/AppShellEventMessageFlows.jsx`
 
 Teste a reforcar:
 - `tests/ui/appDashboardFlow.test.jsx`

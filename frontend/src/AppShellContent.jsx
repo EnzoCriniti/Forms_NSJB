@@ -1,25 +1,20 @@
 /**
  * @file frontend/src/AppShellContent.jsx
  * @summary Shell autenticado do frontend.
- * @responsibility Renderizar a navegacao principal e as telas internas apos o login.
+ * @responsibility Renderizar a navegacao principal e delegar fluxos internos apos o login.
  */
 
 import React from "react";
 import { COLORS } from "./components/ui";
 import { canCreateForms } from "./lib/auth";
-import { buildPublicFormResultsPath } from "./lib/appPublicRoutes";
 import { AppHeader } from "./components/AppHeader";
+import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
+import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
-import { EventMessageEditorScreen } from "./screens/EventMessageEditorScreen";
-import { EventMessageDetailScreen } from "./screens/EventMessageDetailScreen";
 import { FormListScreen } from "./screens/FormListScreen";
 import { CreateFormScreen } from "./screens/CreateFormScreen";
-import { ResultsScreen } from "./screens/ResultsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
-import { PublicFormScreen } from "./screens/PublicFormScreen";
-import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
-import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "./lib/appShellContentSelectors";
 
 export const AppShellContent = ({ app }) => {
   const {
@@ -148,35 +143,26 @@ export const AppShellContent = ({ app }) => {
           />
         )}
         {screen === "eventMessageEditor" && currentUser && activeEvent && (
-          <EventMessageEditorScreen
-            event={activeEvent}
-            eventForms={selectEventForms(forms, activeEvent)}
-            message={selectEventMessage(activeEvent, activeMessageId)}
+          <EventMessageEditorFlow
+            app={app}
+            activeEvent={activeEvent}
+            activeMessageId={activeMessageId}
+            forms={forms}
             messageTemplates={messageTemplates}
             personPresets={personPresets}
             people={people}
             membersConfig={membersConfig}
             messagingConfig={messagingConfig}
-            onSave={payload => handleSaveEventMessage(activeEvent.id, payload)}
-            onCancel={saved => {
-              if (saved?.id) {
-                app.setActiveMessageId(saved.id);
-                app.setScreen("eventMessageDetail");
-              } else {
-                app.setActiveMessageId(null);
-                app.setScreen("events");
-              }
-            }}
+            onSaveEventMessage={handleSaveEventMessage}
           />
         )}
         {screen === "eventMessageDetail" && currentUser && activeEvent && activeMessageId && (
-          <EventMessageDetailScreen
-            event={activeEvent}
-            message={selectEventMessage(activeEvent, activeMessageId)}
+          <EventMessageDetailFlow
+            app={app}
+            activeEvent={activeEvent}
+            activeMessageId={activeMessageId}
             onMessageUpdated={applyMessageUpdate}
-            onMessageDeleted={id => { applyMessageDeletion(id); app.setActiveMessageId(null); app.setScreen("events"); }}
-            onEdit={() => app.setScreen("eventMessageEditor")}
-            onBack={() => { app.setActiveMessageId(null); app.setScreen("events"); }}
+            onMessageDeleted={applyMessageDeletion}
           />
         )}
         {screen === "list" && (
@@ -251,38 +237,25 @@ export const AppShellContent = ({ app }) => {
           />
         )}
         {screen === "results" && activeForm && (
-          <ResultsScreen
+          <InternalResultsFlow
+            app={app}
             onNavigate={onNavigate}
-            form={activeForm}
-            responses={selectFormResponses(app.responsesByForm, activeForm.id)}
-            sections={selectFormSections(app.escalaByForm, activeForm.id)}
-            people={people}
-            user={currentUser}
+            activeForm={activeForm}
+            currentUser={currentUser}
             labels={labels}
-            onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
+            people={people}
+            onSaveEscala={handleSaveEscala}
           />
         )}
-        {screen === "respond" && activeForm && activeForm.type === "presenca" && (
-          <PublicFormScreen
-            form={activeForm}
-            responses={selectFormResponses(app.responsesByForm, activeForm.id)}
-            onSaveResponse={app.handleSaveResponse}
-            onBack={() => onNavigate("list")}
+        {screen === "respond" && activeForm && (
+          <InternalRespondFlow
+            app={app}
+            activeForm={activeForm}
             people={people}
             externalBases={externalBases}
-            resultsHref={activeForm.resultsConfig?.publicResultsEnabled ? buildPublicFormResultsPath(activeForm) : ""}
-            variant="internal"
-          />
-        )}
-        {screen === "respond" && activeForm && activeForm.type === "escala_organ" && (
-          <PublicEscalaScreen
-            form={activeForm}
-            onBack={() => onNavigate("list")}
-            people={people}
-            sections={selectFormSections(app.escalaByForm, activeForm.id)}
-            onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
-            onClaimSlot={(sectionIndex, slotIndex, person) => handleClaimEscalaSlot(activeForm.id, sectionIndex, slotIndex, person)}
-            variant="internal"
+            onNavigate={onNavigate}
+            onSaveEscala={handleSaveEscala}
+            onClaimEscalaSlot={handleClaimEscalaSlot}
           />
         )}
       </main>
