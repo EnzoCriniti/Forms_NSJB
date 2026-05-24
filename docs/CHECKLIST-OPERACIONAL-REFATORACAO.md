@@ -344,6 +344,7 @@ Checklist operacional:
 - iniciado: layout de totais, filtros e largura minima da tabela de presenca sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: filtros por grau/coluna, ordenacao e resumo de totais da presenca sairam para `frontend/src/screens/resultsDomain.js`
 - extrair o controller de escala para um helper separado
+- iniciado: controller da escala saiu para `frontend/src/screens/EscalaResultsScreen.jsx`
 - iniciado: metricas, nomes e mutacoes puras de slots da escala sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: download de CSV saiu para `frontend/src/lib/downloadCsv.js`
 - reduzir o arquivo para escolher entre dois fluxos e montar os dados já derivados

@@ -253,6 +253,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/ResultsScreen.jsx`
   Renderiza a planilha de respostas, filtros, totalizacao, zoom por botoes e pinch no mobile.
+- `frontend/src/screens/EscalaResultsScreen.jsx`
+  Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/resultsPanels.jsx`

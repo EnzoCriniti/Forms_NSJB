@@ -1,20 +1,39 @@
 /**
  * @file frontend/src/screens/ResultsScreen.jsx
  * @summary Tela de resultados.
- * @responsibility Exibir respostas de presenca e edicao/resultados da escala.
+ * @responsibility Escolher entre resultados de presenca e escala.
  */
 
 import React, { useMemo, useRef, useState } from "react";
-import { COLORS, Icon, resolveActionErrorMessage } from "../components/ui";
-import { canEditEscala } from "../lib/auth";
+import { COLORS, Icon } from "../components/ui";
 import { downloadCsv } from "../lib/downloadCsv";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
-import { EscalaResultsPanel, PresenceResultsPanel } from "./resultsPanels";
-import { NO_VALUES, TABLE_ZOOM_STEP, addEscalaSlot, assignEscalaSlotPerson, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildEscalaMetrics, buildEscalaNames, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clampTableZoom, clearEscalaSlotPerson, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, patchEscalaSlot, sortPresenceRows } from "./resultsDomain";
+import { EscalaResultsScreen } from "./EscalaResultsScreen";
+import { PresenceResultsPanel } from "./resultsPanels";
+import {
+  NO_VALUES,
+  TABLE_ZOOM_STEP,
+  attachPresenceTotalsSummary,
+  buildActiveFilterOptions,
+  buildPresenceBaseResponses,
+  buildPresenceCsv,
+  buildPresenceFilterButtons,
+  buildPresenceGrauOptions,
+  buildPresenceStats,
+  buildPresenceTableMinWidth,
+  buildPresenceTableRows,
+  buildPresenceTotals,
+  buildPresenceTotalsLayout,
+  clampTableZoom,
+  filterPresenceResponses,
+  filterPresenceRows,
+  formatResultFieldValue,
+  sortPresenceRows,
+} from "./resultsDomain";
 
 export const ResultsScreen = ({ responses, form, sections, people, user, onSaveSections, publicFormHref, readingControls }) => (
   form?.type === "escala_organ"
-    ? <EscalaResultsScreen people={people} canEdit={canEditEscala(user)} form={form} sections={sections} onSaveSections={onSaveSections} />
+    ? <EscalaResultsScreen people={people} user={user} form={form} sections={sections} onSaveSections={onSaveSections} />
     : <PresenceResultsScreen responses={responses} form={form} people={people} publicFormHref={publicFormHref} readingControls={readingControls} />
 );
 
@@ -49,11 +68,8 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
   };
 
   const tableRows = useMemo(() => buildPresenceTableRows({ responses, people, showLinkedRows }), [people, responses, showLinkedRows]);
-
   const baseResponses = useMemo(() => buildPresenceBaseResponses({ responses, people, showLinkedRows }), [people, responses, showLinkedRows]);
-
   const grauOptions = useMemo(() => buildPresenceGrauOptions({ tableRows }), [tableRows]);
-
   const filteredRows = useMemo(() => filterPresenceRows({
     tableRows,
     selectedGrau,
@@ -63,21 +79,35 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     getFieldValue,
     formatFieldValue: formatResultFieldValue,
   }), [columnSearches, columns, resultsConfig.searchEnabled, selectedGrau, tableRows]);
-
   const filteredResponses = useMemo(() => filterPresenceResponses({ baseResponses, selectedGrau, tableRows }), [baseResponses, selectedGrau, tableRows]);
-
   const sorted = useMemo(() => sortPresenceRows({ rows: filteredRows, sortCol, sortDir, getFieldValue }), [filteredRows, sortCol, sortDir]);
-
   const totals = useMemo(() => buildPresenceTotals({ columns, responses: filteredResponses, getFieldValue }), [columns, filteredResponses]);
-
   const totalsLayout = useMemo(() => buildPresenceTotalsLayout({ columns, totalsLayout: resultsConfig.totalsLayout }), [columns, resultsConfig.totalsLayout]);
-
   const tableMinWidth = useMemo(() => buildPresenceTableMinWidth({ columnsLength: columns.length, showLinkedRows }), [columns.length, showLinkedRows]);
-
   const filterButtons = useMemo(() => buildPresenceFilterButtons({ columns, linkedPeople, showLinkedRows }), [columns, linkedPeople, showLinkedRows]);
-
   const activeFilter = filterButtons.find(item => item.id === activeSearchCol) || null;
   const activeFilterLabel = activeFilter?.label || "";
+  const activeFilterOptions = useMemo(() => buildActiveFilterOptions({
+    activeFilter,
+    columnSearches,
+    columns,
+    selectedGrau,
+    tableRows,
+    formatFieldValue: formatResultFieldValue,
+    getFieldValue,
+  }), [activeFilter, columnSearches, columns, selectedGrau, tableRows]);
+  const stats = buildPresenceStats({
+    hasExpectedTotal,
+    filteredResponsesLength: filteredResponses.length,
+    selectedGrau,
+    expectedTotal,
+    filteredRowsLength: filteredRows.length,
+    totalsLayoutLength: totalsLayout.length,
+    linkedPeople,
+    peopleLength: people.length,
+  });
+  const totalsWithSummary = attachPresenceTotalsSummary({ totalsLayout, totals });
+
   const updateTableZoom = direction => {
     setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
   };
@@ -101,16 +131,6 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
       touchZoomRef.current = { distance: 0, zoom: tableZoom };
     }
   };
-
-  const activeFilterOptions = useMemo(() => buildActiveFilterOptions({
-    activeFilter,
-    columnSearches,
-    columns,
-    selectedGrau,
-    tableRows,
-    formatFieldValue: formatResultFieldValue,
-    getFieldValue,
-  }), [activeFilter, columnSearches, columns, selectedGrau, tableRows]);
 
   const exportCsv = () => {
     const csv = buildPresenceCsv({
@@ -138,20 +158,6 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     verticalAlign: "top",
     minWidth: col === "grau" ? 90 : col === "name" ? 160 : col === "status" ? 110 : 130,
   });
-
-  const stats = buildPresenceStats({
-    hasExpectedTotal,
-    filteredResponsesLength: filteredResponses.length,
-    selectedGrau,
-    expectedTotal,
-    filteredRowsLength: filteredRows.length,
-    totalsLayoutLength: totalsLayout.length,
-    linkedPeople,
-    peopleLength: people.length,
-  });
-
-
-  const totalsWithSummary = attachPresenceTotalsSummary({ totalsLayout, totals });
 
   return (
     <PresenceResultsPanel
@@ -200,123 +206,3 @@ const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readin
     />
   );
 };
-
-const EscalaResultsScreen = ({ people, canEdit, form, sections, onSaveSections }) => {
-  const [showSignup, setShowSignup] = useState(false);
-  const [selSlot, setSelSlot] = useState(null);
-  const [signName, setSignName] = useState("");
-  const [feedback, setFeedback] = useState(null);
-  const [busyAction, setBusyAction] = useState(null);
-  const [pendingRemoval, setPendingRemoval] = useState(null);
-  const names = buildEscalaNames(people);
-  const { total, filled } = buildEscalaMetrics(sections);
-
-  const persistSections = async (next, successMessage = "Alterações salvas.") => {
-    setFeedback({ tone: "loading", message: "Salvando escala..." });
-    await onSaveSections(next);
-    setFeedback({ tone: "success", message: successMessage });
-  };
-
-  const signup = async () => {
-    if (!signName || !selSlot) return;
-    const next = assignEscalaSlotPerson(sections, selSlot.sectionIndex, selSlot.slotIndex, signName);
-    setBusyAction("signup");
-    try {
-      await persistSections(next, "Vaga preenchida com sucesso.");
-      setShowSignup(false);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
-  };
-
-  const remove = async (sectionIndex, slotIndex) => {
-    setPendingRemoval({ sectionIndex, slotIndex });
-  };
-
-  const confirmRemoval = async () => {
-    if (!pendingRemoval) return;
-    const { sectionIndex, slotIndex } = pendingRemoval;
-    const next = clearEscalaSlotPerson(sections, sectionIndex, slotIndex);
-    setBusyAction("remove");
-    try {
-      await persistSections(next, "Vaga excluída com sucesso.");
-      setPendingRemoval(null);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
-  };
-
-  const updateSlot = async (sectionIndex, slotIndex, patch) => {
-    const next = patchEscalaSlot(sections, sectionIndex, slotIndex, patch);
-    setBusyAction("update");
-    try {
-      await persistSections(next);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
-  };
-
-  const addSlot = async sectionIndex => {
-    const next = addEscalaSlot(sections, sectionIndex);
-    setBusyAction("add");
-    try {
-      await persistSections(next);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
-  };
-
-  const exportCsv = () => {
-    const csv = buildEscalaCsv(sections);
-    downloadCsv({ csv, filename: `${form.slug}-escala.csv` });
-    setFeedback({ tone: "success", message: "CSV exportado com sucesso." });
-  };
-
-  return (
-    <EscalaResultsPanel
-      canEdit={canEdit}
-      feedback={feedback}
-      filled={filled}
-      total={total}
-      sections={sections}
-      people={people}
-      busyAction={busyAction}
-      showSignup={showSignup}
-      selSlot={selSlot}
-      signName={signName}
-      names={names}
-      onOpenSignup={(sectionIndex, slotIndex) => {
-        if (!canEdit) return;
-        if (!sections[sectionIndex].slots[slotIndex].person) {
-          setSelSlot({ sectionIndex, slotIndex });
-          setShowSignup(true);
-          setSignName("");
-        }
-      }}
-      onCloseSignup={() => {
-        setShowSignup(false);
-        setSelSlot(null);
-      }}
-      onSetSignName={setSignName}
-      onConfirmSignup={signup}
-      onUpdateSlot={updateSlot}
-      onRemoveSlot={(sectionIndex, slotIndex) => remove(sectionIndex, slotIndex)}
-      onConfirmRemoval={confirmRemoval}
-      onAddSlot={addSlot}
-      onExportCsv={exportCsv}
-      onCancelRemoval={() => setPendingRemoval(null)}
-      pendingRemoval={pendingRemoval}
-    />
-  );
-};
-
-
-
