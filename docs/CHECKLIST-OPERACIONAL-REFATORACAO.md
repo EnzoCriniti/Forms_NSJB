@@ -143,8 +143,8 @@ Teste a reforcar:
 Problemas que precisam ser corrigidos:
 - o arquivo concentra primitives, feedback, modal, badges, headers, panel wrappers e reexports de UI publica
 - o mapa de icones e montado dentro do componente `Icon`
-- `ScreenHeader` ainda esta no modulo agregador junto dos reexports de compatibilidade
-- o arquivo ainda reexporta `ClosedPublicScreen` e componentes publicos como transicao
+- concluido nesta etapa: `ui.jsx` ficou como agregador historico de reexports de compatibilidade
+- concluido em etapa anterior: componentes publicos ficam em `frontend/src/components/publicUi.jsx`, nao no agregador `ui.jsx`
 
 Checklist operacional:
 - separar primitives visuais em modulos menores por funcao: botao, badge, feedback, modal, layout, header
@@ -153,6 +153,7 @@ Checklist operacional:
 - iniciado: `FeedbackBanner` saiu para `frontend/src/components/uiFeedback.jsx`, com reexport preservado em `ui.jsx`
 - iniciado: `ConfirmModal` saiu para `frontend/src/components/uiModal.jsx`, com reexport preservado em `ui.jsx`
 - iniciado: wrappers de layout (`SurfacePanel`, `MetricCard`, `FieldControl`, `NotePanel`, `SplitSection`) sairam para `frontend/src/components/uiLayout.jsx`, com reexports preservados em `ui.jsx`
+- iniciado: `ScreenHeader` saiu para `frontend/src/components/uiHeader.jsx`, com reexport preservado em `ui.jsx`
 - mover o mapa de icones para constante fora do render ou para arquivo proprio
 - iniciado: mapa e renderizacao de `Icon`/`ThemeIcon` sairam para `frontend/src/components/uiIcons.jsx`, com reexports preservados em `ui.jsx`
 - remover os reexports publicos daqui depois que os consumidores estiverem atualizados
@@ -168,6 +169,7 @@ Teste a reforcar:
 - `tests/ui/uiFeedback.test.jsx`
 - `tests/ui/uiLayout.test.jsx`
 - `tests/ui/uiModal.test.jsx`
+- `tests/ui/uiHeader.test.jsx`
 - `tests/ui/uiTheme.test.js`
 - `tests/ui/appHeader.test.jsx`
 - `tests/ui/resultsPresenceHeader.test.jsx`

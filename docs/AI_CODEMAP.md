@@ -150,8 +150,7 @@ Mapa curto das areas mais mexidas por agentes.
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
 - `frontend/src/components/ui.jsx`
-  Reune componentes visuais compartilhados. Inclui `ScreenHeader` para evitar repeticao dos topos internos com voltar, titulo, subtitulo e acoes.
-  Mantem reexports de compatibilidade para botao, badges, feedback, modal, layout, icones, tema e erros.
+  Agregador historico dos componentes visuais compartilhados. Mantem reexports de compatibilidade para botao, badges, feedback, header, modal, layout, icones, tema e erros.
   Este arquivo nao deve concentrar componentes publicos de dominio; `frontend/src/components/publicUi.jsx` e a fonte de verdade para a UI publica.
 - `frontend/src/components/uiIcons.jsx`
   Mapa e renderizacao dos icones base usados por `Icon` e `ThemeIcon`, reexportados por `ui.jsx` para compatibilidade.
@@ -169,6 +168,8 @@ Mapa curto das areas mais mexidas por agentes.
   Modal compartilhado de confirmacao com acoes de cancelar/confirmar e tons de perigo ou aviso, reexportado por `ui.jsx` para compatibilidade.
 - `frontend/src/components/uiLayout.jsx`
   Wrappers compartilhados de layout (`SurfacePanel`, `MetricCard`, `FieldControl`, `NotePanel`, `SplitSection`), reexportados por `ui.jsx` para compatibilidade.
+- `frontend/src/components/uiHeader.jsx`
+  Header interno compartilhado `ScreenHeader`, usado por telas autenticadas e reexportado por `ui.jsx` para compatibilidade.
 - `frontend/src/components/publicUi.jsx`
   Componentes compartilhados das telas publicas: barra de leitura, topo publico canonico `PublicTopCompact` e tela de formulario fechado.
 - `frontend/src/lib/appShell.js`
