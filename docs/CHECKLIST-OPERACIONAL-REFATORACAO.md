@@ -120,6 +120,7 @@ Checklist operacional:
 - iniciado: seletores pequenos de mensagens/eventos e detalhes de formulario sairam para `frontend/src/lib/appShellContentSelectors.js`
 - iniciado: adapters dos fluxos internos de resultados e resposta sairam para `frontend/src/AppShellFormFlows.jsx`
 - iniciado: adapters dos fluxos internos de mensagens de evento sairam para `frontend/src/AppShellEventMessageFlows.jsx`
+- iniciado: adapters das telas principais sairam para `frontend/src/AppShellMainFlows.jsx`
 
 Teste a reforcar:
 - `tests/ui/appDashboardFlow.test.jsx`

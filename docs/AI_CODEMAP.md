@@ -127,11 +127,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/AppPublicViewport.jsx`
   Renderizacao das rotas publicas de formulario, escala e resultados, delegada por `AppViewport.jsx`.
 - `frontend/src/AppShellContent.jsx`
-  Shell autenticado do frontend. Renderiza o header global, telas principais e delega fluxos internos para adapters.
+  Shell autenticado do frontend. Renderiza o header global e delega telas/fluxos para adapters.
 - `frontend/src/AppShellEventMessageFlows.jsx`
   Adapters dos fluxos internos de editor e detalhe de mensagens de evento.
 - `frontend/src/AppShellFormFlows.jsx`
   Adapters dos fluxos internos de resultados e resposta autenticada.
+- `frontend/src/AppShellMainFlows.jsx`
+  Adapters das telas principais do shell autenticado: dashboard, eventos, lista, criacao e configuracoes.
 - `frontend/src/lib/appShellContentSelectors.js`
   Seletores pequenos usados por `AppShellContent.jsx` para mensagens/eventos ativos e detalhes de respostas/escala.
 - `frontend/src/lib/appBootstrap.js`

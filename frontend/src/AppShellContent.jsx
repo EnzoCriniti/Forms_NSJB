@@ -1,20 +1,15 @@
 /**
  * @file frontend/src/AppShellContent.jsx
  * @summary Shell autenticado do frontend.
- * @responsibility Renderizar a navegacao principal e delegar fluxos internos apos o login.
+ * @responsibility Renderizar a navegacao principal e delegar telas do shell apos o login.
  */
 
 import React from "react";
 import { COLORS } from "./components/ui";
-import { canCreateForms } from "./lib/auth";
 import { AppHeader } from "./components/AppHeader";
 import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
 import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
-import { DashboardScreen } from "./screens/DashboardScreen";
-import { EventsScreen } from "./screens/EventsScreen";
-import { FormListScreen } from "./screens/FormListScreen";
-import { CreateFormScreen } from "./screens/CreateFormScreen";
-import { SettingsScreen } from "./screens/SettingsScreen";
+import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, SettingsFlow } from "./AppShellMainFlows";
 
 export const AppShellContent = ({ app }) => {
   const {
@@ -108,7 +103,7 @@ export const AppShellContent = ({ app }) => {
       />
       <main className="app-main" style={{ maxWidth: 1120, margin: "0 auto", padding: "24px 20px" }}>
         {screen === "dashboard" && (
-          <DashboardScreen
+          <DashboardFlow
             onNavigate={onNavigate}
             forms={forms}
             labels={labels}
@@ -116,18 +111,19 @@ export const AppShellContent = ({ app }) => {
             presets={presets}
             fieldCatalog={fieldCatalog}
             scaleTaskCatalog={scaleTaskCatalog}
-            user={currentUser}
+            currentUser={currentUser}
           />
         )}
         {screen === "events" && currentUser && (
-          <EventsScreen
+          <EventsFlow
+            app={app}
             events={events}
             forms={forms}
             labels={labels}
-            user={currentUser}
+            currentUser={currentUser}
             pinnedEventIds={pinnedEventIds}
             pinnedFormIds={pinnedFormIds}
-            initialSelectedEventId={activeEventId}
+            activeEventId={activeEventId}
             onSaveEvent={handleSaveEvent}
             onPublishEvent={handlePublishEvent}
             onDeleteEvent={handleDeleteEvent}
@@ -166,13 +162,13 @@ export const AppShellContent = ({ app }) => {
           />
         )}
         {screen === "list" && (
-          <FormListScreen
+          <FormListFlow
             onNavigate={onNavigate}
             onDuplicateForm={handleDuplicateForm}
             onArchiveForm={handleArchiveForm}
             onTogglePinnedForm={handleTogglePinnedForm}
             pinnedFormIds={pinnedFormIds}
-            user={currentUser}
+            currentUser={currentUser}
             labels={labels}
             forms={forms}
             onDeleteForm={handleDeleteForm}
@@ -180,7 +176,8 @@ export const AppShellContent = ({ app }) => {
           />
         )}
         {screen === "create" && (
-          <CreateFormScreen
+          <CreateFormFlow
+            app={app}
             onNavigate={onNavigate}
             people={people}
             membersConfig={membersConfig}
@@ -190,14 +187,13 @@ export const AppShellContent = ({ app }) => {
             fieldCatalog={fieldCatalog}
             scaleTaskCatalog={scaleTaskCatalog}
             onSavePreset={handleSavePreset}
-            onSaveForm={app.handleSaveForm}
-            form={editingForm}
-            event={activeEvent}
-            isDuplicateMode={Boolean(draftForm)}
+            editingForm={editingForm}
+            activeEvent={activeEvent}
+            draftForm={draftForm}
           />
         )}
-        {screen === "settings" && canCreateForms(currentUser) && (
-          <SettingsScreen
+        {screen === "settings" && (
+          <SettingsFlow
             onNavigate={onNavigate}
             users={users}
             labels={labels}
