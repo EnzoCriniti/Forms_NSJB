@@ -216,13 +216,7 @@ export const EventMessageDetailScreen = ({
       <ConfirmModal
         open={Boolean(confirmAction)}
         title={confirmProps.title}
-        message={
-          confirmAction === "dispatch"
-            ? "No modo log-only nada e enviado de fato — apenas o disparo e registrado no historico e o status passa a 'disparada'. Confirma?"
-            : confirmAction === "cancel"
-              ? "Cancelar move a mensagem para o estado 'cancelada' e impede edicoes e disparos futuros. Continuar?"
-              : "Excluir remove a mensagem e o historico de logs associado. Continuar?"
-        }
+        message={confirmProps.message}
         confirmLabel={confirmProps.confirmLabel}
         tone={confirmProps.tone}
         onCancel={closeConfirm}
