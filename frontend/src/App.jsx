@@ -56,6 +56,7 @@ import { isFormClosedForPublic } from "./lib/forms";
 import { hasLoadedFormDetails, loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
+import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm, startEventFormCreation } from "./lib/appFormActions";
 import { resolveAppNavigation } from "./lib/appNavigation";
 import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
 import { sanitizeUser } from "./lib/appSession";
@@ -366,22 +367,19 @@ export default function App() {
   };
 
   const handleSaveForm = async payload => {
-    const response = await saveForm(payload);
-    const refreshed = await refreshBootstrap({ silent: true, rethrow: true });
-    if (activeEventId) {
-      const targetEvent = (refreshed?.events || events).find(event => event.id === activeEventId);
-      if (targetEvent && !targetEvent.formIds.includes(response.form.id)) {
-        const eventResponse = await saveEvent({
-          ...targetEvent,
-          formIds: [...targetEvent.formIds, response.form.id],
-        });
-        setBootstrap(prev => replaceBootstrapList(prev, "events", (prev.events || []).map(event => event.id === eventResponse.event.id ? eventResponse.event : event)));
-      }
-    }
-    setDraftForm(null);
-    setEditingFormId(response.form.id);
-    setActiveFormId(response.form.id);
-    return response.form;
+    return saveAppForm({
+      payload,
+      activeEventId,
+      events,
+      saveForm,
+      saveEvent,
+      refreshBootstrap,
+      setActiveFormId,
+      setBootstrap,
+      setDraftForm,
+      setEditingFormId,
+      replaceBootstrapList,
+    });
   };
 
   const handleSaveEvent = async payload => {
@@ -411,29 +409,43 @@ export default function App() {
   };
 
   const handleCreateFormInEvent = event => {
-    if (!event || !canCreateForms(currentUser)) return;
-    setActiveEventId(event.id);
-    setDraftForm(null);
-    setEditingFormId(null);
-    setScreen("create");
+    startEventFormCreation({
+      event,
+      currentUser,
+      canCreateForms,
+      setActiveEventId,
+      setDraftForm,
+      setEditingFormId,
+      setScreen,
+    });
   };
 
   const handleDuplicateForm = form => {
-    if (!form || !canCreateForms(currentUser)) return;
-    setDraftForm(buildDuplicateFormDraft(form));
-    setEditingFormId(null);
-    setActiveFormId(form.id);
-    setScreen("create");
+    startDuplicateForm({
+      form,
+      currentUser,
+      canCreateForms,
+      buildDuplicateFormDraft,
+      setActiveFormId,
+      setDraftForm,
+      setEditingFormId,
+      setScreen,
+    });
   };
 
   const handleArchiveForm = async (form, nextStatus) => {
-    if (!form || !canCreateForms(currentUser)) return null;
-    const response = await saveForm(buildSaveFormPayloadFromExisting(form, nextStatus));
-    await refreshBootstrap({ silent: true, rethrow: true });
-    setDraftForm(null);
-    setEditingFormId(null);
-    setActiveFormId(response.form.id);
-    return response.form;
+    return archiveAppForm({
+      form,
+      nextStatus,
+      currentUser,
+      canCreateForms,
+      buildSaveFormPayloadFromExisting,
+      saveForm,
+      refreshBootstrap,
+      setActiveFormId,
+      setDraftForm,
+      setEditingFormId,
+    });
   };
 
   const handleTogglePinnedForm = formId => {
@@ -451,38 +463,57 @@ export default function App() {
   };
 
   const handleDeleteForm = async (formId, masterKey) => {
-    const result = await deleteForm(formId, masterKey);
-    setResponseDetails(prev => removeFormDetail(prev, formId));
-    setEscalaDetails(prev => removeFormDetail(prev, formId));
-    await refreshBootstrap({ silent: true, rethrow: true });
-    setBootstrap(prev => removeFormIdFromEvents(prev, formId));
-    return result;
+    return deleteAppForm({
+      formId,
+      masterKey,
+      deleteForm,
+      refreshBootstrap,
+      setBootstrap,
+      setEscalaDetails,
+      setResponseDetails,
+      removeFormDetail,
+      removeFormIdFromEvents,
+    });
   };
 
   const handleSaveResponse = async payload => {
-    const result = await saveResponse(payload);
-    setResponseDetails(prev => upsertFormDetail(prev, payload.formId, result.responses));
-    setBootstrap(prev => updateBootstrapFormMetrics(prev, payload.formId, { responses: result.responses.length }));
+    await saveAppResponse({
+      payload,
+      saveResponse,
+      setBootstrap,
+      setResponseDetails,
+      updateBootstrapFormMetrics,
+      upsertFormDetail,
+    });
   };
 
   const handleSaveEscala = async (formId, sections) => {
-    const result = await saveEscala(formId, sections);
-    setEscalaDetails(prev => upsertFormDetail(prev, formId, result.sections));
-    setBootstrap(prev => updateBootstrapFormMetrics(prev, formId, buildEscalaMetrics(result.sections)));
+    await saveAppEscala({
+      formId,
+      sections,
+      saveEscala,
+      setBootstrap,
+      setEscalaDetails,
+      buildEscalaMetrics,
+      updateBootstrapFormMetrics,
+      upsertFormDetail,
+    });
   };
 
   const handleClaimEscalaSlot = async (formId, sectionIndex, slotIndex, person) => {
-    try {
-      const result = await claimEscalaSlot(formId, sectionIndex, slotIndex, person);
-      setEscalaDetails(prev => upsertFormDetail(prev, formId, result.sections));
-      setBootstrap(prev => updateBootstrapFormMetrics(prev, formId, buildEscalaMetrics(result.sections)));
-      return result.sections;
-    } catch (error) {
-      if (error?.status === 409 || error?.code === "ESCALA_CONFLICT") {
-        await refreshEscalaForForm(formId);
-      }
-      throw error;
-    }
+    return claimAppEscalaSlot({
+      formId,
+      sectionIndex,
+      slotIndex,
+      person,
+      claimEscalaSlot,
+      refreshEscalaForForm,
+      setBootstrap,
+      setEscalaDetails,
+      buildEscalaMetrics,
+      updateBootstrapFormMetrics,
+      upsertFormDetail,
+    });
   };
 
   const handleSaveUser = async user => {
