@@ -5,55 +5,10 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, Icon, ScreenHeader, StatusBadge, resolveActionErrorMessage } from "../components/ui";
-import { formatDate, formatDateTime } from "../lib/forms";
+import { COLORS, Btn, ConfirmModal, FeedbackBanner, ScreenHeader, StatusBadge, resolveActionErrorMessage } from "../components/ui";
+import { formatDate } from "../lib/forms";
 import { EventCard, EventDetailTabs, EventEditorPanel, EventFormsList, EventMessagesPanel } from "../features/events/components/eventsPanels";
-
-const ELIGIBLE_FORM_TYPES_FOR_MESSAGES = ["presenca", "escala_organ"];
-const isEventEligibleForMessages = forms => forms.some(form => ELIGIBLE_FORM_TYPES_FOR_MESSAGES.includes(form.type));
-
-const emptyDraft = {
-  title: "",
-  description: "",
-  date: "",
-  opening: "",
-  closing: "",
-  status: "rascunho",
-  formIds: [],
-  messageConfig: {},
-};
-
-const toDraft = event => ({
-  ...emptyDraft,
-  ...(event || {}),
-  formIds: Array.isArray(event?.formIds) ? event.formIds : [],
-  date: event?.date || "",
-  opening: event?.opening || "",
-  closing: event?.closing || "",
-});
-
-const LIST_ACTION_STYLE = {
-  width: 42,
-  height: 42,
-  minWidth: 42,
-  padding: 0,
-  justifyContent: "center",
-  borderRadius: 12,
-};
-
-const sortEvents = (events, pinnedSet) => [...events].sort((a, b) => {
-  const aPinned = pinnedSet.has(a.id);
-  const bPinned = pinnedSet.has(b.id);
-  if (aPinned !== bPinned) return aPinned ? -1 : 1;
-  return String(b.date || "").localeCompare(String(a.date || "")) || Number(b.id || 0) - Number(a.id || 0);
-});
-
-const visibleEventFormsFor = (user, eventForms) => {
-  if (user?.role === "admin") return eventForms;
-  return eventForms.filter(form => form.status !== "arquivado");
-};
-
-const PAGE_SIZE = 4;
+import { EVENT_PAGE_SIZE, buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateItems, selectEventForms, sortEvents } from "./eventsDomain";
 
 export const EventsScreen = ({
   events = [],
@@ -79,7 +34,7 @@ export const EventsScreen = ({
   const canManageEvents = user?.role === "admin";
   const [mode, setMode] = useState(initialSelectedEventId ? "detail" : "list");
   const [selectedEventId, setSelectedEventId] = useState(initialSelectedEventId);
-  const [draft, setDraft] = useState(() => ({ ...emptyDraft }));
+  const [draft, setDraft] = useState(() => ({ ...emptyEventDraft }));
   const [feedback, setFeedback] = useState(null);
   const [saving, setSaving] = useState(false);
   const [pendingDelete, setPendingDelete] = useState(null);
@@ -93,10 +48,7 @@ export const EventsScreen = ({
   const pinnedFormSet = useMemo(() => new Set(pinnedFormIds), [pinnedFormIds]);
   const sortedEvents = useMemo(() => sortEvents(events, pinnedEventSet), [events, pinnedEventSet]);
   const selectedEvent = useMemo(() => events.find(event => event.id === selectedEventId) || null, [events, selectedEventId]);
-  const eventForms = useMemo(() => {
-    const ids = new Set(selectedEvent?.formIds || []);
-    return visibleEventFormsFor(user, forms.filter(form => ids.has(form.id)));
-  }, [forms, selectedEvent, user]);
+  const eventForms = useMemo(() => selectEventForms({ forms, selectedEvent, user }), [forms, selectedEvent, user]);
 
   const openEvent = event => {
     setSelectedEventId(event.id);
@@ -109,30 +61,25 @@ export const EventsScreen = ({
   const eventMessages = selectedEvent?.messages || [];
   const messagesEligible = isEventEligibleForMessages(eventForms);
 
-  const eventsTotalPages = Math.max(1, Math.ceil(sortedEvents.length / PAGE_SIZE));
-  const safeEventsPage = Math.min(eventsPage, eventsTotalPages);
-  const pagedEvents = sortedEvents.slice((safeEventsPage - 1) * PAGE_SIZE, safeEventsPage * PAGE_SIZE);
-
-  const formsTotalPages = Math.max(1, Math.ceil(eventForms.length / PAGE_SIZE));
-  const safeFormsPage = Math.min(formsPage, formsTotalPages);
-  const pagedEventForms = eventForms.slice((safeFormsPage - 1) * PAGE_SIZE, safeFormsPage * PAGE_SIZE);
+  const eventsPagination = paginateItems({ items: sortedEvents, page: eventsPage });
+  const formsPagination = paginateItems({ items: eventForms, page: formsPage });
 
   const startNew = () => {
-    setDraft({ ...emptyDraft });
+    setDraft({ ...emptyEventDraft });
     setSelectedEventId(null);
     setMode("edit");
     setFeedback(null);
   };
 
   const editEvent = event => {
-    setDraft(toDraft(event));
+    setDraft(buildEventDraft(event));
     setSelectedEventId(event.id);
     setMode("edit");
     setFeedback(null);
   };
 
   const cancelEdit = () => {
-    setDraft({ ...emptyDraft });
+    setDraft({ ...emptyEventDraft });
     setMode(selectedEventId ? "detail" : "list");
   };
 
@@ -142,7 +89,7 @@ export const EventsScreen = ({
     try {
       const saved = await onSaveEvent(draft);
       setSelectedEventId(saved.id);
-      setDraft(toDraft(saved));
+      setDraft(buildEventDraft(saved));
       setMode("detail");
       setFeedback({ tone: "success", message: "Evento salvo." });
     } catch (error) {
@@ -264,7 +211,7 @@ export const EventsScreen = ({
         ) : (
           <div style={{ display: "grid", gap: 18 }}>
             <EventFormsList
-              forms={pagedEventForms}
+              forms={formsPagination.pageItems}
               user={user}
               labels={labels}
               isPinnedForm={formId => pinnedFormSet.has(formId)}
@@ -275,15 +222,15 @@ export const EventsScreen = ({
               onArchiveForm={onArchiveForm}
               onDeleteForm={onDeleteForm}
             />
-            {eventForms.length > PAGE_SIZE && (
+            {eventForms.length > EVENT_PAGE_SIZE && (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
                 <div style={{ fontSize: 12, color: COLORS.textMuted }}>
-                  Exibindo {(safeFormsPage - 1) * PAGE_SIZE + 1} a {Math.min(safeFormsPage * PAGE_SIZE, eventForms.length)} de {eventForms.length}
+                  Exibindo {formsPagination.rangeStart} a {formsPagination.rangeEnd} de {eventForms.length}
                 </div>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.max(1, current - 1))} disabled={safeFormsPage === 1}>Anterior</Btn>
-                  <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {safeFormsPage} de {formsTotalPages}</div>
-                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.min(formsTotalPages, current + 1))} disabled={safeFormsPage === formsTotalPages}>Proxima</Btn>
+                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.max(1, current - 1))} disabled={formsPagination.safePage === 1}>Anterior</Btn>
+                  <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {formsPagination.safePage} de {formsPagination.totalPages}</div>
+                  <Btn v="secondary" sz="sm" onClick={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))} disabled={formsPagination.safePage === formsPagination.totalPages}>Proxima</Btn>
                 </div>
               </div>
             )}
@@ -307,7 +254,7 @@ export const EventsScreen = ({
           <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
             Nenhum evento criado.
           </div>
-        ) : pagedEvents.map(event => (
+        ) : eventsPagination.pageItems.map(event => (
           <EventCard
             key={event.id}
             event={event}
@@ -319,15 +266,15 @@ export const EventsScreen = ({
             onTogglePinned={onTogglePinnedEvent}
           />
         ))}
-        {sortedEvents.length > PAGE_SIZE && (
+        {sortedEvents.length > EVENT_PAGE_SIZE && (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
             <div style={{ fontSize: 12, color: COLORS.textMuted }}>
-              Exibindo {(safeEventsPage - 1) * PAGE_SIZE + 1} a {Math.min(safeEventsPage * PAGE_SIZE, sortedEvents.length)} de {sortedEvents.length}
+              Exibindo {eventsPagination.rangeStart} a {eventsPagination.rangeEnd} de {sortedEvents.length}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.max(1, current - 1))} disabled={safeEventsPage === 1}>Anterior</Btn>
-              <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {safeEventsPage} de {eventsTotalPages}</div>
-              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.min(eventsTotalPages, current + 1))} disabled={safeEventsPage === eventsTotalPages}>Proxima</Btn>
+              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.max(1, current - 1))} disabled={eventsPagination.safePage === 1}>Anterior</Btn>
+              <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {eventsPagination.safePage} de {eventsPagination.totalPages}</div>
+              <Btn v="secondary" sz="sm" onClick={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))} disabled={eventsPagination.safePage === eventsPagination.totalPages}>Proxima</Btn>
             </div>
           </div>
         )}

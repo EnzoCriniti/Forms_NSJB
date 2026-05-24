@@ -430,8 +430,10 @@ Checklist operacional:
 - deixar a pagina do detalhe consumir apenas os dados necessarios de `EventDetailTabs`, `EventMessagesPanel` e `EventFormsList`
 - reduzir o numero de condicoes inline na renderizacao principal
 - manter a paginacao de eventos e formularios em helpers pequenos
+- iniciado: draft, seletores de formularios, elegibilidade de mensagens, ordenacao e paginacao sairam para `frontend/src/screens/eventsDomain.js`
 
 Teste a reforcar:
+- `tests/ui/eventsDomain.test.js`
 - `tests/ui/eventsScreen.test.jsx`
 - `tests/ui/eventsScreenMessages.test.jsx`
 
