@@ -5,8 +5,8 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { COLORS, Btn, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
-import { EventCard, EventDetailHeader, EventDetailTabs, EventEditorPanel, EventFormsList, EventMessagesPanel, EventPaginationControls } from "../features/events/components/eventsPanels";
+import { Btn, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { EventDeleteConfirmModal, EventDetailFormsPanel, EventDetailHeader, EventDetailTabs, EventEditorPanel, EventListPanel, EventMessagesPanel } from "../features/events/components/eventsPanels";
 import { buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateItems, selectEventForms, sortEvents } from "./eventsDomain";
 
 export const EventsScreen = ({
@@ -191,31 +191,22 @@ export const EventsScreen = ({
             onCreate={() => onCreateEventMessage && onCreateEventMessage(selectedEvent)}
             onOpen={message => onOpenEventMessage && onOpenEventMessage(selectedEvent, message)}
           />
-        ) : eventForms.length === 0 ? (
-          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-            Nenhum formulario criado neste evento.
-          </div>
         ) : (
-          <div style={{ display: "grid", gap: 18 }}>
-            <EventFormsList
-              forms={formsPagination.pageItems}
-              user={user}
-              labels={labels}
-              isPinnedForm={formId => pinnedFormSet.has(formId)}
-              canManageEvents={canManageEvents}
-              onNavigate={onNavigate}
-              onDuplicateForm={onDuplicateForm}
-              onTogglePinnedForm={onTogglePinnedForm}
-              onArchiveForm={onArchiveForm}
-              onDeleteForm={onDeleteForm}
-            />
-            <EventPaginationControls
-              pagination={formsPagination}
-              totalItems={eventForms.length}
-              onPrevious={() => setFormsPage(current => Math.max(1, current - 1))}
-              onNext={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))}
-            />
-          </div>
+          <EventDetailFormsPanel
+            forms={eventForms}
+            pagination={formsPagination}
+            user={user}
+            labels={labels}
+            pinnedFormSet={pinnedFormSet}
+            canManageEvents={canManageEvents}
+            onNavigate={onNavigate}
+            onDuplicateForm={onDuplicateForm}
+            onTogglePinnedForm={onTogglePinnedForm}
+            onArchiveForm={onArchiveForm}
+            onDeleteForm={onDeleteForm}
+            onPreviousPage={() => setFormsPage(current => Math.max(1, current - 1))}
+            onNextPage={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))}
+          />
         )}
       </div>
     );
@@ -230,36 +221,20 @@ export const EventsScreen = ({
         titleSize={20}
         actions={canManageEvents ? <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" /> : null}
       />
-      <div style={{ display: "grid", gap: 18 }}>
-        {sortedEvents.length === 0 ? (
-          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-            Nenhum evento criado.
-          </div>
-        ) : eventsPagination.pageItems.map(event => (
-          <EventCard
-            key={event.id}
-            event={event}
-            isPinned={pinnedEventSet.has(event.id)}
-            canManageEvents={canManageEvents}
-            onOpen={openEvent}
-            onEdit={editEvent}
-            onDelete={setPendingDelete}
-            onTogglePinned={onTogglePinnedEvent}
-          />
-        ))}
-        <EventPaginationControls
-          pagination={eventsPagination}
-          totalItems={sortedEvents.length}
-          onPrevious={() => setEventsPage(current => Math.max(1, current - 1))}
-          onNext={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))}
-        />
-      </div>
-      <ConfirmModal
-        open={Boolean(pendingDelete)}
-        title="Excluir evento"
-        message={`Excluir o evento "${pendingDelete?.title || ""}" remove apenas o agrupamento. Os formularios continuam salvos.`}
-        confirmLabel="Excluir"
-        tone="danger"
+      <EventListPanel
+        events={sortedEvents}
+        pagination={eventsPagination}
+        pinnedEventSet={pinnedEventSet}
+        canManageEvents={canManageEvents}
+        onOpen={openEvent}
+        onEdit={editEvent}
+        onDelete={setPendingDelete}
+        onTogglePinned={onTogglePinnedEvent}
+        onPreviousPage={() => setEventsPage(current => Math.max(1, current - 1))}
+        onNextPage={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))}
+      />
+      <EventDeleteConfirmModal
+        event={pendingDelete}
         busy={deleting}
         onCancel={() => {
           if (deleting) return;

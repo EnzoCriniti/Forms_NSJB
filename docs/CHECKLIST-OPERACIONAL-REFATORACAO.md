@@ -432,6 +432,7 @@ Checklist operacional:
 - manter a paginacao de eventos e formularios em helpers pequenos
 - iniciado: draft, seletores de formularios, elegibilidade de mensagens, ordenacao e paginacao sairam para `frontend/src/screens/eventsDomain.js`
 - iniciado: cabecalho de detalhe e controles visuais de paginacao sairam para `frontend/src/features/events/components/eventsPanels.jsx`
+- iniciado: listagem, bloco de formularios do detalhe e modal de exclusao foram movidos para `frontend/src/features/events/components/eventsPanels.jsx`
 
 Teste a reforcar:
 - `tests/ui/eventsDomain.test.js`

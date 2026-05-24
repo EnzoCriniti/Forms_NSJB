@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { COLORS, Btn, Icon, ScreenHeader, StatusBadge } from "../../../components/ui";
+import { COLORS, Btn, ConfirmModal, Icon, ScreenHeader, StatusBadge } from "../../../components/ui";
 import { FormListCard } from "../../../components/FormListCard";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../../../components/MessageStatusBadge";
 import { formatDate, formatDateTime } from "../../../lib/forms";
@@ -230,6 +230,44 @@ export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, on
   );
 };
 
+export const EventListPanel = ({
+  events,
+  pagination,
+  pinnedEventSet,
+  canManageEvents,
+  onOpen,
+  onEdit,
+  onDelete,
+  onTogglePinned,
+  onPreviousPage,
+  onNextPage,
+}) => (
+  <div style={{ display: "grid", gap: 18 }}>
+    {events.length === 0 ? (
+      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+        Nenhum evento criado.
+      </div>
+    ) : pagination.pageItems.map(event => (
+      <EventCard
+        key={event.id}
+        event={event}
+        isPinned={pinnedEventSet.has(event.id)}
+        canManageEvents={canManageEvents}
+        onOpen={onOpen}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onTogglePinned={onTogglePinned}
+      />
+    ))}
+    <EventPaginationControls
+      pagination={pagination}
+      totalItems={events.length}
+      onPrevious={onPreviousPage}
+      onNext={onNextPage}
+    />
+  </div>
+);
+
 export const EventFormsList = ({ forms, user, labels, isPinnedForm, canManageEvents, onNavigate, onDuplicateForm, onTogglePinnedForm, onArchiveForm, onDeleteForm }) => (
   <div style={{ display: "grid", gap: 18 }}>
     {forms.map(form => (
@@ -248,4 +286,64 @@ export const EventFormsList = ({ forms, user, labels, isPinnedForm, canManageEve
       />
     ))}
   </div>
+);
+
+export const EventDetailFormsPanel = ({
+  forms,
+  pagination,
+  user,
+  labels,
+  pinnedFormSet,
+  canManageEvents,
+  onNavigate,
+  onDuplicateForm,
+  onTogglePinnedForm,
+  onArchiveForm,
+  onDeleteForm,
+  onPreviousPage,
+  onNextPage,
+}) => {
+  if (forms.length === 0) {
+    return (
+      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+        Nenhum formulario criado neste evento.
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "grid", gap: 18 }}>
+      <EventFormsList
+        forms={pagination.pageItems}
+        user={user}
+        labels={labels}
+        isPinnedForm={formId => pinnedFormSet.has(formId)}
+        canManageEvents={canManageEvents}
+        onNavigate={onNavigate}
+        onDuplicateForm={onDuplicateForm}
+        onTogglePinnedForm={onTogglePinnedForm}
+        onArchiveForm={onArchiveForm}
+        onDeleteForm={onDeleteForm}
+      />
+      <EventPaginationControls
+        pagination={pagination}
+        totalItems={forms.length}
+        onPrevious={onPreviousPage}
+        onNext={onNextPage}
+      />
+    </div>
+  );
+};
+
+export const EventDeleteConfirmModal = ({ event, busy, onCancel, onConfirm }) => (
+  <ConfirmModal
+    open={Boolean(event)}
+    title="Excluir evento"
+    message={`Excluir o evento "${event?.title || ""}" remove apenas o agrupamento. Os formularios continuam salvos.`}
+    confirmLabel="Excluir"
+    tone="danger"
+    busy={busy}
+    onCancel={onCancel}
+    onConfirm={onConfirm}
+  />
 );
