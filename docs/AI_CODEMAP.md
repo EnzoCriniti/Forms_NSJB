@@ -161,7 +161,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appShellContentSelectors.js`
   Seletores pequenos usados por `AppShellContent.jsx` para mensagens/eventos ativos e detalhes de respostas/escala.
 - `frontend/src/lib/appBootstrap.js`
-  Helpers puros do bootstrap inicial do frontend, agora focado em normalizacao do payload e selecao do formulario ativo. Mantem reexports de compatibilidade para helpers ja extraidos.
+  Agregador historico dos helpers do bootstrap principal. Mantem reexports de compatibilidade para normalizacao, selecao, listas, metricas e pinning.
+- `frontend/src/lib/appBootstrapNormalize.js`
+  Normalizacao do payload de bootstrap inicial e estrutura vazia padrao do frontend.
+- `frontend/src/lib/appBootstrapSelection.js`
+  Selecao do formulario ativo apos atualizar o bootstrap.
 - `frontend/src/lib/appBootstrapLists.js`
   Operacoes puras de listas do bootstrap, incluindo substituicao, upsert, remocao, listas aninhadas, ordenacao de eventos e remocao de formulario dos eventos.
 - `frontend/src/lib/appBootstrapMetrics.js`
