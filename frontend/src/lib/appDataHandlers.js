@@ -10,6 +10,12 @@ import {
   refreshAppBootstrap,
   refreshFormDeleteKeyConfiguredStatus,
 } from "./appDataLoad";
+import {
+  fetchBootstrap as apiFetchBootstrap,
+  fetchFormDeleteKeyStatus as apiFetchFormDeleteKeyStatus,
+  fetchFormEscala as apiFetchFormEscala,
+  fetchFormResponses as apiFetchFormResponses,
+} from "./api";
 
 export const buildAppDataHandlers = ({
   activeFormId,
@@ -17,10 +23,10 @@ export const buildAppDataHandlers = ({
   currentUser,
   detailLoading,
   escalaDetails,
-  fetchBootstrap,
-  fetchFormDeleteKeyStatus,
-  fetchFormEscala,
-  fetchFormResponses,
+  fetchBootstrap = apiFetchBootstrap,
+  fetchFormDeleteKeyStatus = apiFetchFormDeleteKeyStatus,
+  fetchFormEscala = apiFetchFormEscala,
+  fetchFormResponses = apiFetchFormResponses,
   normalizeBootstrap,
   pickActiveFormIdAfterBootstrap,
   responseDetails,

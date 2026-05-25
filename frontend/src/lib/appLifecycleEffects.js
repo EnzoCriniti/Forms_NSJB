@@ -5,6 +5,7 @@
  */
 
 import { useEffect } from "react";
+import { fetchAuthMe as apiFetchAuthMe, setAuthToken as apiSetAuthToken } from "./api";
 
 export const useAppLifecycleEffects = ({
   activeForm,
@@ -15,7 +16,7 @@ export const useAppLifecycleEffects = ({
   detailLoading,
   error,
   escalaByForm,
-  fetchAuthMe,
+  fetchAuthMe = apiFetchAuthMe,
   fontScale,
   invalidateSession,
   loadEscalaForForm,
@@ -33,7 +34,7 @@ export const useAppLifecycleEffects = ({
   responsesByForm,
   screen,
   session,
-  setAuthToken,
+  setAuthToken = apiSetAuthToken,
   setFontScale,
   setPublicRoute,
   setScreen,

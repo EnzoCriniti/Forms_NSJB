@@ -5,6 +5,14 @@
  */
 
 import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm } from "./appFormActions";
+import {
+  claimEscalaSlot as apiClaimEscalaSlot,
+  deleteForm as apiDeleteForm,
+  saveEscala as apiSaveEscala,
+  saveEvent as apiSaveEvent,
+  saveForm as apiSaveForm,
+  saveResponse as apiSaveResponse,
+} from "./api";
 
 export const buildAppFormHandlers = ({
   activeEventId,
@@ -12,19 +20,19 @@ export const buildAppFormHandlers = ({
   buildEscalaMetrics,
   buildSaveFormPayloadFromExisting,
   canCreateForms,
-  claimEscalaSlot,
+  claimEscalaSlot = apiClaimEscalaSlot,
   currentUser,
-  deleteForm,
+  deleteForm = apiDeleteForm,
   events,
   refreshBootstrap,
   refreshEscalaForForm,
   removeFormDetail,
   removeFormIdFromEvents,
   replaceBootstrapList,
-  saveEscala,
-  saveEvent,
-  saveForm,
-  saveResponse,
+  saveEscala = apiSaveEscala,
+  saveEvent = apiSaveEvent,
+  saveForm = apiSaveForm,
+  saveResponse = apiSaveResponse,
   setActiveFormId,
   setBootstrap,
   setDraftForm,

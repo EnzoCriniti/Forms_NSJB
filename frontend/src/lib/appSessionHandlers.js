@@ -5,6 +5,11 @@
  */
 
 import { invalidateAppSession, loginAppSession, logoutAppSession, navigateAppScreen, updateAppFontScale } from "./appSessionActions";
+import {
+  loginWithCredentials as apiLoginWithCredentials,
+  logoutAuth as apiLogoutAuth,
+  setAuthToken as apiSetAuthToken,
+} from "./api";
 
 export const buildAppSessionHandlers = ({
   activeForm,
@@ -13,12 +18,12 @@ export const buildAppSessionHandlers = ({
   clampFontScale,
   currentUser,
   fontScaleStep,
-  loginWithCredentials,
-  logoutAuth,
+  loginWithCredentials = apiLoginWithCredentials,
+  logoutAuth = apiLogoutAuth,
   persistSession,
   resolveAppNavigation,
   setActiveFormId,
-  setAuthToken,
+  setAuthToken = apiSetAuthToken,
   setDraftForm,
   setEditingFormId,
   setFontScale,

@@ -6,17 +6,22 @@
 
 import { startEventFormCreation } from "./appFormActions";
 import { deleteAppEvent, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "./appEventActions";
+import {
+  deleteEvent as apiDeleteEvent,
+  publishEvent as apiPublishEvent,
+  saveEvent as apiSaveEvent,
+} from "./api";
 
 export const buildAppEventHandlers = ({
   activeEventId,
   canCreateForms,
   currentUser,
-  deleteEvent,
+  deleteEvent = apiDeleteEvent,
   removeBootstrapListItem,
   removePinnedIdForUser,
   replaceBootstrapList,
-  saveEvent,
-  publishEvent,
+  saveEvent = apiSaveEvent,
+  publishEvent = apiPublishEvent,
   setActiveEventId,
   setBootstrap,
   setDraftForm,

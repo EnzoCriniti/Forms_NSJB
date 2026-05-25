@@ -139,7 +139,7 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/App.jsx`
   Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile. Contas logadas respondem formularios pela tela interna `respond`; links publicos continuam em `#/formularios/<id>`.
-  Handlers simples de CRUD que recebem listas do bootstrap passam pelo helper local `applyBootstrapListResult`.
+  Handlers simples de CRUD que recebem listas do bootstrap passam pelo helper local `applyBootstrapListResult`; chamadas de API de dominio ficam nos builders de handlers.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
