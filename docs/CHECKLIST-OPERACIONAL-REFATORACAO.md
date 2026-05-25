@@ -521,6 +521,7 @@ Teste a reforcar:
 
 Checklist operacional:
 - iniciado: tipos elegiveis, draft inicial, transicao de tipo, payload de salvamento, regras de status e confirmacao sairam para `frontend/src/screens/eventMessageDomain.js`
+- iniciado neste ciclo: campos, seletores, corpo, destinatarios e agenda sairam para `frontend/src/screens/EventMessageEditorFields.jsx`
 - manter a tela como composicao do editor, feedback e submit
 - novas regras de mensagem devem entrar em helper puro antes de chegar na UI
 

@@ -280,6 +280,8 @@ Mapa curto das areas mais mexidas por agentes.
   Componentes compartilhados do detalhe de mensagens de evento: preview renderizado, destinatarios calculados e historico.
 - `frontend/src/screens/EventMessageEditorScreen.jsx`
   Editor de mensagens por evento; usa `membersConfig.phoneColumn` para avisar quando lembretes por DM ainda nao podem calcular telefone.
+- `frontend/src/screens/EventMessageEditorFields.jsx`
+  Campos visuais do editor de mensagens de evento: tipo, formulario alvo, modelo, corpo, destinatarios e agendamento.
 - `frontend/src/screens/eventMessageDomain.js`
   Helpers puros das mensagens por evento: tipos elegiveis, draft inicial, transicao de tipo, payload de salvamento, regras de status e confirmacao do detalhe.
 - `frontend/src/features/events/components/`
