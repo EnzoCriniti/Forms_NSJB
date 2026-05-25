@@ -575,12 +575,13 @@ Checklist operacional:
 - empurrar regras de normalizacao especificas para helpers de dominio, nao para a modal
 - iniciado: payloads de usuarios, classificacoes, bases externas, catalogos, tarefas e chave mestra sairam para `frontend/src/features/admin/adminSettingsPayloads.js`
 - iniciado: fluxo repetido de busy/feedback/sucesso/erro dos submits e exclusoes confirmadas saiu para `frontend/src/features/admin/adminSettingsActions.js`
+- iniciado neste ciclo: handlers de submit e exclusao confirmada sairam para `frontend/src/features/admin/adminSettingsSubmitHandlers.js`
 - iniciado: composicao visual de abas, paineis e modal de exclusao saiu para `frontend/src/features/admin/AdminSettingsContent.jsx`
 - iniciado: selecao/renderizacao dos paineis por aba saiu para `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
 - iniciado: props entregues a `AdminSettingsTabPanel.jsx` passaram a ser agrupadas por dominio (`access`, `members`, `catalog`, `organization`, `security`, `messaging`, `audit`, `shared`)
 - iniciado: estado local, tabs, submits, cancelamentos e confirmacao de exclusao sairam para `frontend/src/features/admin/adminSettingsController.js`
 - pendente apos revisao: `AdminSettingsTabPanel.jsx` ainda centraliza a decisao de todas as abas; proximo corte deve usar adapters por aba apenas quando houver ganho claro.
-- pendente apos revisao: `adminSettingsController.js` ainda concentra drafts e submits de usuarios, classificacoes, catalogos, bases externas e seguranca; separar apenas quando houver ganho claro por dominio.
+- pendente apos revisao: `adminSettingsController.js` ainda concentra drafts de usuarios, classificacoes, catalogos, bases externas e seguranca; separar apenas quando houver ganho claro por dominio.
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
 - separar as responsabilidades de usuarios, socios, bases externas, catalogo, templates, mensagens, seguranca e auditoria
 

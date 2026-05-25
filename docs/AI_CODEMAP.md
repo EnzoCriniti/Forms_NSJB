@@ -9,7 +9,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
 - `frontend/src/features/admin/adminSettingsController.js`
-  Controller da central administrativa: estado local, tabs, submits, cancelamentos e confirmacao de exclusao.
+  Controller da central administrativa: estado local, tabs, cancelamentos e confirmacao de exclusao.
+- `frontend/src/features/admin/adminSettingsSubmitHandlers.js`
+  Handlers de submit da central administrativa: usuarios, classificacoes, bases externas, catalogos, tarefas, seguranca e exclusao confirmada.
 - `frontend/src/features/admin/AdminSettingsContent.jsx`
   Composicao visual da central administrativa: abas, paineis e modal de exclusao.
 - `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
