@@ -66,10 +66,9 @@ import { sanitizeUser } from "./lib/appSession";
 import { buildAppShellDerivedState } from "./lib/appShellDerivedState";
 import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
 import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
-import { buildAppNavItems } from "./lib/appNav";
-import { buildShellApp } from "./lib/appShellObject";
 import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
 import { buildAppSessionHandlers } from "./lib/appSessionHandlers";
+import { buildAppShell } from "./lib/appShellBuilder";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -161,14 +160,7 @@ export default function App() {
     visibleFormsFor,
   });
 
-  const {
-    decreaseFontScale,
-    increaseFontScale,
-    invalidateSession,
-    login,
-    logout,
-    navigate,
-  } = buildAppSessionHandlers({
+  const sessionHandlers = buildAppSessionHandlers({
     activeForm,
     canCreateForms,
     canViewForm,
@@ -187,6 +179,14 @@ export default function App() {
     setScreen,
     setSession,
   });
+  const {
+    decreaseFontScale,
+    increaseFontScale,
+    invalidateSession,
+    login,
+    logout,
+    navigate,
+  } = sessionHandlers;
 
   useAppLifecycleEffects({
     activeForm,
@@ -226,13 +226,7 @@ export default function App() {
     theme,
   });
 
-  const {
-    handleSaveEvent,
-    handlePublishEvent,
-    handleDeleteEvent,
-    handleTogglePinnedEvent,
-    handleCreateFormInEvent,
-  } = buildAppEventHandlers({
+  const eventHandlers = buildAppEventHandlers({
     activeEventId,
     canCreateForms,
     currentUser,
@@ -263,16 +257,7 @@ export default function App() {
     setBootstrap(prev => replaceBootstrapListFromResult(prev, key, result, resultKey));
   };
 
-  const {
-    handleSaveForm,
-    handleDuplicateForm,
-    handleArchiveForm,
-    handleTogglePinnedForm,
-    handleDeleteForm,
-    handleSaveResponse,
-    handleSaveEscala,
-    handleClaimEscalaSlot,
-  } = buildAppFormHandlers({
+  const formHandlers = buildAppFormHandlers({
     activeEventId,
     buildDuplicateFormDraft,
     buildEscalaMetrics,
@@ -304,34 +289,7 @@ export default function App() {
     upsertFormDetail,
   });
 
-  const {
-    handleSaveUser,
-    handleDeleteUser,
-    handleSaveLabel,
-    handleDeleteLabel,
-    handleSavePreset,
-    handleDeletePreset,
-    handleSavePeople,
-    handleSaveMembersConfig,
-    handleSyncMembersConfig,
-    handleSaveExternalBase,
-    handleDeleteExternalBase,
-    handleSyncExternalBase,
-    handleSaveFieldCatalogItem,
-    handleDeleteFieldCatalogItem,
-    handleSaveScaleTaskCatalogItem,
-    handleDeleteScaleTaskCatalogItem,
-    handleSaveMessagingConfig,
-    handleSaveMessageTemplate,
-    handleDeleteMessageTemplate,
-    handleSavePersonPreset,
-    handleDeletePersonPreset,
-    handleSaveEventMessage,
-    openEventMessageEditor,
-    openEventMessageDetail,
-    applyMessageUpdate,
-    applyMessageDeletion,
-  } = buildAppAdminHandlers({
+  const adminHandlers = buildAppAdminHandlers({
     applyBootstrapListResult,
     currentUser,
     deleteExternalBase,
@@ -371,30 +329,13 @@ export default function App() {
     upsertNestedBootstrapItem,
   });
 
-
-  const nav = buildAppNavItems({ currentUser, canCreateForms });
-
-  const shellApp = buildShellApp({
-    state: {
-      nav,
-      screen,
-      currentUser,
-      theme,
-      fontScale,
-      publicForm,
-      publicRoute,
-      publicResultsEnabled,
-      publicResultsView,
-      pinnedEventIds,
-      pinnedFormIds,
-      activeEventId,
-      activeMessageId,
-      activeEvent,
-      activeForm,
-      editingForm,
-      draftForm,
-      formDeleteKeyConfigured,
+  const shellApp = buildAppShell({
+    adminHandlers: {
+      ...adminHandlers,
+      handleSaveFormDeleteKey,
     },
+    canCreateForms,
+    currentUser,
     data: {
       forms,
       labels,
@@ -412,66 +353,35 @@ export default function App() {
       responsesByForm,
       escalaByForm,
     },
-    actions: {
-      onNavigate: navigate,
-      onIncreaseFontScale: increaseFontScale,
-      onDecreaseFontScale: decreaseFontScale,
-      onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
-      onOpenSettings: () => navigate("settings"),
-      onLogin: login,
-      onLogout: logout,
-      handleSaveEvent,
-      handlePublishEvent,
-      handleDeleteEvent,
-      handleTogglePinnedEvent,
-      handleCreateFormInEvent,
-      handleDuplicateForm,
-      handleArchiveForm,
-      handleTogglePinnedForm,
-      handleDeleteForm,
-      handleSaveEventMessage,
-      applyMessageUpdate,
-      applyMessageDeletion,
-      handleSaveEscala,
-      handleClaimEscalaSlot,
-      handleSaveUser,
-      handleDeleteUser,
-      handleSaveLabel,
-      handleDeleteLabel,
-      handleSavePreset,
-      handleDeletePreset,
-      handleSaveMembersConfig,
-      handleSyncMembersConfig,
-      handleSaveExternalBase,
-      handleDeleteExternalBase,
-      handleSyncExternalBase,
-      handleSavePeople,
-      handleSaveFieldCatalogItem,
-      handleDeleteFieldCatalogItem,
-      handleSaveScaleTaskCatalogItem,
-      handleDeleteScaleTaskCatalogItem,
-      handleSaveFormDeleteKey,
-      handleSaveMessagingConfig,
-      handleSaveMessageTemplate,
-      handleDeleteMessageTemplate,
-      handleSavePersonPreset,
-      handleDeletePersonPreset,
-      handleSaveForm,
-      openEventMessageEditor,
-      openEventMessageDetail,
-      handleSaveResponse,
+    eventHandlers,
+    formDeleteKeyConfigured,
+    formHandlers,
+    navigate,
+    sessionHandlers,
+    setActiveEventId,
+    setActiveFormId,
+    setActiveMessageId,
+    setDraftForm,
+    setEditingFormId,
+    setScreen,
+    setTheme,
+    state: {
+      screen,
+      fontScale,
+      publicForm,
+      publicRoute,
+      publicResultsEnabled,
+      publicResultsView,
+      pinnedEventIds,
+      pinnedFormIds,
+      activeEventId,
+      activeMessageId,
+      activeEvent,
+      activeForm,
+      editingForm,
+      draftForm,
     },
-    setters: {
-      setActiveMessageId,
-      setActiveEventId,
-      setScreen,
-      setDraftForm,
-      setEditingFormId,
-      setActiveFormId,
-    },
-    permissions: {
-      canCreateForms,
-    },
+    theme,
   });
 
   return (

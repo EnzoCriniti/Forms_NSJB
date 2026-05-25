@@ -141,6 +141,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Builders dos handlers entregues pelo `App.jsx` ao shell; use antes de adicionar wrappers finos diretamente no componente principal.
 - `frontend/src/lib/appDataHandlers.js`, `appSessionHandlers.js`
   Builders dos handlers de carregamento, sessao, navegacao e preferencias visuais usados por `App.jsx`.
+- `frontend/src/lib/appShellBuilder.js`
+  Builder do objeto `shellApp`; use antes de expandir manualmente state/data/actions dentro de `App.jsx`.
 
 ## Regra pratica
 

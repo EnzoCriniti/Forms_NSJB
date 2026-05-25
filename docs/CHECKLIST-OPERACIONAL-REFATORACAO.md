@@ -79,11 +79,12 @@ Checklist operacional:
 - iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
 - iniciado neste ciclo: wrappers finos de eventos, formularios/escala e administracao/mensagens sairam para `frontend/src/lib/appEventHandlers.js`, `frontend/src/lib/appFormHandlers.js` e `frontend/src/lib/appAdminHandlers.js`.
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
+- iniciado neste ciclo: composicao detalhada de state/data/actions/setters do `shellApp` saiu para `frontend/src/lib/appShellBuilder.js`.
 - iniciado: efeitos de ciclo de vida do shell sairam para `frontend/src/lib/appLifecycleEffects.js`
 - iniciado: acoes de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionActions.js`
 - iniciado neste ciclo: wrappers de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionHandlers.js`.
 - pendente apos revisao: `App.jsx` ainda importa muitas funcoes da API e mantem wrappers finos para quase todos os dominios; proximo corte deve agrupar esses handlers por controller/hook ou reduzir a montagem manual antes de criar novas acoes ali.
-- pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; reavaliar se o shell pode receber blocos por dominio para reduzir acoplamento entre `App.jsx`, `AppViewport` e `AppShellContent`.
+- pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; `App.jsx` ja delega a composicao detalhada para `appShellBuilder.js`, mas ainda vale reavaliar se `AppViewport` e `AppShellContent` podem receber blocos por dominio.
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`
