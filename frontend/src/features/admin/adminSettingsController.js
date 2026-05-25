@@ -5,15 +5,8 @@
  */
 
 import { useState } from "react";
-import {
-  buildAdminSettingsTabs,
-  emptyExternalBaseDraft,
-  emptyFieldCatalogDraft,
-  emptyLabelDraft,
-  emptyScaleTaskCatalogDraft,
-  emptySecurityDraft,
-  emptyUserDraft,
-} from "./adminSettingsDefaults";
+import { buildAdminSettingsTabs } from "./adminSettingsDefaults";
+import { useAdminSettingsDraftState } from "./adminSettingsDraftState";
 import { buildAdminSettingsSubmitHandlers } from "./adminSettingsSubmitHandlers";
 
 export const useAdminSettingsController = ({
@@ -28,13 +21,25 @@ export const useAdminSettingsController = ({
   onSaveFormDeleteKey,
 }) => {
   const [tab, setTab] = useState("users");
-  const [userDraft, setUserDraft] = useState(emptyUserDraft);
-  const [labelDraft, setLabelDraft] = useState(emptyLabelDraft);
-  const [fieldCatalogDraft, setFieldCatalogDraft] = useState(emptyFieldCatalogDraft);
-  const [scaleTaskDraft, setScaleTaskDraft] = useState(emptyScaleTaskCatalogDraft);
-  const [externalBaseDraft, setExternalBaseDraft] = useState(emptyExternalBaseDraft);
-  const [securityDraft, setSecurityDraft] = useState(emptySecurityDraft);
-  const [catalogMode, setCatalogMode] = useState("fields");
+  const draftState = useAdminSettingsDraftState();
+  const {
+    catalogMode,
+    externalBaseDraft,
+    fieldCatalogDraft,
+    labelDraft,
+    scaleTaskDraft,
+    securityDraft,
+    userDraft,
+  } = draftState.values;
+  const {
+    setCatalogMode,
+    setExternalBaseDraft,
+    setFieldCatalogDraft,
+    setLabelDraft,
+    setScaleTaskDraft,
+    setSecurityDraft,
+    setUserDraft,
+  } = draftState.setters;
   const [feedback, setFeedback] = useState(null);
   const [busyAction, setBusyAction] = useState(null);
   const [pendingDelete, setPendingDelete] = useState(null);
@@ -119,9 +124,7 @@ export const useAdminSettingsController = ({
     submitFieldCatalog,
     submitScaleTask,
     submitSecurity,
-    onCancelSecurity: () => setSecurityDraft(emptySecurityDraft),
-    onCancelFieldCatalog: () => setFieldCatalogDraft(emptyFieldCatalogDraft),
-    onCancelScaleTask: () => setScaleTaskDraft(emptyScaleTaskCatalogDraft),
+    ...draftState.cancelHandlers,
     onCancelDelete: () => setPendingDelete(null),
     confirmDelete,
   };
