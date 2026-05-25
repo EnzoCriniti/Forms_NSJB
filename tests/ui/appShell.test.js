@@ -15,6 +15,7 @@ import { resolveAppDetailLoadRequest, resolveAppViewportTargetState } from "../.
 import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "../../frontend/src/lib/appShellContentSelectors.js";
 import { buildAppNavItems } from "../../frontend/src/lib/appNav.js";
 import { resetPublicRouteNavigation } from "../../frontend/src/lib/appViewportNavigation.js";
+import { resolveAppShellRoute } from "../../frontend/src/AppShellRouteRegistry.jsx";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -98,6 +99,16 @@ describe("appShell navigation", () => {
       canCreateForms,
       canViewForm,
     })).toEqual({ screen: "list", clearDraft: false });
+  });
+});
+
+describe("appShell route registry", () => {
+  it("resolve somente rotas com dependencias atendidas", () => {
+    expect(resolveAppShellRoute({ screen: "events", currentUser: null })).toBeNull();
+    expect(resolveAppShellRoute({ screen: "events", currentUser: { id: 1 } })?.screen).toBe("events");
+    expect(resolveAppShellRoute({ screen: "results", activeForm: null })).toBeNull();
+    expect(resolveAppShellRoute({ screen: "results", activeForm: { id: 2 } })?.screen).toBe("results");
+    expect(resolveAppShellRoute({ screen: "eventMessageDetail", currentUser: { id: 1 }, activeEvent: { id: 3 }, activeMessageId: null })).toBeNull();
   });
 });
 

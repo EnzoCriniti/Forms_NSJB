@@ -143,6 +143,7 @@ Checklist operacional:
 - iniciado: adapters das telas principais sairam para `frontend/src/AppShellMainFlows.jsx`
 - iniciado neste ciclo: roteamento visual do shell saiu para `frontend/src/AppShellRoutes.jsx`, deixando `AppShellContent.jsx` focado no header e no container principal.
 - iniciado neste ciclo: `AppShellRoutes.jsx` deixou de remontar props por tela; os adapters agora recebem `app` e extraem localmente apenas o bloco que consomem.
+- iniciado neste ciclo: cadeia manual de telas em `AppShellRoutes.jsx` saiu para o registry `frontend/src/AppShellRouteRegistry.jsx`, com guards testados.
 
 Teste a reforcar:
 - `tests/ui/appDashboardFlow.test.jsx`

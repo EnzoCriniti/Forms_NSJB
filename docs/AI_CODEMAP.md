@@ -164,7 +164,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/AppShellContent.jsx`
   Shell autenticado do frontend. Renderiza o header global e delega o roteamento visual para `AppShellRoutes.jsx`.
 - `frontend/src/AppShellRoutes.jsx`
-  Roteamento visual do shell autenticado. Escolhe a tela ativa e monta os adapters de fluxos internos a partir do objeto `app`.
+  Roteamento visual do shell autenticado. Resolve a rota ativa via `AppShellRouteRegistry.jsx` e renderiza o adapter correspondente.
+- `frontend/src/AppShellRouteRegistry.jsx`
+  Registro das rotas visuais do shell autenticado e dos guards mínimos para cada tela.
 - `frontend/src/AppShellEventMessageFlows.jsx`
   Adapters dos fluxos internos de editor e detalhe de mensagens de evento.
 - `frontend/src/AppShellFormFlows.jsx`

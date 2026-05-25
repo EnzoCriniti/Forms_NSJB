@@ -5,28 +5,12 @@
  */
 
 import React from "react";
-import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
-import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
-import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, SettingsFlow } from "./AppShellMainFlows";
+import { resolveAppShellRoute } from "./AppShellRouteRegistry";
 
 export const AppShellRoutes = ({ app }) => {
-  const { screen, currentUser, activeEvent, activeMessageId, activeForm } = app;
+  const route = resolveAppShellRoute(app);
+  if (!route) return null;
 
-  return (
-    <>
-      {screen === "dashboard" && <DashboardFlow app={app} />}
-      {screen === "events" && currentUser && <EventsFlow app={app} />}
-      {screen === "eventMessageEditor" && currentUser && activeEvent && (
-        <EventMessageEditorFlow app={app} />
-      )}
-      {screen === "eventMessageDetail" && currentUser && activeEvent && activeMessageId && (
-        <EventMessageDetailFlow app={app} />
-      )}
-      {screen === "list" && <FormListFlow app={app} />}
-      {screen === "create" && <CreateFormFlow app={app} />}
-      {screen === "settings" && <SettingsFlow app={app} />}
-      {screen === "results" && activeForm && <InternalResultsFlow app={app} />}
-      {screen === "respond" && activeForm && <InternalRespondFlow app={app} />}
-    </>
-  );
+  const Flow = route.component;
+  return <Flow app={app} />;
 };
