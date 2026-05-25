@@ -282,6 +282,8 @@ Mapa curto das areas mais mexidas por agentes.
   Painel de agendamento do editor de mensagens de evento, incluindo janela de lembrete e data/hora manual.
 - `frontend/src/features/events/components/eventMessageDetailPanels.jsx`
   Componentes compartilhados do detalhe de mensagens de evento: cabecalho de acoes, resumo, preview renderizado, destinatarios calculados e historico.
+- `frontend/src/screens/eventMessageDetailUtils.js`
+  Utilitarios do detalhe de mensagens de evento: formatacao de data/hora e copia segura para clipboard.
 - `frontend/src/screens/EventMessageEditorScreen.jsx`
   Editor de mensagens por evento; usa `membersConfig.phoneColumn` para avisar quando lembretes por DM ainda nao podem calcular telefone.
 - `frontend/src/screens/EventMessageEditorFields.jsx`

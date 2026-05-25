@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Btn, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { EventMessageDetailHeader, MessageDetailSummaryPanel, MessageLogsPanel } from "../features/events/components/eventMessageDetailPanels";
 import { getEventMessageConfirmProps, isEventMessageCancellable, isEventMessageDispatchable, isEventMessageEditable, splitPreviewRecipients } from "./eventMessageDomain";
+import { copyTextToClipboard, formatEventMessageDateTime } from "./eventMessageDetailUtils";
 import {
   cancelEventMessage as apiCancelEventMessage,
   deleteEventMessage as apiDeleteEventMessage,
@@ -15,26 +16,6 @@ import {
   fetchEventMessage,
   fetchEventMessagePreview,
 } from "../lib/api";
-
-const formatDateTime = value => {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return String(value);
-  return date.toLocaleString("pt-BR");
-};
-
-const copyToClipboard = async text => {
-  if (!text) return false;
-  if (navigator?.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  return false;
-};
 
 export const EventMessageDetailScreen = ({
   event,
@@ -125,7 +106,7 @@ export const EventMessageDetailScreen = ({
   };
 
   const copy = async (text, key) => {
-    const ok = await copyToClipboard(text);
+    const ok = await copyTextToClipboard(text);
     if (ok) {
       setCopiedKey(key);
       setTimeout(() => setCopiedKey(current => current === key ? null : current), 1500);
@@ -179,7 +160,7 @@ export const EventMessageDetailScreen = ({
       <MessageDetailSummaryPanel
         copiedKey={copiedKey}
         event={event}
-        formatDateTime={formatDateTime}
+        formatDateTime={formatEventMessageDateTime}
         loading={loading}
         message={message}
         onCopy={copy}
@@ -188,7 +169,7 @@ export const EventMessageDetailScreen = ({
         recipientsSkipped={recipientsSkipped}
       />
 
-      <MessageLogsPanel logs={logs} formatDateTime={formatDateTime} />
+      <MessageLogsPanel logs={logs} formatDateTime={formatEventMessageDateTime} />
 
       <ConfirmModal
         open={Boolean(confirmAction)}
