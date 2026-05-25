@@ -3,17 +3,17 @@
  * @summary Controller local da planilha de resultados de presenca.
  */
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { COLORS, Icon } from "../components/ui";
 import { downloadCsv } from "../lib/downloadCsv";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
+import { usePresenceTableZoomController } from "./presenceTableZoomController";
 import {
   buildPresenceCsv,
   formatResultFieldValue,
 } from "./resultsCsv";
 import {
   NO_VALUES,
-  TABLE_ZOOM_STEP,
   attachPresenceTotalsSummary,
   buildActiveFilterOptions,
   buildPresenceBaseResponses,
@@ -25,11 +25,9 @@ import {
   buildPresenceTableRows,
   buildPresenceTotals,
   buildPresenceTotalsLayout,
-  clampTableZoom,
   filterPresenceResponses,
   filterPresenceRows,
   getPresenceSortIconName,
-  getPresenceTouchDistance,
   resolvePresenceSortState,
   sortPresenceRows,
 } from "./resultsPresenceDomain";
@@ -43,8 +41,7 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
   const [activeSearchCol, setActiveSearchCol] = useState(null);
   const [selectedGrau, setSelectedGrau] = useState("todos");
   const [feedback, setFeedback] = useState(null);
-  const [tableZoom, setTableZoom] = useState(1);
-  const touchZoomRef = useRef({ distance: 0, zoom: 1 });
+  const tableZoomController = usePresenceTableZoomController();
 
   const linkedPeople = hasLinkedPeopleField(form);
   const showLinkedRows = linkedPeople && resultsConfig.showLinkedRoster && people.length > 0;
@@ -98,25 +95,6 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
   });
   const totalsWithSummary = attachPresenceTotalsSummary({ totalsLayout, totals });
 
-  const updateTableZoom = direction => {
-    setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
-  };
-  const handleTableTouchStart = event => {
-    if (event.touches.length !== 2) return;
-    touchZoomRef.current = { distance: getPresenceTouchDistance(event.touches), zoom: tableZoom };
-  };
-  const handleTableTouchMove = event => {
-    if (event.touches.length !== 2 || !touchZoomRef.current.distance) return;
-    event.preventDefault();
-    const nextDistance = getPresenceTouchDistance(event.touches);
-    setTableZoom(clampTableZoom(touchZoomRef.current.zoom * (nextDistance / touchZoomRef.current.distance)));
-  };
-  const handleTableTouchEnd = event => {
-    if (event.touches.length < 2) {
-      touchZoomRef.current = { distance: 0, zoom: tableZoom };
-    }
-  };
-
   const exportCsv = () => {
     const csv = buildPresenceCsv({
       columns,
@@ -148,9 +126,9 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
     formatFieldValue: formatResultFieldValue,
     getFieldValue,
     grauOptions,
-    handleTableTouchEnd,
-    handleTableTouchMove,
-    handleTableTouchStart,
+    handleTableTouchEnd: tableZoomController.handleTableTouchEnd,
+    handleTableTouchMove: tableZoomController.handleTableTouchMove,
+    handleTableTouchStart: tableZoomController.handleTableTouchStart,
     headerCellStyle,
     linkedPeople,
     NO_VALUES,
@@ -161,11 +139,11 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
       setActiveSearchCol(null);
     },
     onExportCsv: exportCsv,
-    onResetZoom: () => setTableZoom(1),
+    onResetZoom: tableZoomController.onResetZoom,
     onSelectGrau: setSelectedGrau,
     onSort: handleSort,
     onToggleSearchCol: col => setActiveSearchCol(current => current === col ? null : col),
-    onZoomChange: updateTableZoom,
+    onZoomChange: tableZoomController.onZoomChange,
     resultsConfig,
     selectedGrau,
     showLinkedRows,
@@ -174,7 +152,7 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
     stats,
     tableMinWidth,
     tableRows,
-    tableZoom,
+    tableZoom: tableZoomController.tableZoom,
     totalsLayout: totalsWithSummary,
   };
 };

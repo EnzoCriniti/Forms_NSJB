@@ -423,6 +423,8 @@ Mapa curto das areas mais mexidas por agentes.
   Ponte fina da planilha de presenca: monta `PresenceResultsPanel.jsx` com props vindas de `presenceResultsController.js`.
 - `frontend/src/screens/presenceResultsController.js`
   Controller local da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling. Consome diretamente `resultsPresenceDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
+- `frontend/src/screens/presenceTableZoomController.js`
+  Hook local do zoom da tabela de presenca, incluindo botoes e pinch por toque.
 - `frontend/src/screens/PresenceResultsPanel.jsx`
   Painel visual da planilha de presenca, compondo topo, feedback, totalizacao, toolbar e tabela.
 - `frontend/src/screens/EscalaResultsScreen.jsx`

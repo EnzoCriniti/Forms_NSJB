@@ -395,6 +395,7 @@ Problemas que precisam ser corrigidos:
 - o bloco de escala carrega mutacoes de slot, modal de inscricao, confirmacao e exportacao
 
 Checklist operacional:
+- iniciado neste ciclo: controle de zoom e pinch da tabela de presenca saiu para `frontend/src/screens/presenceTableZoomController.js`.
 - extrair o controller de presenca de resultados para um helper ou hook proprio
 - iniciado: controller da presenca saiu para `frontend/src/screens/PresenceResultsScreen.jsx`
 - iniciado neste ciclo: orquestracao da planilha de presenca saiu de `PresenceResultsScreen.jsx` para `frontend/src/screens/presenceResultsController.js`, deixando a screen como ponte para o painel visual.
