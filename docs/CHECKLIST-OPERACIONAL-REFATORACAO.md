@@ -510,6 +510,7 @@ Checklist operacional:
 - separar o que e editor, preview e historico se o arquivo continuar crescendo
 - iniciado: preview, destinatarios calculados e historico sairam para `frontend/src/features/events/components/eventMessageDetailPanels.jsx`
 - iniciado neste ciclo: cabecalho de acoes e resumo do detalhe de mensagem tambem sairam para `frontend/src/features/events/components/eventMessageDetailPanels.jsx`
+- iniciado neste ciclo: picker manual e painel de agendamento sairam para `frontend/src/features/events/components/eventMessageManualPersonPicker.jsx` e `frontend/src/features/events/components/eventMessageSchedulePanel.jsx`
 - mover `toLocalDateTime` e logicas de data para um utilitario comum se reaproveitadas
 - manter o picker manual simples, sem trazer regra de selecao de destinatario para o painel geral
 - evitar misturar renderizacao do corpo da mensagem com montagem da lista de receptores
