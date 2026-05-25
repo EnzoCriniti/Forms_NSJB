@@ -7,10 +7,34 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import net from "node:net";
 import { buildTestDatabaseEnv, createTestDatabase, dropTestDatabase, openTestDatabase } from "./helpers/postgresTestDb.mjs";
 import { visibleFormsFor } from "../frontend/src/lib/auth.js";
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const getAvailablePort = () => new Promise((resolve, reject) => {
+  const server = net.createServer();
+  server.once("error", reject);
+  server.listen(0, "127.0.0.1", () => {
+    const address = server.address();
+    const port = typeof address === "object" && address ? address.port : null;
+    server.close(() => {
+      if (port) resolve(port);
+      else reject(new Error("Nao foi possivel reservar porta para o servidor de teste."));
+    });
+  });
+});
+
+const fetchWithTimeout = async (url, options = {}, timeoutMs = 750) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+};
 
 const postJson = (baseUrl, pathname, body, method = "POST") => fetch(`${baseUrl}${pathname}`, {
   method,
@@ -61,10 +85,11 @@ const authedFetch = (baseUrl, pathname, token, options = {}) => fetch(`${baseUrl
 });
 
 const startServer = async ({ dbName } = {}) => {
-  const port = 8800 + Math.floor(Math.random() * 200);
+  const port = await getAvailablePort();
   const actualDbName = dbName || await createTestDatabase();
   const ownsDb = !dbName;
   const db = openTestDatabase(actualDbName);
+  const output = [];
   const child = spawn(process.execPath, ["backend/index.mjs"], {
     cwd: process.cwd(),
     env: {
@@ -72,14 +97,36 @@ const startServer = async ({ dbName } = {}) => {
       ...buildTestDatabaseEnv(actualDbName),
       NSJB_API_PORT: String(port),
     },
-    stdio: "ignore",
+    stdio: ["ignore", "pipe", "pipe"],
   });
+  child.stdout.on("data", chunk => output.push(String(chunk)));
+  child.stderr.on("data", chunk => output.push(String(chunk)));
+
+  let exitInfo = null;
+  let resolveChildExit;
+  const childExit = new Promise(resolve => {
+    resolveChildExit = resolve;
+  });
+  child.once("exit", (code, signal) => {
+    exitInfo = { code, signal };
+    resolveChildExit(exitInfo);
+  });
+  const stopChild = async () => {
+    if (!exitInfo && !child.killed) {
+      child.kill("SIGTERM");
+    }
+    await Promise.race([
+      childExit,
+      wait(2_000),
+    ]);
+  };
 
   const baseUrl = `http://127.0.0.1:${port}`;
   let ready = false;
-  for (let attempt = 0; attempt < 20; attempt += 1) {
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    if (exitInfo) break;
     try {
-      const res = await fetch(`${baseUrl}/api/health`);
+      const res = await fetchWithTimeout(`${baseUrl}/api/health`);
       if (res.ok) {
         ready = true;
         break;
@@ -90,8 +137,10 @@ const startServer = async ({ dbName } = {}) => {
   }
 
   if (!ready) {
-    child.kill("SIGTERM");
-    throw new Error("Servidor de teste nao iniciou.");
+    await stopChild();
+    const exitMessage = exitInfo ? ` Processo encerrou com code=${exitInfo.code} signal=${exitInfo.signal}.` : "";
+    const logTail = output.join("").trim().slice(-2000);
+    throw new Error(`Servidor de teste nao iniciou.${exitMessage}${logTail ? ` Logs:\n${logTail}` : ""}`);
   }
 
   return {
@@ -99,14 +148,10 @@ const startServer = async ({ dbName } = {}) => {
     dbName: actualDbName,
     db,
     stop: async () => {
-      if (!child.killed) child.kill("SIGTERM");
-      await wait(150);
+      await stopChild();
     },
     cleanup: async () => {
-      await (async () => {
-        if (!child.killed) child.kill("SIGTERM");
-        await wait(150);
-      })();
+      await stopChild();
       await db.close();
       if (ownsDb) {
         await dropTestDatabase(actualDbName);
