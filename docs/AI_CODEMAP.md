@@ -94,7 +94,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `backend/routes/eventRouteAudit.mjs`
   Helpers de auditoria das rotas administrativas de eventos, extraidos de `eventRoutes.mjs`.
 - `backend/routes/messageRouteHelpers.mjs`
-  Helpers das rotas de mensagens administrativas: resposta de erro, auditoria e parser de rotas de mensagens por evento.
+  Helpers das rotas de mensagens administrativas: resposta de erro, parser de rotas por evento e payloads de auditoria de criar/atualizar, disparar e cancelar mensagens.
 - `backend/validators/payloadValidators.mjs`
   Agregador historico dos validadores de payload. Mantem reexports para compatibilidade e o helper transversal `validateDeleteId`.
 - `backend/validators/formPayloadValidators.mjs`

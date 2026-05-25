@@ -43,6 +43,81 @@ export const writeMessageErrorAudit = (req, auth, {
   metadata,
 });
 
+export const writeEventMessageSaveAudit = (req, auth, { body, match, message }) => writeMessageAudit(req, auth, {
+  level: "info",
+  action: body?.id ? "update_event_message" : "create_event_message",
+  status: "success",
+  entityId: message.id,
+  entityLabel: message.type,
+  message: body?.id ? "Mensagem de evento atualizada." : "Mensagem de evento criada.",
+  metadata: {
+    eventId: match.eventId,
+    messageId: message.id,
+    type: message.type,
+    status: message.status,
+    scheduledFor: message.scheduledFor,
+  },
+});
+
+export const writeEventMessageSaveErrorAudit = (req, auth, { body, error, match }) => writeMessageErrorAudit(req, auth, {
+  action: body?.id ? "update_event_message" : "create_event_message",
+  error,
+  entityId: body?.id || null,
+  entityLabel: body?.type || null,
+  metadata: {
+    eventId: match.eventId,
+    type: body?.type || null,
+  },
+});
+
+export const writeEventMessageDispatchAudit = (req, auth, { match, result }) => writeMessageAudit(req, auth, {
+  level: "info",
+  action: "dispatch_event_message",
+  status: "success",
+  entityId: result.message?.id || match.messageId,
+  entityLabel: result.message?.type || null,
+  message: "Mensagem de evento disparada em modo log-only.",
+  metadata: {
+    eventId: match.eventId,
+    messageId: result.message?.id || match.messageId,
+    type: result.message?.type || null,
+    dispatchStatus: result.dispatch?.status,
+    logId: result.dispatch?.logId,
+    recipients: Array.isArray(result.preview?.recipients) ? result.preview.recipients.length : 0,
+  },
+});
+
+export const writeEventMessageDispatchErrorAudit = (req, auth, { error, match }) => writeMessageErrorAudit(req, auth, {
+  action: "dispatch_event_message",
+  error,
+  entityId: match.messageId,
+  entityLabel: null,
+  metadata: { eventId: match.eventId, messageId: match.messageId },
+});
+
+export const writeEventMessageCancelAudit = (req, auth, { match, message }) => writeMessageAudit(req, auth, {
+  level: "info",
+  action: "cancel_event_message",
+  status: "success",
+  entityId: message.id,
+  entityLabel: message.type,
+  message: "Mensagem de evento cancelada.",
+  metadata: {
+    eventId: match.eventId,
+    messageId: message.id,
+    type: message.type,
+    status: message.status,
+  },
+});
+
+export const writeEventMessageCancelErrorAudit = (req, auth, { error, match }) => writeMessageErrorAudit(req, auth, {
+  action: "cancel_event_message",
+  error,
+  entityId: match.messageId,
+  entityLabel: null,
+  metadata: { eventId: match.eventId, messageId: match.messageId },
+});
+
 export const matchEventMessagePath = pathname => {
   const match = pathname.match(/^\/api\/events\/(\d+)\/messages(?:\/(\d+))?(?:\/(preview|dispatch|cancel|logs))?$/);
   if (!match) return null;

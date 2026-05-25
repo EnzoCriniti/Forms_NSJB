@@ -40,8 +40,12 @@ import { readBody, requireAdmin } from "./requestHelpers.mjs";
 import {
   matchEventMessagePath,
   respondMessageRouteError,
-  writeMessageAudit,
-  writeMessageErrorAudit,
+  writeEventMessageCancelAudit,
+  writeEventMessageCancelErrorAudit,
+  writeEventMessageDispatchAudit,
+  writeEventMessageDispatchErrorAudit,
+  writeEventMessageSaveAudit,
+  writeEventMessageSaveErrorAudit,
 } from "./messageRouteHelpers.mjs";
 
 export const handleMessageRoutes = async (req, res, url) => {
@@ -149,32 +153,9 @@ export const handleMessageRoutes = async (req, res, url) => {
         validateEventMessagePayload(body);
         const message = await saveEventMessage(match.eventId, body);
         sendJson(res, 200, { message });
-        writeMessageAudit(req, auth, {
-          level: "info",
-          action: body?.id ? "update_event_message" : "create_event_message",
-          status: "success",
-          entityId: message.id,
-          entityLabel: message.type,
-          message: body?.id ? "Mensagem de evento atualizada." : "Mensagem de evento criada.",
-          metadata: {
-            eventId: match.eventId,
-            messageId: message.id,
-            type: message.type,
-            status: message.status,
-            scheduledFor: message.scheduledFor,
-          },
-        });
+        writeEventMessageSaveAudit(req, auth, { body, match, message });
       } catch (error) {
-        writeMessageErrorAudit(req, auth, {
-          action: body?.id ? "update_event_message" : "create_event_message",
-          error,
-          entityId: body?.id || null,
-          entityLabel: body?.type || null,
-          metadata: {
-            eventId: match.eventId,
-            type: body?.type || null,
-          },
-        });
+        writeEventMessageSaveErrorAudit(req, auth, { body, error, match });
         respondMessageRouteError(res, error);
       }
       return true;
@@ -219,30 +200,9 @@ export const handleMessageRoutes = async (req, res, url) => {
       try {
         const result = await dispatchEventMessage(match.messageId, "manual");
         sendJson(res, 200, result);
-        writeMessageAudit(req, auth, {
-          level: "info",
-          action: "dispatch_event_message",
-          status: "success",
-          entityId: result.message?.id || match.messageId,
-          entityLabel: result.message?.type || null,
-          message: "Mensagem de evento disparada em modo log-only.",
-          metadata: {
-            eventId: match.eventId,
-            messageId: result.message?.id || match.messageId,
-            type: result.message?.type || null,
-            dispatchStatus: result.dispatch?.status,
-            logId: result.dispatch?.logId,
-            recipients: Array.isArray(result.preview?.recipients) ? result.preview.recipients.length : 0,
-          },
-        });
+        writeEventMessageDispatchAudit(req, auth, { match, result });
       } catch (error) {
-        writeMessageErrorAudit(req, auth, {
-          action: "dispatch_event_message",
-          error,
-          entityId: match.messageId,
-          entityLabel: null,
-          metadata: { eventId: match.eventId, messageId: match.messageId },
-        });
+        writeEventMessageDispatchErrorAudit(req, auth, { error, match });
         respondMessageRouteError(res, error);
       }
       return true;
@@ -252,28 +212,9 @@ export const handleMessageRoutes = async (req, res, url) => {
       try {
         const message = await cancelEventMessage(match.messageId);
         sendJson(res, 200, { message });
-        writeMessageAudit(req, auth, {
-          level: "info",
-          action: "cancel_event_message",
-          status: "success",
-          entityId: message.id,
-          entityLabel: message.type,
-          message: "Mensagem de evento cancelada.",
-          metadata: {
-            eventId: match.eventId,
-            messageId: message.id,
-            type: message.type,
-            status: message.status,
-          },
-        });
+        writeEventMessageCancelAudit(req, auth, { match, message });
       } catch (error) {
-        writeMessageErrorAudit(req, auth, {
-          action: "cancel_event_message",
-          error,
-          entityId: match.messageId,
-          entityLabel: null,
-          metadata: { eventId: match.eventId, messageId: match.messageId },
-        });
+        writeEventMessageCancelErrorAudit(req, auth, { error, match });
         respondMessageRouteError(res, error);
       }
       return true;

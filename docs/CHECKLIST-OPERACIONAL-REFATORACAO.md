@@ -713,6 +713,7 @@ Checklist operacional:
 Checklist operacional:
 - manter a feature de mensagens no roteador sem helpers locais transversais.
 - iniciado neste ciclo: responder erros, auditoria de mensagens e parser de rotas de mensagens por evento sairam para `backend/routes/messageRouteHelpers.mjs`.
+- iniciado neste ciclo: payloads de auditoria de criar/atualizar, disparar e cancelar mensagens tambem sairam para `backend/routes/messageRouteHelpers.mjs`.
 
 ## 9. Backend - services e regra de negocio
 
