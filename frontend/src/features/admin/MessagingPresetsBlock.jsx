@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { Btn, COLORS, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
+import { Btn, COLORS, ConfirmModal, FeedbackBanner } from "../../components/ui";
+import { runMessagingSettingsAction } from "./messagingSettingsActions";
 import { emptyPersonPresetDraft, messagingInputStyle, personKeyOf } from "./messagingSettingsShared";
 
 export const MessagingPresetsBlock = ({ presets, people, onSave, onDelete }) => {
@@ -28,29 +29,25 @@ export const MessagingPresetsBlock = ({ presets, people, onSave, onDelete }) => 
 
   const submit = async () => {
     if (!draft.name.trim()) return;
-    setBusy(true);
-    setFeedback({ tone: "loading", message: draft.id ? "Salvando preset..." : "Criando preset..." });
-    try {
-      await onSave({ id: draft.id || undefined, name: draft.name.trim(), personKeys: draft.personKeys });
-      setDraft(emptyPersonPresetDraft);
-      setFeedback({ tone: "success", message: "Preset salvo." });
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusy(false);
-    }
+    await runMessagingSettingsAction({
+      loadingMessage: draft.id ? "Salvando preset..." : "Criando preset...",
+      successMessage: "Preset salvo.",
+      setBusy,
+      setFeedback,
+      execute: () => onSave({ id: draft.id || undefined, name: draft.name.trim(), personKeys: draft.personKeys }),
+      onSuccess: () => setDraft(emptyPersonPresetDraft),
+    });
   };
 
   const confirmDelete = async () => {
     if (!pendingDelete) return;
-    try {
-      await onDelete(pendingDelete.id);
-      setFeedback({ tone: "success", message: "Preset removido." });
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setPendingDelete(null);
-    }
+    await runMessagingSettingsAction({
+      successMessage: "Preset removido.",
+      setFeedback,
+      execute: () => onDelete(pendingDelete.id),
+      onSuccess: () => setPendingDelete(null),
+    });
+    setPendingDelete(null);
   };
 
   return (

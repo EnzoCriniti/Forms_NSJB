@@ -626,6 +626,7 @@ Checklist operacional:
 - nao mover validacao ou normalizacao para esses arquivos
 - se `messagingSettingsPanels.jsx` continuar crescendo, separar editor, preview e lista de presets
 - concluido neste ciclo: `messagingSettingsPanels.jsx` virou agregador historico; configuracao, modelos e presets foram movidos para `MessagingConfigBlock.jsx`, `MessagingTemplatesBlock.jsx` e `MessagingPresetsBlock.jsx`.
+- iniciado neste ciclo: fluxo assíncrono de salvar/remover modelos e presets saiu para `messagingSettingsActions.js`.
 
 Teste a reforcar:
 - `tests/ui/messagingSettingsPanel.test.jsx`
@@ -641,7 +642,7 @@ Checklist operacional:
 - nao reintroduzir submit, validacao ou persistencia diretamente neles
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar editor de campo, lista de campos, editor de tarefa e lista de tarefas.
-- pendente apos revisao: `messagingSettingsPanels.jsx` ainda concentra editor, preview e listas de presets/modelos; manter como proximo alvo pequeno da area de mensagens administrativas.
+- pendente apos revisao: blocos de modelos e presets de mensagens ainda podem ser quebrados em editor e lista se voltarem a crescer.
 - concluido neste ciclo: `adminCatalogPanels.jsx` ficou como seletor fino; editores/listas de campos e tarefas foram movidos para `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx`.
 
 ## 8. Backend - roteamento e entrada HTTP

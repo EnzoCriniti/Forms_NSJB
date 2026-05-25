@@ -36,6 +36,8 @@ Mapa curto das areas mais mexidas por agentes.
   Editor e lista de presets de pessoas para mensagens administrativas.
 - `frontend/src/features/admin/messagingSettingsShared.js`
   Labels, drafts vazios e estilo de input compartilhados pelos blocos de mensagens administrativas.
+- `frontend/src/features/admin/messagingSettingsActions.js`
+  Executor compartilhado de acoes assíncronas dos blocos de mensagens administrativas: busy, feedback, sucesso e erro.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   Paineis compartilhados da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`

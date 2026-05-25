@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Btn, COLORS, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
+import { Btn, COLORS, ConfirmModal, FeedbackBanner } from "../../components/ui";
+import { runMessagingSettingsAction } from "./messagingSettingsActions";
 import { MESSAGE_TYPE_LABELS, emptyMessageTemplateDraft, messagingInputStyle } from "./messagingSettingsShared";
 
 export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
@@ -10,34 +11,30 @@ export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
 
   const submit = async () => {
     if (!draft.name.trim() || !draft.body.trim()) return;
-    setBusy(true);
-    setFeedback({ tone: "loading", message: draft.id ? "Salvando modelo..." : "Criando modelo..." });
-    try {
-      await onSave({
+    await runMessagingSettingsAction({
+      loadingMessage: draft.id ? "Salvando modelo..." : "Criando modelo...",
+      successMessage: "Modelo salvo.",
+      setBusy,
+      setFeedback,
+      execute: () => onSave({
         id: draft.id || undefined,
         name: draft.name.trim(),
         type: draft.type,
         body: draft.body,
-      });
-      setDraft(emptyMessageTemplateDraft);
-      setFeedback({ tone: "success", message: "Modelo salvo." });
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusy(false);
-    }
+      }),
+      onSuccess: () => setDraft(emptyMessageTemplateDraft),
+    });
   };
 
   const confirmDelete = async () => {
     if (!pendingDelete) return;
-    try {
-      await onDelete(pendingDelete.id);
-      setFeedback({ tone: "success", message: "Modelo removido." });
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setPendingDelete(null);
-    }
+    await runMessagingSettingsAction({
+      successMessage: "Modelo removido.",
+      setFeedback,
+      execute: () => onDelete(pendingDelete.id),
+      onSuccess: () => setPendingDelete(null),
+    });
+    setPendingDelete(null);
   };
 
   return (
