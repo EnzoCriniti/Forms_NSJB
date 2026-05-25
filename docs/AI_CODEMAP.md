@@ -141,6 +141,8 @@ Mapa curto das areas mais mexidas por agentes.
   Entrada principal do frontend. A navegacao, sessao, preferencias, bootstrap, handlers e montagem de viewport ficam em `frontend/src/lib/appController.js`.
 - `frontend/src/lib/appController.js`
   Controller de alto nivel do App: estado global, seletores derivados, handlers, efeitos de ciclo de vida, shell app e props do viewport.
+- `frontend/src/lib/appControllerInputs.js`
+  Montagem pura dos inputs internos do controller do App para derived state, loaders, handlers, lifecycle e view model.
 - `frontend/src/lib/appControllerState.js`
   Hook do estado global do App agrupado em blocos `values` e `setters`.
 - `frontend/src/lib/appControllerDerived.js`
