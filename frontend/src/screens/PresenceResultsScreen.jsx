@@ -9,12 +9,15 @@ import { downloadCsv } from "../lib/downloadCsv";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
 import { PresenceResultsPanel } from "./resultsPanels";
 import {
+  buildPresenceCsv,
+  formatResultFieldValue,
+} from "./resultsCsv";
+import {
   NO_VALUES,
   TABLE_ZOOM_STEP,
   attachPresenceTotalsSummary,
   buildActiveFilterOptions,
   buildPresenceBaseResponses,
-  buildPresenceCsv,
   buildPresenceFilterButtons,
   buildPresenceGrauOptions,
   buildPresenceHeaderCellStyle,
@@ -26,12 +29,11 @@ import {
   clampTableZoom,
   filterPresenceResponses,
   filterPresenceRows,
-  formatResultFieldValue,
   getPresenceSortIconName,
   getPresenceTouchDistance,
   resolvePresenceSortState,
   sortPresenceRows,
-} from "./resultsDomain";
+} from "./resultsPresenceDomain";
 
 export const PresenceResultsScreen = ({ responses, form, people, publicFormHref, readingControls }) => {
   const columns = useMemo(() => getVisibleFields(form).filter(field => !(field.type === "person_select" && isPrimaryPeopleBaseField(form, field))), [form]);

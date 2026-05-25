@@ -397,7 +397,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/ResultsScreen.jsx`
   Roteador fino da tela de resultados. Escolhe entre resultados de presenca e escala.
 - `frontend/src/screens/PresenceResultsScreen.jsx`
-  Controller da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling.
+  Controller da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling. Consome diretamente `resultsPresenceDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
 - `frontend/src/screens/EscalaResultsScreen.jsx`
   Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao.
 - `frontend/src/screens/EscalaSectionsPanel.jsx`
