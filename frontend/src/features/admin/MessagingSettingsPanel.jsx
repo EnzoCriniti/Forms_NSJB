@@ -5,7 +5,9 @@
  */
 
 import React from "react";
-import { MessagingConfigBlock, MessagingPresetsBlock, MessagingTemplatesBlock } from "./messagingSettingsPanels";
+import { MessagingConfigBlock } from "./MessagingConfigBlock";
+import { MessagingPresetsBlock } from "./MessagingPresetsBlock";
+import { MessagingTemplatesBlock } from "./MessagingTemplatesBlock";
 
 export const MessagingSettingsPanel = ({
   messagingConfig,

@@ -93,7 +93,11 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   UI compartilhada dos blocos de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
-  UI compartilhada da aba de catalogos dentro do admin.
+  Seletor da aba de catalogos dentro do admin.
+- `frontend/src/features/admin/FieldCatalogPanel.jsx`
+  UI de campos base do catalogo administrativo.
+- `frontend/src/features/admin/ScaleTaskCatalogPanel.jsx`
+  UI de tarefas base do catalogo administrativo.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
   UI compartilhada das classificacoes e templates dentro do admin.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
@@ -105,6 +109,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
   Composicao das configuracoes ligadas a mensagens e envio.
 - `frontend/src/features/admin/messagingSettingsPanels.jsx`
+  Agregador de compatibilidade dos blocos de mensagens.
+- `frontend/src/features/admin/MessagingConfigBlock.jsx`, `frontend/src/features/admin/MessagingTemplatesBlock.jsx`, `frontend/src/features/admin/MessagingPresetsBlock.jsx`
   Blocos reutilizaveis de configuracao global, modelos e presets de mensagens.
 - `backend/services/adminService.mjs`
   Orquestracao dos CRUDs administrativos no backend.

@@ -23,11 +23,23 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
   Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets.
 - `frontend/src/features/admin/messagingSettingsPanels.jsx`
-  Blocos reutilizaveis do painel de mensagens administrativas: configuracao global, modelos e presets.
+  Agregador historico dos blocos de mensagens administrativas. Mantem reexports de compatibilidade.
+- `frontend/src/features/admin/MessagingConfigBlock.jsx`
+  Configuracao global do painel administrativo de mensagens.
+- `frontend/src/features/admin/MessagingTemplatesBlock.jsx`
+  Editor e lista de modelos de mensagens administrativas.
+- `frontend/src/features/admin/MessagingPresetsBlock.jsx`
+  Editor e lista de presets de pessoas para mensagens administrativas.
+- `frontend/src/features/admin/messagingSettingsShared.js`
+  Labels, drafts vazios e estilo de input compartilhados pelos blocos de mensagens administrativas.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   Paineis compartilhados da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
-  Painel compartilhado da aba de catalogos administrativos, com campos base e tarefas base.
+  Seletor da aba de catalogos administrativos, alternando entre campos base e tarefas base.
+- `frontend/src/features/admin/FieldCatalogPanel.jsx`
+  Editor e lista de campos base do catalogo administrativo.
+- `frontend/src/features/admin/ScaleTaskCatalogPanel.jsx`
+  Editor e lista de tarefas base do catalogo administrativo.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
   Painel compartilhado de classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
@@ -75,6 +87,8 @@ Mapa curto das areas mais mexidas por agentes.
   Rotas administrativas da lista de socios, configuracao de origem e sincronizacao, extraidas de `adminRoutes.mjs`.
 - `backend/routes/adminRouteHelpers.mjs`
   Helpers especificos das rotas administrativas para envio de erro e auditoria de mutacoes.
+- `backend/routes/formRouteAudit.mjs`
+  Helpers de auditoria das rotas de formularios e escala, extraidos de `formRoutes.mjs`.
 - `backend/validators/payloadValidators.mjs`
   Agregador historico dos validadores de payload. Mantem reexports para compatibilidade e o helper transversal `validateDeleteId`.
 - `backend/validators/formPayloadValidators.mjs`

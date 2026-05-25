@@ -572,6 +572,7 @@ Checklist operacional:
 - manter os blocos de configuracao, templates e presets separados
 - nao mover validacao ou normalizacao para esses arquivos
 - se `messagingSettingsPanels.jsx` continuar crescendo, separar editor, preview e lista de presets
+- concluido neste ciclo: `messagingSettingsPanels.jsx` virou agregador historico; configuracao, modelos e presets foram movidos para `MessagingConfigBlock.jsx`, `MessagingTemplatesBlock.jsx` e `MessagingPresetsBlock.jsx`.
 
 Teste a reforcar:
 - `tests/ui/messagingSettingsPanel.test.jsx`
@@ -588,6 +589,7 @@ Checklist operacional:
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar editor de campo, lista de campos, editor de tarefa e lista de tarefas.
 - pendente apos revisao: `messagingSettingsPanels.jsx` ainda concentra editor, preview e listas de presets/modelos; manter como proximo alvo pequeno da area de mensagens administrativas.
+- concluido neste ciclo: `adminCatalogPanels.jsx` ficou como seletor fino; editores/listas de campos e tarefas foram movidos para `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx`.
 
 ## 8. Backend - roteamento e entrada HTTP
 
@@ -627,6 +629,7 @@ Problemas que precisam ser corrigidos:
 Checklist operacional:
 - separar as rotas por dominio quando o arquivo crescer mais: forms, responses, escala, segurança de delete
 - extrair helpers para a geracao de metadados de auditoria
+- iniciado neste ciclo: metadados e escrita de auditoria de salvar/excluir formulario e atualizar/reivindicar escala sairam para `backend/routes/formRouteAudit.mjs`.
 - manter validação na borda e regra de negocio nos services
 - evitar repeticao do mesmo bloco de catch com pequenas variacoes
 - padronizar o comportamento quando a rota nao encontra formulario

@@ -1,0 +1,118 @@
+import React, { useState } from "react";
+import { Btn, COLORS, ConfirmModal, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
+import { MESSAGE_TYPE_LABELS, emptyMessageTemplateDraft, messagingInputStyle } from "./messagingSettingsShared";
+
+export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
+  const [draft, setDraft] = useState(emptyMessageTemplateDraft);
+  const [busy, setBusy] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null);
+
+  const submit = async () => {
+    if (!draft.name.trim() || !draft.body.trim()) return;
+    setBusy(true);
+    setFeedback({ tone: "loading", message: draft.id ? "Salvando modelo..." : "Criando modelo..." });
+    try {
+      await onSave({
+        id: draft.id || undefined,
+        name: draft.name.trim(),
+        type: draft.type,
+        body: draft.body,
+      });
+      setDraft(emptyMessageTemplateDraft);
+      setFeedback({ tone: "success", message: "Modelo salvo." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    try {
+      await onDelete(pendingDelete.id);
+      setFeedback({ tone: "success", message: "Modelo removido." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setPendingDelete(null);
+    }
+  };
+
+  return (
+    <section className="settings-grid" style={{ marginTop: 24 }}>
+      <div>
+        <h4 style={{ margin: "0 0 10px" }}>{draft.id ? "Editar modelo" : "Novo modelo de mensagem"}</h4>
+        <div style={{ display: "grid", gap: 12 }}>
+          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
+            Tipo
+            <select
+              value={draft.type}
+              onChange={event => setDraft(current => ({ ...current, type: event.target.value }))}
+              style={messagingInputStyle}
+            >
+              <option value="new_scale">{MESSAGE_TYPE_LABELS.new_scale}</option>
+              <option value="fill_reminder">{MESSAGE_TYPE_LABELS.fill_reminder}</option>
+              <option value="open_slots">{MESSAGE_TYPE_LABELS.open_slots}</option>
+            </select>
+          </label>
+          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
+            Nome do modelo
+            <input value={draft.name} onChange={event => setDraft(current => ({ ...current, name: event.target.value }))} placeholder="Ex.: Lembrete manha" style={messagingInputStyle} />
+          </label>
+          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
+            Corpo
+            <textarea
+              value={draft.body}
+              onChange={event => setDraft(current => ({ ...current, body: event.target.value }))}
+              rows={6}
+              placeholder="Ola {{person.name}}..."
+              style={{ ...messagingInputStyle, resize: "vertical", fontFamily: "inherit" }}
+            />
+            <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>
+              Placeholders disponiveis: <code>{"{{event.title}}"}</code>, <code>{"{{event.date}}"}</code>, <code>{"{{event.closing}}"}</code>, <code>{"{{form.title}}"}</code>, <code>{"{{form.publicLink}}"}</code>, <code>{"{{forms.list}}"}</code>, <code>{"{{person.name}}"}</code>, <code>{"{{group.name}}"}</code>.
+            </span>
+          </label>
+          {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
+          <div style={{ display: "flex", gap: 8 }}>
+            <Btn onClick={submit} loading={busy} disabled={!draft.name.trim() || !draft.body.trim()}>
+              {draft.id ? "Salvar modelo" : "Criar modelo"}
+            </Btn>
+            {draft.id && <Btn v="ghost" onClick={() => setDraft(emptyMessageTemplateDraft)}>Cancelar</Btn>}
+          </div>
+        </div>
+      </div>
+      <div>
+        <h4 style={{ margin: "0 0 10px" }}>Modelos existentes</h4>
+        {templates.length === 0 ? (
+          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+            Nenhum modelo cadastrado.
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: 10 }}>
+            {templates.map(template => (
+              <div key={template.id} className="settings-row">
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <strong>{template.name}</strong>
+                  <div>{MESSAGE_TYPE_LABELS[template.type] || template.type}</div>
+                </div>
+                <Btn v="secondary" sz="sm" onClick={() => setDraft({ id: template.id, name: template.name, type: template.type, body: template.body })}>Editar</Btn>
+                <Btn v="danger" sz="sm" onClick={() => setPendingDelete(template)}>Remover</Btn>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <ConfirmModal
+        open={Boolean(pendingDelete)}
+        title="Remover modelo"
+        message={`Remover o modelo "${pendingDelete?.name || ""}"?`}
+        confirmLabel="Remover"
+        tone="danger"
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={confirmDelete}
+      />
+    </section>
+  );
+};

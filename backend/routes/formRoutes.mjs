@@ -29,6 +29,12 @@ import {
   sendKnownError,
   writeAudit,
 } from "./requestHelpers.mjs";
+import {
+  writeEscalaClaimAudit,
+  writeEscalaUpdateAudit,
+  writeFormDeleteAudit,
+  writeFormSaveAudit,
+} from "./formRouteAudit.mjs";
 
 export const handleFormRoutes = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/forms") {
@@ -38,43 +44,10 @@ export const handleFormRoutes = async (req, res, url) => {
     try {
       validateFormPayload(body);
       const form = await saveForm(body);
-      writeAudit(req, auth, {
-        level: "info",
-        category: "forms",
-        action: body?.id ? "update_form" : "create_form",
-        status: "success",
-        screen: "formularios",
-        entityType: "form",
-        entityId: form.id,
-        entityLabel: form.title,
-        message: body?.id ? "Formulario atualizado." : "Formulario criado.",
-        metadata: {
-          formId: form.id,
-          slug: form.slug,
-          type: form.type,
-          status: form.status,
-          title: form.title,
-        },
-      });
+      writeFormSaveAudit(req, auth, { body, form });
       sendJson(res, 200, { form });
     } catch (error) {
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
-        category: "forms",
-        action: body?.id ? "update_form" : "create_form",
-        status: auditStatusFromError(error),
-        screen: "formularios",
-        entityType: "form",
-        entityId: body?.id || null,
-        entityLabel: body?.title || null,
-        message: error.message,
-        metadata: {
-          formId: body?.id || null,
-          slug: body?.slug || null,
-          type: body?.type || null,
-          status: body?.status || null,
-        },
-      });
+      writeFormSaveAudit(req, auth, { body, error });
       if (!error?.statusCode) {
         sendJson(res, 400, { error: error.message });
       } else {
@@ -91,97 +64,27 @@ export const handleFormRoutes = async (req, res, url) => {
     const body = await readBody(req);
     if (!body) {
       sendJson(res, 400, { error: "Payload JSON invalido." });
-      writeAudit(req, auth, {
-        level: "error",
-        category: "forms",
-        action: "delete_form",
-        status: "failure",
-        screen: "formularios",
-        entityType: "form",
-        entityId: formId,
-        entityLabel: null,
-        message: "Payload JSON invalido.",
-        metadata: {
-          formId,
-          deleted: false,
-        },
-      });
+      writeFormDeleteAudit(req, auth, { formId, message: "Payload JSON invalido." });
       return true;
     }
     try {
       validateFormDeleteKeyPayload(body);
     } catch (error) {
       sendJson(res, 400, { error: error.message });
-      writeAudit(req, auth, {
-        level: "error",
-        category: "forms",
-        action: "delete_form",
-        status: "failure",
-        screen: "formularios",
-        entityType: "form",
-        entityId: formId,
-        entityLabel: null,
-        message: error.message,
-        metadata: {
-          formId,
-          deleted: false,
-        },
-      });
+      writeFormDeleteAudit(req, auth, { formId, error });
       return true;
     }
     try {
       const form = await findFormById(formId);
       await deleteForm(formId, body.masterKey);
       sendJson(res, 200, { ok: true });
-      writeAudit(req, auth, {
-        level: "info",
-        category: "forms",
-        action: "delete_form",
-        status: "success",
-        screen: "formularios",
-        entityType: "form",
-        entityId: formId,
-        entityLabel: form?.title || null,
-        message: "Formulario excluido.",
-        metadata: {
-          formId,
-          deleted: true,
-        },
-      });
+      writeFormDeleteAudit(req, auth, { formId, form, deleted: true });
     } catch (error) {
       if (sendKnownError(res, error)) {
-        writeAudit(req, auth, {
-          level: auditLevelFromError(error),
-          category: "forms",
-          action: "delete_form",
-          status: auditStatusFromError(error),
-          screen: "formularios",
-          entityType: "form",
-          entityId: formId,
-          entityLabel: null,
-          message: error.message,
-          metadata: {
-            formId,
-            deleted: false,
-          },
-        });
+        writeFormDeleteAudit(req, auth, { formId, error });
         return true;
       }
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
-        category: "forms",
-        action: "delete_form",
-        status: auditStatusFromError(error),
-        screen: "formularios",
-        entityType: "form",
-        entityId: formId,
-        entityLabel: null,
-        message: error.message,
-        metadata: {
-          formId,
-          deleted: false,
-        },
-      });
+      writeFormDeleteAudit(req, auth, { formId, error });
       throw error;
     }
     return true;
@@ -258,38 +161,10 @@ export const handleFormRoutes = async (req, res, url) => {
       validateEscalaPayload(formId, body);
       const sections = await saveEscala(formId, body.sections || []);
       sendJson(res, 200, { sections });
-      writeAudit(req, auth, {
-        level: "info",
-        category: "escala",
-        action: "update_escala",
-        status: "success",
-        screen: "escala",
-        entityType: "form",
-        entityId: formId,
-        entityLabel: `Escala ${formId}`,
-        message: "Escala atualizada.",
-        metadata: {
-          formId,
-          sectionCount: sections.length,
-        },
-      });
+      writeEscalaUpdateAudit(req, auth, { formId, sections });
     } catch (error) {
       if (sendEscalaError(res, error)) return true;
-      writeAudit(req, auth, {
-        level: auditLevelFromError(error),
-        category: "escala",
-        action: "update_escala",
-        status: auditStatusFromError(error),
-        screen: "escala",
-        entityType: "form",
-        entityId: formId,
-        entityLabel: `Escala ${formId}`,
-        message: error.message,
-        metadata: {
-          formId,
-          sectionCount: Array.isArray(body?.sections) ? body.sections.length : 0,
-        },
-      });
+      writeEscalaUpdateAudit(req, auth, { formId, body, error });
       throw error;
     }
     return true;
@@ -302,61 +177,13 @@ export const handleFormRoutes = async (req, res, url) => {
       validateEscalaClaimPayload(body);
       const sections = await claimEscalaSlot(formId, Number(body.sectionIndex), Number(body.slotIndex), body.person);
       sendJson(res, 200, { sections });
-      writeAudit(req, null, {
-        level: "info",
-        category: "escala",
-        action: "claim_escala_slot",
-        status: "success",
-        screen: "public-escala",
-        actor: getVisitorActor(),
-        entityType: "form",
-        entityId: formId,
-        entityLabel: `Escala ${formId}`,
-        message: "Vaga de escala preenchida.",
-        metadata: {
-          formId,
-          sectionIndex: Number(body.sectionIndex),
-          slotIndex: Number(body.slotIndex),
-        },
-      });
+      writeEscalaClaimAudit(req, { formId, body });
     } catch (error) {
       if (sendEscalaError(res, error)) {
-        writeAudit(req, null, {
-          level: auditLevelFromError(error),
-          category: "escala",
-          action: "claim_escala_slot",
-          status: auditStatusFromError(error),
-          screen: "public-escala",
-          actor: getVisitorActor(),
-          entityType: "form",
-          entityId: formId,
-          entityLabel: `Escala ${formId}`,
-          message: error.message,
-          metadata: {
-            formId,
-            sectionIndex: body?.sectionIndex,
-            slotIndex: body?.slotIndex,
-          },
-        });
+        writeEscalaClaimAudit(req, { formId, body, error });
         return true;
       }
-      writeAudit(req, null, {
-        level: auditLevelFromError(error),
-        category: "escala",
-        action: "claim_escala_slot",
-        status: auditStatusFromError(error),
-        screen: "public-escala",
-        actor: getVisitorActor(),
-        entityType: "form",
-        entityId: formId,
-        entityLabel: `Escala ${formId}`,
-        message: error.message,
-        metadata: {
-          formId,
-          sectionIndex: body?.sectionIndex,
-          slotIndex: body?.slotIndex,
-        },
-      });
+      writeEscalaClaimAudit(req, { formId, body, error });
       throw error;
     }
     return true;
