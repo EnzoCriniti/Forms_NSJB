@@ -73,6 +73,7 @@ Checklist operacional:
 - iniciado: loaders incrementais de respostas e escala sairam para `frontend/src/lib/appDataLoad.js`
 - iniciado: refresh de bootstrap saiu para `refreshAppBootstrap` em `frontend/src/lib/appDataLoad.js`
 - iniciado: refresh do status da chave de exclusao saiu para `refreshFormDeleteKeyConfiguredStatus` em `frontend/src/lib/appDataLoad.js`
+- iniciado neste ciclo: wrappers de carregamento de dados sairam para `frontend/src/lib/appDataHandlers.js`.
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
 - iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
@@ -80,6 +81,7 @@ Checklist operacional:
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
 - iniciado: efeitos de ciclo de vida do shell sairam para `frontend/src/lib/appLifecycleEffects.js`
 - iniciado: acoes de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionActions.js`
+- iniciado neste ciclo: wrappers de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionHandlers.js`.
 - pendente apos revisao: `App.jsx` ainda importa muitas funcoes da API e mantem wrappers finos para quase todos os dominios; proximo corte deve agrupar esses handlers por controller/hook ou reduzir a montagem manual antes de criar novas acoes ali.
 - pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; reavaliar se o shell pode receber blocos por dominio para reduzir acoplamento entre `App.jsx`, `AppViewport` e `AppShellContent`.
 

@@ -139,6 +139,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Caminhos publicos canonicos, helpers de navegacao publica, decisao pura de navegacao interna e seletores derivados do shell.
 - `frontend/src/lib/appEventHandlers.js`, `appFormHandlers.js`, `appAdminHandlers.js`
   Builders dos handlers entregues pelo `App.jsx` ao shell; use antes de adicionar wrappers finos diretamente no componente principal.
+- `frontend/src/lib/appDataHandlers.js`, `appSessionHandlers.js`
+  Builders dos handlers de carregamento, sessao, navegacao e preferencias visuais usados por `App.jsx`.
 
 ## Regra pratica
 

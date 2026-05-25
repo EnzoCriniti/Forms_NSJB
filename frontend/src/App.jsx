@@ -53,7 +53,8 @@ import {
 } from "./lib/api";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
-import { loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
+import { removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
+import { buildAppDataHandlers } from "./lib/appDataHandlers";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
 import { buildAppFormHandlers } from "./lib/appFormHandlers";
@@ -68,7 +69,7 @@ import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 import { buildAppNavItems } from "./lib/appNav";
 import { buildShellApp } from "./lib/appShellObject";
 import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
-import { invalidateAppSession, loginAppSession, logoutAppSession, navigateAppScreen, updateAppFontScale } from "./lib/appSessionActions";
+import { buildAppSessionHandlers } from "./lib/appSessionHandlers";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -130,74 +131,62 @@ export default function App() {
     draftForm,
     publicRoute,
   ]);
-  const refreshBootstrap = async ({ preserveSelection = true, silent = false, rethrow = false } = {}) => {
-    return refreshAppBootstrap({
-      preserveSelection,
-      silent,
-      rethrow,
-      activeFormId,
-      currentUser,
-      setLoading,
-      setError,
-      setBootstrap,
-      setActiveFormId,
-      fetchBootstrap,
-      normalizeBootstrap,
-      pickActiveFormIdAfterBootstrap,
-      visibleFormsFor,
-    });
-  };
+  const {
+    loadEscalaForForm,
+    loadResponsesForForm,
+    refreshBootstrap,
+    refreshEscalaForForm,
+    refreshFormDeleteKeyStatus,
+  } = buildAppDataHandlers({
+    activeFormId,
+    bootstrap,
+    currentUser,
+    detailLoading,
+    escalaDetails,
+    fetchBootstrap,
+    fetchFormDeleteKeyStatus,
+    fetchFormEscala,
+    fetchFormResponses,
+    normalizeBootstrap,
+    pickActiveFormIdAfterBootstrap,
+    responseDetails,
+    setActiveFormId,
+    setBootstrap,
+    setDetailLoading,
+    setError,
+    setEscalaDetails,
+    setFormDeleteKeyConfigured,
+    setLoading,
+    setResponseDetails,
+    visibleFormsFor,
+  });
 
-  const refreshFormDeleteKeyStatus = async () => {
-    return refreshFormDeleteKeyConfiguredStatus({
-      fetchFormDeleteKeyStatus,
-      setFormDeleteKeyConfigured,
-    });
-  };
-
-  const loadResponsesForForm = async formId => {
-    await loadFormResponsesDetail({
-      formId,
-      bootstrapResponsesByForm: bootstrap.responsesByForm,
-      responseDetails,
-      detailLoading,
-      setDetailLoading,
-      setResponseDetails,
-      setError,
-      fetchFormResponses,
-    });
-  };
-
-  const loadEscalaForForm = async (formId, { force = false } = {}) => {
-    await loadFormEscalaDetail({
-      formId,
-      force,
-      bootstrapEscalaByForm: bootstrap.escalaByForm,
-      escalaDetails,
-      detailLoading,
-      setDetailLoading,
-      setEscalaDetails,
-      setError,
-      fetchFormEscala,
-    });
-  };
-
-  const refreshEscalaForForm = async formId => loadEscalaForForm(formId, { force: true });
-
-  const increaseFontScale = () => updateAppFontScale({ direction: "increase", setFontScale, clampFontScale, fontScaleStep: FONT_SCALE_STEP });
-  const decreaseFontScale = () => updateAppFontScale({ direction: "decrease", setFontScale, clampFontScale, fontScaleStep: FONT_SCALE_STEP });
-
-  const invalidateSession = () => {
-    invalidateAppSession({
-      persistSession,
-      setActiveFormId,
-      setAuthToken,
-      setDraftForm,
-      setEditingFormId,
-      setScreen,
-      setSession,
-    });
-  };
+  const {
+    decreaseFontScale,
+    increaseFontScale,
+    invalidateSession,
+    login,
+    logout,
+    navigate,
+  } = buildAppSessionHandlers({
+    activeForm,
+    canCreateForms,
+    canViewForm,
+    clampFontScale,
+    currentUser,
+    fontScaleStep: FONT_SCALE_STEP,
+    loginWithCredentials,
+    logoutAuth,
+    persistSession,
+    resolveAppNavigation,
+    setActiveFormId,
+    setAuthToken,
+    setDraftForm,
+    setEditingFormId,
+    setFontScale,
+    setScreen,
+    setSession,
+  });
 
   useAppLifecycleEffects({
     activeForm,
@@ -236,30 +225,6 @@ export default function App() {
     setTheme,
     theme,
   });
-
-  const login = async (username, password) => {
-    return loginAppSession({ username, password, loginWithCredentials, setSession });
-  };
-
-  const logout = async () => {
-    await logoutAppSession({ logoutAuth, invalidateSession });
-  };
-
-  const navigate = (nextScreen, form) => {
-    navigateAppScreen({
-      nextScreen,
-      form,
-      activeForm,
-      currentUser,
-      canCreateForms,
-      canViewForm,
-      resolveAppNavigation,
-      setActiveFormId,
-      setDraftForm,
-      setEditingFormId,
-      setScreen,
-    });
-  };
 
   const {
     handleSaveEvent,

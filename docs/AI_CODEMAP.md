@@ -168,6 +168,8 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers puros para alternar e remover itens fixados por usuario.
 - `frontend/src/lib/appDataLoad.js`
   Helpers do carregamento de dados do app: refresh do bootstrap, status da chave de exclusao e carregamento incremental de respostas/escala por formulario.
+- `frontend/src/lib/appDataHandlers.js`
+  Montagem dos handlers de carregamento usados por `App.jsx`: bootstrap, status da chave de exclusao, respostas e escala.
 - `frontend/src/components/AppHeader.jsx`
   Cabecalho global com navegacao, controles de sessao e botao de voltar na tela de resultados para contas logadas.
   No mobile, permanece como shell central nas telas de resposta logada, sem o topo publico duplicado.
@@ -228,6 +230,8 @@ Mapa curto das areas mais mexidas por agentes.
   Hook dos efeitos de ciclo de vida do shell principal: persistencia, bootstrap inicial, rota publica, detalhes e validacao de sessao.
 - `frontend/src/lib/appSessionActions.js`
   Acoes de sessao, logout local, navegacao interna e escala de fonte do shell principal.
+- `frontend/src/lib/appSessionHandlers.js`
+  Montagem dos handlers de sessao, navegacao e escala de fonte usados por `App.jsx`.
 - `frontend/src/lib/appNavigation.js`
   Decisao pura de navegacao interna do shell autenticado, incluindo bloqueios por permissao.
 - `frontend/src/lib/appShellDerivedState.js`
