@@ -5,28 +5,18 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { canCreateForms, canViewForm, visibleFormsFor } from "./lib/auth";
+import { canCreateForms, visibleFormsFor } from "./lib/auth";
 import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "./lib/appBootstrap";
-import { removeBootstrapListItem, removeNestedBootstrapItem, removeFormIdFromEvents, replaceBootstrapList, replaceBootstrapListFromResult, sortBootstrapEventsByDateDesc, upsertBootstrapListItem, upsertNestedBootstrapItem } from "./lib/appBootstrapLists";
-import { buildEscalaMetrics, updateBootstrapFormMetrics } from "./lib/appBootstrapMetrics";
-import { removePinnedIdForUser, togglePinnedIdForUser } from "./lib/appPinning";
 import { AppViewport } from "./AppViewport";
 import { isFormClosedForPublic } from "./lib/forms";
 import { removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { buildAppDataHandlers } from "./lib/appDataHandlers";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
-import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
-import { buildAppFormHandlers } from "./lib/appFormHandlers";
-import { buildAppAdminHandlers } from "./lib/appAdminHandlers";
-import { buildAppEventHandlers } from "./lib/appEventHandlers";
-import { resolveAppNavigation } from "./lib/appNavigation";
 import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
-import { sanitizeUser } from "./lib/appSession";
 import { buildAppShellDerivedState } from "./lib/appShellDerivedState";
 import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
-import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
-import { buildAppSessionHandlers } from "./lib/appSessionHandlers";
+import { buildAppHandlerGroups } from "./lib/appHandlerGroups";
 import { buildAppShell, buildAppShellData, buildAppShellState } from "./lib/appShellBuilder";
 
 export default function App() {
@@ -115,21 +105,36 @@ export default function App() {
     visibleFormsFor,
   });
 
-  const sessionHandlers = buildAppSessionHandlers({
+  const {
+    adminHandlers,
+    eventHandlers,
+    formHandlers,
+    sessionHandlers,
+  } = buildAppHandlerGroups({
     activeForm,
+    activeEventId,
     canCreateForms,
-    canViewForm,
-    clampFontScale,
     currentUser,
-    fontScaleStep: FONT_SCALE_STEP,
+    events,
     persistSession,
-    resolveAppNavigation,
+    refreshBootstrap,
+    refreshEscalaForForm,
+    removeFormDetail,
+    setActiveEventId,
     setActiveFormId,
+    setActiveMessageId,
+    setBootstrap,
     setDraftForm,
     setEditingFormId,
+    setEscalaDetails,
     setFontScale,
+    setFormDeleteKeyConfigured,
+    setPinnedEventsByUser,
+    setPinnedFormsByUser,
+    setResponseDetails,
     setScreen,
     setSession,
+    upsertFormDetail,
   });
   const {
     decreaseFontScale,
@@ -174,68 +179,6 @@ export default function App() {
     setSession,
     setTheme,
     theme,
-  });
-
-  const eventHandlers = buildAppEventHandlers({
-    activeEventId,
-    canCreateForms,
-    currentUser,
-    removeBootstrapListItem,
-    removePinnedIdForUser,
-    replaceBootstrapList,
-    setActiveEventId,
-    setBootstrap,
-    setDraftForm,
-    setEditingFormId,
-    setPinnedEventsByUser,
-    setScreen,
-    sortBootstrapEventsByDateDesc,
-    togglePinnedIdForUser,
-    upsertBootstrapListItem,
-  });
-
-  const formHandlers = buildAppFormHandlers({
-    activeEventId,
-    buildDuplicateFormDraft,
-    buildEscalaMetrics,
-    buildSaveFormPayloadFromExisting,
-    canCreateForms,
-    currentUser,
-    events,
-    refreshBootstrap,
-    refreshEscalaForForm,
-    removeFormDetail,
-    removeFormIdFromEvents,
-    replaceBootstrapList,
-    setActiveFormId,
-    setBootstrap,
-    setDraftForm,
-    setEditingFormId,
-    setEscalaDetails,
-    setPinnedFormsByUser,
-    setResponseDetails,
-    setScreen,
-    togglePinnedIdForUser,
-    updateBootstrapFormMetrics,
-    upsertFormDetail,
-  });
-
-  const adminHandlers = buildAppAdminHandlers({
-    currentUser,
-    logout,
-    removeBootstrapListItem,
-    removeNestedBootstrapItem,
-    replaceBootstrapList,
-    replaceBootstrapListFromResult,
-    sanitizeUser,
-    setActiveEventId,
-    setActiveMessageId,
-    setBootstrap,
-    setFormDeleteKeyConfigured,
-    setScreen,
-    setSession,
-    upsertBootstrapListItem,
-    upsertNestedBootstrapItem,
   });
 
   const shellApp = buildAppShell({

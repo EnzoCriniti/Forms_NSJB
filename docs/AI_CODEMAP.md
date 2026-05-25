@@ -222,6 +222,8 @@ Mapa curto das areas mais mexidas por agentes.
   Acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos e mensagens.
 - `frontend/src/lib/appAdminHandlers.js`
   Montagem dos handlers administrativos e de mensagens usados por `App.jsx`.
+- `frontend/src/lib/appHandlerGroups.js`
+  Montagem dos grupos de handlers do App: sessao, eventos, formularios/escala e administracao/mensagens.
 - `frontend/src/lib/appEventActions.js`
   Acoes do shell principal para salvar, publicar, excluir e fixar eventos.
 - `frontend/src/lib/appEventHandlers.js`

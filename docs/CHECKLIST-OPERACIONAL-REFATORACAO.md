@@ -85,6 +85,7 @@ Checklist operacional:
 - iniciado neste ciclo: wrappers de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionHandlers.js`.
 - iniciado neste ciclo: imports diretos da lista extensa de endpoints de dominio sairam de `App.jsx`; os builders de handlers agora importam suas APIs com fallback injetavel para testes.
 - iniciado neste ciclo: montagem dos blocos `data` e `state` do `shellApp` saiu para helpers puros em `frontend/src/lib/appShellBuilder.js`.
+- iniciado neste ciclo: composicao dos grupos de handlers de sessao, eventos, formularios/escala e admin saiu para `frontend/src/lib/appHandlerGroups.js`.
 - pendente apos revisao: `App.jsx` ainda monta muitos blocos de handlers e dependencias transversais; proximo corte deve agrupar essa montagem por controller/hook ou reduzir a composicao manual antes de criar novas acoes ali.
 - pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; `App.jsx` ja delega a composicao detalhada para `appShellBuilder.js`, mas ainda vale reavaliar se `AppViewport` e `AppShellContent` podem receber blocos por dominio.
 
