@@ -402,6 +402,7 @@ Checklist operacional:
 - iniciado neste ciclo: lista visual de secoes e vagas da escala saiu para `frontend/src/screens/EscalaSectionsPanel.jsx`.
 - iniciado neste ciclo: toolbar de filtros, zoom e exportacao da presenca saiu para `frontend/src/screens/PresenceResultsToolbar.jsx`.
 - iniciado neste ciclo: modal de inscricao em vaga da escala saiu para `frontend/src/screens/EscalaSignupModal.jsx`.
+- iniciado neste ciclo: barra superior, feedback, aviso e metricas da escala sairam para `frontend/src/screens/EscalaResultsOverview.jsx`.
 - iniciado neste ciclo: controllers de presenca e escala passaram a consumir diretamente `resultsPresenceDomain.js`, `resultsEscalaDomain.js` e `resultsCsv.js`, deixando `resultsDomain.js` como agregador historico.
 - reduzir o arquivo para escolher entre dois fluxos e montar os dados já derivados
 - evitar duplicacao entre calculo de totais e exibicao de tabela
@@ -424,6 +425,7 @@ Checklist operacional:
 - mover qualquer calculo novo para `resultsDomain.js` ou para a screen controller
 - quebrar a tabela de presenca se novos blocos de header, footer ou actions surgirem
 - iniciado neste ciclo: modal de inscricao da escala foi movido para `frontend/src/screens/EscalaSignupModal.jsx`.
+- iniciado neste ciclo: overview da escala foi movido para `frontend/src/screens/EscalaResultsOverview.jsx`.
 - evitar adicionar novas regras de busca ou totalizacao aqui
 
 Teste a reforcar:

@@ -5,7 +5,8 @@
  */
 
 import React from "react";
-import { COLORS, Btn, FeedbackBanner, ConfirmModal, MetricCard } from "../components/ui";
+import { FeedbackBanner, ConfirmModal } from "../components/ui";
+import { EscalaResultsOverview } from "./EscalaResultsOverview";
 import { EscalaSectionsPanel } from "./EscalaSectionsPanel";
 import { EscalaSignupModal } from "./EscalaSignupModal";
 import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
@@ -129,20 +130,13 @@ export const EscalaResultsPanel = ({
   pendingRemoval,
 }) => (
   <div>
-    <div className="results-sheet-toolbar" style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-      <Btn v="secondary" icon="download" sz="sm" onClick={onExportCsv}>Exportar</Btn>
-    </div>
-    {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
-    {!canEdit && (
-      <div style={{ background: "#fff8e1", border: "1px solid #ffe082", borderRadius: 10, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#795548", display: "flex", alignItems: "center", gap: 8 }}>
-        <span>Voce nao tem permissao para editar esta escala. Apenas administradores podem fazer alteracoes.</span>
-      </div>
-    )}
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 20 }}>
-      <MetricCard value={filled} label="Preenchidas" tone={COLORS.primary} style={{ padding: "12px 16px" }} />
-      <MetricCard value={total - filled} label="Pendentes" tone={COLORS.danger} style={{ padding: "12px 16px" }} />
-      <MetricCard value={total} label="Total" tone={COLORS.textSecondary} style={{ padding: "12px 16px" }} />
-    </div>
+    <EscalaResultsOverview
+      canEdit={canEdit}
+      feedback={feedback}
+      filled={filled}
+      onExportCsv={onExportCsv}
+      total={total}
+    />
     <EscalaSectionsPanel
       busyAction={busyAction}
       canEdit={canEdit}

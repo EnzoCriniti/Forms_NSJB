@@ -404,6 +404,8 @@ Mapa curto das areas mais mexidas por agentes.
   Lista visual de secoes e vagas da escala de resultados, extraida de `resultsPanels.jsx`.
 - `frontend/src/screens/EscalaSignupModal.jsx`
   Modal visual de inscricao em vaga da escala de resultados, extraido de `resultsPanels.jsx`.
+- `frontend/src/screens/EscalaResultsOverview.jsx`
+  Barra superior, feedback, aviso de permissao e metricas da escala de resultados, extraidos de `resultsPanels.jsx`.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/resultsPanels.jsx`
