@@ -4,18 +4,13 @@
  * @responsibility Centralizar estado, handlers, efeitos e props do viewport fora de App.jsx.
  */
 
-import { canCreateForms, visibleFormsFor } from "./auth";
-import { normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "./appBootstrap";
-import { removeFormDetail, upsertFormDetail } from "./appDataLoad";
-import { buildAppDataHandlers } from "./appDataHandlers";
-import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./appPreferences";
-import { getPublicRouteFromLocation } from "./appPublicRoutes";
-import { resolveAppDetailLoadRequest } from "./appDetailTarget";
-import { useAppLifecycleEffects } from "./appLifecycleEffects";
-import { buildAppHandlerGroups } from "./appHandlerGroups";
+import { canCreateForms } from "./auth";
 import { useAppControllerState } from "./appControllerState";
 import { useAppControllerDerivedState } from "./appControllerDerived";
 import { buildAppControllerViewModel } from "./appControllerViewModel";
+import { buildAppControllerLoaders } from "./appControllerLoaders";
+import { buildAppControllerHandlers } from "./appControllerHandlers";
+import { useAppControllerLifecycle } from "./appControllerLifecycle";
 
 export const useAppController = () => {
   const { values, setters } = useAppControllerState();
@@ -95,14 +90,12 @@ export const useAppController = () => {
     refreshBootstrap,
     refreshEscalaForForm,
     refreshFormDeleteKeyStatus,
-  } = buildAppDataHandlers({
+  } = buildAppControllerLoaders({
     activeFormId,
     bootstrap,
     currentUser,
     detailLoading,
     escalaDetails,
-    normalizeBootstrap,
-    pickActiveFormIdAfterBootstrap,
     responseDetails,
     setActiveFormId,
     setBootstrap,
@@ -112,7 +105,6 @@ export const useAppController = () => {
     setFormDeleteKeyConfigured,
     setLoading,
     setResponseDetails,
-    visibleFormsFor,
   });
 
   const {
@@ -120,16 +112,13 @@ export const useAppController = () => {
     eventHandlers,
     formHandlers,
     sessionHandlers,
-  } = buildAppHandlerGroups({
+  } = buildAppControllerHandlers({
     activeForm,
     activeEventId,
-    canCreateForms,
     currentUser,
     events,
-    persistSession,
     refreshBootstrap,
     refreshEscalaForForm,
-    removeFormDetail,
     setActiveEventId,
     setActiveFormId,
     setActiveMessageId,
@@ -144,38 +133,29 @@ export const useAppController = () => {
     setResponseDetails,
     setScreen,
     setSession,
-    upsertFormDetail,
   });
   const {
     invalidateSession,
     navigate,
   } = sessionHandlers;
 
-  useAppLifecycleEffects({
+  useAppControllerLifecycle({
     activeForm,
-    applyExternalPreferenceChange,
-    applyFontScalePreference,
-    applyThemePreference,
     authToken,
     currentUser,
     detailLoading,
     error,
     escalaByForm,
     fontScale,
-    getPublicRouteFromLocation,
     invalidateSession,
     loadEscalaForForm,
     loadResponsesForForm,
-    persistPinnedEventsByUser,
-    persistPinnedFormsByUser,
-    persistSession,
     pinnedEventsByUser,
     pinnedFormsByUser,
     publicForm,
     publicResultsView,
     refreshBootstrap,
     refreshFormDeleteKeyStatus,
-    resolveAppDetailLoadRequest,
     responsesByForm,
     screen,
     session,

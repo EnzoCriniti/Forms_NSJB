@@ -1,0 +1,71 @@
+/**
+ * @file frontend/src/lib/appControllerLifecycle.js
+ * @summary Efeitos de ciclo de vida usados pelo controller do App.
+ */
+
+import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./appPreferences";
+import { getPublicRouteFromLocation } from "./appPublicRoutes";
+import { resolveAppDetailLoadRequest } from "./appDetailTarget";
+import { useAppLifecycleEffects } from "./appLifecycleEffects";
+
+export const useAppControllerLifecycle = ({
+  activeForm,
+  authToken,
+  currentUser,
+  detailLoading,
+  error,
+  escalaByForm,
+  fontScale,
+  invalidateSession,
+  loadEscalaForForm,
+  loadResponsesForForm,
+  pinnedEventsByUser,
+  pinnedFormsByUser,
+  publicForm,
+  publicResultsView,
+  refreshBootstrap,
+  refreshFormDeleteKeyStatus,
+  responsesByForm,
+  screen,
+  session,
+  setFontScale,
+  setPublicRoute,
+  setScreen,
+  setSession,
+  setTheme,
+  theme,
+}) => useAppLifecycleEffects({
+  activeForm,
+  applyExternalPreferenceChange,
+  applyFontScalePreference,
+  applyThemePreference,
+  authToken,
+  currentUser,
+  detailLoading,
+  error,
+  escalaByForm,
+  fontScale,
+  getPublicRouteFromLocation,
+  invalidateSession,
+  loadEscalaForForm,
+  loadResponsesForForm,
+  persistPinnedEventsByUser,
+  persistPinnedFormsByUser,
+  persistSession,
+  pinnedEventsByUser,
+  pinnedFormsByUser,
+  publicForm,
+  publicResultsView,
+  refreshBootstrap,
+  refreshFormDeleteKeyStatus,
+  resolveAppDetailLoadRequest,
+  responsesByForm,
+  screen,
+  session,
+  setFontScale,
+  setPublicRoute,
+  setScreen,
+  setSession,
+  setTheme,
+  theme,
+});

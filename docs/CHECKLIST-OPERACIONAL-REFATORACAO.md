@@ -90,6 +90,7 @@ Checklist operacional:
 - iniciado neste ciclo: estado global, derived state, handlers, lifecycle e montagem final do viewport sairam de `App.jsx` para `frontend/src/lib/appController.js`; `App.jsx` ficou como entrada fina.
 - iniciado neste ciclo: estado inicial e seletores derivados do controller sairam para `frontend/src/lib/appControllerState.js` e `frontend/src/lib/appControllerDerived.js`.
 - iniciado neste ciclo: montagem final do `shellApp` e das props do viewport saiu para `frontend/src/lib/appControllerViewModel.js`.
+- iniciado neste ciclo: loaders, grupos de handlers e lifecycle do controller sairam para `frontend/src/lib/appControllerLoaders.js`, `frontend/src/lib/appControllerHandlers.js` e `frontend/src/lib/appControllerLifecycle.js`.
 - pendente apos revisao: `appController.js` ainda monta muitos blocos de handlers e dependencias transversais; proximo corte deve reduzir a composicao manual ou separar blocos de estado por dominio antes de criar novas acoes ali.
 - pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; `App.jsx` ja delega a composicao detalhada para `appShellBuilder.js`, mas ainda vale reavaliar se `AppViewport` e `AppShellContent` podem receber blocos por dominio.
 

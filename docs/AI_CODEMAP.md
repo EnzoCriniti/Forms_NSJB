@@ -147,6 +147,12 @@ Mapa curto das areas mais mexidas por agentes.
   Hook dos dados derivados do controller do App, delegando a `buildAppShellDerivedState`.
 - `frontend/src/lib/appControllerViewModel.js`
   Montagem final do `shellApp` e das props entregues ao `AppViewport`, a partir do controller do App.
+- `frontend/src/lib/appControllerLoaders.js`
+  Montagem dos carregadores de bootstrap, respostas, escala e status da chave usados pelo controller do App.
+- `frontend/src/lib/appControllerHandlers.js`
+  Montagem dos grupos de handlers de sessao, eventos, formularios/escala e admin usados pelo controller do App.
+- `frontend/src/lib/appControllerLifecycle.js`
+  Efeitos de ciclo de vida do controller do App, incluindo preferencias, bootstrap, rota publica e detalhes.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
