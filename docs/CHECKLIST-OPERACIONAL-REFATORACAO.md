@@ -277,7 +277,7 @@ Checklist operacional:
 - mover a maior parte dos handlers para um controller de tela ou reducer
 - deixar este arquivo apenas com composicao dos paineis e coordenação do fluxo
 - separar handlers de campo, template, escala e submit
-- iniciado neste ciclo: handlers de campo sairam para `frontend/src/screens/createFormFieldHandlers.js`; handlers de template sairam para `frontend/src/screens/createFormTemplateHandlers.js`; submit saiu para `frontend/src/screens/createFormSubmitHandlers.js`.
+- iniciado neste ciclo: handlers de campo sairam para `frontend/src/screens/createFormFieldHandlers.js`; handlers de escala sairam para `frontend/src/screens/createFormScaleHandlers.js`; handlers de setup sairam para `frontend/src/screens/createFormSetupHandlers.js`; handlers de template sairam para `frontend/src/screens/createFormTemplateHandlers.js`; submit saiu para `frontend/src/screens/createFormSubmitHandlers.js`.
 - reduzir o numero de callbacks inline passados para `FieldEditorPanel`
 - evitar que a tela decida regra de normalizacao de campo, deixando isso para `createFormDomain.js`
 

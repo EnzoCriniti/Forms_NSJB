@@ -318,6 +318,10 @@ Mapa curto das areas mais mexidas por agentes.
   Payload intermediario, validacao e merge do salvamento de campos na criacao de formulario.
 - `frontend/src/screens/createFormFieldHandlers.js`
   Handlers do editor de campos da criacao de formulario: modo estrutural, rascunho de campo, grade, catalogo e salvamento local do campo.
+- `frontend/src/screens/createFormScaleHandlers.js`
+  Handlers do rascunho de escala na criacao de formulario: secoes, catalogo, modo e limite.
+- `frontend/src/screens/createFormSetupHandlers.js`
+  Handlers simples do setup da criacao de formulario: formato, titulo, labels, preview e modal de preset.
 - `frontend/src/screens/createFormTemplateHandlers.js`
   Handlers de aplicacao, limpeza e salvamento de templates da criacao de formulario.
 - `frontend/src/screens/createFormSubmitHandlers.js`

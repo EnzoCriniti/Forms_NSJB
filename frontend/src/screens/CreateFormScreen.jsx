@@ -21,27 +21,19 @@ import {
   SCALE_PRESETS,
   buildFieldDraftDefaults,
 } from "./createFormFieldDraft";
-import {
-  appendScaleSection,
-  buildScaleCatalogPatch,
-  buildScaleModePatch,
-  createDefaultScaleSections,
-  updateScaleSection,
-} from "./createFormScaleDraft";
-import {
-  moveItem,
-  removeListItemAtIndex,
-} from "./createFormListHelpers";
+import { createDefaultScaleSections } from "./createFormScaleDraft";
+import { moveItem } from "./createFormListHelpers";
 import {
   addTotalLayoutField,
   createDefaultResultsConfig,
 } from "./createFormResultsConfig";
 import {
-  buildCreateFormFormatSelectionState,
   buildCreateFormInitialState,
 } from "./createFormState";
 import { buildCreateFormDerivedState } from "./createFormDerivedState";
 import { buildCreateFormFieldHandlers } from "./createFormFieldHandlers";
+import { buildCreateFormScaleHandlers } from "./createFormScaleHandlers";
+import { buildCreateFormSetupHandlers } from "./createFormSetupHandlers";
 import { buildCreateFormTemplateHandlers } from "./createFormTemplateHandlers";
 import { buildCreateFormSubmitHandlers } from "./createFormSubmitHandlers";
 
@@ -209,41 +201,45 @@ export const CreateFormScreen = ({
     }));
   };
 
-  const togLabel = id => setSelLabels(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
-  const updateScale = (index, patch) => setScaleDraft(updateScaleSection(scaleDraft, index, patch));
-  const addScale = () => setScaleDraft(appendScaleSection(scaleDraft));
-  const togglePreview = () => setShowPreview(prev => !prev);
-  const openPresetModal = () => setPresetModal(true);
-  const closePresetModal = () => {
-    setPresetModal(false);
-    setPresetName("");
-  };
-  const handlePresetNameChange = event => setPresetName(event.target.value);
-  const handleTitleChange = event => {
-    if (shouldPresetTitle) return;
-    setTitle(event.target.value);
-  };
-  const selectFormat = nextFormat => {
-    setPreset(null);
-    const nextState = buildCreateFormFormatSelectionState(nextFormat);
-    setFormat(nextState.format);
-    setFormMode(nextState.formMode);
-    setFields(nextState.fields);
-    if (nextState.resultsConfig) setResultsConfig(nextState.resultsConfig);
-    if (nextState.scaleDraft) setScaleDraft(nextState.scaleDraft);
-    if (nextState.scaleLimit !== undefined) setScaleLimit(nextState.scaleLimit);
-  };
-  const continueSetup = () => setSetupStep("editor");
+  const {
+    addScale,
+    applyScaleCatalog,
+    removeScaleSection,
+    setScaleMode,
+    updateScale,
+    updateScaleLimit,
+  } = buildCreateFormScaleHandlers({
+    scaleDraft,
+    setScaleDraft,
+    setScaleLimit,
+    activeScaleTaskCatalog,
+  });
+  const {
+    closePresetModal,
+    continueSetup,
+    handlePresetNameChange,
+    handleTitleChange,
+    openPresetModal,
+    selectFormat,
+    togLabel,
+    togglePreview,
+  } = buildCreateFormSetupHandlers({
+    shouldPresetTitle,
+    setTitle,
+    setPreset,
+    setFormat,
+    setFormMode,
+    setFields,
+    setResultsConfig,
+    setScaleDraft,
+    setScaleLimit,
+    setSetupStep,
+    setShowPreview,
+    setPresetModal,
+    setPresetName,
+    setSelLabels,
+  });
 
-  const setScaleMode = (index, mode) => {
-    updateScale(index, buildScaleModePatch(mode));
-  };
-
-  const applyScaleCatalog = (index, catalogId) => {
-    updateScale(index, buildScaleCatalogPatch(catalogId, activeScaleTaskCatalog));
-  };
-  const updateScaleLimit = value => setScaleLimit(value);
-  const removeScaleSection = index => setScaleDraft(removeListItemAtIndex(scaleDraft, index));
   const { applyTemplate, clearTemplate, saveAsTemplate } = buildCreateFormTemplateHandlers({
     presets,
     presetName,

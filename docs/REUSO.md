@@ -64,8 +64,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Editor principal de formulario, com modos `nucleo` e `geral`, campos da biblioteca, presets e configuracoes de resultados. Importa diretamente os modulos `createForm*.js` especificos.
 - `frontend/src/screens/createFormDomain.js`
   Barramento historico das regras puras da criacao de formulario usadas pela tela e pelos testes unitarios. Para novas alteracoes, prefira o modulo especifico: defaults, member bindings, templates, state, mode transition, derived state, scale draft, list helpers, results config, field draft, field save ou payload.
-- `frontend/src/screens/createFormFieldHandlers.js`, `createFormTemplateHandlers.js`, `createFormSubmitHandlers.js`
-  Handlers extraidos da tela de criacao para campo, template e submit; use antes de recolocar fluxo dentro de `CreateFormScreen.jsx`.
+- `frontend/src/screens/createFormFieldHandlers.js`, `createFormScaleHandlers.js`, `createFormSetupHandlers.js`, `createFormTemplateHandlers.js`, `createFormSubmitHandlers.js`
+  Handlers extraidos da tela de criacao para campo, escala, setup, template e submit; use antes de recolocar fluxo dentro de `CreateFormScreen.jsx`.
 - `frontend/src/lib/forms.js`
   Helpers de modo estrutural, base central, origem de selecao e validacao ligada ao formulario.
 - `frontend/src/lib/gridDefaults.js`
