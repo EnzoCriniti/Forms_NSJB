@@ -582,7 +582,7 @@ Checklist operacional:
 - iniciado: selecao/renderizacao dos paineis por aba saiu para `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
 - iniciado: props entregues a `AdminSettingsTabPanel.jsx` passaram a ser agrupadas por dominio (`access`, `members`, `catalog`, `organization`, `security`, `messaging`, `audit`, `shared`)
 - iniciado: estado local, tabs, submits, cancelamentos e confirmacao de exclusao sairam para `frontend/src/features/admin/adminSettingsController.js`
-- pendente apos revisao: `AdminSettingsTabPanel.jsx` ainda centraliza a decisao de todas as abas; proximo corte deve usar adapters por aba apenas quando houver ganho claro.
+- iniciado neste ciclo: adapters por aba da central administrativa sairam para `frontend/src/features/admin/adminSettingsTabAdapters.jsx`; `AdminSettingsTabPanel.jsx` ficou como seletor fino.
 - pendente apos revisao: `adminSettingsController.js` ainda concentra drafts de usuarios, classificacoes, catalogos, bases externas e seguranca; separar apenas quando houver ganho claro por dominio.
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
 - separar as responsabilidades de usuarios, socios, bases externas, catalogo, templates, mensagens, seguranca e auditoria

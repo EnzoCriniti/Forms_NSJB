@@ -15,7 +15,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/AdminSettingsContent.jsx`
   Composicao visual da central administrativa: abas, paineis e modal de exclusao.
 - `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
-  Resolve qual painel administrativo renderizar para a aba ativa, separando a selecao de abas do shell visual.
+  Resolve qual adapter administrativo renderizar para a aba ativa, separando a selecao de abas do shell visual.
+- `frontend/src/features/admin/adminSettingsTabAdapters.jsx`
+  Adapters visuais por aba da central administrativa, mapeando blocos de props para cada painel de usuarios, bases, catalogo, organizacao, mensagens, seguranca e auditoria.
 - `frontend/src/features/admin/adminSettingsDefaults.js`
   Defaults da central administrativa: drafts vazios de formularios internos e tabs por perfil.
 - `frontend/src/features/admin/adminSettingsPayloads.js`
