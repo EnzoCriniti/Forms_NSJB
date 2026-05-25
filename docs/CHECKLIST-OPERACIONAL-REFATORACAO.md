@@ -285,6 +285,7 @@ Checklist operacional:
 - deixar este arquivo apenas com composicao dos paineis e coordenação do fluxo
 - separar handlers de campo, template, escala e submit
 - iniciado neste ciclo: handlers de campo sairam para `frontend/src/screens/createFormFieldHandlers.js`; handlers de escala sairam para `frontend/src/screens/createFormScaleHandlers.js`; handlers de setup sairam para `frontend/src/screens/createFormSetupHandlers.js`; handlers de template sairam para `frontend/src/screens/createFormTemplateHandlers.js`; submit saiu para `frontend/src/screens/createFormSubmitHandlers.js`.
+- iniciado neste ciclo: composicao de lista/editor de campos e configuracao de resultados de presenca saiu para `frontend/src/screens/CreateFormPresenceSection.jsx`.
 - reduzir o numero de callbacks inline passados para `FieldEditorPanel`
 - evitar que a tela decida regra de normalizacao de campo, deixando isso para `createFormDomain.js`
 

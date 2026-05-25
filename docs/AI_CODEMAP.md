@@ -304,6 +304,8 @@ Mapa curto das areas mais mexidas por agentes.
   Formularios de presenca agora tem modo estrutural `nucleo` ou `geral`, salvo em `resultsConfig.formMode`.
   No modo `nucleo`, o campo principal da base central de socios entra como base obrigatoria; no modo `geral`, essa base central fica bloqueada.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
+- `frontend/src/screens/CreateFormPresenceSection.jsx`
+  Adaptador da secao de presenca do editor, montando lista/editor de campos e configuracao de resultados fora de `CreateFormScreen.jsx`.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade, mas a tela principal importa os modulos especificos diretamente.
 - `frontend/src/screens/createFormDefaults.js`

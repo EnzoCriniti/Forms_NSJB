@@ -8,17 +8,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, Btn } from "../components/ui";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { FormBasicsPanel, FormContextPanel, FormHeaderPanel, FormModePanel, FormTypeSetupPanel } from "../features/forms/createFormPanels/setupPanels";
-import { FieldEditorPanel, PresenceFieldsPanel } from "../features/forms/createFormPanels/fieldPanels";
-import { FormFooterPanel, FormPreviewPanel, ResultsConfigPanel, ScaleEditorPanel } from "../features/forms/createFormPanels/finalPanels";
-import { FORM_MODES, getPeopleBaseFieldRole, isMembersSelectionField, summarizeFieldValidation } from "../lib/forms";
+import { FormFooterPanel, FormPreviewPanel, ScaleEditorPanel } from "../features/forms/createFormPanels/finalPanels";
+import { FORM_MODES } from "../lib/forms";
+import { CreateFormPresenceSection } from "./CreateFormPresenceSection";
 import {
-  FIELD_TYPES,
   FORM_MODE_OPTIONS,
   buildPresetTitle,
   createDefaultPresenceFields,
 } from "./createFormDefaults";
 import {
-  SCALE_PRESETS,
   buildFieldDraftDefaults,
 } from "./createFormFieldDraft";
 import { createDefaultScaleSections } from "./createFormScaleDraft";
@@ -402,76 +400,57 @@ export const CreateFormScreen = ({
       )}
 
       {format === "presenca" && (
-        <>
-          <PresenceFieldsPanel
-            fields={fields}
-            FIELD_TYPES={FIELD_TYPES}
-            formMode={formMode}
-            isMembersSelectionField={isMembersSelectionField}
-            getPeopleBaseFieldRole={getPeopleBaseFieldRole}
-            summarizeFieldValidation={summarizeFieldValidation}
-            externalBaseMap={externalBaseMap}
-            onStartEditField={startEditField}
-            onToggleFieldShow={handleToggleFieldShow}
-            onRemoveField={handleRemoveField}
-            onOpenNewFieldDraft={openNewFieldDraft}
-            addOpen={addOpen}
-            fieldEditor={(
-              <FieldEditorPanel
-                addOpen={addOpen}
-                inp={inp}
-                inpSm={inpSm}
-                nType={nType}
-                nFieldMode={nFieldMode}
-                nCatalogId={nCatalogId}
-                nLabel={nLabel}
-                nRequired={nRequired}
-                nValidation={nValidation}
-                nGridRows={nGridRows}
-                nGridCols={nGridCols}
-                formMode={formMode}
-                filteredFieldCatalog={filteredFieldCatalog}
-                filteredFieldTypes={filteredFieldTypes}
-                currentFieldSourceLabel={currentFieldSourceLabel}
-                activeSelectionSource={activeSelectionSource}
-                externalBaseMap={externalBaseMap}
-                hasPrimaryLinkedField={hasPrimaryLinkedField}
-                fieldLabel={fieldLabel}
-                people={people}
-                onSetFieldMode={setFieldMode}
-                onApplyFieldCatalog={applyFieldCatalog}
-                onSetNType={setFieldType}
-                onSetNLabel={setNLabel}
-                onSetNRequired={setNRequired}
-                onSetNValidation={setNValidation}
-                onUpdateGridRow={updateGridRow}
-                onRemoveGridRow={removeGridRow}
-                onAddGridRow={addGridRow}
-                onUpdateGridCol={updateGridCol}
-                onRemoveGridCol={removeGridCol}
-                onAddGridCol={addGridCol}
-                onApplyScalePreset={applyScalePreset}
-                scalePresets={SCALE_PRESETS}
-                onAddField={addField}
-                onOpenNewFieldDraft={openNewFieldDraft}
-                onResetFieldDraft={resetFieldDraft}
-                isFieldSaveDisabled={isFieldSaveDisabled}
-                isEditingField={Boolean(editingFieldId)}
-              />
-            )}
-          />
-
-          <ResultsConfigPanel
-            resultsConfig={resultsConfig}
-            linkedPeopleField={linkedPeopleField}
-            totalizableFields={totalizableFields}
-            availableTotals={availableTotals}
-            FIELD_TYPES={FIELD_TYPES}
-            onChangeResultsConfig={setResultsConfig}
-            onMoveTotalLayout={handleMoveTotalLayout}
-            onAddTotalField={handleAddTotalField}
-          />
-        </>
+        <CreateFormPresenceSection
+          activeSelectionSource={activeSelectionSource}
+          addField={addField}
+          addGridCol={addGridCol}
+          addGridRow={addGridRow}
+          addOpen={addOpen}
+          applyFieldCatalog={applyFieldCatalog}
+          applyScalePreset={applyScalePreset}
+          availableTotals={availableTotals}
+          currentFieldSourceLabel={currentFieldSourceLabel}
+          externalBaseMap={externalBaseMap}
+          fieldLabel={fieldLabel}
+          fields={fields}
+          filteredFieldCatalog={filteredFieldCatalog}
+          filteredFieldTypes={filteredFieldTypes}
+          formMode={formMode}
+          handleAddTotalField={handleAddTotalField}
+          handleMoveTotalLayout={handleMoveTotalLayout}
+          handleRemoveField={handleRemoveField}
+          handleToggleFieldShow={handleToggleFieldShow}
+          hasPrimaryLinkedField={hasPrimaryLinkedField}
+          inp={inp}
+          inpSm={inpSm}
+          isEditingField={Boolean(editingFieldId)}
+          isFieldSaveDisabled={isFieldSaveDisabled}
+          linkedPeopleField={linkedPeopleField}
+          nCatalogId={nCatalogId}
+          nFieldMode={nFieldMode}
+          nGridCols={nGridCols}
+          nGridRows={nGridRows}
+          nLabel={nLabel}
+          nRequired={nRequired}
+          nType={nType}
+          nValidation={nValidation}
+          openNewFieldDraft={openNewFieldDraft}
+          people={people}
+          removeGridCol={removeGridCol}
+          removeGridRow={removeGridRow}
+          resetFieldDraft={resetFieldDraft}
+          resultsConfig={resultsConfig}
+          setFieldMode={setFieldMode}
+          setFieldType={setFieldType}
+          setNLabel={setNLabel}
+          setNRequired={setNRequired}
+          setNValidation={setNValidation}
+          setResultsConfig={setResultsConfig}
+          startEditField={startEditField}
+          totalizableFields={totalizableFields}
+          updateGridCol={updateGridCol}
+          updateGridRow={updateGridRow}
+        />
       )}
 
       <FormFooterPanel
