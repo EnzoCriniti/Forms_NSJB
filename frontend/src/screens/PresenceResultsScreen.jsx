@@ -7,7 +7,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { COLORS, Icon } from "../components/ui";
 import { downloadCsv } from "../lib/downloadCsv";
 import { getExpectedResponses, getFieldValue, getResultsConfig, getVisibleFields, hasLinkedPeopleField, isPrimaryPeopleBaseField } from "../lib/forms";
-import { PresenceResultsPanel } from "./resultsPanels";
+import { PresenceResultsPanel } from "./PresenceResultsPanel";
 import {
   buildPresenceCsv,
   formatResultFieldValue,

@@ -398,8 +398,12 @@ Mapa curto das areas mais mexidas por agentes.
   Roteador fino da tela de resultados. Escolhe entre resultados de presenca e escala.
 - `frontend/src/screens/PresenceResultsScreen.jsx`
   Controller da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling. Consome diretamente `resultsPresenceDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
+- `frontend/src/screens/PresenceResultsPanel.jsx`
+  Painel visual da planilha de presenca, compondo topo, feedback, totalizacao, toolbar e tabela.
 - `frontend/src/screens/EscalaResultsScreen.jsx`
   Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao. Consome diretamente `resultsEscalaDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
+- `frontend/src/screens/EscalaResultsPanel.jsx`
+  Painel visual da tela de escala, compondo overview, lista de secoes, modal de inscricao e confirmacao de remocao.
 - `frontend/src/screens/EscalaSectionsPanel.jsx`
   Lista visual de secoes e vagas da escala de resultados, extraida de `resultsPanels.jsx`.
 - `frontend/src/screens/EscalaSignupModal.jsx`
@@ -409,7 +413,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/resultsPanels.jsx`
-  Painel compartilhado da planilha de presenca e composicao reutilizavel da escala, delegando blocos visuais para paineis menores.
+  Agregador historico dos paineis visuais de resultados. Mantem reexports de `PresenceResultsPanel.jsx` e `EscalaResultsPanel.jsx`.
 - `frontend/src/screens/PresenceResultsToolbar.jsx`
   Toolbar de filtros, zoom e exportacao da planilha de presenca, extraida de `resultsPanels.jsx`.
 - `frontend/src/screens/PresenceTotalsPanel.jsx`

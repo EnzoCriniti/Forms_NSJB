@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { downloadCsv } from "../lib/downloadCsv";
-import { EscalaResultsPanel } from "./resultsPanels";
+import { EscalaResultsPanel } from "./EscalaResultsPanel";
 import { buildEscalaCsv } from "./resultsCsv";
 import {
   addEscalaSlot,
