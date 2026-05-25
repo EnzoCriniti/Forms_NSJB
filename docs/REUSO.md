@@ -21,7 +21,9 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `frontend/src/components/FormListCard.jsx`
   Card reutilizavel da listagem de formularios com acoes e badges.
 - `frontend/src/AppShellContent.jsx`
-  Shell autenticado que renderiza header global e telas internas apos o login.
+  Shell autenticado que renderiza header global e container principal apos o login.
+- `frontend/src/AppShellRoutes.jsx`
+  Roteamento visual das telas internas do shell autenticado; use antes de recolocar switches de `screen` em `AppShellContent.jsx`.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do app para login, publicos, loading e shell autenticado.
 - `frontend/src/lib/appBootstrap.js`

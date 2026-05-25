@@ -133,6 +133,7 @@ Checklist operacional:
 - iniciado: adapters dos fluxos internos de resultados e resposta sairam para `frontend/src/AppShellFormFlows.jsx`
 - iniciado: adapters dos fluxos internos de mensagens de evento sairam para `frontend/src/AppShellEventMessageFlows.jsx`
 - iniciado: adapters das telas principais sairam para `frontend/src/AppShellMainFlows.jsx`
+- iniciado neste ciclo: roteamento visual do shell saiu para `frontend/src/AppShellRoutes.jsx`, deixando `AppShellContent.jsx` focado no header e no container principal.
 
 Teste a reforcar:
 - `tests/ui/appDashboardFlow.test.jsx`
