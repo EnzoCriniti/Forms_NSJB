@@ -12,48 +12,44 @@ import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 
-export const DashboardFlow = ({
-  currentUser,
-  fieldCatalog,
-  forms,
-  labels,
-  onNavigate,
-  people,
-  presets,
-  scaleTaskCatalog,
-}) => (
-  <DashboardScreen
-    onNavigate={onNavigate}
-    forms={forms}
-    labels={labels}
-    people={people}
-    presets={presets}
-    fieldCatalog={fieldCatalog}
-    scaleTaskCatalog={scaleTaskCatalog}
-    user={currentUser}
-  />
-);
+export const DashboardFlow = ({ app }) => {
+  const { currentUser, fieldCatalog, forms, labels, onNavigate, people, presets, scaleTaskCatalog } = app;
 
-export const EventsFlow = ({
-  app,
-  activeEventId,
-  currentUser,
-  events,
-  forms,
-  labels,
-  onArchiveForm,
-  onDeleteEvent,
-  onDeleteForm,
-  onDuplicateForm,
-  onCreateFormInEvent,
-  onNavigate,
-  onPublishEvent,
-  onSaveEvent,
-  onTogglePinnedEvent,
-  onTogglePinnedForm,
-  pinnedEventIds,
-  pinnedFormIds,
-}) => {
+  return (
+    <DashboardScreen
+      onNavigate={onNavigate}
+      forms={forms}
+      labels={labels}
+      people={people}
+      presets={presets}
+      fieldCatalog={fieldCatalog}
+      scaleTaskCatalog={scaleTaskCatalog}
+      user={currentUser}
+    />
+  );
+};
+
+export const EventsFlow = ({ app }) => {
+  const {
+    activeEventId,
+    currentUser,
+    events,
+    forms,
+    labels,
+    handleArchiveForm,
+    handleCreateFormInEvent,
+    handleDeleteEvent,
+    handleDeleteForm,
+    handleDuplicateForm,
+    handlePublishEvent,
+    handleSaveEvent,
+    handleTogglePinnedEvent,
+    handleTogglePinnedForm,
+    onNavigate,
+    pinnedEventIds,
+    pinnedFormIds,
+  } = app;
+
   if (!currentUser) return null;
 
   return (
@@ -65,15 +61,15 @@ export const EventsFlow = ({
       pinnedEventIds={pinnedEventIds}
       pinnedFormIds={pinnedFormIds}
       initialSelectedEventId={activeEventId}
-      onSaveEvent={onSaveEvent}
-      onPublishEvent={onPublishEvent}
-      onDeleteEvent={onDeleteEvent}
-      onTogglePinnedEvent={onTogglePinnedEvent}
-      onCreateFormInEvent={onCreateFormInEvent}
-      onDuplicateForm={onDuplicateForm}
-      onArchiveForm={onArchiveForm}
-      onTogglePinnedForm={onTogglePinnedForm}
-      onDeleteForm={onDeleteForm}
+      onSaveEvent={handleSaveEvent}
+      onPublishEvent={handlePublishEvent}
+      onDeleteEvent={handleDeleteEvent}
+      onTogglePinnedEvent={handleTogglePinnedEvent}
+      onCreateFormInEvent={handleCreateFormInEvent}
+      onDuplicateForm={handleDuplicateForm}
+      onArchiveForm={handleArchiveForm}
+      onTogglePinnedForm={handleTogglePinnedForm}
+      onDeleteForm={handleDeleteForm}
       onCreateEventMessage={event => app.openEventMessageEditor(event, null)}
       onOpenEventMessage={(event, message) => app.openEventMessageDetail(event, message)}
       onNavigate={onNavigate}
@@ -81,102 +77,112 @@ export const EventsFlow = ({
   );
 };
 
-export const FormListFlow = ({
-  currentUser,
-  formDeleteKeyConfigured,
-  forms,
-  labels,
-  onArchiveForm,
-  onDeleteForm,
-  onDuplicateForm,
-  onNavigate,
-  onTogglePinnedForm,
-  pinnedFormIds,
-}) => (
-  <FormListScreen
-    onNavigate={onNavigate}
-    onDuplicateForm={onDuplicateForm}
-    onArchiveForm={onArchiveForm}
-    onTogglePinnedForm={onTogglePinnedForm}
-    pinnedFormIds={pinnedFormIds}
-    user={currentUser}
-    labels={labels}
-    forms={forms}
-    onDeleteForm={onDeleteForm}
-    formDeleteKeyConfigured={formDeleteKeyConfigured}
-  />
-);
+export const FormListFlow = ({ app }) => {
+  const {
+    currentUser,
+    formDeleteKeyConfigured,
+    forms,
+    labels,
+    handleArchiveForm,
+    handleDeleteForm,
+    handleDuplicateForm,
+    handleTogglePinnedForm,
+    onNavigate,
+    pinnedFormIds,
+  } = app;
 
-export const CreateFormFlow = ({
-  activeEvent,
-  app,
-  draftForm,
-  editingForm,
-  externalBases,
-  fieldCatalog,
-  labels,
-  membersConfig,
-  onNavigate,
-  onSavePreset,
-  people,
-  presets,
-  scaleTaskCatalog,
-}) => (
-  <CreateFormScreen
-    onNavigate={onNavigate}
-    people={people}
-    membersConfig={membersConfig}
-    externalBases={externalBases}
-    labels={labels}
-    presets={presets}
-    fieldCatalog={fieldCatalog}
-    scaleTaskCatalog={scaleTaskCatalog}
-    onSavePreset={onSavePreset}
-    onSaveForm={app.handleSaveForm}
-    form={editingForm}
-    event={activeEvent}
-    isDuplicateMode={Boolean(draftForm)}
-  />
-);
+  return (
+    <FormListScreen
+      onNavigate={onNavigate}
+      onDuplicateForm={handleDuplicateForm}
+      onArchiveForm={handleArchiveForm}
+      onTogglePinnedForm={handleTogglePinnedForm}
+      pinnedFormIds={pinnedFormIds}
+      user={currentUser}
+      labels={labels}
+      forms={forms}
+      onDeleteForm={handleDeleteForm}
+      formDeleteKeyConfigured={formDeleteKeyConfigured}
+    />
+  );
+};
 
-export const SettingsFlow = ({
-  currentUser,
-  externalBases,
-  fieldCatalog,
-  formDeleteKeyConfigured,
-  labels,
-  membersConfig,
-  messageTemplates,
-  messagingConfig,
-  onDeleteExternalBase,
-  onDeleteFieldCatalogItem,
-  onDeleteLabel,
-  onDeleteMessageTemplate,
-  onDeletePersonPreset,
-  onDeletePreset,
-  onDeleteScaleTaskCatalogItem,
-  onDeleteUser,
-  onNavigate,
-  onSaveExternalBase,
-  onSaveFieldCatalogItem,
-  onSaveFormDeleteKey,
-  onSaveLabel,
-  onSaveMembersConfig,
-  onSaveMessageTemplate,
-  onSaveMessagingConfig,
-  onSavePeople,
-  onSavePersonPreset,
-  onSavePreset,
-  onSaveScaleTaskCatalogItem,
-  onSaveUser,
-  onSyncExternalBase,
-  onSyncMembersConfig,
-  people,
-  personPresets,
-  presets,
-  scaleTaskCatalog,
-  users,
-}) => {
+export const CreateFormFlow = ({ app }) => {
+  const {
+    activeEvent,
+    draftForm,
+    editingForm,
+    externalBases,
+    fieldCatalog,
+    labels,
+    membersConfig,
+    onNavigate,
+    handleSaveForm,
+    handleSavePreset,
+    people,
+    presets,
+    scaleTaskCatalog,
+  } = app;
+
+  return (
+    <CreateFormScreen
+      onNavigate={onNavigate}
+      people={people}
+      membersConfig={membersConfig}
+      externalBases={externalBases}
+      labels={labels}
+      presets={presets}
+      fieldCatalog={fieldCatalog}
+      scaleTaskCatalog={scaleTaskCatalog}
+      onSavePreset={handleSavePreset}
+      onSaveForm={handleSaveForm}
+      form={editingForm}
+      event={activeEvent}
+      isDuplicateMode={Boolean(draftForm)}
+    />
+  );
+};
+
+export const SettingsFlow = ({ app }) => {
+  const {
+    currentUser,
+    externalBases,
+    fieldCatalog,
+    formDeleteKeyConfigured,
+    labels,
+    membersConfig,
+    messageTemplates,
+    messagingConfig,
+    handleDeleteExternalBase,
+    handleDeleteFieldCatalogItem,
+    handleDeleteLabel,
+    handleDeleteMessageTemplate,
+    handleDeletePersonPreset,
+    handleDeletePreset,
+    handleDeleteScaleTaskCatalogItem,
+    handleDeleteUser,
+    onNavigate,
+    handleSaveExternalBase,
+    handleSaveFieldCatalogItem,
+    handleSaveFormDeleteKey,
+    handleSaveLabel,
+    handleSaveMembersConfig,
+    handleSaveMessageTemplate,
+    handleSaveMessagingConfig,
+    handleSavePeople,
+    handleSavePersonPreset,
+    handleSavePreset,
+    handleSaveScaleTaskCatalogItem,
+    handleSaveUser,
+    handleSyncExternalBase,
+    handleSyncMembersConfig,
+    people,
+    personPresets,
+    presets,
+    scaleTaskCatalog,
+    users,
+  } = app;
+
   if (!canCreateForms(currentUser)) return null;
 
   return (
@@ -191,32 +197,32 @@ export const SettingsFlow = ({
       externalBases={externalBases}
       people={people}
       currentUser={currentUser}
-      onSaveUser={onSaveUser}
-      onDeleteUser={onDeleteUser}
-      onSaveLabel={onSaveLabel}
-      onDeleteLabel={onDeleteLabel}
-      onSavePreset={onSavePreset}
-      onDeletePreset={onDeletePreset}
-      onSaveMembersConfig={onSaveMembersConfig}
-      onSyncMembersConfig={onSyncMembersConfig}
-      onSaveExternalBase={onSaveExternalBase}
-      onDeleteExternalBase={onDeleteExternalBase}
-      onSyncExternalBase={onSyncExternalBase}
-      onSavePeople={onSavePeople}
-      onSaveFieldCatalogItem={onSaveFieldCatalogItem}
-      onDeleteFieldCatalogItem={onDeleteFieldCatalogItem}
-      onSaveScaleTaskCatalogItem={onSaveScaleTaskCatalogItem}
-      onDeleteScaleTaskCatalogItem={onDeleteScaleTaskCatalogItem}
+      onSaveUser={handleSaveUser}
+      onDeleteUser={handleDeleteUser}
+      onSaveLabel={handleSaveLabel}
+      onDeleteLabel={handleDeleteLabel}
+      onSavePreset={handleSavePreset}
+      onDeletePreset={handleDeletePreset}
+      onSaveMembersConfig={handleSaveMembersConfig}
+      onSyncMembersConfig={handleSyncMembersConfig}
+      onSaveExternalBase={handleSaveExternalBase}
+      onDeleteExternalBase={handleDeleteExternalBase}
+      onSyncExternalBase={handleSyncExternalBase}
+      onSavePeople={handleSavePeople}
+      onSaveFieldCatalogItem={handleSaveFieldCatalogItem}
+      onDeleteFieldCatalogItem={handleDeleteFieldCatalogItem}
+      onSaveScaleTaskCatalogItem={handleSaveScaleTaskCatalogItem}
+      onDeleteScaleTaskCatalogItem={handleDeleteScaleTaskCatalogItem}
       formDeleteKeyConfigured={formDeleteKeyConfigured}
-      onSaveFormDeleteKey={onSaveFormDeleteKey}
+      onSaveFormDeleteKey={handleSaveFormDeleteKey}
       messageTemplates={messageTemplates}
       personPresets={personPresets}
       messagingConfig={messagingConfig}
-      onSaveMessagingConfig={onSaveMessagingConfig}
-      onSaveMessageTemplate={onSaveMessageTemplate}
-      onDeleteMessageTemplate={onDeleteMessageTemplate}
-      onSavePersonPreset={onSavePersonPreset}
-      onDeletePersonPreset={onDeletePersonPreset}
+      onSaveMessagingConfig={handleSaveMessagingConfig}
+      onSaveMessageTemplate={handleSaveMessageTemplate}
+      onDeleteMessageTemplate={handleDeleteMessageTemplate}
+      onSavePersonPreset={handleSavePersonPreset}
+      onDeletePersonPreset={handleDeletePersonPreset}
     />
   );
 };

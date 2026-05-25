@@ -11,15 +11,9 @@ import { ResultsScreen } from "./screens/ResultsScreen";
 import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 
-export const InternalResultsFlow = ({
-  app,
-  activeForm,
-  currentUser,
-  labels,
-  people,
-  onNavigate,
-  onSaveEscala,
-}) => {
+export const InternalResultsFlow = ({ app }) => {
+  const { activeForm, currentUser, labels, people, onNavigate, handleSaveEscala } = app;
+
   if (!activeForm) return null;
 
   return (
@@ -31,20 +25,14 @@ export const InternalResultsFlow = ({
       people={people}
       user={currentUser}
       labels={labels}
-      onSaveSections={sections => onSaveEscala(activeForm.id, sections)}
+      onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
     />
   );
 };
 
-export const InternalRespondFlow = ({
-  app,
-  activeForm,
-  externalBases,
-  people,
-  onClaimEscalaSlot,
-  onNavigate,
-  onSaveEscala,
-}) => {
+export const InternalRespondFlow = ({ app }) => {
+  const { activeForm, externalBases, people, onNavigate, handleClaimEscalaSlot, handleSaveEscala } = app;
+
   if (!activeForm) return null;
 
   if (activeForm.type === "presenca") {
@@ -69,8 +57,10 @@ export const InternalRespondFlow = ({
         onBack={() => onNavigate("list")}
         people={people}
         sections={selectFormSections(app.escalaByForm, activeForm.id)}
-        onSaveSections={sections => onSaveEscala(activeForm.id, sections)}
-        onClaimSlot={(sectionIndex, slotIndex, person) => onClaimEscalaSlot(activeForm.id, sectionIndex, slotIndex, person)}
+        onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}
+        onClaimSlot={(sectionIndex, slotIndex, person) =>
+          handleClaimEscalaSlot(activeForm.id, sectionIndex, slotIndex, person)
+        }
         variant="internal"
       />
     );

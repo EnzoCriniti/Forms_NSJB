@@ -9,18 +9,19 @@ import { selectEventForms, selectEventMessage } from "./lib/appShellContentSelec
 import { EventMessageDetailScreen } from "./screens/EventMessageDetailScreen";
 import { EventMessageEditorScreen } from "./screens/EventMessageEditorScreen";
 
-export const EventMessageEditorFlow = ({
-  app,
-  activeEvent,
-  activeMessageId,
-  forms,
-  membersConfig,
-  messageTemplates,
-  messagingConfig,
-  people,
-  personPresets,
-  onSaveEventMessage,
-}) => {
+export const EventMessageEditorFlow = ({ app }) => {
+  const {
+    activeEvent,
+    activeMessageId,
+    forms,
+    membersConfig,
+    messageTemplates,
+    messagingConfig,
+    people,
+    personPresets,
+    handleSaveEventMessage,
+  } = app;
+
   if (!activeEvent) return null;
 
   return (
@@ -33,7 +34,7 @@ export const EventMessageEditorFlow = ({
       people={people}
       membersConfig={membersConfig}
       messagingConfig={messagingConfig}
-      onSave={payload => onSaveEventMessage(activeEvent.id, payload)}
+      onSave={payload => handleSaveEventMessage(activeEvent.id, payload)}
       onCancel={saved => {
         if (saved?.id) {
           app.setActiveMessageId(saved.id);
@@ -47,22 +48,18 @@ export const EventMessageEditorFlow = ({
   );
 };
 
-export const EventMessageDetailFlow = ({
-  app,
-  activeEvent,
-  activeMessageId,
-  onMessageDeleted,
-  onMessageUpdated,
-}) => {
+export const EventMessageDetailFlow = ({ app }) => {
+  const { activeEvent, activeMessageId, applyMessageDeletion, applyMessageUpdate } = app;
+
   if (!activeEvent || !activeMessageId) return null;
 
   return (
     <EventMessageDetailScreen
       event={activeEvent}
       message={selectEventMessage(activeEvent, activeMessageId)}
-      onMessageUpdated={onMessageUpdated}
+      onMessageUpdated={applyMessageUpdate}
       onMessageDeleted={id => {
-        onMessageDeleted(id);
+        applyMessageDeletion(id);
         app.setActiveMessageId(null);
         app.setScreen("events");
       }}
