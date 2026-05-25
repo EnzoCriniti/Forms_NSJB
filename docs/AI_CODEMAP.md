@@ -306,7 +306,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/eventsDomain.js`
   Helpers puros da tela de eventos: draft inicial, ordenacao por fixados/data, selecao de formularios visiveis, elegibilidade de mensagens e paginacao.
 - `frontend/src/features/events/components/eventsPanels.jsx`
-  Agregador historico dos componentes compartilhados da area de eventos. Mantem shell do editor e reexports de compatibilidade.
+  Agregador historico dos componentes compartilhados da area de eventos. Mantem reexports de compatibilidade.
+- `frontend/src/features/events/components/eventEditorPanel.jsx`
+  Shell visual do editor de evento, compondo cabecalho e campos do formulario.
 - `frontend/src/features/events/components/eventListPanel.jsx`
   Card e listagem visual de eventos, incluindo botoes administrativos e paginacao.
 - `frontend/src/features/events/components/eventDetailFormsPanel.jsx`
