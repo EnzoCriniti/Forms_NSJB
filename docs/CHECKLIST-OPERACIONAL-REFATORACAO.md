@@ -505,6 +505,7 @@ Checklist operacional:
 - iniciado: cabecalho de detalhe e controles visuais de paginacao sairam para `frontend/src/features/events/components/eventsPanels.jsx`
 - iniciado: listagem, bloco de formularios do detalhe e modal de exclusao foram movidos para `frontend/src/features/events/components/eventsPanels.jsx`
 - iniciado: estado, seletores e acoes assicronas da tela sairam para `frontend/src/screens/eventsScreenController.js`
+- iniciado neste ciclo: ramos visuais de lista, detalhe e edicao sairam de `EventsScreen.jsx` para `frontend/src/screens/EventsScreenViews.jsx`.
 
 Teste a reforcar:
 - `tests/ui/eventsDomain.test.js`

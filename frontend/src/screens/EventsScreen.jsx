@@ -5,9 +5,8 @@
  */
 
 import React from "react";
-import { Btn, FeedbackBanner, ScreenHeader } from "../components/ui";
-import { EventDeleteConfirmModal, EventDetailFormsPanel, EventDetailHeader, EventDetailTabs, EventEditorPanel, EventListPanel, EventMessagesPanel } from "../features/events/components/eventsPanels";
 import { useEventsScreenController } from "./eventsScreenController";
+import { EventDetailView, EventEditView, EventListView } from "./EventsScreenViews";
 
 export const EventsScreen = ({
   events = [],
@@ -79,103 +78,72 @@ export const EventsScreen = ({
 
   if (mode === "edit") {
     return (
-      <div>
-        {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-        <EventEditorPanel
-          draft={draft}
-          onChangeDraft={setDraft}
-          onCancel={cancelEdit}
-          onSave={save}
-          saving={saving}
-          title={draft.id ? "Editar evento" : "Novo evento"}
-        />
-      </div>
+      <EventEditView
+        draft={draft}
+        feedback={feedback}
+        onCancel={cancelEdit}
+        onChangeDraft={setDraft}
+        onSave={save}
+        saving={saving}
+      />
     );
   }
 
   if (mode === "detail" && selectedEvent) {
     return (
-      <div>
-        {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-        <EventDetailHeader
-          event={selectedEvent}
-          canManageEvents={canManageEvents}
-          detailTab={detailTab}
-          messagesEligible={messagesEligible}
-          statusAction={statusAction}
-          onBack={() => setMode("list")}
-          onPublish={onPublishEvent ? publish : null}
-          onClose={close}
-          onEdit={() => editEvent(selectedEvent)}
-          onCreateForm={() => onCreateFormInEvent(selectedEvent)}
-          onCreateMessage={onCreateEventMessage ? () => onCreateEventMessage(selectedEvent) : null}
-        />
-        <EventDetailTabs
-          activeTab={detailTab}
-          onChangeTab={setDetailTab}
-          formsCount={eventForms.length}
-          messagesCount={eventMessages.length}
-          hasMessages={messagesEligible}
-        />
-        {detailTab === "messages" ? (
-          <EventMessagesPanel
-            messages={eventMessages}
-            eligible={messagesEligible}
-            canManage={canManageEvents}
-            onCreate={() => onCreateEventMessage && onCreateEventMessage(selectedEvent)}
-            onOpen={message => onOpenEventMessage && onOpenEventMessage(selectedEvent, message)}
-          />
-        ) : (
-          <EventDetailFormsPanel
-            forms={eventForms}
-            pagination={formsPagination}
-            user={user}
-            labels={labels}
-            pinnedFormSet={pinnedFormSet}
-            canManageEvents={canManageEvents}
-            onNavigate={onNavigate}
-            onDuplicateForm={onDuplicateForm}
-            onTogglePinnedForm={onTogglePinnedForm}
-            onArchiveForm={onArchiveForm}
-            onDeleteForm={onDeleteForm}
-            onPreviousPage={() => setFormsPage(current => Math.max(1, current - 1))}
-            onNextPage={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))}
-          />
-        )}
-      </div>
+      <EventDetailView
+        canManageEvents={canManageEvents}
+        detailTab={detailTab}
+        eventForms={eventForms}
+        eventMessages={eventMessages}
+        feedback={feedback}
+        formsPagination={formsPagination}
+        labels={labels}
+        messagesEligible={messagesEligible}
+        onArchiveForm={onArchiveForm}
+        onBack={() => setMode("list")}
+        onChangeDetailTab={setDetailTab}
+        onClose={close}
+        onCreateForm={() => onCreateFormInEvent(selectedEvent)}
+        onCreateMessage={onCreateEventMessage ? () => onCreateEventMessage(selectedEvent) : null}
+        onDeleteForm={onDeleteForm}
+        onDuplicateForm={onDuplicateForm}
+        onEdit={() => editEvent(selectedEvent)}
+        onNextFormsPage={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))}
+        onNavigate={onNavigate}
+        onOpenMessage={message => onOpenEventMessage && onOpenEventMessage(selectedEvent, message)}
+        onPreviousFormsPage={() => setFormsPage(current => Math.max(1, current - 1))}
+        onPublish={onPublishEvent ? publish : null}
+        onTogglePinnedForm={onTogglePinnedForm}
+        pinnedFormSet={pinnedFormSet}
+        selectedEvent={selectedEvent}
+        statusAction={statusAction}
+        user={user}
+      />
     );
   }
 
   return (
-    <div>
-      {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
-      <ScreenHeader
-        className="settings-top-card"
-        title="Eventos"
-        titleSize={20}
-        actions={canManageEvents ? <Btn icon="plus" onClick={startNew} aria-label="Novo evento" title="Novo evento" /> : null}
-      />
-      <EventListPanel
-        events={sortedEvents}
-        pagination={eventsPagination}
-        pinnedEventSet={pinnedEventSet}
-        canManageEvents={canManageEvents}
-        onOpen={openEvent}
-        onEdit={editEvent}
-        onDelete={setPendingDelete}
-        onTogglePinned={onTogglePinnedEvent}
-        onPreviousPage={() => setEventsPage(current => Math.max(1, current - 1))}
-        onNextPage={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))}
-      />
-      <EventDeleteConfirmModal
-        event={pendingDelete}
-        busy={deleting}
-        onCancel={() => {
-          if (deleting) return;
-          setPendingDelete(null);
-        }}
-        onConfirm={confirmDelete}
-      />
-    </div>
+    <EventListView
+      canManageEvents={canManageEvents}
+      deleting={deleting}
+      eventsPagination={eventsPagination}
+      feedback={feedback}
+      onCancelDelete={() => {
+        if (deleting) return;
+        setPendingDelete(null);
+      }}
+      onConfirmDelete={confirmDelete}
+      onDelete={setPendingDelete}
+      onEdit={editEvent}
+      onNextEventsPage={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))}
+      onOpen={openEvent}
+      onPreviousEventsPage={() => setEventsPage(current => Math.max(1, current - 1))}
+      onStartNew={startNew}
+      onTogglePinnedEvent={onTogglePinnedEvent}
+      pendingDelete={pendingDelete}
+      pinnedEventSet={pinnedEventSet}
+      sortedEvents={sortedEvents}
+    />
   );
 };
