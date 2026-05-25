@@ -394,6 +394,7 @@ Checklist operacional:
 - iniciado: download de CSV saiu para `frontend/src/lib/downloadCsv.js`
 - iniciado neste ciclo: painel de totalizacao e tabela visual da presenca sairam para `frontend/src/screens/PresenceTotalsPanel.jsx` e `frontend/src/screens/PresenceResultsTable.jsx`.
 - iniciado neste ciclo: lista visual de secoes e vagas da escala saiu para `frontend/src/screens/EscalaSectionsPanel.jsx`.
+- iniciado neste ciclo: toolbar de filtros, zoom e exportacao da presenca saiu para `frontend/src/screens/PresenceResultsToolbar.jsx`.
 - reduzir o arquivo para escolher entre dois fluxos e montar os dados já derivados
 - evitar duplicacao entre calculo de totais e exibicao de tabela
 - manter regras de ordenacao e filtro em `resultsDomain.js`

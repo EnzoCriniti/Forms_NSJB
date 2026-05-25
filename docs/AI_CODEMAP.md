@@ -383,9 +383,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/resultsPanels.jsx`
-  Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
-  Mantem a composicao reutilizavel da escala em `EscalaResultsPanel`, delegando lista de secoes para `EscalaSectionsPanel.jsx`.
-  A toolbar da planilha de presenca tambem ficou isolada em `PresenceResultsToolbar`.
+  Painel compartilhado da planilha de presenca e composicao reutilizavel da escala, delegando blocos visuais para paineis menores.
+- `frontend/src/screens/PresenceResultsToolbar.jsx`
+  Toolbar de filtros, zoom e exportacao da planilha de presenca, extraida de `resultsPanels.jsx`.
 - `frontend/src/screens/PresenceTotalsPanel.jsx`
   Painel visual de totalizacao da planilha de presenca, extraido de `resultsPanels.jsx`.
 - `frontend/src/screens/PresenceResultsTable.jsx`
