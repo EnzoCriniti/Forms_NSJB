@@ -49,7 +49,6 @@ import {
 } from "./api";
 
 export const buildAppAdminHandlers = ({
-  applyBootstrapListResult,
   currentUser,
   deleteExternalBase = apiDeleteExternalBase,
   deleteFieldCatalogItem = apiDeleteFieldCatalogItem,
@@ -88,7 +87,12 @@ export const buildAppAdminHandlers = ({
   syncMembersConfig = apiSyncMembersConfig,
   upsertBootstrapListItem,
   upsertNestedBootstrapItem,
-}) => ({
+}) => {
+  const applyBootstrapListResult = (key, result, resultKey = key) => {
+    setBootstrap(prev => replaceBootstrapListFromResult(prev, key, result, resultKey));
+  };
+
+  return {
   handleSaveUser: async user => saveAppUser({ user, currentUser, saveUser, applyBootstrapListResult, sanitizeUser, setSession }),
   handleDeleteUser: async id => {
     await deleteAppUser({ id, currentUser, deleteUser, applyBootstrapListResult, logout });
@@ -152,4 +156,5 @@ export const buildAppAdminHandlers = ({
   applyMessageDeletion: messageId => {
     applyAppMessageDeletion({ messageId, setBootstrap, removeNestedBootstrapItem });
   },
-});
+  };
+};

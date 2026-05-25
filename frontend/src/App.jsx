@@ -194,10 +194,6 @@ export default function App() {
     upsertBootstrapListItem,
   });
 
-  const applyBootstrapListResult = (key, result, resultKey = key) => {
-    setBootstrap(prev => replaceBootstrapListFromResult(prev, key, result, resultKey));
-  };
-
   const formHandlers = buildAppFormHandlers({
     activeEventId,
     buildDuplicateFormDraft,
@@ -225,7 +221,6 @@ export default function App() {
   });
 
   const adminHandlers = buildAppAdminHandlers({
-    applyBootstrapListResult,
     currentUser,
     logout,
     removeBootstrapListItem,
