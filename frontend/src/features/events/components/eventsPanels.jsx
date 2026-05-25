@@ -8,7 +8,9 @@ import React from "react";
 import { COLORS, Btn, ConfirmModal, Icon, ScreenHeader, StatusBadge } from "../../../components/ui";
 import { FormListCard } from "../../../components/FormListCard";
 import { formatDate, formatDateTime } from "../../../lib/forms";
+import { EventEditorFieldsPanel } from "./eventEditorFieldsPanel";
 
+export { EventEditorFieldsPanel } from "./eventEditorFieldsPanel";
 export { EventMessagesPanel } from "./eventMessagesListPanel";
 
 export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, onDelete, onTogglePinned }) => (
@@ -64,38 +66,13 @@ export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, savin
       title={title}
       titleSize={20}
     />
-    <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18 }}>
-      <div style={{ display: "grid", gap: 14 }}>
-        <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 12 }}>
-          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-            Nome do evento
-            <input value={draft.title} onChange={event => onChangeDraft(current => ({ ...current, title: event.target.value }))} placeholder="Ex: Reuniao mensal - Maio" style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
-          </label>
-          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-            Data
-            <input type="date" value={draft.date || ""} onChange={event => onChangeDraft(current => ({ ...current, date: event.target.value }))} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
-          </label>
-        </div>
-        <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-            Abertura
-            <input type="datetime-local" value={draft.opening || ""} onChange={event => onChangeDraft(current => ({ ...current, opening: event.target.value }))} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
-          </label>
-          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-            Fechamento
-            <input type="datetime-local" value={draft.closing || ""} onChange={event => onChangeDraft(current => ({ ...current, closing: event.target.value }))} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text }} />
-          </label>
-        </div>
-        <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-          Descricao
-          <textarea value={draft.description || ""} onChange={event => onChangeDraft(current => ({ ...current, description: event.target.value }))} rows={3} style={{ padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text, resize: "vertical" }} />
-        </label>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-          <Btn v="secondary" onClick={onCancel}>Cancelar</Btn>
-          <Btn icon="save" onClick={onSave} loading={saving} disabled={!draft.title.trim()}>Salvar evento</Btn>
-        </div>
-      </div>
-    </section>
+    <EventEditorFieldsPanel
+      draft={draft}
+      onCancel={onCancel}
+      onChangeDraft={onChangeDraft}
+      onSave={onSave}
+      saving={saving}
+    />
   </div>
 );
 
