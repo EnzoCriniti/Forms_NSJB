@@ -390,6 +390,7 @@ Checklist operacional:
 - extrair o controller de escala para um helper separado
 - iniciado: controller da escala saiu para `frontend/src/screens/EscalaResultsScreen.jsx`
 - iniciado: metricas, nomes e mutacoes puras de slots da escala sairam para `frontend/src/screens/resultsDomain.js`
+- iniciado neste ciclo: fluxo repetido de persistencia da escala foi concentrado em executor local para inscricao, edicao e adicao de vaga.
 - iniciado: download de CSV saiu para `frontend/src/lib/downloadCsv.js`
 - reduzir o arquivo para escolher entre dois fluxos e montar os dados já derivados
 - evitar duplicacao entre calculo de totais e exibicao de tabela

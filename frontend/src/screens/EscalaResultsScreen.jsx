@@ -35,18 +35,26 @@ export const EscalaResultsScreen = ({ people, user, form, sections, onSaveSectio
     setFeedback({ tone: "success", message: successMessage });
   };
 
-  const signup = async () => {
-    if (!signName || !selSlot) return;
-    const next = assignEscalaSlotPerson(sections, selSlot.sectionIndex, selSlot.slotIndex, signName);
-    setBusyAction("signup");
+  const runPersistAction = async ({ busyKey, next, successMessage, afterSuccess }) => {
+    setBusyAction(busyKey);
     try {
-      await persistSections(next, "Vaga preenchida com sucesso.");
-      setShowSignup(false);
+      await persistSections(next, successMessage);
+      afterSuccess?.();
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
     } finally {
       setBusyAction(null);
     }
+  };
+
+  const signup = async () => {
+    if (!signName || !selSlot) return;
+    await runPersistAction({
+      busyKey: "signup",
+      next: assignEscalaSlotPerson(sections, selSlot.sectionIndex, selSlot.slotIndex, signName),
+      successMessage: "Vaga preenchida com sucesso.",
+      afterSuccess: () => setShowSignup(false),
+    });
   };
 
   const confirmRemoval = async () => {
@@ -65,27 +73,17 @@ export const EscalaResultsScreen = ({ people, user, form, sections, onSaveSectio
   };
 
   const updateSlot = async (sectionIndex, slotIndex, patch) => {
-    const next = patchEscalaSlot(sections, sectionIndex, slotIndex, patch);
-    setBusyAction("update");
-    try {
-      await persistSections(next);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
+    await runPersistAction({
+      busyKey: "update",
+      next: patchEscalaSlot(sections, sectionIndex, slotIndex, patch),
+    });
   };
 
   const addSlot = async sectionIndex => {
-    const next = addEscalaSlot(sections, sectionIndex);
-    setBusyAction("add");
-    try {
-      await persistSections(next);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
+    await runPersistAction({
+      busyKey: "add",
+      next: addEscalaSlot(sections, sectionIndex),
+    });
   };
 
   const exportCsv = () => {
