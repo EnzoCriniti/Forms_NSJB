@@ -384,6 +384,10 @@ Mapa curto das areas mais mexidas por agentes.
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
   Tambem concentra a renderizacao reutilizavel da escala em `EscalaResultsPanel`.
   A toolbar da planilha de presenca tambem ficou isolada em `PresenceResultsToolbar`.
+- `frontend/src/screens/PresenceTotalsPanel.jsx`
+  Painel visual de totalizacao da planilha de presenca, extraido de `resultsPanels.jsx`.
+- `frontend/src/screens/PresenceResultsTable.jsx`
+  Tabela visual da planilha de presenca, incluindo cabecalho, linhas e area rolavel.
 - `frontend/src/screens/resultsDomain.js`
   Helpers puros da planilha de resultados: ordenacao de grau, filtros ativos, estatisticas, formatacao e geracao de CSV.
   Tambem concentra montagem de linhas/base de respostas, totalizacao, filtros, ordenacao e medidas da planilha de presenca.
