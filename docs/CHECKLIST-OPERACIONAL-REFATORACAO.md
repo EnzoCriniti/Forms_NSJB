@@ -396,6 +396,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - iniciado neste ciclo: controle de zoom e pinch da tabela de presenca saiu para `frontend/src/screens/presenceTableZoomController.js`.
+- iniciado neste ciclo: persistencia com busy/feedback da escala saiu para `frontend/src/screens/escalaPersistController.js`.
 - extrair o controller de presenca de resultados para um helper ou hook proprio
 - iniciado: controller da presenca saiu para `frontend/src/screens/PresenceResultsScreen.jsx`
 - iniciado neste ciclo: orquestracao da planilha de presenca saiu de `PresenceResultsScreen.jsx` para `frontend/src/screens/presenceResultsController.js`, deixando a screen como ponte para o painel visual.

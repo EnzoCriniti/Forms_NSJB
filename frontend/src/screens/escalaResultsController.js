@@ -4,9 +4,9 @@
  */
 
 import { useState } from "react";
-import { resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { downloadCsv } from "../lib/downloadCsv";
+import { useEscalaPersistController } from "./escalaPersistController";
 import { buildEscalaCsv } from "./resultsCsv";
 import {
   addEscalaSlot,
@@ -22,29 +22,11 @@ export const useEscalaResultsController = ({ people, user, form, sections, onSav
   const [selSlot, setSelSlot] = useState(null);
   const [signName, setSignName] = useState("");
   const [feedback, setFeedback] = useState(null);
-  const [busyAction, setBusyAction] = useState(null);
   const [pendingRemoval, setPendingRemoval] = useState(null);
+  const { busyAction, runPersistAction } = useEscalaPersistController({ onSaveSections, setFeedback });
   const canEdit = canEditEscala(user);
   const names = buildEscalaNames(people);
   const { total, filled } = buildEscalaMetrics(sections);
-
-  const persistSections = async (next, successMessage = "AlteraÃƒÂ§ÃƒÂµes salvas.") => {
-    setFeedback({ tone: "loading", message: "Salvando escala..." });
-    await onSaveSections(next);
-    setFeedback({ tone: "success", message: successMessage });
-  };
-
-  const runPersistAction = async ({ busyKey, next, successMessage, afterSuccess }) => {
-    setBusyAction(busyKey);
-    try {
-      await persistSections(next, successMessage);
-      afterSuccess?.();
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
-  };
 
   const signup = async () => {
     if (!signName || !selSlot) return;
@@ -59,16 +41,12 @@ export const useEscalaResultsController = ({ people, user, form, sections, onSav
   const confirmRemoval = async () => {
     if (!pendingRemoval) return;
     const { sectionIndex, slotIndex } = pendingRemoval;
-    const next = clearEscalaSlotPerson(sections, sectionIndex, slotIndex);
-    setBusyAction("remove");
-    try {
-      await persistSections(next, "Vaga excluÃƒÂ­da com sucesso.");
-      setPendingRemoval(null);
-    } catch (error) {
-      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
-    } finally {
-      setBusyAction(null);
-    }
+    await runPersistAction({
+      busyKey: "remove",
+      next: clearEscalaSlotPerson(sections, sectionIndex, slotIndex),
+      successMessage: "Vaga excluida com sucesso.",
+      afterSuccess: () => setPendingRemoval(null),
+    });
   };
 
   const updateSlot = async (sectionIndex, slotIndex, patch) => {

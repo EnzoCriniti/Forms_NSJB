@@ -431,6 +431,8 @@ Mapa curto das areas mais mexidas por agentes.
   Ponte fina da tela de escala: monta `EscalaResultsPanel.jsx` com props vindas de `escalaResultsController.js`.
 - `frontend/src/screens/escalaResultsController.js`
   Controller local da tela de escala, incluindo feedback, inscricao, edicao de slots e exportacao. Consome diretamente `resultsEscalaDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
+- `frontend/src/screens/escalaPersistController.js`
+  Hook local de persistencia da escala de resultados: busy, feedback, sucesso e erro das alteracoes.
 - `frontend/src/screens/EscalaResultsPanel.jsx`
   Painel visual da tela de escala, compondo overview, lista de secoes, modal de inscricao e confirmacao de remocao.
 - `frontend/src/screens/EscalaSectionsPanel.jsx`
