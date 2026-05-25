@@ -153,6 +153,8 @@ Mapa curto das areas mais mexidas por agentes.
   Montagem dos grupos de handlers de sessao, eventos, formularios/escala e admin usados pelo controller do App.
 - `frontend/src/lib/appControllerLifecycle.js`
   Efeitos de ciclo de vida do controller do App, incluindo preferencias, bootstrap, rota publica e detalhes.
+- `frontend/src/lib/appControllerBootstrap.js`
+  Selecao dos blocos do bootstrap consumidos pelo controller do App, incluindo defaults de mensagens.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`

@@ -11,6 +11,7 @@ import { buildAppControllerViewModel } from "./appControllerViewModel";
 import { buildAppControllerLoaders } from "./appControllerLoaders";
 import { buildAppControllerHandlers } from "./appControllerHandlers";
 import { useAppControllerLifecycle } from "./appControllerLifecycle";
+import { selectAppControllerBootstrapData } from "./appControllerBootstrap";
 
 export const useAppController = () => {
   const { values, setters } = useAppControllerState();
@@ -58,7 +59,7 @@ export const useAppController = () => {
     setSession,
     setTheme,
   } = setters;
-  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events, messageTemplates = [], personPresets = [], messagingConfig = { whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" } } = bootstrap;
+  const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events, messageTemplates, personPresets, messagingConfig } = selectAppControllerBootstrapData(bootstrap);
   const {
     forms,
     responsesByForm,
