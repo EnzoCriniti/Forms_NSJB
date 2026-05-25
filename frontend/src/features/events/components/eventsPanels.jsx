@@ -5,12 +5,15 @@
  */
 
 import React from "react";
-import { COLORS, Btn, ConfirmModal, Icon, ScreenHeader, StatusBadge } from "../../../components/ui";
+import { COLORS, Btn, Icon, ScreenHeader, StatusBadge } from "../../../components/ui";
 import { FormListCard } from "../../../components/FormListCard";
 import { formatDate, formatDateTime } from "../../../lib/forms";
 import { EventEditorFieldsPanel } from "./eventEditorFieldsPanel";
 import { EventPaginationControls } from "./eventPaginationControls";
 
+export { EventDeleteConfirmModal } from "./eventDeleteConfirmModal";
+export { EventDetailHeader } from "./eventDetailHeader";
+export { EventDetailTabs } from "./eventDetailTabs";
 export { EventEditorFieldsPanel } from "./eventEditorFieldsPanel";
 export { EventMessagesPanel } from "./eventMessagesListPanel";
 export { EventPaginationControls } from "./eventPaginationControls";
@@ -75,59 +78,6 @@ export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, savin
       onSave={onSave}
       saving={saving}
     />
-  </div>
-);
-
-export const EventDetailHeader = ({
-  event,
-  canManageEvents,
-  detailTab,
-  messagesEligible,
-  statusAction,
-  onBack,
-  onPublish,
-  onClose,
-  onEdit,
-  onCreateForm,
-  onCreateMessage,
-}) => (
-  <ScreenHeader
-    className="settings-top-card"
-    leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
-    titleContent={(
-      <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <h2 style={{ margin: 0, fontSize: 20 }}>{event.date ? `${event.title} - ${formatDate(event.date)}` : event.title}</h2>
-        <StatusBadge status={event.status} />
-      </div>
-    )}
-    actions={(
-      <>
-        {canManageEvents && event.status === "pronto" && onPublish && (
-          <Btn v="secondary" icon="check" onClick={onPublish} loading={statusAction === "publish"} disabled={Boolean(statusAction)}>Publicar</Btn>
-        )}
-        {canManageEvents && event.status === "publicado" && (
-          <Btn v="secondary" icon="lock" onClick={onClose} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
-        )}
-        {canManageEvents && <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>}
-        {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={onCreateForm} aria-label="Novo formulario" title="Novo formulario" />}
-        {canManageEvents && detailTab === "messages" && messagesEligible && onCreateMessage && (
-          <Btn icon="plus" onClick={onCreateMessage} aria-label="Nova mensagem" title="Nova mensagem" />
-        )}
-      </>
-    )}
-  />
-);
-
-export const EventDetailTabs = ({ activeTab, onChangeTab, formsCount, messagesCount, hasMessages }) => (
-  <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
-    <Btn v={activeTab === "forms" ? "primary" : "ghost"} sz="sm" onClick={() => onChangeTab("forms")}>
-      Formularios{formsCount > 0 ? ` (${formsCount})` : ""}
-    </Btn>
-    {hasMessages && (
-      <Btn v={activeTab === "messages" ? "primary" : "ghost"} sz="sm" onClick={() => onChangeTab("messages")}>
-        Mensagens{messagesCount > 0 ? ` (${messagesCount})` : ""}
-      </Btn>
-    )}
   </div>
 );
 
@@ -235,16 +185,3 @@ export const EventDetailFormsPanel = ({
     </div>
   );
 };
-
-export const EventDeleteConfirmModal = ({ event, busy, onCancel, onConfirm }) => (
-  <ConfirmModal
-    open={Boolean(event)}
-    title="Excluir evento"
-    message={`Excluir o evento "${event?.title || ""}" remove apenas o agrupamento. Os formularios continuam salvos.`}
-    confirmLabel="Excluir"
-    tone="danger"
-    busy={busy}
-    onCancel={onCancel}
-    onConfirm={onConfirm}
-  />
-);

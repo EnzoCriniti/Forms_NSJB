@@ -512,6 +512,7 @@ Checklist operacional:
 - iniciado neste ciclo: lista visual de mensagens do evento saiu para `frontend/src/features/events/components/eventMessagesListPanel.jsx`.
 - iniciado neste ciclo: campos visuais do editor de evento sairam para `frontend/src/features/events/components/eventEditorFieldsPanel.jsx`.
 - iniciado neste ciclo: controles de paginacao de eventos sairam para `frontend/src/features/events/components/eventPaginationControls.jsx`.
+- iniciado neste ciclo: cabecalho, abas e modal de exclusao do detalhe de eventos sairam para componentes dedicados em `frontend/src/features/events/components/`.
 
 Teste a reforcar:
 - `tests/ui/eventsDomain.test.js`
