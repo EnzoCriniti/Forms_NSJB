@@ -246,6 +246,8 @@ Mapa curto das areas mais mexidas por agentes.
   Decisao pura de carregamento dos dados de detalhe usados por `AppViewport` e pelos efeitos de `App.jsx`.
 - `frontend/src/lib/appViewportNavigation.js`
   Efeitos de navegacao ao sair de rotas publicas do viewport principal.
+- `frontend/src/lib/appViewportProps.js`
+  Montagem das props entregues por `App.jsx` ao `AppViewport`, derivadas do shell e dos handlers de sessao.
 - `frontend/src/lib/appFontScale.js`
   Limites, passo e normalizacao da escala de fonte do app.
 - `frontend/src/lib/appPreferences.js`

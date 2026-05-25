@@ -18,6 +18,7 @@ import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
 import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
 import { buildAppHandlerGroups } from "./lib/appHandlerGroups";
 import { buildAppShell, buildAppShellData, buildAppShellState } from "./lib/appShellBuilder";
+import { buildAppViewportProps } from "./lib/appViewportProps";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -137,11 +138,7 @@ export default function App() {
     upsertFormDetail,
   });
   const {
-    decreaseFontScale,
-    increaseFontScale,
     invalidateSession,
-    login,
-    logout,
     navigate,
   } = sessionHandlers;
 
@@ -234,21 +231,18 @@ export default function App() {
   });
 
   return (
-    <AppViewport
-      app={shellApp}
-      loading={loading}
-      error={error}
-      refreshBootstrap={refreshBootstrap}
-      login={login}
-      logout={logout}
-      theme={theme}
-      fontScale={fontScale}
-      increaseFontScale={increaseFontScale}
-      decreaseFontScale={decreaseFontScale}
-      setTheme={setTheme}
-      setScreen={setScreen}
-      setPublicRoute={setPublicRoute}
-      setActiveMessageId={setActiveMessageId}
+    <AppViewport {...buildAppViewportProps({
+      app: shellApp,
+      error,
+      fontScale,
+      loading,
+      refreshBootstrap,
+      sessionHandlers,
+      setPublicRoute,
+      setScreen,
+      setTheme,
+      theme,
+    })}
     />
   );
 }

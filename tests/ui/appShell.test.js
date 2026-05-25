@@ -10,6 +10,7 @@ import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../fron
 import { normalizeStoredSession } from "../../frontend/src/lib/appSession.js";
 import { buildAppShellDerivedState } from "../../frontend/src/lib/appShellDerivedState.js";
 import { buildAppShellData, buildAppShellState } from "../../frontend/src/lib/appShellBuilder.js";
+import { buildAppViewportProps } from "../../frontend/src/lib/appViewportProps.js";
 import { resolveAppDetailLoadRequest, resolveAppViewportTargetState } from "../../frontend/src/lib/appDetailTarget.js";
 import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "../../frontend/src/lib/appShellContentSelectors.js";
 import { buildAppNavItems } from "../../frontend/src/lib/appNav.js";
@@ -191,6 +192,42 @@ describe("appShell derived state", () => {
     expect(state.publicResultsView).toBe(true);
     expect(state.responsesByForm[2]).toEqual([{ id: 2 }]);
     expect(state.escalaByForm[2]).toEqual([{ title: "Sala" }]);
+  });
+});
+
+describe("appViewport props", () => {
+  it("monta props do viewport a partir dos handlers de sessao", () => {
+    const sessionHandlers = {
+      login: vi.fn(),
+      logout: vi.fn(),
+      increaseFontScale: vi.fn(),
+      decreaseFontScale: vi.fn(),
+    };
+    const props = buildAppViewportProps({
+      app: { screen: "events" },
+      error: "",
+      fontScale: 1,
+      loading: false,
+      refreshBootstrap: vi.fn(),
+      sessionHandlers,
+      setPublicRoute: vi.fn(),
+      setScreen: vi.fn(),
+      setTheme: vi.fn(),
+      theme: "light",
+    });
+
+    expect(props).toMatchObject({
+      app: { screen: "events" },
+      loading: false,
+      error: "",
+      fontScale: 1,
+      theme: "light",
+      login: sessionHandlers.login,
+      logout: sessionHandlers.logout,
+      increaseFontScale: sessionHandlers.increaseFontScale,
+      decreaseFontScale: sessionHandlers.decreaseFontScale,
+    });
+    expect(props).not.toHaveProperty("setActiveMessageId");
   });
 });
 
