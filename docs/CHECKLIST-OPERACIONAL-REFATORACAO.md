@@ -386,6 +386,7 @@ Checklist operacional:
 - iniciado: montagem de linhas, respostas base e totalizacao da presenca sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: layout de totais, filtros e largura minima da tabela de presenca sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: filtros por grau/coluna, ordenacao e resumo de totais da presenca sairam para `frontend/src/screens/resultsDomain.js`
+- iniciado neste ciclo: helpers puros de ordenacao visual, pinch e estilo de cabecalho da tabela de presenca sairam para `frontend/src/screens/resultsDomain.js`
 - extrair o controller de escala para um helper separado
 - iniciado: controller da escala saiu para `frontend/src/screens/EscalaResultsScreen.jsx`
 - iniciado: metricas, nomes e mutacoes puras de slots da escala sairam para `frontend/src/screens/resultsDomain.js`

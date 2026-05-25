@@ -17,6 +17,7 @@ import {
   buildPresenceCsv,
   buildPresenceFilterButtons,
   buildPresenceGrauOptions,
+  buildPresenceHeaderCellStyle,
   buildPresenceStats,
   buildPresenceTableMinWidth,
   buildPresenceTableRows,
@@ -26,6 +27,9 @@ import {
   filterPresenceResponses,
   filterPresenceRows,
   formatResultFieldValue,
+  getPresenceSortIconName,
+  getPresenceTouchDistance,
+  resolvePresenceSortState,
   sortPresenceRows,
 } from "./resultsDomain";
 
@@ -47,16 +51,9 @@ export const PresenceResultsScreen = ({ responses, form, people, publicFormHref,
   const hasExpectedTotal = expectedTotal > 0;
 
   const handleSort = col => {
-    if (sortCol === col) {
-      if (sortDir === "asc") setSortDir("desc");
-      else {
-        setSortCol(null);
-        setSortDir("asc");
-      }
-    } else {
-      setSortCol(col);
-      setSortDir("asc");
-    }
+    const next = resolvePresenceSortState({ sortCol, sortDir, nextCol: col });
+    setSortCol(next.sortCol);
+    setSortDir(next.sortDir);
   };
 
   const tableRows = useMemo(() => buildPresenceTableRows({ responses, people, showLinkedRows }), [people, responses, showLinkedRows]);
@@ -103,19 +100,14 @@ export const PresenceResultsScreen = ({ responses, form, people, publicFormHref,
   const updateTableZoom = direction => {
     setTableZoom(current => clampTableZoom(current + (direction * TABLE_ZOOM_STEP)));
   };
-  const getTouchDistance = touches => {
-    if (touches.length < 2) return 0;
-    const [first, second] = touches;
-    return Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY);
-  };
   const handleTableTouchStart = event => {
     if (event.touches.length !== 2) return;
-    touchZoomRef.current = { distance: getTouchDistance(event.touches), zoom: tableZoom };
+    touchZoomRef.current = { distance: getPresenceTouchDistance(event.touches), zoom: tableZoom };
   };
   const handleTableTouchMove = event => {
     if (event.touches.length !== 2 || !touchZoomRef.current.distance) return;
     event.preventDefault();
-    const nextDistance = getTouchDistance(event.touches);
+    const nextDistance = getPresenceTouchDistance(event.touches);
     setTableZoom(clampTableZoom(touchZoomRef.current.zoom * (nextDistance / touchZoomRef.current.distance)));
   };
   const handleTableTouchEnd = event => {
@@ -136,20 +128,8 @@ export const PresenceResultsScreen = ({ responses, form, people, publicFormHref,
     setFeedback({ tone: "success", message: "CSV exportado com sucesso." });
   };
 
-  const sortIndicator = col => sortCol !== col ? <Icon name="sortNone" size={11} /> : sortDir === "asc" ? <Icon name="sortAsc" size={11} /> : <Icon name="sortDesc" size={11} />;
-  const headerCellStyle = col => ({
-    padding: "10px 12px",
-    textAlign: ["grau", "name", "status"].includes(col) ? "left" : "center",
-    color: "#fff",
-    fontWeight: 600,
-    whiteSpace: "nowrap",
-    cursor: "pointer",
-    userSelect: "none",
-    background: sortCol === col ? COLORS.primaryDark : COLORS.primary,
-    transition: "background 0.15s",
-    verticalAlign: "top",
-    minWidth: col === "grau" ? 90 : col === "name" ? 160 : col === "status" ? 110 : 130,
-  });
+  const sortIndicator = col => <Icon name={getPresenceSortIconName({ sortCol, sortDir, col })} size={11} />;
+  const headerCellStyle = col => buildPresenceHeaderCellStyle({ col, sortCol, colors: COLORS });
 
   return (
     <PresenceResultsPanel

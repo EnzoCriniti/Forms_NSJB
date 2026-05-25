@@ -387,7 +387,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/resultsDomain.js`
   Helpers puros da planilha de resultados: ordenacao de grau, filtros ativos, estatisticas, formatacao e geracao de CSV.
   Tambem concentra montagem de linhas/base de respostas, totalizacao, filtros, ordenacao e medidas da planilha de presenca.
-  Tambem concentra metricas e mutacoes puras de slots da escala.
+  Tambem concentra metricas e mutacoes puras de slots da escala, alem de helpers puros de interacao da tabela de presenca.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
   No modo interno, usa apenas um topo leve de contexto e nao expÃµe atalho visual para resultados.

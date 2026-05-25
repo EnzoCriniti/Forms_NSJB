@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { addEscalaSlot, assignEscalaSlotPerson, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildEscalaMetrics, buildEscalaNames, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clearEscalaSlotPerson, compareGrauOptions, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, patchEscalaSlot, sortPresenceRows } from "../../frontend/src/screens/resultsDomain";
+import { addEscalaSlot, assignEscalaSlotPerson, attachPresenceTotalsSummary, buildActiveFilterOptions, buildEscalaCsv, buildEscalaMetrics, buildEscalaNames, buildPresenceBaseResponses, buildPresenceCsv, buildPresenceFilterButtons, buildPresenceGrauOptions, buildPresenceHeaderCellStyle, buildPresenceStats, buildPresenceTableMinWidth, buildPresenceTableRows, buildPresenceTotals, buildPresenceTotalsLayout, clearEscalaSlotPerson, compareGrauOptions, filterPresenceResponses, filterPresenceRows, formatResultFieldValue, getPresenceSortIconName, getPresenceTouchDistance, patchEscalaSlot, resolvePresenceSortState, sortPresenceRows } from "../../frontend/src/screens/resultsDomain";
 
 describe("resultsDomain", () => {
   it("ordena grau por prioridade canonica", () => {
@@ -139,6 +139,32 @@ describe("resultsDomain", () => {
       sortDir: "desc",
       getFieldValue: (response, fieldId) => response[fieldId],
     })).toEqual([rows[1], rows[0]]);
+  });
+
+  it("mantem helpers puros de interacao da planilha de presenca", () => {
+    expect(resolvePresenceSortState({ sortCol: null, sortDir: "asc", nextCol: "name" })).toEqual({
+      sortCol: "name",
+      sortDir: "asc",
+    });
+    expect(resolvePresenceSortState({ sortCol: "name", sortDir: "asc", nextCol: "name" })).toEqual({
+      sortCol: "name",
+      sortDir: "desc",
+    });
+    expect(resolvePresenceSortState({ sortCol: "name", sortDir: "desc", nextCol: "name" })).toEqual({
+      sortCol: null,
+      sortDir: "asc",
+    });
+    expect(getPresenceSortIconName({ sortCol: "name", sortDir: "desc", col: "name" })).toBe("sortDesc");
+    expect(getPresenceSortIconName({ sortCol: "name", sortDir: "asc", col: "grau" })).toBe("sortNone");
+    expect(getPresenceTouchDistance([
+      { clientX: 0, clientY: 0 },
+      { clientX: 3, clientY: 4 },
+    ])).toBe(5);
+    expect(buildPresenceHeaderCellStyle({
+      col: "name",
+      sortCol: "name",
+      colors: { primary: "#111", primaryDark: "#222" },
+    })).toMatchObject({ textAlign: "left", background: "#222", minWidth: 160 });
   });
 
   it("filtra respostas por grau e anexa resumo dos totais", () => {
