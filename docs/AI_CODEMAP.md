@@ -52,6 +52,8 @@ Mapa curto das areas mais mexidas por agentes.
   Bloco visual do vinculo de campos `person_select` do catalogo administrativo, alternando entre base central de socios e base externa sincronizada.
 - `frontend/src/features/admin/ScaleTaskCatalogPanel.jsx`
   Editor e lista de tarefas base do catalogo administrativo.
+- `frontend/src/features/admin/ScaleTaskCatalogListPanel.jsx`
+  Lista paginada de tarefas base do catalogo administrativo, incluindo acoes de editar e remover.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
   Painel compartilhado de classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
