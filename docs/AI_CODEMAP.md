@@ -378,11 +378,13 @@ Mapa curto das areas mais mexidas por agentes.
   Controller da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling.
 - `frontend/src/screens/EscalaResultsScreen.jsx`
   Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao.
+- `frontend/src/screens/EscalaSectionsPanel.jsx`
+  Lista visual de secoes e vagas da escala de resultados, extraida de `resultsPanels.jsx`.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/resultsPanels.jsx`
   Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
-  Tambem concentra a renderizacao reutilizavel da escala em `EscalaResultsPanel`.
+  Mantem a composicao reutilizavel da escala em `EscalaResultsPanel`, delegando lista de secoes para `EscalaSectionsPanel.jsx`.
   A toolbar da planilha de presenca tambem ficou isolada em `PresenceResultsToolbar`.
 - `frontend/src/screens/PresenceTotalsPanel.jsx`
   Painel visual de totalizacao da planilha de presenca, extraido de `resultsPanels.jsx`.
