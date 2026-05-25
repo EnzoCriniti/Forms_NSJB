@@ -396,6 +396,7 @@ Checklist operacional:
 - iniciado neste ciclo: helpers puros de ordenacao visual, pinch e estilo de cabecalho da tabela de presenca sairam para `frontend/src/screens/resultsDomain.js`
 - extrair o controller de escala para um helper separado
 - iniciado: controller da escala saiu para `frontend/src/screens/EscalaResultsScreen.jsx`
+- iniciado neste ciclo: orquestracao da escala saiu de `EscalaResultsScreen.jsx` para `frontend/src/screens/escalaResultsController.js`, deixando a screen como ponte para o painel visual.
 - iniciado: metricas, nomes e mutacoes puras de slots da escala sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado neste ciclo: fluxo repetido de persistencia da escala foi concentrado em executor local para inscricao, edicao e adicao de vaga.
 - iniciado: download de CSV saiu para `frontend/src/lib/downloadCsv.js`
@@ -449,6 +450,7 @@ Checklist operacional:
   - filtros
   - estatisticas
 - iniciado neste ciclo: CSV saiu para `frontend/src/screens/resultsCsv.js`, helpers da escala para `frontend/src/screens/resultsEscalaDomain.js` e helpers da presenca para `frontend/src/screens/resultsPresenceDomain.js`; `resultsDomain.js` ficou como agregador historico.
+- iniciado neste ciclo: helpers de presenca foram separados em `resultsPresenceUiDomain.js`, `resultsPresenceGrauDomain.js`, `resultsPresenceTableDomain.js` e `resultsPresenceFilterDomain.js`; `resultsPresenceDomain.js` ficou como agregador historico.
   - formatacao
 - reforcar testes de CSV e filtros antes de mexer no comportamento
 

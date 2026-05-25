@@ -403,7 +403,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/PresenceResultsPanel.jsx`
   Painel visual da planilha de presenca, compondo topo, feedback, totalizacao, toolbar e tabela.
 - `frontend/src/screens/EscalaResultsScreen.jsx`
-  Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao. Consome diretamente `resultsEscalaDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
+  Ponte fina da tela de escala: monta `EscalaResultsPanel.jsx` com props vindas de `escalaResultsController.js`.
+- `frontend/src/screens/escalaResultsController.js`
+  Controller local da tela de escala, incluindo feedback, inscricao, edicao de slots e exportacao. Consome diretamente `resultsEscalaDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
 - `frontend/src/screens/EscalaResultsPanel.jsx`
   Painel visual da tela de escala, compondo overview, lista de secoes, modal de inscricao e confirmacao de remocao.
 - `frontend/src/screens/EscalaSectionsPanel.jsx`
@@ -425,7 +427,15 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/resultsDomain.js`
   Agregador historico dos helpers puros da tela de resultados. Mantem reexports de presenca, escala e CSV.
 - `frontend/src/screens/resultsPresenceDomain.js`
-  Helpers puros da planilha de presenca: zoom, ordenacao, filtros, linhas, totais, stats e opcoes de filtro.
+  Agregador historico dos helpers puros da planilha de presenca. Mantem reexports de UI/interacao, grau, tabela/totais e filtros.
+- `frontend/src/screens/resultsPresenceUiDomain.js`
+  Helpers puros de zoom, toque, estado de ordenacao, icone de ordenacao e estilo de cabecalho da planilha de presenca.
+- `frontend/src/screens/resultsPresenceGrauDomain.js`
+  Normalizacao e ordenacao canonica de graus, alem das opcoes de grau da planilha de presenca.
+- `frontend/src/screens/resultsPresenceTableDomain.js`
+  Linhas, respostas base, stats, totais, layout de totais, resumo e largura minima da planilha de presenca.
+- `frontend/src/screens/resultsPresenceFilterDomain.js`
+  Botoes de filtro, filtro por coluna/grau, filtro de respostas, ordenacao de linhas e opcoes do filtro ativo.
 - `frontend/src/screens/resultsEscalaDomain.js`
   Helpers puros da escala de resultados: metricas, nomes e mutacoes de slots.
 - `frontend/src/screens/resultsCsv.js`
