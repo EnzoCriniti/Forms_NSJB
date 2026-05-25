@@ -9,6 +9,7 @@ import { resolveAppNavigation } from "../../frontend/src/lib/appNavigation.js";
 import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../frontend/src/lib/appPublicRoutes.js";
 import { normalizeStoredSession } from "../../frontend/src/lib/appSession.js";
 import { buildAppShellDerivedState } from "../../frontend/src/lib/appShellDerivedState.js";
+import { buildAppShellData, buildAppShellState } from "../../frontend/src/lib/appShellBuilder.js";
 import { resolveAppDetailLoadRequest, resolveAppViewportTargetState } from "../../frontend/src/lib/appDetailTarget.js";
 import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "../../frontend/src/lib/appShellContentSelectors.js";
 import { buildAppNavItems } from "../../frontend/src/lib/appNav.js";
@@ -100,6 +101,64 @@ describe("appShell navigation", () => {
 });
 
 describe("appShell derived state", () => {
+  it("monta blocos de data e state usados pelo shell app", () => {
+    expect(buildAppShellData({
+      escalaByForm: { 2: [] },
+      events: [{ id: 9 }],
+      externalBases: [{ id: 4 }],
+      fieldCatalog: [{ key: "nome" }],
+      forms: [{ id: 1 }],
+      labels: ["A"],
+      membersConfig: { phoneColumn: "telefone" },
+      messageTemplates: [{ id: 3 }],
+      messagingConfig: { publicBaseUrl: "https://app.local" },
+      people: [{ id: "p1" }],
+      personPresets: [{ id: 5 }],
+      presets: [{ id: 6 }],
+      responsesByForm: { 1: [] },
+      scaleTaskCatalog: [{ key: "som" }],
+      users: [{ id: 7 }],
+    })).toMatchObject({
+      forms: [{ id: 1 }],
+      events: [{ id: 9 }],
+      messageTemplates: [{ id: 3 }],
+      responsesByForm: { 1: [] },
+      escalaByForm: { 2: [] },
+    });
+
+    expect(buildAppShellState({
+      activeEvent: { id: 9 },
+      activeEventId: 9,
+      activeForm: { id: 1 },
+      activeMessageId: 3,
+      draftForm: { title: "Novo" },
+      editingForm: { id: 2 },
+      fontScale: 1,
+      pinnedEventIds: [9],
+      pinnedFormIds: [1],
+      publicForm: null,
+      publicResultsEnabled: false,
+      publicResultsView: false,
+      publicRoute: null,
+      screen: "events",
+    })).toEqual({
+      screen: "events",
+      fontScale: 1,
+      publicForm: null,
+      publicRoute: null,
+      publicResultsEnabled: false,
+      publicResultsView: false,
+      pinnedEventIds: [9],
+      pinnedFormIds: [1],
+      activeEventId: 9,
+      activeMessageId: 3,
+      activeEvent: { id: 9 },
+      activeForm: { id: 1 },
+      editingForm: { id: 2 },
+      draftForm: { title: "Novo" },
+    });
+  });
+
   it("monta seletores derivados do shell", () => {
     const state = buildAppShellDerivedState({
       bootstrap: {

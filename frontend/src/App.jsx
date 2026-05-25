@@ -27,7 +27,7 @@ import { resolveAppDetailLoadRequest } from "./lib/appDetailTarget";
 import { clampFontScale, FONT_SCALE_STEP } from "./lib/appFontScale";
 import { useAppLifecycleEffects } from "./lib/appLifecycleEffects";
 import { buildAppSessionHandlers } from "./lib/appSessionHandlers";
-import { buildAppShell } from "./lib/appShellBuilder";
+import { buildAppShell, buildAppShellData, buildAppShellState } from "./lib/appShellBuilder";
 
 export default function App() {
   const [screen, setScreen] = useState("list");
@@ -242,7 +242,7 @@ export default function App() {
     adminHandlers,
     canCreateForms,
     currentUser,
-    data: {
+    data: buildAppShellData({
       forms,
       labels,
       people,
@@ -258,7 +258,7 @@ export default function App() {
       users,
       responsesByForm,
       escalaByForm,
-    },
+    }),
     eventHandlers,
     formDeleteKeyConfigured,
     formHandlers,
@@ -271,7 +271,7 @@ export default function App() {
     setEditingFormId,
     setScreen,
     setTheme,
-    state: {
+    state: buildAppShellState({
       screen,
       fontScale,
       publicForm,
@@ -286,7 +286,7 @@ export default function App() {
       activeForm,
       editingForm,
       draftForm,
-    },
+    }),
     theme,
   });
 
