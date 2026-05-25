@@ -4,42 +4,66 @@
  * @responsibility Centralizar estado, handlers, efeitos e props do viewport fora de App.jsx.
  */
 
-import { useMemo, useState } from "react";
 import { canCreateForms, visibleFormsFor } from "./auth";
-import { createEmptyBootstrap, normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "./appBootstrap";
+import { normalizeBootstrap, pickActiveFormIdAfterBootstrap } from "./appBootstrap";
 import { removeFormDetail, upsertFormDetail } from "./appDataLoad";
 import { buildAppDataHandlers } from "./appDataHandlers";
-import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./appPreferences";
+import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./appPreferences";
 import { getPublicRouteFromLocation } from "./appPublicRoutes";
-import { buildAppShellDerivedState } from "./appShellDerivedState";
 import { resolveAppDetailLoadRequest } from "./appDetailTarget";
 import { useAppLifecycleEffects } from "./appLifecycleEffects";
 import { buildAppHandlerGroups } from "./appHandlerGroups";
 import { buildAppShell, buildAppShellData, buildAppShellState } from "./appShellBuilder";
 import { buildAppViewportProps } from "./appViewportProps";
+import { useAppControllerState } from "./appControllerState";
+import { useAppControllerDerivedState } from "./appControllerDerived";
 
 export const useAppController = () => {
-  const [screen, setScreen] = useState("list");
-  const [activeFormId, setActiveFormId] = useState(null);
-  const [activeEventId, setActiveEventId] = useState(null);
-  const [activeMessageId, setActiveMessageId] = useState(null);
-  const [editingFormId, setEditingFormId] = useState(null);
-  const [draftForm, setDraftForm] = useState(null);
-  const [publicRoute, setPublicRoute] = useState(() => getPublicRouteFromLocation());
-  const [session, setSession] = useState(loadInitialSession);
-  const [theme, setTheme] = useState(loadInitialTheme);
-  const [fontScale, setFontScale] = useState(loadInitialFontScale);
-  const [pinnedFormsByUser, setPinnedFormsByUser] = useState(loadInitialPinnedFormsByUser);
-  const [pinnedEventsByUser, setPinnedEventsByUser] = useState(loadInitialPinnedEventsByUser);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [bootstrap, setBootstrap] = useState(createEmptyBootstrap);
-  const [responseDetails, setResponseDetails] = useState({});
-  const [escalaDetails, setEscalaDetails] = useState({});
-  const [detailLoading, setDetailLoading] = useState(null);
-  const [formDeleteKeyConfigured, setFormDeleteKeyConfigured] = useState(null);
-  const currentUser = session?.user || null;
-  const authToken = session?.token || null;
+  const { values, setters } = useAppControllerState();
+  const {
+    activeEventId,
+    activeFormId,
+    activeMessageId,
+    authToken,
+    bootstrap,
+    currentUser,
+    detailLoading,
+    draftForm,
+    editingFormId,
+    error,
+    escalaDetails,
+    fontScale,
+    formDeleteKeyConfigured,
+    loading,
+    pinnedEventsByUser,
+    pinnedFormsByUser,
+    publicRoute,
+    responseDetails,
+    screen,
+    session,
+    theme,
+  } = values;
+  const {
+    setActiveEventId,
+    setActiveFormId,
+    setActiveMessageId,
+    setBootstrap,
+    setDetailLoading,
+    setDraftForm,
+    setEditingFormId,
+    setError,
+    setEscalaDetails,
+    setFontScale,
+    setFormDeleteKeyConfigured,
+    setLoading,
+    setPinnedEventsByUser,
+    setPinnedFormsByUser,
+    setPublicRoute,
+    setResponseDetails,
+    setScreen,
+    setSession,
+    setTheme,
+  } = setters;
   const { users, labels, presets, fieldCatalog, scaleTaskCatalog, people, membersConfig, externalBases, events, messageTemplates = [], personPresets = [], messagingConfig = { whatsappGroupName: "", autoDispatchEnabled: true, publicBaseUrl: "" } } = bootstrap;
   const {
     forms,
@@ -53,7 +77,7 @@ export const useAppController = () => {
     publicForm,
     publicResultsEnabled,
     publicResultsView,
-  } = useMemo(() => buildAppShellDerivedState({
+  } = useAppControllerDerivedState({
     bootstrap,
     responseDetails,
     escalaDetails,
@@ -65,19 +89,7 @@ export const useAppController = () => {
     editingFormId,
     draftForm,
     publicRoute,
-  }), [
-    bootstrap,
-    responseDetails,
-    escalaDetails,
-    currentUser,
-    pinnedFormsByUser,
-    pinnedEventsByUser,
-    activeFormId,
-    activeEventId,
-    editingFormId,
-    draftForm,
-    publicRoute,
-  ]);
+  });
   const {
     loadEscalaForForm,
     loadResponsesForForm,
