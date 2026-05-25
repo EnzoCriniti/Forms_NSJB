@@ -7,6 +7,7 @@
 import React from "react";
 import { COLORS, Btn, FeedbackBanner, ConfirmModal, MetricCard } from "../components/ui";
 import { EscalaSectionsPanel } from "./EscalaSectionsPanel";
+import { EscalaSignupModal } from "./EscalaSignupModal";
 import { ResultsPresenceHeader } from "../components/ResultsPresenceHeader";
 import { PresenceResultsTable } from "./PresenceResultsTable";
 import { PresenceResultsToolbar } from "./PresenceResultsToolbar";
@@ -153,17 +154,16 @@ export const EscalaResultsPanel = ({
       sections={sections}
     />
     {showSignup && selSlot && canEdit && (
-      <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
-        <div style={{ background: COLORS.surface, borderRadius: 16, padding: 24, width: 400, maxWidth: "90vw" }}>
-          <h3 style={{ margin: "0 0 4px", fontSize: 16 }}>Inscrever-se na vaga</h3>
-          <p style={{ margin: "0 0 16px", fontSize: 13, color: COLORS.textSecondary }}><strong>{sections[selSlot.sectionIndex].title}</strong> - {sections[selSlot.sectionIndex].slots[selSlot.slotIndex].role}</p>
-          <label style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Selecione seu nome</label>
-          <select value={signName} onChange={event => onSetSignName(event.target.value)} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: COLORS.surface, boxSizing: "border-box", marginBottom: 16 }}>
-            <option value="">Selecione...</option>{names.map(name => <option key={name} value={name}>{name}</option>)}
-          </select>
-          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}><Btn v="secondary" onClick={onCloseSignup} disabled={busyAction === "signup"}>Cancelar</Btn><Btn icon="check" onClick={onConfirmSignup} disabled={!signName} loading={busyAction === "signup"}>Confirmar</Btn></div>
-        </div>
-      </div>
+      <EscalaSignupModal
+        busy={busyAction === "signup"}
+        names={names}
+        onClose={onCloseSignup}
+        onConfirm={onConfirmSignup}
+        onSetSignName={onSetSignName}
+        sectionTitle={sections[selSlot.sectionIndex].title}
+        signName={signName}
+        slotRole={sections[selSlot.sectionIndex].slots[selSlot.slotIndex].role}
+      />
     )}
     <ConfirmModal
       open={Boolean(pendingRemoval)}

@@ -8,15 +8,15 @@ import { resolveActionErrorMessage } from "../components/ui";
 import { canEditEscala } from "../lib/auth";
 import { downloadCsv } from "../lib/downloadCsv";
 import { EscalaResultsPanel } from "./resultsPanels";
+import { buildEscalaCsv } from "./resultsCsv";
 import {
   addEscalaSlot,
   assignEscalaSlotPerson,
-  buildEscalaCsv,
   buildEscalaMetrics,
   buildEscalaNames,
   clearEscalaSlotPerson,
   patchEscalaSlot,
-} from "./resultsDomain";
+} from "./resultsEscalaDomain";
 
 export const EscalaResultsScreen = ({ people, user, form, sections, onSaveSections }) => {
   const [showSignup, setShowSignup] = useState(false);

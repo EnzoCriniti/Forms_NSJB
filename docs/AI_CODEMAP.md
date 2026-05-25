@@ -399,9 +399,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/PresenceResultsScreen.jsx`
   Controller da planilha de presenca, incluindo filtros, totalizacao, zoom, exportacao e touch handling. Consome diretamente `resultsPresenceDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
 - `frontend/src/screens/EscalaResultsScreen.jsx`
-  Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao.
+  Controller da tela de resultados de escala, incluindo feedback, inscricao, edicao de slots e exportacao. Consome diretamente `resultsEscalaDomain.js` e `resultsCsv.js`, mantendo `resultsDomain.js` como agregador historico.
 - `frontend/src/screens/EscalaSectionsPanel.jsx`
   Lista visual de secoes e vagas da escala de resultados, extraida de `resultsPanels.jsx`.
+- `frontend/src/screens/EscalaSignupModal.jsx`
+  Modal visual de inscricao em vaga da escala de resultados, extraido de `resultsPanels.jsx`.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
 - `frontend/src/screens/resultsPanels.jsx`
