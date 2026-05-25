@@ -511,6 +511,7 @@ Checklist operacional:
 - iniciado neste ciclo: ramos visuais de lista, detalhe e edicao sairam de `EventsScreen.jsx` para `frontend/src/screens/EventsScreenViews.jsx`.
 - iniciado neste ciclo: lista visual de mensagens do evento saiu para `frontend/src/features/events/components/eventMessagesListPanel.jsx`.
 - iniciado neste ciclo: campos visuais do editor de evento sairam para `frontend/src/features/events/components/eventEditorFieldsPanel.jsx`.
+- iniciado neste ciclo: controles de paginacao de eventos sairam para `frontend/src/features/events/components/eventPaginationControls.jsx`.
 
 Teste a reforcar:
 - `tests/ui/eventsDomain.test.js`
