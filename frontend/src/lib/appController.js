@@ -13,10 +13,9 @@ import { getPublicRouteFromLocation } from "./appPublicRoutes";
 import { resolveAppDetailLoadRequest } from "./appDetailTarget";
 import { useAppLifecycleEffects } from "./appLifecycleEffects";
 import { buildAppHandlerGroups } from "./appHandlerGroups";
-import { buildAppShell, buildAppShellData, buildAppShellState } from "./appShellBuilder";
-import { buildAppViewportProps } from "./appViewportProps";
 import { useAppControllerState } from "./appControllerState";
 import { useAppControllerDerivedState } from "./appControllerDerived";
+import { buildAppControllerViewModel } from "./appControllerViewModel";
 
 export const useAppController = () => {
   const { values, setters } = useAppControllerState();
@@ -188,68 +187,55 @@ export const useAppController = () => {
     theme,
   });
 
-  const shellApp = buildAppShell({
+  return buildAppControllerViewModel({
     adminHandlers,
+    activeEvent,
+    activeEventId,
+    activeForm,
+    activeMessageId,
     canCreateForms,
     currentUser,
-    data: buildAppShellData({
-      forms,
-      labels,
-      people,
-      presets,
-      fieldCatalog,
-      scaleTaskCatalog,
-      events,
-      messageTemplates,
-      personPresets,
-      messagingConfig,
-      membersConfig,
-      externalBases,
-      users,
-      responsesByForm,
-      escalaByForm,
-    }),
+    draftForm,
+    editingForm,
+    error,
+    escalaByForm,
     eventHandlers,
+    events,
+    externalBases,
+    fieldCatalog,
+    fontScale,
     formDeleteKeyConfigured,
     formHandlers,
+    forms,
+    labels,
+    loading,
+    membersConfig,
+    messageTemplates,
+    messagingConfig,
     navigate,
+    people,
+    personPresets,
+    pinnedEventIds,
+    pinnedFormIds,
+    presets,
+    publicForm,
+    publicResultsEnabled,
+    publicResultsView,
+    publicRoute,
+    refreshBootstrap,
+    responsesByForm,
+    scaleTaskCatalog,
+    screen,
     sessionHandlers,
     setActiveEventId,
     setActiveFormId,
     setActiveMessageId,
     setDraftForm,
     setEditingFormId,
-    setScreen,
-    setTheme,
-    state: buildAppShellState({
-      screen,
-      fontScale,
-      publicForm,
-      publicRoute,
-      publicResultsEnabled,
-      publicResultsView,
-      pinnedEventIds,
-      pinnedFormIds,
-      activeEventId,
-      activeMessageId,
-      activeEvent,
-      activeForm,
-      editingForm,
-      draftForm,
-    }),
-    theme,
-  });
-
-  return buildAppViewportProps({
-    app: shellApp,
-    error,
-    fontScale,
-    loading,
-    refreshBootstrap,
-    sessionHandlers,
     setPublicRoute,
     setScreen,
     setTheme,
     theme,
+    users,
   });
 };

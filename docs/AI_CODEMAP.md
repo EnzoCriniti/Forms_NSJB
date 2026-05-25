@@ -145,6 +145,8 @@ Mapa curto das areas mais mexidas por agentes.
   Hook do estado global do App agrupado em blocos `values` e `setters`.
 - `frontend/src/lib/appControllerDerived.js`
   Hook dos dados derivados do controller do App, delegando a `buildAppShellDerivedState`.
+- `frontend/src/lib/appControllerViewModel.js`
+  Montagem final do `shellApp` e das props entregues ao `AppViewport`, a partir do controller do App.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
