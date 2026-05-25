@@ -76,6 +76,7 @@ Checklist operacional:
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
 - iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
+- iniciado neste ciclo: wrappers finos de eventos, formularios/escala e administracao/mensagens sairam para `frontend/src/lib/appEventHandlers.js`, `frontend/src/lib/appFormHandlers.js` e `frontend/src/lib/appAdminHandlers.js`.
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
 - iniciado: efeitos de ciclo de vida do shell sairam para `frontend/src/lib/appLifecycleEffects.js`
 - iniciado: acoes de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionActions.js`

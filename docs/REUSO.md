@@ -137,6 +137,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Modal reutilizavel de inscricao na escala publica.
 - `frontend/src/lib/appShell.js`
   Caminhos publicos canonicos, helpers de navegacao publica, decisao pura de navegacao interna e seletores derivados do shell.
+- `frontend/src/lib/appEventHandlers.js`, `appFormHandlers.js`, `appAdminHandlers.js`
+  Builders dos handlers entregues pelo `App.jsx` ao shell; use antes de adicionar wrappers finos diretamente no componente principal.
 
 ## Regra pratica
 

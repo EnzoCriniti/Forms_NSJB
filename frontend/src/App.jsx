@@ -56,9 +56,9 @@ import { isFormClosedForPublic } from "./lib/forms";
 import { loadFormEscalaDetail, loadFormResponsesDetail, refreshAppBootstrap, refreshFormDeleteKeyConfiguredStatus, removeFormDetail, upsertFormDetail } from "./lib/appDataLoad";
 import { applyExternalPreferenceChange, applyFontScalePreference, applyThemePreference, loadInitialFontScale, loadInitialPinnedEventsByUser, loadInitialPinnedFormsByUser, loadInitialSession, loadInitialTheme, persistPinnedEventsByUser, persistPinnedFormsByUser, persistSession } from "./lib/appPreferences";
 import { buildDuplicateFormDraft, buildSaveFormPayloadFromExisting } from "./lib/appFormDrafts";
-import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm, startEventFormCreation } from "./lib/appFormActions";
-import { applyAppMessageDeletion, applyAppMessageUpdate, deleteAppListResult, deleteAppMessageTemplate, deleteAppPersonPreset, deleteAppUser, openAppEventMessageDetail, openAppEventMessageEditor, saveAppEventMessage, saveAppListResult, saveAppMembersConfig, saveAppMessageTemplate, saveAppMessagingConfig, saveAppPersonPreset, saveAppUser, syncAppMembersConfig } from "./lib/appAdminActions";
-import { deleteAppEvent, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "./lib/appEventActions";
+import { buildAppFormHandlers } from "./lib/appFormHandlers";
+import { buildAppAdminHandlers } from "./lib/appAdminHandlers";
+import { buildAppEventHandlers } from "./lib/appEventHandlers";
 import { resolveAppNavigation } from "./lib/appNavigation";
 import { getPublicRouteFromLocation } from "./lib/appPublicRoutes";
 import { sanitizeUser } from "./lib/appSession";
@@ -261,107 +261,32 @@ export default function App() {
     });
   };
 
-  const handleSaveForm = async payload => {
-    return saveAppForm({
-      payload,
-      activeEventId,
-      events,
-      saveForm,
-      saveEvent,
-      refreshBootstrap,
-      setActiveFormId,
-      setBootstrap,
-      setDraftForm,
-      setEditingFormId,
-      replaceBootstrapList,
-    });
-  };
-
-  const handleSaveEvent = async payload => {
-    return saveAppEvent({
-      payload,
-      saveEvent,
-      setBootstrap,
-      replaceBootstrapList,
-      sortBootstrapEventsByDateDesc,
-    });
-  };
-
-  const handlePublishEvent = async id => {
-    return publishAppEvent({
-      id,
-      publishEvent,
-      setBootstrap,
-      upsertBootstrapListItem,
-    });
-  };
-
-  const handleDeleteEvent = async id => {
-    await deleteAppEvent({
-      id,
-      activeEventId,
-      currentUser,
-      deleteEvent,
-      removeBootstrapListItem,
-      removePinnedIdForUser,
-      setActiveEventId,
-      setBootstrap,
-      setPinnedEventsByUser,
-    });
-  };
-
-  const handleTogglePinnedEvent = eventId => {
-    toggleAppPinnedEvent({
-      eventId,
-      currentUser,
-      setPinnedEventsByUser,
-      togglePinnedIdForUser,
-    });
-  };
-
-  const handleCreateFormInEvent = event => {
-    startEventFormCreation({
-      event,
-      currentUser,
-      canCreateForms,
-      setActiveEventId,
-      setDraftForm,
-      setEditingFormId,
-      setScreen,
-    });
-  };
-
-  const handleDuplicateForm = form => {
-    startDuplicateForm({
-      form,
-      currentUser,
-      canCreateForms,
-      buildDuplicateFormDraft,
-      setActiveFormId,
-      setDraftForm,
-      setEditingFormId,
-      setScreen,
-    });
-  };
-
-  const handleArchiveForm = async (form, nextStatus) => {
-    return archiveAppForm({
-      form,
-      nextStatus,
-      currentUser,
-      canCreateForms,
-      buildSaveFormPayloadFromExisting,
-      saveForm,
-      refreshBootstrap,
-      setActiveFormId,
-      setDraftForm,
-      setEditingFormId,
-    });
-  };
-
-  const handleTogglePinnedForm = formId => {
-    setPinnedFormsByUser(prev => togglePinnedIdForUser(prev, currentUser?.id, formId));
-  };
+  const {
+    handleSaveEvent,
+    handlePublishEvent,
+    handleDeleteEvent,
+    handleTogglePinnedEvent,
+    handleCreateFormInEvent,
+  } = buildAppEventHandlers({
+    activeEventId,
+    canCreateForms,
+    currentUser,
+    deleteEvent,
+    removeBootstrapListItem,
+    removePinnedIdForUser,
+    replaceBootstrapList,
+    saveEvent,
+    publishEvent,
+    setActiveEventId,
+    setBootstrap,
+    setDraftForm,
+    setEditingFormId,
+    setPinnedEventsByUser,
+    setScreen,
+    sortBootstrapEventsByDateDesc,
+    togglePinnedIdForUser,
+    upsertBootstrapListItem,
+  });
 
   const handleSaveFormDeleteKey = async payload => {
     const result = await saveFormDeleteKey(payload);
@@ -373,163 +298,113 @@ export default function App() {
     setBootstrap(prev => replaceBootstrapListFromResult(prev, key, result, resultKey));
   };
 
-  const handleDeleteForm = async (formId, masterKey) => {
-    return deleteAppForm({
-      formId,
-      masterKey,
-      deleteForm,
-      refreshBootstrap,
-      setBootstrap,
-      setEscalaDetails,
-      setResponseDetails,
-      removeFormDetail,
-      removeFormIdFromEvents,
-    });
-  };
+  const {
+    handleSaveForm,
+    handleDuplicateForm,
+    handleArchiveForm,
+    handleTogglePinnedForm,
+    handleDeleteForm,
+    handleSaveResponse,
+    handleSaveEscala,
+    handleClaimEscalaSlot,
+  } = buildAppFormHandlers({
+    activeEventId,
+    buildDuplicateFormDraft,
+    buildEscalaMetrics,
+    buildSaveFormPayloadFromExisting,
+    canCreateForms,
+    claimEscalaSlot,
+    currentUser,
+    deleteForm,
+    events,
+    refreshBootstrap,
+    refreshEscalaForForm,
+    removeFormDetail,
+    removeFormIdFromEvents,
+    replaceBootstrapList,
+    saveEscala,
+    saveEvent,
+    saveForm,
+    saveResponse,
+    setActiveFormId,
+    setBootstrap,
+    setDraftForm,
+    setEditingFormId,
+    setEscalaDetails,
+    setPinnedFormsByUser,
+    setResponseDetails,
+    setScreen,
+    togglePinnedIdForUser,
+    updateBootstrapFormMetrics,
+    upsertFormDetail,
+  });
 
-  const handleSaveResponse = async payload => {
-    await saveAppResponse({
-      payload,
-      saveResponse,
-      setBootstrap,
-      setResponseDetails,
-      updateBootstrapFormMetrics,
-      upsertFormDetail,
-    });
-  };
-
-  const handleSaveEscala = async (formId, sections) => {
-    await saveAppEscala({
-      formId,
-      sections,
-      saveEscala,
-      setBootstrap,
-      setEscalaDetails,
-      buildEscalaMetrics,
-      updateBootstrapFormMetrics,
-      upsertFormDetail,
-    });
-  };
-
-  const handleClaimEscalaSlot = async (formId, sectionIndex, slotIndex, person) => {
-    return claimAppEscalaSlot({
-      formId,
-      sectionIndex,
-      slotIndex,
-      person,
-      claimEscalaSlot,
-      refreshEscalaForForm,
-      setBootstrap,
-      setEscalaDetails,
-      buildEscalaMetrics,
-      updateBootstrapFormMetrics,
-      upsertFormDetail,
-    });
-  };
-
-  const handleSaveUser = async user => {
-    return saveAppUser({ user, currentUser, saveUser, applyBootstrapListResult, sanitizeUser, setSession });
-  };
-
-  const handleDeleteUser = async id => {
-    await deleteAppUser({ id, currentUser, deleteUser, applyBootstrapListResult, logout });
-  };
-
-  const handleSaveLabel = async label => {
-    await saveAppListResult({ payload: label, key: "labels", saveFn: saveLabel, applyBootstrapListResult });
-  };
-
-  const handleDeleteLabel = async id => {
-    await deleteAppListResult({ id, key: "labels", deleteFn: deleteLabel, applyBootstrapListResult });
-  };
-
-  const handleSavePreset = async preset => {
-    await saveAppListResult({ payload: preset, key: "presets", saveFn: savePreset, applyBootstrapListResult });
-  };
-
-  const handleDeletePreset = async id => {
-    await deleteAppListResult({ id, key: "presets", deleteFn: deletePreset, applyBootstrapListResult });
-  };
-
-  const handleSavePeople = async nextPeople => {
-    await saveAppListResult({ payload: nextPeople, key: "people", saveFn: savePeople, applyBootstrapListResult });
-  };
-
-  const handleSaveMembersConfig = async nextConfig => {
-    return saveAppMembersConfig({ nextConfig, saveMembersConfig, setBootstrap, replaceBootstrapListFromResult });
-  };
-
-  const handleSaveMessagingConfig = async nextConfig => {
-    return saveAppMessagingConfig({ nextConfig, saveMessagingConfig, setBootstrap, replaceBootstrapList });
-  };
-
-  const handleSaveMessageTemplate = async template => {
-    return saveAppMessageTemplate({ template, saveMessageTemplate, setBootstrap, upsertBootstrapListItem });
-  };
-
-  const handleDeleteMessageTemplate = async id => {
-    await deleteAppMessageTemplate({ id, deleteMessageTemplate, setBootstrap, removeBootstrapListItem });
-  };
-
-  const handleSavePersonPreset = async preset => {
-    return saveAppPersonPreset({ preset, savePersonPreset, setBootstrap, upsertBootstrapListItem });
-  };
-
-  const handleDeletePersonPreset = async id => {
-    await deleteAppPersonPreset({ id, deletePersonPreset, setBootstrap, removeBootstrapListItem });
-  };
-
-  const handleSaveEventMessage = async (eventId, payload) => {
-    return saveAppEventMessage({ eventId, payload, saveEventMessage, setBootstrap, upsertNestedBootstrapItem });
-  };
-
-  const openEventMessageEditor = (event, message = null) => {
-    openAppEventMessageEditor({ event, message, setActiveEventId, setActiveMessageId, setScreen });
-  };
-
-  const openEventMessageDetail = (event, message) => {
-    openAppEventMessageDetail({ event, message, setActiveEventId, setActiveMessageId, setScreen });
-  };
-
-  const applyMessageUpdate = updated => {
-    applyAppMessageUpdate({ updated, setBootstrap, upsertNestedBootstrapItem });
-  };
-
-  const applyMessageDeletion = messageId => {
-    applyAppMessageDeletion({ messageId, setBootstrap, removeNestedBootstrapItem });
-  };
-
-  const handleSyncMembersConfig = async () => {
-    return syncAppMembersConfig({ syncMembersConfig, setBootstrap, replaceBootstrapList });
-  };
-
-  const handleSaveExternalBase = async base => {
-    return saveAppListResult({ payload: base, key: "externalBases", saveFn: saveExternalBase, applyBootstrapListResult });
-  };
-
-  const handleDeleteExternalBase = async id => {
-    return deleteAppListResult({ id, key: "externalBases", deleteFn: deleteExternalBase, applyBootstrapListResult });
-  };
-
-  const handleSyncExternalBase = async id => {
-    return saveAppListResult({ payload: id, key: "externalBases", saveFn: syncExternalBase, applyBootstrapListResult });
-  };
-
-  const handleSaveFieldCatalogItem = async item => {
-    await saveAppListResult({ payload: item, key: "fieldCatalog", saveFn: saveFieldCatalogItem, applyBootstrapListResult });
-  };
-
-  const handleDeleteFieldCatalogItem = async id => {
-    await deleteAppListResult({ id, key: "fieldCatalog", deleteFn: deleteFieldCatalogItem, applyBootstrapListResult });
-  };
-
-  const handleSaveScaleTaskCatalogItem = async item => {
-    await saveAppListResult({ payload: item, key: "scaleTaskCatalog", saveFn: saveScaleTaskCatalogItem, applyBootstrapListResult });
-  };
-
-  const handleDeleteScaleTaskCatalogItem = async id => {
-    await deleteAppListResult({ id, key: "scaleTaskCatalog", deleteFn: deleteScaleTaskCatalogItem, applyBootstrapListResult });
-  };
+  const {
+    handleSaveUser,
+    handleDeleteUser,
+    handleSaveLabel,
+    handleDeleteLabel,
+    handleSavePreset,
+    handleDeletePreset,
+    handleSavePeople,
+    handleSaveMembersConfig,
+    handleSyncMembersConfig,
+    handleSaveExternalBase,
+    handleDeleteExternalBase,
+    handleSyncExternalBase,
+    handleSaveFieldCatalogItem,
+    handleDeleteFieldCatalogItem,
+    handleSaveScaleTaskCatalogItem,
+    handleDeleteScaleTaskCatalogItem,
+    handleSaveMessagingConfig,
+    handleSaveMessageTemplate,
+    handleDeleteMessageTemplate,
+    handleSavePersonPreset,
+    handleDeletePersonPreset,
+    handleSaveEventMessage,
+    openEventMessageEditor,
+    openEventMessageDetail,
+    applyMessageUpdate,
+    applyMessageDeletion,
+  } = buildAppAdminHandlers({
+    applyBootstrapListResult,
+    currentUser,
+    deleteExternalBase,
+    deleteFieldCatalogItem,
+    deleteLabel,
+    deleteMessageTemplate,
+    deletePersonPreset,
+    deletePreset,
+    deleteScaleTaskCatalogItem,
+    deleteUser,
+    logout,
+    removeBootstrapListItem,
+    removeNestedBootstrapItem,
+    replaceBootstrapList,
+    replaceBootstrapListFromResult,
+    sanitizeUser,
+    saveEventMessage,
+    saveExternalBase,
+    saveFieldCatalogItem,
+    saveLabel,
+    saveMembersConfig,
+    saveMessageTemplate,
+    saveMessagingConfig,
+    savePeople,
+    savePersonPreset,
+    savePreset,
+    saveScaleTaskCatalogItem,
+    saveUser,
+    setActiveEventId,
+    setActiveMessageId,
+    setBootstrap,
+    setScreen,
+    setSession,
+    syncExternalBase,
+    syncMembersConfig,
+    upsertBootstrapListItem,
+    upsertNestedBootstrapItem,
+  });
 
 
   const nav = buildAppNavItems({ currentUser, canCreateForms });

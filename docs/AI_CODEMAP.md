@@ -212,10 +212,16 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers puros para duplicar formulario e montar payload de salvamento a partir de formulario existente.
 - `frontend/src/lib/appFormActions.js`
   Acoes do shell principal para criar, duplicar, salvar, arquivar, excluir, responder e atualizar escala de formularios.
+- `frontend/src/lib/appFormHandlers.js`
+  Montagem dos handlers de formulario, resposta e escala usados por `App.jsx`, mantendo os wrappers fora do componente principal.
 - `frontend/src/lib/appAdminActions.js`
   Acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos e mensagens.
+- `frontend/src/lib/appAdminHandlers.js`
+  Montagem dos handlers administrativos e de mensagens usados por `App.jsx`.
 - `frontend/src/lib/appEventActions.js`
   Acoes do shell principal para salvar, publicar, excluir e fixar eventos.
+- `frontend/src/lib/appEventHandlers.js`
+  Montagem dos handlers de eventos usados por `App.jsx`.
 - `frontend/src/lib/appShellObject.js`
   Montagem do objeto entregue ao viewport e ao shell autenticado a partir de blocos de estado, dados, acoes e setters.
 - `frontend/src/lib/appLifecycleEffects.js`
