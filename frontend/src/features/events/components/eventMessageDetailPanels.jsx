@@ -5,7 +5,78 @@
  */
 
 import React from "react";
-import { Btn, COLORS, Icon } from "../../../components/ui";
+import { Btn, COLORS, Icon, ScreenHeader } from "../../../components/ui";
+import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../../../components/MessageStatusBadge";
+
+export const EventMessageDetailHeader = ({
+  busyAction,
+  canCancel,
+  canDelete,
+  canDispatch,
+  canEdit,
+  message,
+  onBack,
+  onEdit,
+  onRequestConfirm,
+}) => (
+  <ScreenHeader
+    className="settings-top-card"
+    leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
+    titleContent={(
+      <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <h2 style={{ margin: 0, fontSize: 20 }}>{MESSAGE_TYPE_LABELS[message.type] || message.type}</h2>
+        <MessageStatusBadge status={message.status} />
+      </div>
+    )}
+    actions={(
+      <>
+        {canEdit && (
+          <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>
+        )}
+        {canCancel && (
+          <Btn v="secondary" icon="close" onClick={() => onRequestConfirm("cancel")} loading={busyAction === "cancel"} disabled={Boolean(busyAction)}>Cancelar</Btn>
+        )}
+        {canDelete && (
+          <Btn v="danger" icon="trash" onClick={() => onRequestConfirm("delete")} loading={busyAction === "delete"} disabled={Boolean(busyAction)}>Excluir</Btn>
+        )}
+        {canDispatch && (
+          <Btn icon="share" onClick={() => onRequestConfirm("dispatch")} loading={busyAction === "dispatch"} disabled={Boolean(busyAction)}>Disparar agora</Btn>
+        )}
+      </>
+    )}
+    titleSize={20}
+  />
+);
+
+export const MessageDetailSummaryPanel = ({
+  copiedKey,
+  event,
+  formatDateTime,
+  loading,
+  message,
+  onCopy,
+  preview,
+  recipientsActive,
+  recipientsSkipped,
+}) => (
+  <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, display: "grid", gap: 16 }}>
+    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
+      <span>Evento: <strong style={{ color: COLORS.text }}>{event?.title}</strong></span>
+      {message.scheduledFor && <span>Agendada: {formatDateTime(message.scheduledFor)}</span>}
+      {message.sentAt && <span>Disparada: {formatDateTime(message.sentAt)}</span>}
+      <span>Auto: {message.autoDispatchEnabled ? "sim" : "nao"}</span>
+    </div>
+
+    <MessagePreviewPanel
+      loading={loading}
+      preview={preview}
+      copiedKey={copiedKey}
+      onCopy={onCopy}
+      recipientsActive={recipientsActive}
+      recipientsSkipped={recipientsSkipped}
+    />
+  </section>
+);
 
 export const MessagePreviewPanel = ({ loading, preview, copiedKey, onCopy, recipientsActive, recipientsSkipped }) => (
   <div style={{ display: "grid", gap: 16 }}>

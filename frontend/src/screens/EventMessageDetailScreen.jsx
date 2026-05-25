@@ -5,9 +5,8 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react";
-import { Btn, COLORS, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
-import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
-import { MessageLogsPanel, MessagePreviewPanel } from "../features/events/components/eventMessageDetailPanels";
+import { Btn, ConfirmModal, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { EventMessageDetailHeader, MessageDetailSummaryPanel, MessageLogsPanel } from "../features/events/components/eventMessageDetailPanels";
 import { getEventMessageConfirmProps, isEventMessageCancellable, isEventMessageDispatchable, isEventMessageEditable, splitPreviewRecipients } from "./eventMessageDomain";
 import {
   cancelEventMessage as apiCancelEventMessage,
@@ -163,53 +162,31 @@ export const EventMessageDetailScreen = ({
 
   return (
     <div>
-      <ScreenHeader
-        className="settings-top-card"
-        leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
-        titleContent={(
-          <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <h2 style={{ margin: 0, fontSize: 20 }}>{MESSAGE_TYPE_LABELS[message.type] || message.type}</h2>
-            <MessageStatusBadge status={message.status} />
-          </div>
-        )}
-        actions={(
-          <>
-            {isEventMessageEditable(message.status) && onEdit && (
-              <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>
-            )}
-            {isEventMessageCancellable(message.status) && (
-              <Btn v="secondary" icon="close" onClick={() => requestConfirm("cancel")} loading={busyAction === "cancel"} disabled={Boolean(busyAction)}>Cancelar</Btn>
-            )}
-            {message.status === "cancelada" && (
-              <Btn v="danger" icon="trash" onClick={() => requestConfirm("delete")} loading={busyAction === "delete"} disabled={Boolean(busyAction)}>Excluir</Btn>
-            )}
-            {isEventMessageDispatchable(message.status) && (
-              <Btn icon="share" onClick={() => requestConfirm("dispatch")} loading={busyAction === "dispatch"} disabled={Boolean(busyAction)}>Disparar agora</Btn>
-            )}
-          </>
-        )}
-        titleSize={20}
+      <EventMessageDetailHeader
+        busyAction={busyAction}
+        canCancel={isEventMessageCancellable(message.status)}
+        canDelete={message.status === "cancelada"}
+        canDispatch={isEventMessageDispatchable(message.status)}
+        canEdit={isEventMessageEditable(message.status) && Boolean(onEdit)}
+        message={message}
+        onBack={onBack}
+        onEdit={onEdit}
+        onRequestConfirm={requestConfirm}
       />
 
       {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
 
-      <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, display: "grid", gap: 16 }}>
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
-          <span>Evento: <strong style={{ color: COLORS.text }}>{event?.title}</strong></span>
-          {message.scheduledFor && <span>Agendada: {formatDateTime(message.scheduledFor)}</span>}
-          {message.sentAt && <span>Disparada: {formatDateTime(message.sentAt)}</span>}
-          <span>Auto: {message.autoDispatchEnabled ? "sim" : "nao"}</span>
-        </div>
-
-        <MessagePreviewPanel
-          loading={loading}
-          preview={preview}
-          copiedKey={copiedKey}
-          onCopy={copy}
-          recipientsActive={recipientsActive}
-          recipientsSkipped={recipientsSkipped}
-        />
-      </section>
+      <MessageDetailSummaryPanel
+        copiedKey={copiedKey}
+        event={event}
+        formatDateTime={formatDateTime}
+        loading={loading}
+        message={message}
+        onCopy={copy}
+        preview={preview}
+        recipientsActive={recipientsActive}
+        recipientsSkipped={recipientsSkipped}
+      />
 
       <MessageLogsPanel logs={logs} formatDateTime={formatDateTime} />
 
