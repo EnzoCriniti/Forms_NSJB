@@ -11,16 +11,13 @@ import { getFormDeleteKeyStatus, saveFormDeleteKey } from "../services/formDelet
 import { listAuditLogs } from "../services/auditLogService.mjs";
 import { validateAuthLoginPayload, validateFormDeleteKeyUpdatePayload } from "../validators/payloadValidators.mjs";
 import {
-  auditLevelFromError,
-  auditStatusFromError,
-  getSystemActor,
   readAuditFilters,
   readBody,
   requireAdmin,
   requireAuth,
   sendKnownError,
-  writeAudit,
 } from "./requestHelpers.mjs";
+import { writeAuthLoginAudit, writeAuthLogoutAudit, writeSecurityKeyAudit } from "./systemRouteAudit.mjs";
 
 export const handleSystemRoutes = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/auth/login") {
@@ -33,35 +30,10 @@ export const handleSystemRoutes = async (req, res, url) => {
       validateAuthLoginPayload(body);
       const result = await loginWithCredentials(body);
       sendJson(res, 200, result);
-      await writeAudit(req, result, {
-        level: "info",
-        category: "auth",
-        action: "auth_login",
-        status: "success",
-        screen: "auth",
-        entityType: "user",
-        entityId: result.user?.id || null,
-        entityLabel: result.user?.name || body.username || null,
-        message: "Login autenticado com sucesso.",
-        metadata: {
-          username: result.user?.username || body.username || null,
-        },
-        actor: result.user || getSystemActor(),
-      });
+      await writeAuthLoginAudit(req, { result, body });
     } catch (error) {
       sendJson(res, error.statusCode || 400, { error: error.message, code: error.code });
-      await writeAudit(req, null, {
-        level: "warn",
-        category: "auth",
-        action: "auth_login",
-        status: "failure",
-        screen: "auth",
-        message: error.message,
-        metadata: {
-          username: body?.username || null,
-          code: error.code || null,
-        },
-      });
+      await writeAuthLoginAudit(req, { body, error });
     }
     return true;
   }
@@ -74,18 +46,7 @@ export const handleSystemRoutes = async (req, res, url) => {
     }
     await logoutByToken(extractBearerToken(req.headers));
     sendJson(res, 200, { ok: true });
-    await writeAudit(req, auth, {
-      level: "info",
-      category: "auth",
-      action: "auth_logout",
-      status: "success",
-      screen: "auth",
-      entityType: "user",
-      entityId: auth.user?.id || null,
-      entityLabel: auth.user?.name || null,
-      message: "Logout realizado.",
-      metadata: { session: "revoked" },
-    });
+    await writeAuthLogoutAudit(req, auth);
     return true;
   }
 
@@ -120,64 +81,20 @@ export const handleSystemRoutes = async (req, res, url) => {
     const body = await readBody(req);
     if (!body) {
       sendJson(res, 400, { error: "Payload JSON invalido." });
-      writeAudit(req, auth, {
-        level: "error",
-        category: "security",
-        action: "security_master_key_update",
-        status: "failure",
-        screen: "seguranca",
-        entityType: "security",
-        entityId: "formDeleteKey",
-        entityLabel: "Chave mestra",
-        message: "Payload JSON invalido.",
-        metadata: { status: "failure" },
-      });
+      writeSecurityKeyAudit(req, auth, { message: "Payload JSON invalido." });
       return true;
     }
     try {
       validateFormDeleteKeyUpdatePayload(body);
       const result = await saveFormDeleteKey(body);
       sendJson(res, 200, result);
-      await writeAudit(req, auth, {
-        level: "info",
-        category: "security",
-        action: "security_master_key_update",
-        status: "success",
-        screen: "seguranca",
-        entityType: "security",
-        entityId: "formDeleteKey",
-        entityLabel: "Chave mestra",
-        message: "Chave mestra atualizada.",
-        metadata: { status: "success" },
-      });
+      await writeSecurityKeyAudit(req, auth, { success: true });
     } catch (error) {
       if (sendKnownError(res, error)) {
-        await writeAudit(req, auth, {
-          level: auditLevelFromError(error),
-          category: "security",
-          action: "security_master_key_update",
-          status: auditStatusFromError(error),
-          screen: "seguranca",
-          entityType: "security",
-          entityId: "formDeleteKey",
-          entityLabel: "Chave mestra",
-          message: error.message,
-          metadata: { status: auditStatusFromError(error) },
-        });
+        await writeSecurityKeyAudit(req, auth, { error });
         return true;
       }
-      await writeAudit(req, auth, {
-        level: auditLevelFromError(error),
-        category: "security",
-        action: "security_master_key_update",
-        status: auditStatusFromError(error),
-        screen: "seguranca",
-        entityType: "security",
-        entityId: "formDeleteKey",
-        entityLabel: "Chave mestra",
-        message: error.message,
-        metadata: { status: auditStatusFromError(error) },
-      });
+      await writeSecurityKeyAudit(req, auth, { error });
       throw error;
     }
     return true;

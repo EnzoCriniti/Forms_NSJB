@@ -71,6 +71,8 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/routes/formRoutes.mjs` - formularios, respostas e escala.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
 - `backend/routes/eventRoutes.mjs` - CRUD, publicacao e rotas de mensagens de eventos.
+- `backend/routes/systemRouteAudit.mjs`, `formRouteAudit.mjs`, `eventRouteAudit.mjs` - helpers de auditoria das rotas.
+- `backend/routes/messageRouteHelpers.mjs` - helpers de erro, auditoria e parse das rotas de mensagens.
 - `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth e auditoria.
 - `backend/services/` - regras de negocio.
 - `backend/services/eventMessagesService.mjs` - regras de mensagens por evento, preview, dispatch log-only e agendamento.

@@ -612,6 +612,7 @@ Problemas que precisam ser corrigidos:
 Checklist operacional:
 - separar auth/health/bootstrap de security/audit se o arquivo continuar crescendo
 - extrair padroes repetidos de `sendJson` + `writeAudit`
+- iniciado neste ciclo: metadados e escrita de auditoria de login/logout e chave mestra sairam para `backend/routes/systemRouteAudit.mjs`.
 - manter os handlers curtos e com erro padronizado
 - evitar duplicacao de mensagens e metadados de auditoria
 
@@ -679,6 +680,18 @@ Checklist operacional:
 - manter este arquivo apenas com utilitarios transversais de request
 - separar audit helpers de auth helpers se crescer mais
 - evitar que vire o local de qualquer helper novo da API
+
+### `backend/routes/eventRoutes.mjs`
+
+Checklist operacional:
+- manter CRUD/publicacao de eventos no roteador e regras no service.
+- concluido neste ciclo: metadados e escrita de auditoria de criar/editar/publicar/excluir eventos sairam para `backend/routes/eventRouteAudit.mjs`.
+
+### `backend/routes/messageRoutes.mjs`
+
+Checklist operacional:
+- manter a feature de mensagens no roteador sem helpers locais transversais.
+- iniciado neste ciclo: responder erros, auditoria de mensagens e parser de rotas de mensagens por evento sairam para `backend/routes/messageRouteHelpers.mjs`.
 
 ## 9. Backend - services e regra de negocio
 

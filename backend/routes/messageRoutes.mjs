@@ -36,50 +36,13 @@ import {
   validateMessagingConfigPayload,
   validatePersonPresetPayload,
 } from "../validators/payloadValidators.mjs";
+import { readBody, requireAdmin } from "./requestHelpers.mjs";
 import {
-  auditLevelFromError,
-  auditStatusFromError,
-  readBody,
-  requireAdmin,
-  sendKnownError,
-  writeAudit,
-} from "./requestHelpers.mjs";
-
-const respondError = (res, error) => {
-  if (sendKnownError(res, error)) return;
-  sendJson(res, error.statusCode || 400, { error: error.message, code: error.code || undefined });
-};
-
-const writeMessageAudit = (req, auth, {
-  action,
-  status,
-  level,
-  message,
-  entityId = null,
-  entityLabel = null,
-  metadata = {},
-}) => writeAudit(req, auth, {
-  level,
-  category: "messages",
-  action,
-  status,
-  screen: "eventos",
-  entityType: "event_message",
-  entityId,
-  entityLabel,
-  message,
-  metadata,
-});
-
-const matchEventMessagePath = pathname => {
-  const match = pathname.match(/^\/api\/events\/(\d+)\/messages(?:\/(\d+))?(?:\/(preview|dispatch|cancel|logs))?$/);
-  if (!match) return null;
-  return {
-    eventId: Number(match[1]),
-    messageId: match[2] ? Number(match[2]) : null,
-    action: match[3] || null,
-  };
-};
+  matchEventMessagePath,
+  respondMessageRouteError,
+  writeMessageAudit,
+  writeMessageErrorAudit,
+} from "./messageRouteHelpers.mjs";
 
 export const handleMessageRoutes = async (req, res, url) => {
   if (url.pathname === "/api/messaging-config" && (req.method === "GET" || req.method === "PUT")) {
@@ -95,7 +58,7 @@ export const handleMessageRoutes = async (req, res, url) => {
       const config = await updateMessagingConfig(body);
       sendJson(res, 200, { config });
     } catch (error) {
-      respondError(res, error);
+      respondMessageRouteError(res, error);
     }
     return true;
   }
@@ -114,7 +77,7 @@ export const handleMessageRoutes = async (req, res, url) => {
         const template = await saveMessageTemplate(body);
         sendJson(res, 200, { template });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -128,7 +91,7 @@ export const handleMessageRoutes = async (req, res, url) => {
       const result = await deleteMessageTemplate(id);
       sendJson(res, 200, { ok: true, template: result.template });
     } catch (error) {
-      respondError(res, error);
+      respondMessageRouteError(res, error);
     }
     return true;
   }
@@ -147,7 +110,7 @@ export const handleMessageRoutes = async (req, res, url) => {
         const preset = await savePersonPreset(body);
         sendJson(res, 200, { preset });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -161,7 +124,7 @@ export const handleMessageRoutes = async (req, res, url) => {
       const result = await deletePersonPreset(id);
       sendJson(res, 200, { ok: true, preset: result.preset });
     } catch (error) {
-      respondError(res, error);
+      respondMessageRouteError(res, error);
     }
     return true;
   }
@@ -175,7 +138,7 @@ export const handleMessageRoutes = async (req, res, url) => {
       try {
         sendJson(res, 200, { messages: await getEventMessages(match.eventId) });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -202,19 +165,17 @@ export const handleMessageRoutes = async (req, res, url) => {
           },
         });
       } catch (error) {
-        writeMessageAudit(req, auth, {
-          level: auditLevelFromError(error),
+        writeMessageErrorAudit(req, auth, {
           action: body?.id ? "update_event_message" : "create_event_message",
-          status: auditStatusFromError(error),
+          error,
           entityId: body?.id || null,
           entityLabel: body?.type || null,
-          message: error.message,
           metadata: {
             eventId: match.eventId,
             type: body?.type || null,
           },
         });
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -225,7 +186,7 @@ export const handleMessageRoutes = async (req, res, url) => {
         const logs = await listMessageDispatchLogsByMessageId(match.messageId);
         sendJson(res, 200, { message, logs });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -240,7 +201,7 @@ export const handleMessageRoutes = async (req, res, url) => {
         await deleteEventMessageRecord(message.id);
         sendJson(res, 200, { ok: true });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -249,7 +210,7 @@ export const handleMessageRoutes = async (req, res, url) => {
       try {
         sendJson(res, 200, { preview: await getEventMessagePreview(match.messageId) });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -275,16 +236,14 @@ export const handleMessageRoutes = async (req, res, url) => {
           },
         });
       } catch (error) {
-        writeMessageAudit(req, auth, {
-          level: auditLevelFromError(error),
+        writeMessageErrorAudit(req, auth, {
           action: "dispatch_event_message",
-          status: auditStatusFromError(error),
+          error,
           entityId: match.messageId,
           entityLabel: null,
-          message: error.message,
           metadata: { eventId: match.eventId, messageId: match.messageId },
         });
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -308,16 +267,14 @@ export const handleMessageRoutes = async (req, res, url) => {
           },
         });
       } catch (error) {
-        writeMessageAudit(req, auth, {
-          level: auditLevelFromError(error),
+        writeMessageErrorAudit(req, auth, {
           action: "cancel_event_message",
-          status: auditStatusFromError(error),
+          error,
           entityId: match.messageId,
           entityLabel: null,
-          message: error.message,
           metadata: { eventId: match.eventId, messageId: match.messageId },
         });
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
@@ -326,7 +283,7 @@ export const handleMessageRoutes = async (req, res, url) => {
       try {
         sendJson(res, 200, { logs: await listMessageDispatchLogsByMessageId(match.messageId) });
       } catch (error) {
-        respondError(res, error);
+        respondMessageRouteError(res, error);
       }
       return true;
     }
