@@ -72,7 +72,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `docs/CHECKLIST-OPERACIONAL-REFATORACAO.md`
   Checklist operacional com pente fino por arquivo real, usado como guia principal de limpeza estrutural.
 - `frontend/src/App.jsx`
-  Hub principal do frontend. Ainda concentra sessao, bootstrap, rotas, preferencias visuais e handlers de quase todas as entidades.
+  Entrada principal do frontend. Renderiza `AppViewport` com as props montadas por `frontend/src/lib/appController.js`.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade; novas alteracoes devem usar os modulos `createForm*.js` especificos.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
@@ -138,8 +138,9 @@ Mapa curto das areas mais mexidas por agentes.
 ## App shell
 
 - `frontend/src/App.jsx`
-  Conecta a navegacao principal, controla a sessao e escolhe quais telas aparecem no mobile. Contas logadas respondem formularios pela tela interna `respond`; links publicos continuam em `#/formularios/<id>`.
-  Handlers simples de CRUD que recebem listas do bootstrap passam pelo helper local `applyBootstrapListResult`; chamadas de API de dominio ficam nos builders de handlers.
+  Entrada principal do frontend. A navegacao, sessao, preferencias, bootstrap, handlers e montagem de viewport ficam em `frontend/src/lib/appController.js`.
+- `frontend/src/lib/appController.js`
+  Controller de alto nivel do App: estado global, seletores derivados, handlers, efeitos de ciclo de vida, shell app e props do viewport.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
