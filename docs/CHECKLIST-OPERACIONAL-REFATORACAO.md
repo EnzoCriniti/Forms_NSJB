@@ -389,6 +389,7 @@ Problemas que precisam ser corrigidos:
 Checklist operacional:
 - extrair o controller de presenca de resultados para um helper ou hook proprio
 - iniciado: controller da presenca saiu para `frontend/src/screens/PresenceResultsScreen.jsx`
+- iniciado neste ciclo: orquestracao da planilha de presenca saiu de `PresenceResultsScreen.jsx` para `frontend/src/screens/presenceResultsController.js`, deixando a screen como ponte para o painel visual.
 - iniciado: montagem de linhas, respostas base e totalizacao da presenca sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: layout de totais, filtros e largura minima da tabela de presenca sairam para `frontend/src/screens/resultsDomain.js`
 - iniciado: filtros por grau/coluna, ordenacao e resumo de totais da presenca sairam para `frontend/src/screens/resultsDomain.js`
