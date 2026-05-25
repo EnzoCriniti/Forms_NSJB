@@ -16,6 +16,7 @@ import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSe
 import { buildAppNavItems } from "../../frontend/src/lib/appNav.js";
 import { resetPublicRouteNavigation } from "../../frontend/src/lib/appViewportNavigation.js";
 import { resolveAppShellRoute } from "../../frontend/src/AppShellRouteRegistry.jsx";
+import { APP_VIEWPORT_MODES, resolveAppViewportMode } from "../../frontend/src/lib/appViewportState.js";
 
 describe("appShell public routes", () => {
   it("monta e resolve link publico de formulario dentro de evento", () => {
@@ -335,6 +336,31 @@ describe("appViewport navigation", () => {
     expect(windowRef.location.hash).toBe("");
     expect(setPublicRoute).toHaveBeenCalledWith(null);
     expect(setScreen).toHaveBeenCalledWith("events");
+  });
+});
+
+describe("appViewport mode", () => {
+  it("prioriza loading, erro, detalhe, publico, login e shell", () => {
+    expect(resolveAppViewportMode({ loading: true })).toBe(APP_VIEWPORT_MODES.loading);
+    expect(resolveAppViewportMode({ loading: false, error: "Falha" })).toBe(APP_VIEWPORT_MODES.error);
+    expect(resolveAppViewportMode({
+      loading: false,
+      error: "",
+      publicForm: { id: 1, type: "presenca" },
+      publicResultsView: true,
+      responsesByForm: {},
+      escalaByForm: {},
+    })).toBe(APP_VIEWPORT_MODES.detailLoading);
+    expect(resolveAppViewportMode({
+      loading: false,
+      error: "",
+      publicForm: { id: 1, type: "presenca" },
+      publicResultsView: true,
+      responsesByForm: { 1: [] },
+      escalaByForm: {},
+    })).toBe(APP_VIEWPORT_MODES.public);
+    expect(resolveAppViewportMode({ loading: false, error: "", currentUser: null })).toBe(APP_VIEWPORT_MODES.login);
+    expect(resolveAppViewportMode({ loading: false, error: "", currentUser: { id: 1 } })).toBe(APP_VIEWPORT_MODES.shell);
   });
 });
 

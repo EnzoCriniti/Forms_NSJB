@@ -8,8 +8,8 @@ import React from "react";
 import { AppShellContent } from "./AppShellContent";
 import { AppPublicViewport } from "./AppPublicViewport";
 import { AppDetailLoadingGate, AppErrorGate, AppLoadingGate, AppLoginGate } from "./AppViewportGates";
-import { resolveAppViewportTargetState } from "./lib/appDetailTarget";
 import { resetPublicRouteNavigation } from "./lib/appViewportNavigation";
+import { APP_VIEWPORT_MODES, resolveAppViewportMode } from "./lib/appViewportState";
 
 export const AppViewport = ({
   app,
@@ -37,32 +37,35 @@ export const AppViewport = ({
   } = app;
 
   const backToPanel = () => resetPublicRouteNavigation({ currentUser, setPublicRoute, setScreen });
+  const mode = resolveAppViewportMode({
+    activeForm,
+    currentUser,
+    error,
+    escalaByForm,
+    loading,
+    publicForm,
+    publicResultsView,
+    responsesByForm,
+    screen,
+  });
 
-  if (loading) {
+  if (mode === APP_VIEWPORT_MODES.loading) {
     return <AppLoadingGate />;
   }
 
-  if (error) {
+  if (mode === APP_VIEWPORT_MODES.error) {
     return <AppErrorGate error={error} onRetry={() => refreshBootstrap({ preserveSelection: false })} />;
   }
 
-  const { waitingForTarget } = resolveAppViewportTargetState({
-    publicForm,
-    publicResultsView,
-    screen,
-    activeForm,
-    responsesByForm,
-    escalaByForm,
-  });
-  if (waitingForTarget) {
+  if (mode === APP_VIEWPORT_MODES.detailLoading) {
     return <AppDetailLoadingGate />;
   }
 
-  if (publicForm) {
+  if (mode === APP_VIEWPORT_MODES.public) {
     return <AppPublicViewport app={app} onBack={backToPanel} />;
   }
 
-  if (!currentUser) {
+  if (mode === APP_VIEWPORT_MODES.login) {
     return (
       <AppLoginGate
         login={login}

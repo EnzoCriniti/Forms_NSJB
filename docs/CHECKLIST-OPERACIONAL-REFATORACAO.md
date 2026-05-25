@@ -118,6 +118,7 @@ Checklist operacional:
 - isolar a decisao de `waitingForTarget` em um helper puro
 - iniciado: decisao de `waitingForTarget` saiu para `resolveAppViewportTargetState` em `frontend/src/lib/appDetailTarget.js`
 - iniciado: efeito de saida da rota publica saiu para `frontend/src/lib/appViewportNavigation.js`
+- iniciado neste ciclo: decisao final do modo visual do viewport saiu para `frontend/src/lib/appViewportState.js`, reduzindo a dependencia direta de `screen` e `activeForm` em `AppViewport.jsx`.
 - manter `AppViewport` como roteador visual, nao como local de regra de negocio
 - reduzir a dependência direta de `screen` e `activeForm` neste ponto
 

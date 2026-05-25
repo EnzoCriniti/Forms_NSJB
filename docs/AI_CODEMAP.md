@@ -159,6 +159,8 @@ Mapa curto das areas mais mexidas por agentes.
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
+- `frontend/src/lib/appViewportState.js`
+  Decisao pura do modo visual do `AppViewport`: loading, erro, carregamento de detalhe, publico, login ou shell.
 - `frontend/src/AppViewportGates.jsx`
   Gates visuais do viewport principal para loading, erro, espera de detalhe e login.
 - `frontend/src/AppPublicViewport.jsx`
