@@ -413,9 +413,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/PresenceResultsTable.jsx`
   Tabela visual da planilha de presenca, incluindo cabecalho, linhas e area rolavel.
 - `frontend/src/screens/resultsDomain.js`
-  Helpers puros da planilha de resultados: ordenacao de grau, filtros ativos, estatisticas, formatacao e geracao de CSV.
-  Tambem concentra montagem de linhas/base de respostas, totalizacao, filtros, ordenacao e medidas da planilha de presenca.
-  Tambem concentra metricas e mutacoes puras de slots da escala, alem de helpers puros de interacao da tabela de presenca.
+  Agregador historico dos helpers puros da tela de resultados. Mantem reexports de presenca, escala e CSV.
+- `frontend/src/screens/resultsPresenceDomain.js`
+  Helpers puros da planilha de presenca: zoom, ordenacao, filtros, linhas, totais, stats e opcoes de filtro.
+- `frontend/src/screens/resultsEscalaDomain.js`
+  Helpers puros da escala de resultados: metricas, nomes e mutacoes de slots.
+- `frontend/src/screens/resultsCsv.js`
+  Formatacao de valores e geracao de CSV para presenca e escala.
 - `frontend/src/screens/PublicFormScreen.jsx`
   Renderiza o preenchimento publico e tambem o modo interno `variant="internal"` para contas logadas, sem header publico.
   No modo interno, usa apenas um topo leve de contexto e nao expÃµe atalho visual para resultados.

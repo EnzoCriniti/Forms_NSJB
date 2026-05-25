@@ -440,6 +440,7 @@ Checklist operacional:
   - csv
   - filtros
   - estatisticas
+- iniciado neste ciclo: CSV saiu para `frontend/src/screens/resultsCsv.js`, helpers da escala para `frontend/src/screens/resultsEscalaDomain.js` e helpers da presenca para `frontend/src/screens/resultsPresenceDomain.js`; `resultsDomain.js` ficou como agregador historico.
   - formatacao
 - reforcar testes de CSV e filtros antes de mexer no comportamento
 
