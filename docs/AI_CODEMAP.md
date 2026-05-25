@@ -304,7 +304,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/eventsDomain.js`
   Helpers puros da tela de eventos: draft inicial, ordenacao por fixados/data, selecao de formularios visiveis, elegibilidade de mensagens e paginacao.
 - `frontend/src/features/events/components/eventsPanels.jsx`
-  Componentes compartilhados da area de eventos: card, editor, cabecalho de detalhe, abas, listagem, paginacao, modal de exclusao, lista de formularios e mensagens.
+  Componentes compartilhados da area de eventos: card, editor, cabecalho de detalhe, abas, listagem, paginacao, modal de exclusao e lista de formularios. Mantem reexports de compatibilidade.
+- `frontend/src/features/events/components/eventMessagesListPanel.jsx`
+  Lista visual de mensagens vinculadas a evento, incluindo empty states e linha clicavel com status/agendamento.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx`
   Componentes compartilhados do editor de mensagens de evento: painel de destinatarios e reexport do painel de agendamento.
 - `frontend/src/features/events/components/eventMessageManualPersonPicker.jsx`
