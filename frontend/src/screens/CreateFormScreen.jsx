@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
+import { COLORS, Btn } from "../components/ui";
 import { CreateFormTemplateBar } from "../components/CreateFormTemplateBar";
 import { FormBasicsPanel, FormContextPanel, FormHeaderPanel, FormModePanel, FormTypeSetupPanel } from "../features/forms/createFormPanels/setupPanels";
 import { FieldEditorPanel, PresenceFieldsPanel } from "../features/forms/createFormPanels/fieldPanels";
@@ -19,19 +19,8 @@ import {
 } from "./createFormDefaults";
 import {
   SCALE_PRESETS,
-  buildAppliedCatalogFieldDraft,
   buildFieldDraftDefaults,
-  buildFieldDraftFromExistingField,
-  buildFieldTypeTransition,
-  buildOpenFieldDraft,
 } from "./createFormFieldDraft";
-import {
-  buildFieldSavePayload,
-  mergeSavedField,
-} from "./createFormFieldSave";
-import {
-  normalizePeopleBaseBindings,
-} from "./createFormMemberBindings";
 import {
   appendScaleSection,
   buildScaleCatalogPatch,
@@ -40,12 +29,8 @@ import {
   updateScaleSection,
 } from "./createFormScaleDraft";
 import {
-  appendListItem,
   moveItem,
-  removeFieldById,
   removeListItemAtIndex,
-  toggleFieldShow,
-  updateListItemAtIndex,
 } from "./createFormListHelpers";
 import {
   addTotalLayoutField,
@@ -54,12 +39,11 @@ import {
 import {
   buildCreateFormFormatSelectionState,
   buildCreateFormInitialState,
-  buildCreateFormSaveOutcome,
 } from "./createFormState";
-import { buildCreateFormModeTransition } from "./createFormModeTransition";
 import { buildCreateFormDerivedState } from "./createFormDerivedState";
-import { buildCreateFormTemplatePayload, buildCreateFormTemplateState } from "./createFormTemplates";
-import { buildCreateFormPayload } from "./createFormPayload";
+import { buildCreateFormFieldHandlers } from "./createFormFieldHandlers";
+import { buildCreateFormTemplateHandlers } from "./createFormTemplateHandlers";
+import { buildCreateFormSubmitHandlers } from "./createFormSubmitHandlers";
 
 export const CreateFormScreen = ({
   onNavigate,
@@ -180,28 +164,41 @@ export const CreateFormScreen = ({
   const templateDescription = format === "presenca"
     ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes."
     : "secoes da escala, descricao, texto de fechamento e classificacoes.";
-  const updateFieldDraft = patch => {
-    setFieldDraft(current => ({
-      ...current,
-      ...(typeof patch === "function" ? patch(current) : patch),
-    }));
-  };
-  const updateFieldDraftValue = (key, value) => {
-    updateFieldDraft(current => ({
-      [key]: typeof value === "function" ? value(current[key]) : value,
-    }));
-  };
-  const setNType = value => updateFieldDraftValue("nType", value);
-  const setNFieldMode = value => updateFieldDraftValue("nFieldMode", value);
-  const setNCatalogId = value => updateFieldDraftValue("nCatalogId", value);
-  const setNLabel = value => updateFieldDraftValue("nLabel", value);
-  const setNRequired = value => updateFieldDraftValue("nRequired", value);
-  const setNGridRows = value => updateFieldDraftValue("nGridRows", value);
-  const setNGridCols = value => updateFieldDraftValue("nGridCols", value);
-  const setNValidation = value => updateFieldDraftValue("nValidation", value);
-  const handleModeSelect = nextMode => syncModeWithFields(nextMode);
-  const handleToggleFieldShow = fieldId => setFields(toggleFieldShow(fields, fieldId));
-  const handleRemoveField = fieldId => setFields(removeFieldById(fields, fieldId));
+  const {
+    addField,
+    addGridCol,
+    addGridRow,
+    applyFieldCatalog,
+    applyScalePreset,
+    handleModeSelect,
+    handleRemoveField,
+    handleToggleFieldShow,
+    openNewFieldDraft,
+    removeGridCol,
+    removeGridRow,
+    resetFieldDraft,
+    setFieldMode,
+    setFieldType,
+    setNLabel,
+    setNRequired,
+    setNValidation,
+    startEditField,
+    updateGridCol,
+    updateGridRow,
+  } = buildCreateFormFieldHandlers({
+    fieldDraft,
+    setFieldDraft,
+    fields,
+    setFields,
+    setFormMode,
+    resultsConfig,
+    setResultsConfig,
+    setPreset,
+    setTotalExpected,
+    filteredFieldCatalog,
+    hasPrimaryLinkedField,
+    canUseMembersBase,
+  });
   const handleMoveTotalLayout = (index, direction) => {
     setResultsConfig(current => ({ ...current, totalsLayout: moveItem(current.totalsLayout, index, direction) }));
   };
@@ -211,40 +208,10 @@ export const CreateFormScreen = ({
       totalsLayout: addTotalLayoutField(current.totalsLayout, field),
     }));
   };
-  const applyFieldDraftState = draft => setFieldDraft(draft);
-
-  const syncModeWithFields = nextMode => {
-    const transition = buildCreateFormModeTransition({
-      nextMode,
-      fields,
-      currentNFieldMode: nFieldMode,
-      currentNType: nType,
-      currentNCatalogId: nCatalogId,
-      currentResultsConfig: resultsConfig,
-    });
-    setPreset(null);
-    setFormMode(nextMode);
-    setFields(transition.fields);
-    setNType(transition.nextType);
-    setNCatalogId(transition.nextCatalogId);
-    setResultsConfig(transition.resultsConfig);
-    if (transition.totalExpected !== undefined) {
-      setTotalExpected(transition.totalExpected);
-    }
-    if (nextMode === FORM_MODES.GERAL) {
-      setTotalExpected("");
-    }
-  };
 
   const togLabel = id => setSelLabels(prev => prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]);
   const updateScale = (index, patch) => setScaleDraft(updateScaleSection(scaleDraft, index, patch));
   const addScale = () => setScaleDraft(appendScaleSection(scaleDraft));
-  const updateGridRow = (index, value) => setNGridRows(updateListItemAtIndex(nGridRows, index, value));
-  const removeGridRow = index => setNGridRows(removeListItemAtIndex(nGridRows, index));
-  const addGridRow = () => setNGridRows(appendListItem(nGridRows));
-  const updateGridCol = (index, value) => setNGridCols(updateListItemAtIndex(nGridCols, index, value));
-  const removeGridCol = index => setNGridCols(removeListItemAtIndex(nGridCols, index));
-  const addGridCol = () => setNGridCols(appendListItem(nGridCols));
   const togglePreview = () => setShowPreview(prev => !prev);
   const openPresetModal = () => setPresetModal(true);
   const closePresetModal = () => {
@@ -252,11 +219,6 @@ export const CreateFormScreen = ({
     setPresetName("");
   };
   const handlePresetNameChange = event => setPresetName(event.target.value);
-  const handleSubmitCurrentStatus = () => submitForm(status);
-  const closeSaveSuccess = () => {
-    setSaveSuccess(null);
-    goBack();
-  };
   const handleTitleChange = event => {
     if (shouldPresetTitle) return;
     setTitle(event.target.value);
@@ -273,72 +235,6 @@ export const CreateFormScreen = ({
   };
   const continueSetup = () => setSetupStep("editor");
 
-  const resetFieldDraft = () => {
-    applyFieldDraftState(buildFieldDraftDefaults({ hasPrimaryLinkedField }));
-  };
-
-  const openNewFieldDraft = () => {
-    applyFieldDraftState(buildOpenFieldDraft({ canUseMembersBase, hasPrimaryLinkedField }));
-  };
-
-  const startEditField = field => {
-    applyFieldDraftState(buildFieldDraftFromExistingField(field, { fields }));
-  };
-
-  const addField = () => {
-    const payload = buildFieldSavePayload({
-      fields,
-      editingFieldId,
-      nFieldMode,
-      nCatalogId,
-      nType,
-      nLabel,
-      nRequired,
-      nPersonRole,
-      nValidation,
-      nGridRows,
-      nGridCols,
-      filteredFieldCatalog,
-    });
-    if (!payload) return;
-    const nextField = mergeSavedField(payload);
-    const nextFields = editingFieldId
-      ? fields.map(field => (field.id === editingFieldId ? nextField : field))
-      : [...fields, nextField];
-    setFields(normalizePeopleBaseBindings(nextFields));
-    resetFieldDraft();
-  };
-
-  const applyFieldCatalog = catalogId => {
-    const draft = buildAppliedCatalogFieldDraft({
-      catalogId,
-      filteredFieldCatalog,
-      hasPrimaryLinkedField,
-      currentDraft: fieldDraft,
-    });
-    if (!draft) {
-      setNCatalogId(catalogId);
-      return;
-    }
-    applyFieldDraftState(draft);
-  };
-
-  const setFieldMode = mode => {
-    setNFieldMode(mode);
-    if (mode === "local") setNCatalogId("");
-  };
-
-  const setFieldType = nextType => {
-    const transition = buildFieldTypeTransition({ nextType, hasPrimaryLinkedField });
-    updateFieldDraft({
-      nType: transition.nType,
-      nPersonRole: transition.nPersonRole,
-      nGridRows: transition.nGridRows,
-      nGridCols: transition.nGridCols,
-      nValidation: transition.nValidation,
-    });
-  };
-
   const setScaleMode = (index, mode) => {
     updateScale(index, buildScaleModePatch(mode));
   };
@@ -348,85 +244,56 @@ export const CreateFormScreen = ({
   };
   const updateScaleLimit = value => setScaleLimit(value);
   const removeScaleSection = index => setScaleDraft(removeListItemAtIndex(scaleDraft, index));
-
-  const applyTemplate = templateId => {
-    setPreset(templateId || null);
-    if (!templateId) {
-      const defaultFields = createDefaultPresenceFields(formMode);
-      if (format === "presenca") {
-        setFields(defaultFields);
-        setResultsConfig(createDefaultResultsConfig(defaultFields));
-      } else {
-        setScaleDraft(createDefaultScaleSections());
-        setScaleLimit(1);
-      }
-      return;
-    }
-    const found = presets.find(item => String(item.id) === String(templateId));
-    if (!found) return;
-    const nextState = buildCreateFormTemplateState(found);
-    setFormat(nextState.format);
-    setFormMode(nextState.formMode);
-    if (nextState.fields) setFields(nextState.fields);
-    if (nextState.scaleDraft) setScaleDraft(nextState.scaleDraft);
-    if (nextState.desc !== null) setDesc(nextState.desc);
-    if (nextState.closingText !== null) setClosingText(nextState.closingText);
-    if (nextState.selLabels) setSelLabels(nextState.selLabels);
-    setResultsConfig(nextState.resultsConfig);
-    setScaleLimit(nextState.scaleLimit);
-  };
-  const clearTemplate = () => applyTemplate(null);
-
-  const saveAsTemplate = async () => {
-    if (!presetName.trim()) return;
-    await onSavePreset(buildCreateFormTemplatePayload({
-      type: format,
-      presetName,
-      desc,
-      closingText,
-      selLabels,
-      format,
-      formMode,
-      fields,
-      resultsConfig,
-      scaleLimit,
-      scaleDraft,
-    }));
-    setPresetName("");
-    setPresetModal(false);
-  };
-
-  const applyScalePreset = cols => setNGridCols(cols);
-
-  const submitForm = async nextStatus => {
-    setSaving(true);
-    setSaveError("");
-    try {
-      await onSaveForm(buildCreateFormPayload({
-        form,
-        format,
-        formMode,
-        status: nextStatus,
-        formTitle,
-        desc,
-        selLabels,
-        eventDate,
-        closingDate,
-        closingText,
-        totalExpected,
-        resultsConfig,
-        scaleLimit,
-        fields,
-        scaleDraft,
-        linkedPeopleField,
-      }));
-      setSaveSuccess(buildCreateFormSaveOutcome({ form, isDuplicateMode }));
-    } catch (error) {
-      setSaveError(resolveActionErrorMessage(error));
-    } finally {
-      setSaving(false);
-    }
-  };
+  const { applyTemplate, clearTemplate, saveAsTemplate } = buildCreateFormTemplateHandlers({
+    presets,
+    presetName,
+    setPresetName,
+    setPresetModal,
+    onSavePreset,
+    format,
+    setFormat,
+    formMode,
+    setFormMode,
+    desc,
+    setDesc,
+    closingText,
+    setClosingText,
+    selLabels,
+    setSelLabels,
+    fields,
+    setFields,
+    resultsConfig,
+    setResultsConfig,
+    scaleLimit,
+    setScaleLimit,
+    scaleDraft,
+    setScaleDraft,
+    setPreset,
+  });
+  const { closeSaveSuccess, handleSubmitCurrentStatus } = buildCreateFormSubmitHandlers({
+    onSaveForm,
+    goBack,
+    status,
+    form,
+    isDuplicateMode,
+    format,
+    formMode,
+    formTitle,
+    desc,
+    selLabels,
+    eventDate,
+    closingDate,
+    closingText,
+    totalExpected,
+    resultsConfig,
+    scaleLimit,
+    fields,
+    scaleDraft,
+    linkedPeopleField,
+    setSaving,
+    setSaveError,
+    setSaveSuccess,
+  });
 
   return (
     <div>

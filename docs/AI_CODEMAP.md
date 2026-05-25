@@ -316,6 +316,12 @@ Mapa curto das areas mais mexidas por agentes.
   Defaults de grade, presets e transicoes do rascunho de campo da criacao de formulario.
 - `frontend/src/screens/createFormFieldSave.js`
   Payload intermediario, validacao e merge do salvamento de campos na criacao de formulario.
+- `frontend/src/screens/createFormFieldHandlers.js`
+  Handlers do editor de campos da criacao de formulario: modo estrutural, rascunho de campo, grade, catalogo e salvamento local do campo.
+- `frontend/src/screens/createFormTemplateHandlers.js`
+  Handlers de aplicacao, limpeza e salvamento de templates da criacao de formulario.
+- `frontend/src/screens/createFormSubmitHandlers.js`
+  Handlers de submit do formulario, montagem do payload final, erro de acao e modal de sucesso.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
