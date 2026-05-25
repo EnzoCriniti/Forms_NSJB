@@ -46,6 +46,8 @@ Mapa curto das areas mais mexidas por agentes.
   Seletor da aba de catalogos administrativos, alternando entre campos base e tarefas base.
 - `frontend/src/features/admin/FieldCatalogPanel.jsx`
   Editor e lista de campos base do catalogo administrativo.
+- `frontend/src/features/admin/FieldCatalogListPanel.jsx`
+  Lista paginada de campos base do catalogo administrativo, incluindo acoes de editar e remover.
 - `frontend/src/features/admin/FieldCatalogSelectionSourcePanel.jsx`
   Bloco visual do vinculo de campos `person_select` do catalogo administrativo, alternando entre base central de socios e base externa sincronizada.
 - `frontend/src/features/admin/ScaleTaskCatalogPanel.jsx`

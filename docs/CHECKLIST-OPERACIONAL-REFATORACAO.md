@@ -644,6 +644,7 @@ Checklist operacional:
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar editor de campo, lista de campos, editor de tarefa e lista de tarefas.
 - iniciado neste ciclo: bloco de vinculo de campos `person_select` saiu de `FieldCatalogPanel.jsx` para `FieldCatalogSelectionSourcePanel.jsx`.
+- iniciado neste ciclo: lista paginada de campos base saiu de `FieldCatalogPanel.jsx` para `FieldCatalogListPanel.jsx`.
 - pendente apos revisao: blocos de modelos e presets de mensagens ainda podem ser quebrados em editor e lista se voltarem a crescer.
 - concluido neste ciclo: `adminCatalogPanels.jsx` ficou como seletor fino; editores/listas de campos e tarefas foram movidos para `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx`.
 
