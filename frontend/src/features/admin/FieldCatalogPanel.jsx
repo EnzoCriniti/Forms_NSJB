@@ -1,11 +1,12 @@
 import React from "react";
-import { Btn, COLORS, NotePanel, SplitSection, SurfacePanel } from "../../components/ui";
+import { Btn, COLORS, NotePanel, SplitSection } from "../../components/ui";
 import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../lib/gridDefaults";
 import { AdminField } from "./adminField";
 import { FieldCatalogPreview } from "./adminFieldPreview";
 import { GridSchemaEditor } from "./adminGridSchemaEditor";
 import { PaginatedList } from "./adminPaginatedList";
 import { ADMIN_INPUT_STYLE, fieldCategoryLabels, fieldTypeLabels, getExternalBaseName, normalizeIdentifier } from "./adminSettingsConstants";
+import { FieldCatalogSelectionSourcePanel } from "./FieldCatalogSelectionSourcePanel";
 
 export const FieldCatalogPanel = ({
   fieldCatalogDraft,
@@ -65,58 +66,11 @@ export const FieldCatalogPanel = ({
           />
         )}
         {fieldCatalogDraft.type === "person_select" && (
-          <SurfacePanel style={{ display: "grid", gap: 10 }}>
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 6 }}>Vinculo do campo</label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
-                <button
-                  onClick={() => setFieldCatalogDraft({ ...fieldCatalogDraft, selectionSource: { kind: "members" } })}
-                  style={{ border: `1px solid ${fieldCatalogDraft.selectionSource?.kind !== "external_base" ? COLORS.primary : COLORS.border}`, background: fieldCatalogDraft.selectionSource?.kind !== "external_base" ? COLORS.primaryLight : COLORS.surface, color: fieldCatalogDraft.selectionSource?.kind !== "external_base" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}
-                >
-                  <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Base central de socios</strong>
-                  <span style={{ fontSize: 11 }}>Usa a base central como origem.</span>
-                </button>
-                <button
-                  onClick={() => setFieldCatalogDraft({ ...fieldCatalogDraft, selectionSource: { kind: "external_base", externalBaseId: fieldCatalogDraft.selectionSource?.externalBaseId || (externalBases.find(base => base.active !== false)?.id || "") } })}
-                  style={{ border: `1px solid ${fieldCatalogDraft.selectionSource?.kind === "external_base" ? COLORS.primary : COLORS.border}`, background: fieldCatalogDraft.selectionSource?.kind === "external_base" ? COLORS.primaryLight : COLORS.surface, color: fieldCatalogDraft.selectionSource?.kind === "external_base" ? COLORS.primary : COLORS.textSecondary, borderRadius: 10, padding: "10px 12px", textAlign: "left", minHeight: 72 }}
-                >
-                  <strong style={{ display: "block", fontSize: 12, marginBottom: 4 }}>Base externa sincronizada</strong>
-                  <span style={{ fontSize: 11 }}>Aponta para uma lista sincronizada.</span>
-                </button>
-              </div>
-              {fieldCatalogDraft.selectionSource?.kind === "external_base" && (
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Base externa vinculada</label>
-                  <select
-                    value={fieldCatalogDraft.selectionSource?.externalBaseId || ""}
-                    onChange={e => setFieldCatalogDraft({ ...fieldCatalogDraft, selectionSource: { kind: "external_base", externalBaseId: e.target.value } })}
-                    style={ADMIN_INPUT_STYLE}
-                  >
-                    <option value="">Selecione uma base externa</option>
-                    {externalBases.filter(base => base.active !== false).map(base => <option key={base.id} value={base.id}>{base.name}</option>)}
-                  </select>
-                  <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-                    O campo vai usar as opcoes sincronizadas desta base como origem.
-                  </div>
-                </div>
-              )}
-              {fieldCatalogDraft.selectionSource?.kind !== "external_base" && (
-                <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-                  O campo usa a base central de socios como origem.
-                </div>
-              )}
-              <div style={{ marginTop: 10, padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
-                <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.4, color: COLORS.textMuted, marginBottom: 4 }}>
-                  Resumo do vinculo
-                </div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>
-                  {fieldCatalogDraft.selectionSource?.kind === "external_base"
-                    ? `Base externa sincronizada: ${getExternalBaseName(externalBases, fieldCatalogDraft.selectionSource?.externalBaseId)}`
-                    : "Base central de socios"}
-                </div>
-              </div>
-            </div>
-          </SurfacePanel>
+          <FieldCatalogSelectionSourcePanel
+            draft={fieldCatalogDraft}
+            externalBases={externalBases}
+            onChangeDraft={setFieldCatalogDraft}
+          />
         )}
         <AdminField>
           <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Observacoes internas</label>
