@@ -9,7 +9,14 @@ import { resolveAppNavigation } from "../../frontend/src/lib/appNavigation.js";
 import { buildPublicEventFormPath, getPublicRouteFromLocation } from "../../frontend/src/lib/appPublicRoutes.js";
 import { normalizeStoredSession } from "../../frontend/src/lib/appSession.js";
 import { buildAppShellDerivedState } from "../../frontend/src/lib/appShellDerivedState.js";
-import { buildAppShellData, buildAppShellState } from "../../frontend/src/lib/appShellBuilder.js";
+import {
+  buildAppShellActions,
+  buildAppShellData,
+  buildAppShellPermissions,
+  buildAppShellRuntimeState,
+  buildAppShellSetters,
+  buildAppShellState,
+} from "../../frontend/src/lib/appShellBuilder.js";
 import { buildAppViewportProps } from "../../frontend/src/lib/appViewportProps.js";
 import { resolveAppDetailLoadRequest, resolveAppViewportTargetState } from "../../frontend/src/lib/appDetailTarget.js";
 import { selectEventForms, selectEventMessage, selectFormResponses, selectFormSections } from "../../frontend/src/lib/appShellContentSelectors.js";
@@ -170,6 +177,84 @@ describe("appShell derived state", () => {
       editingForm: { id: 2 },
       draftForm: { title: "Novo" },
     });
+  });
+
+  it("monta blocos runtime de state, actions, setters e permissoes do shell", () => {
+    const canCreateForms = user => user?.role === "admin";
+    const navigate = vi.fn();
+    const setTheme = vi.fn();
+    const setScreen = vi.fn();
+    const sessionHandlers = {
+      increaseFontScale: vi.fn(),
+      decreaseFontScale: vi.fn(),
+      login: vi.fn(),
+      logout: vi.fn(),
+    };
+    const state = buildAppShellState({
+      activeEvent: { id: 9 },
+      activeEventId: 9,
+      activeForm: { id: 1 },
+      activeMessageId: 3,
+      draftForm: { title: "Novo" },
+      editingForm: { id: 2 },
+      fontScale: 1,
+      pinnedEventIds: [9],
+      pinnedFormIds: [1],
+      publicForm: null,
+      publicResultsEnabled: false,
+      publicResultsView: false,
+      publicRoute: null,
+      screen: "events",
+    });
+
+    expect(buildAppShellRuntimeState({
+      canCreateForms,
+      currentUser: { role: "admin" },
+      formDeleteKeyConfigured: true,
+      state,
+      theme: "dark",
+    })).toMatchObject({
+      nav: [
+        { key: "dashboard", icon: "chart", label: "Dashboard" },
+        { key: "events", icon: "calendar", label: "Eventos" },
+      ],
+      screen: "events",
+      theme: "dark",
+      formDeleteKeyConfigured: true,
+    });
+
+    const actions = buildAppShellActions({
+      adminHandlers: { onSaveUser: vi.fn() },
+      eventHandlers: { onSaveEvent: vi.fn() },
+      formHandlers: { onSaveForm: vi.fn() },
+      navigate,
+      sessionHandlers,
+      setTheme,
+      theme: "dark",
+    });
+
+    actions.onOpenSettings();
+    actions.onToggleTheme();
+
+    expect(navigate).toHaveBeenCalledWith("settings");
+    expect(setTheme).toHaveBeenCalledWith("light");
+    expect(actions.onLogin).toBe(sessionHandlers.login);
+    expect(actions.onSaveUser).toBeTypeOf("function");
+    expect(actions.onSaveEvent).toBeTypeOf("function");
+    expect(actions.onSaveForm).toBeTypeOf("function");
+
+    const setters = buildAppShellSetters({
+      setActiveEventId: vi.fn(),
+      setActiveFormId: vi.fn(),
+      setActiveMessageId: vi.fn(),
+      setDraftForm: vi.fn(),
+      setEditingFormId: vi.fn(),
+      setScreen,
+    });
+
+    expect(setters).toHaveProperty("setActiveMessageId");
+    expect(setters.setScreen).toBe(setScreen);
+    expect(buildAppShellPermissions({ canCreateForms }).canCreateForms({ role: "admin" })).toBe(true);
   });
 
   it("monta seletores derivados do shell", () => {

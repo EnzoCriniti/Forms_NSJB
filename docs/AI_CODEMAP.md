@@ -258,7 +258,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appShellObject.js`
   Montagem do objeto entregue ao viewport e ao shell autenticado a partir de blocos de estado, dados, acoes e setters.
 - `frontend/src/lib/appShellBuilder.js`
-  Composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`, incluindo helpers puros para montar os blocos `data` e `state` fora de `App.jsx`.
+  Composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`, incluindo helpers puros para montar os blocos `data`, `state`, `actions`, `setters` e `permissions` fora de `App.jsx`.
 - `frontend/src/lib/appLifecycleEffects.js`
   Hook dos efeitos de ciclo de vida do shell principal: persistencia, bootstrap inicial, rota publica, detalhes e validacao de sessao.
 - `frontend/src/lib/appSessionActions.js`

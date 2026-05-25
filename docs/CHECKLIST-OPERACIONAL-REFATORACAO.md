@@ -94,7 +94,8 @@ Checklist operacional:
 - iniciado neste ciclo: selecao dos blocos do bootstrap consumidos pelo controller saiu para `frontend/src/lib/appControllerBootstrap.js`.
 - iniciado neste ciclo: montagem dos inputs internos do controller saiu para `frontend/src/lib/appControllerInputs.js`, reduzindo a composicao manual em `appController.js`.
 - pendente apos revisao: `appController.js` ainda monta muitos blocos de handlers e dependencias transversais; proximo corte deve reduzir a composicao manual ou separar blocos de estado por dominio antes de criar novas acoes ali.
-- pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; `App.jsx` ja delega a composicao detalhada para `appShellBuilder.js`, mas ainda vale reavaliar se `AppViewport` e `AppShellContent` podem receber blocos por dominio.
+- iniciado neste ciclo: `appShellBuilder.js` passou a montar `state`, `actions`, `setters` e `permissions` por helpers puros antes de chamar `buildShellApp`, reduzindo a composicao inline.
+- pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; ainda vale reavaliar se `AppViewport` e `AppShellContent` podem receber blocos por dominio.
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`

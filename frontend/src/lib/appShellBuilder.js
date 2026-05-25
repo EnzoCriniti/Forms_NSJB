@@ -73,6 +73,74 @@ export const buildAppShellState = ({
   draftForm,
 });
 
+export const buildAppShellRuntimeState = ({
+  canCreateForms,
+  currentUser,
+  formDeleteKeyConfigured,
+  state,
+  theme,
+}) => ({
+  nav: buildAppNavItems({ currentUser, canCreateForms }),
+  screen: state.screen,
+  currentUser,
+  theme,
+  fontScale: state.fontScale,
+  publicForm: state.publicForm,
+  publicRoute: state.publicRoute,
+  publicResultsEnabled: state.publicResultsEnabled,
+  publicResultsView: state.publicResultsView,
+  pinnedEventIds: state.pinnedEventIds,
+  pinnedFormIds: state.pinnedFormIds,
+  activeEventId: state.activeEventId,
+  activeMessageId: state.activeMessageId,
+  activeEvent: state.activeEvent,
+  activeForm: state.activeForm,
+  editingForm: state.editingForm,
+  draftForm: state.draftForm,
+  formDeleteKeyConfigured,
+});
+
+export const buildAppShellActions = ({
+  adminHandlers,
+  eventHandlers,
+  formHandlers,
+  navigate,
+  sessionHandlers,
+  setTheme,
+  theme,
+}) => ({
+  onNavigate: navigate,
+  onIncreaseFontScale: sessionHandlers.increaseFontScale,
+  onDecreaseFontScale: sessionHandlers.decreaseFontScale,
+  onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
+  onOpenSettings: () => navigate("settings"),
+  onLogin: sessionHandlers.login,
+  onLogout: sessionHandlers.logout,
+  ...eventHandlers,
+  ...formHandlers,
+  ...adminHandlers,
+});
+
+export const buildAppShellSetters = ({
+  setActiveEventId,
+  setActiveFormId,
+  setActiveMessageId,
+  setDraftForm,
+  setEditingFormId,
+  setScreen,
+}) => ({
+  setActiveMessageId,
+  setActiveEventId,
+  setScreen,
+  setDraftForm,
+  setEditingFormId,
+  setActiveFormId,
+});
+
+export const buildAppShellPermissions = ({ canCreateForms }) => ({
+  canCreateForms,
+});
+
 export const buildAppShell = ({
   adminHandlers,
   canCreateForms,
@@ -93,48 +161,30 @@ export const buildAppShell = ({
   state,
   theme,
 }) => buildShellApp({
-  state: {
-    nav: buildAppNavItems({ currentUser, canCreateForms }),
-    screen: state.screen,
+  state: buildAppShellRuntimeState({
+    canCreateForms,
     currentUser,
-    theme,
-    fontScale: state.fontScale,
-    publicForm: state.publicForm,
-    publicRoute: state.publicRoute,
-    publicResultsEnabled: state.publicResultsEnabled,
-    publicResultsView: state.publicResultsView,
-    pinnedEventIds: state.pinnedEventIds,
-    pinnedFormIds: state.pinnedFormIds,
-    activeEventId: state.activeEventId,
-    activeMessageId: state.activeMessageId,
-    activeEvent: state.activeEvent,
-    activeForm: state.activeForm,
-    editingForm: state.editingForm,
-    draftForm: state.draftForm,
     formDeleteKeyConfigured,
-  },
+    state,
+    theme,
+  }),
   data,
-  actions: {
-    onNavigate: navigate,
-    onIncreaseFontScale: sessionHandlers.increaseFontScale,
-    onDecreaseFontScale: sessionHandlers.decreaseFontScale,
-    onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
-    onOpenSettings: () => navigate("settings"),
-    onLogin: sessionHandlers.login,
-    onLogout: sessionHandlers.logout,
-    ...eventHandlers,
-    ...formHandlers,
-    ...adminHandlers,
-  },
-  setters: {
+  actions: buildAppShellActions({
+    adminHandlers,
+    eventHandlers,
+    formHandlers,
+    navigate,
+    sessionHandlers,
+    setTheme,
+    theme,
+  }),
+  setters: buildAppShellSetters({
     setActiveMessageId,
     setActiveEventId,
     setScreen,
     setDraftForm,
     setEditingFormId,
     setActiveFormId,
-  },
-  permissions: {
-    canCreateForms,
-  },
+  }),
+  permissions: buildAppShellPermissions({ canCreateForms }),
 });
