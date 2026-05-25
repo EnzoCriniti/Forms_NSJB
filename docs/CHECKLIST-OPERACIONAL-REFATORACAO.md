@@ -263,6 +263,7 @@ Problemas que precisam ser corrigidos:
 
 Checklist operacional:
 - separar formatacao, leitura de campos, modo do formulario e regras de resposta
+- iniciado neste ciclo: formatacao/busca saiu para `frontend/src/lib/formFormatting.js`, leitura de campos/modos para `frontend/src/lib/formFieldAccess.js` e resultados/respostas para `frontend/src/lib/formResults.js`; `frontend/src/lib/forms.js` ficou como agregador de compatibilidade.
 - manter aqui o contrato de leitura usado pela UI, nao uma copia de regras do backend
 - alinhar `FORM_MODES`, `getFormMode`, `isMembersSelectionField`, `isExternalBaseSelectionField` e `getResultsConfig` com a regra server-side
 - reduzir acoplamento entre selecao de pessoa e form mode

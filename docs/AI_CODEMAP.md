@@ -374,9 +374,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   UI compartilhada da navegacao e resumo da central administrativa.
 - `frontend/src/lib/forms.js`
-  Helpers para detectar campo principal e campos auxiliares ligados a pessoas e ajustar comportamentos de resultados.
-  Tambem centraliza a leitura da origem `members` vs `external_base`.
-  Tambem resolve o modo estrutural com `FORM_MODES`, reexportado de `shared/formModes.mjs`, `getFormMode` e `getFormModeLabel`.
+  Agregador historico dos helpers de formulario. Mantem reexports de formatacao, leitura de campos/modos e resultados.
+- `frontend/src/lib/formFieldAccess.js`
+  Helpers de leitura de campos, origem de selecao, campo principal de pessoa e modo estrutural do formulario.
+- `frontend/src/lib/formFormatting.js`
+  Formatacao de data/hora e busca textual de formularios.
+- `frontend/src/lib/formResults.js`
+  Helpers de leitura de respostas, configuracao de resultados, formulario publico fechado e reexports das regras compartilhadas.
 - `frontend/src/lib/gridDefaults.js`
   Fonte de verdade para linhas, colunas e presets padrao dos campos de grade usados na criacao de formulario e no admin.
 - `shared/formModes.mjs`
