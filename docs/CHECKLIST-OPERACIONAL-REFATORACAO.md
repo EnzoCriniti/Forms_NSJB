@@ -605,7 +605,7 @@ Teste a reforcar:
 Problemas que precisam ser corrigidos:
 - o modulo mistura constantes, labels, normalizacao, preview de campo, editor de matriz, paginação e painel de auditoria
 - ha duplicacao com `createFormDomain.js` em defaults de grade e presets
-- `AuditLogsPanel` tem carga, filtros, paginação e tabela no mesmo arquivo
+- `AuditLogsPanel` tinha carga, filtros, paginacao e tabela no mesmo arquivo
 
 Checklist operacional:
 - quebrar o arquivo em modulos menores por assunto:
@@ -616,6 +616,7 @@ Checklist operacional:
   - logs de auditoria
   - lista paginada
 - iniciado: constantes/labels/normalizadores, lista paginada, preview, editor de grade, auditoria e wrapper de campo sairam para modulos `adminSettingsConstants.js`, `adminPaginatedList.jsx`, `adminFieldPreview.jsx`, `adminGridSchemaEditor.jsx`, `adminAuditLogsPanel.jsx` e `adminField.jsx`
+- iniciado neste ciclo: filtros, barra de resumo, barra de paginacao e tabela da auditoria sairam para `AuditLogsFiltersPanel.jsx`, `AuditLogsSummaryBar.jsx`, `AuditLogsPaginationBar.jsx` e `AuditLogsTable.jsx`; `AuditLogsPanel.jsx` ficou como composicao fina.
 - consumidores administrativos migrados para imports diretos dos modulos menores; `adminSettingsShared.jsx` permanece apenas como reexport de compatibilidade
 - concluido: query, filtros e paginacao da auditoria sairam para `adminAuditLogsState.js`
 - concluido: `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS` e `SCALE_PRESETS` foram centralizados em `frontend/src/lib/gridDefaults.js`

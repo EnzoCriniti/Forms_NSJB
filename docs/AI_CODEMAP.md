@@ -97,7 +97,17 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminGridSchemaEditor.jsx`
   Editor de linhas, colunas e presets dos campos de grade do admin.
 - `frontend/src/features/admin/adminAuditLogsPanel.jsx`
-  Painel de auditoria administrativa com filtros, carregamento e tabela.
+  Agregador historico do painel de auditoria administrativa. Mantem o wrapper fino e reexports de compatibilidade.
+- `frontend/src/features/admin/AuditLogsPanel.jsx`
+  Composicao visual da auditoria administrativa.
+- `frontend/src/features/admin/AuditLogsFiltersPanel.jsx`
+  Bloco de filtros da auditoria administrativa.
+- `frontend/src/features/admin/AuditLogsSummaryBar.jsx`
+  Barra de resumo e acoes da auditoria administrativa.
+- `frontend/src/features/admin/AuditLogsPaginationBar.jsx`
+  Barra de paginacao da auditoria administrativa.
+- `frontend/src/features/admin/AuditLogsTable.jsx`
+  Tabela de logs da auditoria administrativa.
 - `frontend/src/features/admin/adminAuditLogsState.js`
   Estado, query e paginacao dos logs de auditoria administrativa.
 - `frontend/src/features/admin/adminField.jsx`
