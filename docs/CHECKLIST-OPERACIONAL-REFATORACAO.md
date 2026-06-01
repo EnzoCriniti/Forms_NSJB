@@ -642,6 +642,8 @@ Teste a reforcar:
 - `tests/ui/messagingSettingsPanel.test.jsx`
 
 ### `frontend/src/features/admin/adminAccessPanels.jsx`
+### `frontend/src/features/admin/UsersManagementPanel.jsx`
+### `frontend/src/features/admin/ExternalBasesPanel.jsx`
 ### `frontend/src/features/admin/adminCatalogPanels.jsx`
 ### `frontend/src/features/admin/adminOrganizationPanels.jsx`
 ### `frontend/src/features/admin/adminSecurityPanels.jsx`
@@ -651,6 +653,7 @@ Checklist operacional:
 - manter estes arquivos como UI de dominio
 - nao reintroduzir submit, validacao ou persistencia diretamente neles
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
+- iniciado neste ciclo: `adminAccessPanels.jsx` ficou como agregador historico; usuarios e bases externas sairam para `UsersManagementPanel.jsx` e `ExternalBasesPanel.jsx`.
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar editor de campo, lista de campos, editor de tarefa e lista de tarefas.
 - iniciado neste ciclo: bloco de vinculo de campos `person_select` saiu de `FieldCatalogPanel.jsx` para `FieldCatalogSelectionSourcePanel.jsx`.
 - iniciado neste ciclo: lista paginada de campos base saiu de `FieldCatalogPanel.jsx` para `FieldCatalogListPanel.jsx`.

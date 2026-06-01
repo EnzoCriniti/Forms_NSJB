@@ -55,7 +55,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/messagingSettingsActions.js`
   Executor compartilhado de acoes assíncronas dos blocos de mensagens administrativas: busy, feedback, sucesso e erro.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
-  Paineis compartilhados da administracao de usuarios e bases externas.
+  Agregador historico dos paineis de usuarios e bases externas. Mantem reexports de compatibilidade.
+- `frontend/src/features/admin/UsersManagementPanel.jsx`
+  Painel de administracao de usuarios.
+- `frontend/src/features/admin/ExternalBasesPanel.jsx`
+  Painel de administracao de bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Seletor da aba de catalogos administrativos, alternando entre campos base e tarefas base.
 - `frontend/src/features/admin/FieldCatalogPanel.jsx`
@@ -446,7 +450,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUD visual de campos base agora permite definir a origem do `person_select` no catalogo, incluindo base central ou base externa sincronizada.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
-  Componentes compartilhados para usuarios e bases externas fora do modal principal.
+  Agregador historico dos paineis de usuarios e bases externas fora do modal principal. Mantem reexports de compatibilidade.
+- `frontend/src/features/admin/UsersManagementPanel.jsx`
+  Painel de administracao de usuarios fora do modal principal.
+- `frontend/src/features/admin/ExternalBasesPanel.jsx`
+  Painel de administracao de bases externas fora do modal principal.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Componentes compartilhados da aba de catalogos administrativos, com formulÃ¡rios e listas de campos e tarefas.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
