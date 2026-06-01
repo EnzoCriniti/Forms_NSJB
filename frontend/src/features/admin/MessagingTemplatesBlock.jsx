@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Btn, COLORS, ConfirmModal, FeedbackBanner } from "../../components/ui";
 import { runMessagingSettingsAction } from "./messagingSettingsActions";
+import { MessagingTemplatesList } from "./MessagingTemplatesList";
 import { MESSAGE_TYPE_LABELS, emptyMessageTemplateDraft, messagingInputStyle } from "./messagingSettingsShared";
 
 export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
@@ -80,27 +81,11 @@ export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
           </div>
         </div>
       </div>
-      <div>
-        <h4 style={{ margin: "0 0 10px" }}>Modelos existentes</h4>
-        {templates.length === 0 ? (
-          <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-            Nenhum modelo cadastrado.
-          </div>
-        ) : (
-          <div style={{ display: "grid", gap: 10 }}>
-            {templates.map(template => (
-              <div key={template.id} className="settings-row">
-                <div style={{ minWidth: 0, flex: 1 }}>
-                  <strong>{template.name}</strong>
-                  <div>{MESSAGE_TYPE_LABELS[template.type] || template.type}</div>
-                </div>
-                <Btn v="secondary" sz="sm" onClick={() => setDraft({ id: template.id, name: template.name, type: template.type, body: template.body })}>Editar</Btn>
-                <Btn v="danger" sz="sm" onClick={() => setPendingDelete(template)}>Remover</Btn>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <MessagingTemplatesList
+        templates={templates}
+        onEdit={template => setDraft({ id: template.id, name: template.name, type: template.type, body: template.body })}
+        onRequestDelete={setPendingDelete}
+      />
       <ConfirmModal
         open={Boolean(pendingDelete)}
         title="Remover modelo"
