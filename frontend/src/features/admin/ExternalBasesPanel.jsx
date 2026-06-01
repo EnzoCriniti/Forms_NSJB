@@ -1,7 +1,7 @@
 import React from "react";
-import { Btn, COLORS, SplitSection } from "../../components/ui";
-import { PaginatedList } from "./adminPaginatedList";
+import { SplitSection } from "../../components/ui";
 import { ExternalBasesEditorPanel } from "./ExternalBasesEditorPanel";
+import { ExternalBasesListPanel } from "./ExternalBasesListPanel";
 
 export const ExternalBasesPanel = ({
   externalBaseDraft,
@@ -26,25 +26,11 @@ export const ExternalBasesPanel = ({
       />
     )}
     right={(
-      <PaginatedList
-        items={externalBases}
-        emptyText="Nenhuma base externa cadastrada."
-        renderItem={base => (
-          <div key={base.id} className="settings-row">
-            <div>
-              <strong>{base.name}</strong>
-              <div>{base.active === false ? "Inativa" : "Ativa"} â€¢ {base.items?.length || 0} opcao(oes) â€¢ {base.lastSyncedAt ? `Sincronizada em ${new Date(base.lastSyncedAt).toLocaleString("pt-BR")}` : "Ainda nao sincronizada"}</div>
-              {base.description && <div>{base.description}</div>}
-            </div>
-            <Btn v="secondary" sz="sm" onClick={() => setExternalBaseDraft({ ...base, syncEnabled: base.syncEnabled !== false })}>Editar</Btn>
-            <Btn v="danger" sz="sm" onClick={() => requestDelete(
-              "Excluir base externa",
-              `Tem certeza que deseja excluir a base externa ${base.name}?`,
-              "Excluir",
-              () => onDeleteExternalBase(base.id),
-            )}>Remover</Btn>
-          </div>
-        )}
+      <ExternalBasesListPanel
+        externalBases={externalBases}
+        requestDelete={requestDelete}
+        onDeleteExternalBase={onDeleteExternalBase}
+        setExternalBaseDraft={setExternalBaseDraft}
       />
     )}
   />
