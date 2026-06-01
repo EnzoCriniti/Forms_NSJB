@@ -636,6 +636,7 @@ Checklist operacional:
 - concluido neste ciclo: `messagingSettingsPanels.jsx` virou agregador historico; configuracao, modelos e presets foram movidos para `MessagingConfigBlock.jsx`, `MessagingTemplatesBlock.jsx` e `MessagingPresetsBlock.jsx`.
 - iniciado neste ciclo: fluxo assíncrono de salvar/remover modelos e presets saiu para `messagingSettingsActions.js`.
 - iniciado neste ciclo: lista visual de modelos de mensagem saiu para `MessagingTemplatesList.jsx`.
+- iniciado neste ciclo: lista visual de presets de pessoas saiu para `MessagingPresetsList.jsx`.
 
 Teste a reforcar:
 - `tests/ui/messagingSettingsPanel.test.jsx`
