@@ -63,11 +63,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/MessagingTemplatesList.jsx`
   Lista visual de modelos de mensagens administrativas, incluindo acoes de editar e remover.
 - `frontend/src/features/admin/MessagingPresetsBlock.jsx`
-  Composicao visual do editor e da lista de presets de pessoas para mensagens administrativas.
+  Composicao visual do editor e da lista de presets de pessoas para mensagens administrativas; estado e confirmacao ficam em `useMessagingPresetsController.js`.
 - `frontend/src/features/admin/MessagingPresetsEditorPanel.jsx`
   Editor de presets de pessoas para mensagens administrativas.
 - `frontend/src/features/admin/MessagingPresetsList.jsx`
   Lista visual de presets de pessoas para mensagens administrativas, incluindo acoes de editar e remover.
+- `frontend/src/features/admin/useMessagingPresetsController.js`
+  Controller local do bloco de presets de pessoas: estado, filtro, ordenacao, submit e confirmacao.
 - `frontend/src/features/admin/messagingSettingsShared.js`
   Labels, drafts vazios e estilo de input compartilhados pelos blocos de mensagens administrativas.
 - `frontend/src/features/admin/messagingSettingsActions.js`
