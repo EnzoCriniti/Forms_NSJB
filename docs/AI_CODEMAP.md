@@ -133,7 +133,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminFieldPreview.jsx`
   Preview visual de campos base do catalogo administrativo.
 - `frontend/src/features/admin/adminGridSchemaEditor.jsx`
-  Editor de linhas, colunas e presets dos campos de grade do admin.
+  Composicao visual do editor de linhas, colunas e presets dos campos de grade do admin.
+- `frontend/src/features/admin/GridSchemaRowsEditor.jsx`
+  Editor das linhas da matriz do campo de grade.
+- `frontend/src/features/admin/GridSchemaColumnsEditor.jsx`
+  Editor das colunas e presets da matriz do campo de grade.
 - `frontend/src/features/admin/adminAuditLogsPanel.jsx`
   Agregador historico do painel de auditoria administrativa. Mantem o wrapper fino e reexports de compatibilidade.
 - `frontend/src/features/admin/AuditLogsPanel.jsx`

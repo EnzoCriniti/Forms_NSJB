@@ -617,6 +617,7 @@ Checklist operacional:
   - logs de auditoria
   - lista paginada
 - iniciado: constantes/labels/normalizadores, lista paginada, preview, editor de grade, auditoria e wrapper de campo sairam para modulos `adminSettingsConstants.js`, `adminPaginatedList.jsx`, `adminFieldPreview.jsx`, `adminGridSchemaEditor.jsx`, `adminAuditLogsPanel.jsx` e `adminField.jsx`
+- iniciado neste ciclo: `adminGridSchemaEditor.jsx` foi dividido em `GridSchemaRowsEditor.jsx` e `GridSchemaColumnsEditor.jsx`.
 - iniciado neste ciclo: filtros, barra de resumo, barra de paginacao e tabela da auditoria sairam para `AuditLogsFiltersPanel.jsx`, `AuditLogsSummaryBar.jsx`, `AuditLogsPaginationBar.jsx` e `AuditLogsTable.jsx`; `AuditLogsPanel.jsx` ficou como composicao fina.
 - consumidores administrativos migrados para imports diretos dos modulos menores; `adminSettingsShared.jsx` permanece apenas como reexport de compatibilidade
 - concluido: query, filtros e paginacao da auditoria sairam para `adminAuditLogsState.js`
