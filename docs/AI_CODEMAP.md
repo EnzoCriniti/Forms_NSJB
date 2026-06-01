@@ -27,7 +27,21 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
   Resolve qual adapter administrativo renderizar para a aba ativa, separando a selecao de abas do shell visual.
 - `frontend/src/features/admin/adminSettingsTabAdapters.jsx`
-  Adapters visuais por aba da central administrativa, mapeando blocos de props para cada painel de usuarios, bases, catalogo, organizacao, mensagens, seguranca e auditoria.
+  Agregador historico dos adapters visuais por aba da central administrativa. Mantem reexports de compatibilidade.
+- `frontend/src/features/admin/adminSettingsAccessTabAdapters.jsx`
+  Adapters visuais da aba de acessos.
+- `frontend/src/features/admin/adminSettingsMemberTabAdapters.jsx`
+  Adapter visual da aba de base de socios.
+- `frontend/src/features/admin/adminSettingsCatalogTabAdapters.jsx`
+  Adapter visual da aba de catalogos administrativos.
+- `frontend/src/features/admin/adminSettingsOrganizationTabAdapters.jsx`
+  Adapters visuais da aba de organizacao.
+- `frontend/src/features/admin/adminSettingsMessagingTabAdapters.jsx`
+  Adapter visual da aba de mensagens.
+- `frontend/src/features/admin/adminSettingsSecurityTabAdapters.jsx`
+  Adapter visual da aba de seguranca.
+- `frontend/src/features/admin/adminSettingsAuditTabAdapters.jsx`
+  Adapter visual da aba de auditoria.
 - `frontend/src/features/admin/adminSettingsDefaults.js`
   Defaults da central administrativa: drafts vazios de formularios internos e tabs por perfil.
 - `frontend/src/features/admin/adminSettingsDraftState.js`

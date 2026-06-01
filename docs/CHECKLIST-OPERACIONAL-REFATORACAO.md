@@ -590,6 +590,7 @@ Checklist operacional:
 - iniciado: props entregues a `AdminSettingsTabPanel.jsx` passaram a ser agrupadas por dominio (`access`, `members`, `catalog`, `organization`, `security`, `messaging`, `audit`, `shared`)
 - iniciado: estado local, tabs, submits, cancelamentos e confirmacao de exclusao sairam para `frontend/src/features/admin/adminSettingsController.js`
 - iniciado neste ciclo: adapters por aba da central administrativa sairam para `frontend/src/features/admin/adminSettingsTabAdapters.jsx`; `AdminSettingsTabPanel.jsx` ficou como seletor fino.
+- iniciado neste ciclo: adapters por aba da central administrativa foram divididos por dominio em `adminSettingsAccessTabAdapters.js`, `adminSettingsMemberTabAdapters.js`, `adminSettingsCatalogTabAdapters.js`, `adminSettingsOrganizationTabAdapters.js`, `adminSettingsMessagingTabAdapters.js`, `adminSettingsSecurityTabAdapters.js` e `adminSettingsAuditTabAdapters.js`.
 - iniciado neste ciclo: estado dos drafts e cancelamentos internos sairam para `frontend/src/features/admin/adminSettingsDraftState.js`.
 - pendente apos revisao: `adminSettingsController.js` ainda coordena tabs, busy/feedback e exclusao confirmada; separar apenas quando houver ganho claro por dominio.
 - evitar que o modal carregue detalhe de cada entidade, mantendo apenas coordenacao
