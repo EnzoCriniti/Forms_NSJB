@@ -77,7 +77,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/ScaleTaskCatalogListPanel.jsx`
   Lista paginada de tarefas base do catalogo administrativo, incluindo acoes de editar e remover.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
-  Painel compartilhado de classificacoes e templates administrativos.
+  Agregador historico dos paineis de classificacoes e templates administrativos. Mantem reexports de compatibilidade.
+- `frontend/src/features/admin/LabelsPanel.jsx`
+  Painel de administracao de classificacoes.
+- `frontend/src/features/admin/TemplatesPanel.jsx`
+  Painel de administracao de templates.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   Painel compartilhado da chave mestra e status da seguranca.
 - `frontend/src/features/admin/adminShellPanels.jsx`

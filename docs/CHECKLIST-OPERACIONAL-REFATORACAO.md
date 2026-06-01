@@ -646,6 +646,8 @@ Teste a reforcar:
 ### `frontend/src/features/admin/ExternalBasesPanel.jsx`
 ### `frontend/src/features/admin/adminCatalogPanels.jsx`
 ### `frontend/src/features/admin/adminOrganizationPanels.jsx`
+### `frontend/src/features/admin/LabelsPanel.jsx`
+### `frontend/src/features/admin/TemplatesPanel.jsx`
 ### `frontend/src/features/admin/adminSecurityPanels.jsx`
 ### `frontend/src/features/admin/adminShellPanels.jsx`
 
@@ -655,6 +657,7 @@ Checklist operacional:
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - iniciado neste ciclo: `adminAccessPanels.jsx` ficou como agregador historico; usuarios e bases externas sairam para `UsersManagementPanel.jsx` e `ExternalBasesPanel.jsx`.
 - iniciado neste ciclo: editores de campos e tarefas sairam de `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx` para `FieldCatalogEditorPanel.jsx` e `ScaleTaskCatalogEditorPanel.jsx`.
+- iniciado neste ciclo: `adminOrganizationPanels.jsx` ficou como agregador historico; classificacoes e templates sairam para `LabelsPanel.jsx` e `TemplatesPanel.jsx`.
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar fluxo de catalogo em blocos ainda menores por dominio.
 - iniciado neste ciclo: bloco de vinculo de campos `person_select` saiu de `FieldCatalogPanel.jsx` para `FieldCatalogSelectionSourcePanel.jsx`.
 - iniciado neste ciclo: lista paginada de campos base saiu de `FieldCatalogPanel.jsx` para `FieldCatalogListPanel.jsx`.
