@@ -380,8 +380,10 @@ Mapa curto das areas mais mexidas por agentes.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/CreateFormPresenceSection.jsx`
   Adaptador da secao de presenca do editor, montando lista/editor de campos e configuracao de resultados fora de `CreateFormScreen.jsx`.
+  Consome blocos nomeados de props (`fieldsPanel`, `fieldEditor`, `resultsConfig`) montados pelo controller.
 - `frontend/src/screens/createFormController.js`
   Controller local da criacao de formulario: agrupa estado, derived state, handlers e blocos de props consumidos pela tela visual.
+  A fronteira com a secao de presenca e organizada por blocos de props, nao por lista plana.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade, mas a tela principal importa os modulos especificos diretamente.
 - `frontend/src/screens/createFormDefaults.js`
