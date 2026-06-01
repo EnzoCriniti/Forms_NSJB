@@ -639,6 +639,8 @@ Checklist operacional:
 - iniciado neste ciclo: lista visual de modelos de mensagem saiu para `MessagingTemplatesList.jsx`.
 - iniciado neste ciclo: lista visual de presets de pessoas saiu para `MessagingPresetsList.jsx`.
 
+- iniciado neste ciclo: editores de modelos e presets sairam para `MessagingTemplatesEditorPanel.jsx` e `MessagingPresetsEditorPanel.jsx`.
+
 Teste a reforcar:
 - `tests/ui/messagingSettingsPanel.test.jsx`
 
