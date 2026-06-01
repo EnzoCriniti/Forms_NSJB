@@ -131,7 +131,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminPaginatedList.jsx`
   Lista paginada compartilhada dos paineis administrativos.
 - `frontend/src/features/admin/adminFieldPreview.jsx`
-  Preview visual de campos base do catalogo administrativo.
+  Composicao visual do preview de campos base do catalogo administrativo, com blocos especificos por tipo.
+- `frontend/src/features/admin/FieldCatalogPreviewPersonSelect.jsx`
+  Bloco visual do preview de `person_select`.
+- `frontend/src/features/admin/FieldCatalogPreviewGrid.jsx`
+  Bloco visual do preview de grade.
 - `frontend/src/features/admin/adminGridSchemaEditor.jsx`
   Composicao visual do editor de linhas, colunas e presets dos campos de grade do admin.
 - `frontend/src/features/admin/GridSchemaRowsEditor.jsx`
