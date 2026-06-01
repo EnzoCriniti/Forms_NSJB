@@ -628,6 +628,7 @@ Checklist operacional:
 - se `messagingSettingsPanels.jsx` continuar crescendo, separar editor, preview e lista de presets
 - concluido neste ciclo: `messagingSettingsPanels.jsx` virou agregador historico; configuracao, modelos e presets foram movidos para `MessagingConfigBlock.jsx`, `MessagingTemplatesBlock.jsx` e `MessagingPresetsBlock.jsx`.
 - iniciado neste ciclo: fluxo assíncrono de salvar/remover modelos e presets saiu para `messagingSettingsActions.js`.
+- iniciado neste ciclo: lista visual de modelos de mensagem saiu para `MessagingTemplatesList.jsx`.
 
 Teste a reforcar:
 - `tests/ui/messagingSettingsPanel.test.jsx`
@@ -902,13 +903,14 @@ Teste a reforcar:
 
 1. Concluido: quebrar `backend/validators/payloadValidators.mjs` por dominio.
 2. Concluido neste ciclo: `backend/routes/adminRoutes.mjs` teve erro/auditoria padronizados e os blocos coesos de catalogos, bases externas e socios extraidos.
-3. Em andamento: revisar `backend/services/formsService.mjs` e `backend/services/adminService.mjs` com foco em regras duplicadas e seguranca.
-4. Depois: separar `frontend/src/screens/createFormDomain.js` em modulos menores.
-5. Depois: limpar `frontend/src/App.jsx`, `frontend/src/AppViewport.jsx` e `frontend/src/AppShellContent.jsx`.
-6. Depois: remover duplicacao de defaults e modes entre frontend/admin/backend.
-7. Depois: reduzir a orquestracao manual em `frontend/src/screens/ResultsScreen.jsx` e `frontend/src/screens/EventsScreen.jsx`.
-8. Por ultimo: enxugar `frontend/src/components/ui.jsx` e `frontend/src/components/publicUi.jsx`.
-9. Sempre: atualizar testes e documentacao a cada corte.
+3. Concluido em boa parte: `backend/services/formsService.mjs` e `backend/services/adminService.mjs` ficaram menores, com regras de formulario, catalogo e chave mestra extraidas para services/helpers dedicados.
+4. Concluido em boa parte: `frontend/src/App.jsx`, `frontend/src/AppViewport.jsx` e `frontend/src/AppShellContent.jsx` deixaram de ser os hubs principais e passaram a delegar para controller, view model, gates, routes e adapters.
+5. Concluido em boa parte: `frontend/src/screens/createFormDomain.js`, `frontend/src/screens/ResultsScreen.jsx`, `frontend/src/components/ui.jsx` e `frontend/src/components/publicUi.jsx` viraram agregadores ou pontes menores, com reexports de compatibilidade.
+6. Prioridade atual: reduzir `frontend/src/screens/CreateFormScreen.jsx`, que ainda concentra muitos estados, handlers e props de secao apesar das regras ja estarem em modulos menores.
+7. Depois: revisar `frontend/src/lib/appControllerInputs.js`, `frontend/src/lib/appShellBuilder.js` e `frontend/src/lib/appShellObject.js` para evitar que o acoplamento antigo do `App.jsx` fique apenas deslocado para novos hubs de composicao.
+8. Depois: remover duplicacao restante de defaults, modos e regras de `person_select`/`memberBinding` entre frontend, backend e shared.
+9. Depois: continuar os cortes pequenos da area admin/mensagens quando eles reduzirem responsabilidade real, como separar editor/lista de presets se o bloco voltar a crescer.
+10. Sempre: atualizar testes e documentacao a cada corte.
 
 ## 15. Regras de seguranca durante a refatoracao
 
@@ -949,3 +951,18 @@ Teste a reforcar:
 - `ResultsScreen.jsx` passa a ser coordenacao, nao calculo
 - `publicUi.jsx` perde duplicacao de layout
 - os testes ficam mais localizados por dominio e menos dependentes de mega fluxos
+
+## 18. Revisao de efetividade atual
+
+Status apos revisao:
+- a refatoracao esta sendo efetiva nas areas onde o arquivo original perdeu responsabilidade de verdade, especialmente `App.jsx`, resultados, validadores, services principais e parte da central administrativa.
+- a refatoracao ainda nao deve ser considerada final porque alguns modulos novos viraram pontos de composicao grandes, principalmente `appControllerInputs.js`, `appShellBuilder.js` e o objeto achatado produzido por `appShellObject.js`.
+- o maior gargalo funcional restante no frontend e `CreateFormScreen.jsx`: ele ja consome helpers e paineis menores, mas ainda coordena muitos `useState`, muitos handlers e uma lista extensa de props para a secao de presenca.
+- cortes visuais pequenos, como listas extraidas de blocos administrativos, sao validos quando deixam o pai focado em estado/fluxo, mas nao devem virar prioridade acima da reducao de acoplamento entre dominios.
+
+Proximos cortes com maior retorno:
+- criar um controller/hook local para `CreateFormScreen.jsx`, agrupando estado, derived state e handlers por setup, campos, escala, templates e submit.
+- reduzir a passagem de props de `CreateFormPresenceSection` usando blocos nomeados, sem esconder regra de negocio dentro do componente visual.
+- trocar o `shellApp` achatado por blocos explicitos de `state`, `data`, `actions`, `setters` e `permissions`, ou por blocos de dominio, antes de adicionar novas telas ao shell.
+- revisar `adminRoutes.mjs` apenas se usuarios, classificacoes e presets crescerem mais; por enquanto o maior ganho esta em padronizar o padrao repetido de rota/auditoria, nao em criar roteadores pequenos demais.
+- manter agregadores historicos apenas como compatibilidade; novos imports devem preferir os modulos especificos ja extraidos.
