@@ -654,12 +654,13 @@ Checklist operacional:
 - nao reintroduzir submit, validacao ou persistencia diretamente neles
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - iniciado neste ciclo: `adminAccessPanels.jsx` ficou como agregador historico; usuarios e bases externas sairam para `UsersManagementPanel.jsx` e `ExternalBasesPanel.jsx`.
-- pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar editor de campo, lista de campos, editor de tarefa e lista de tarefas.
+- iniciado neste ciclo: editores de campos e tarefas sairam de `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx` para `FieldCatalogEditorPanel.jsx` e `ScaleTaskCatalogEditorPanel.jsx`.
+- pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar fluxo de catalogo em blocos ainda menores por dominio.
 - iniciado neste ciclo: bloco de vinculo de campos `person_select` saiu de `FieldCatalogPanel.jsx` para `FieldCatalogSelectionSourcePanel.jsx`.
 - iniciado neste ciclo: lista paginada de campos base saiu de `FieldCatalogPanel.jsx` para `FieldCatalogListPanel.jsx`.
 - iniciado neste ciclo: lista paginada de tarefas base saiu de `ScaleTaskCatalogPanel.jsx` para `ScaleTaskCatalogListPanel.jsx`.
 - pendente apos revisao: blocos de modelos e presets de mensagens ainda podem ser quebrados em editor e lista se voltarem a crescer.
-- concluido neste ciclo: `adminCatalogPanels.jsx` ficou como seletor fino; editores/listas de campos e tarefas foram movidos para `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx`.
+- concluido neste ciclo: `adminCatalogPanels.jsx` ficou como seletor fino; editores/listas de campos e tarefas foram movidos para `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx`, e os editores passaram a morar em arquivos próprios.
 
 ## 8. Backend - roteamento e entrada HTTP
 
