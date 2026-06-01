@@ -10,6 +10,7 @@ import { AppPublicViewport } from "./AppPublicViewport";
 import { AppDetailLoadingGate, AppErrorGate, AppLoadingGate, AppLoginGate } from "./AppViewportGates";
 import { resetPublicRouteNavigation } from "./lib/appViewportNavigation";
 import { APP_VIEWPORT_MODES, resolveAppViewportMode } from "./lib/appViewportState";
+import { getShellActions, getShellData, getShellState } from "./lib/appShellObject";
 
 export const AppViewport = ({
   app,
@@ -26,15 +27,20 @@ export const AppViewport = ({
   setScreen,
   setPublicRoute,
 }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
   const {
     currentUser,
     publicForm,
     publicResultsView,
-    responsesByForm,
-    escalaByForm,
     activeForm,
     screen,
-  } = app;
+  } = state;
+  const {
+    responsesByForm,
+    escalaByForm,
+  } = data;
 
   const backToPanel = () => resetPublicRouteNavigation({ currentUser, setPublicRoute, setScreen });
   const mode = resolveAppViewportMode({
@@ -75,7 +81,7 @@ export const AppViewport = ({
         increaseFontScale={increaseFontScale}
         decreaseFontScale={decreaseFontScale}
         setTheme={setTheme}
-        onOpenSettings={() => app.onNavigate("settings")}
+        onOpenSettings={() => actions.onNavigate("settings")}
       />
     );
   }

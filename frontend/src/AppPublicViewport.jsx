@@ -12,6 +12,7 @@ import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
 import { isFormClosedForPublic } from "./lib/forms";
 import { buildPublicFormPath, buildPublicFormResultsPath } from "./lib/appPublicRoutes";
+import { getShellActions, getShellData, getShellState } from "./lib/appShellObject";
 
 const PublicRoot = ({ children }) => (
   <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
@@ -20,17 +21,22 @@ const PublicRoot = ({ children }) => (
 );
 
 export const AppPublicViewport = ({ app, onBack }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
   const {
     currentUser,
     publicForm,
     publicResultsEnabled,
     publicResultsView,
+  } = state;
+  const {
     responsesByForm,
     escalaByForm,
     people,
     labels,
     externalBases,
-  } = app;
+  } = data;
   const publicOnBack = currentUser ? onBack : null;
 
   if (publicResultsView) {
@@ -68,8 +74,8 @@ export const AppPublicViewport = ({ app, onBack }) => {
       {isFormClosedForPublic(publicForm)
         ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} actionLabel={publicResultsEnabled ? "Resultados" : ""} actionHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} title="Formulário fechado" message={publicResultsEnabled ? undefined : "Este formulário não está mais aceitando respostas."} />
         : publicForm.type === "escala_organ"
-          ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => app.handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => app.handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
-          : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={app.handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} resultsHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} />}
+          ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => actions.handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => actions.handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
+          : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={actions.handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} resultsHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} />}
     </PublicRoot>
   );
 };

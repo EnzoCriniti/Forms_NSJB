@@ -11,9 +11,15 @@ import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
+import { getShellActions, getShellData, getShellState } from "./lib/appShellObject";
 
 export const DashboardFlow = ({ app }) => {
-  const { currentUser, fieldCatalog, forms, labels, onNavigate, people, presets, scaleTaskCatalog } = app;
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
+  const { currentUser } = state;
+  const { fieldCatalog, forms, labels, people, presets, scaleTaskCatalog } = data;
+  const { onNavigate } = actions;
 
   return (
     <DashboardScreen
@@ -30,12 +36,21 @@ export const DashboardFlow = ({ app }) => {
 };
 
 export const EventsFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
   const {
     activeEventId,
     currentUser,
+    pinnedEventIds,
+    pinnedFormIds,
+  } = state;
+  const {
     events,
     forms,
     labels,
+  } = data;
+  const {
     handleArchiveForm,
     handleCreateFormInEvent,
     handleDeleteEvent,
@@ -46,9 +61,9 @@ export const EventsFlow = ({ app }) => {
     handleTogglePinnedEvent,
     handleTogglePinnedForm,
     onNavigate,
-    pinnedEventIds,
-    pinnedFormIds,
-  } = app;
+    openEventMessageDetail,
+    openEventMessageEditor,
+  } = actions;
 
   if (!currentUser) return null;
 
@@ -70,26 +85,33 @@ export const EventsFlow = ({ app }) => {
       onArchiveForm={handleArchiveForm}
       onTogglePinnedForm={handleTogglePinnedForm}
       onDeleteForm={handleDeleteForm}
-      onCreateEventMessage={event => app.openEventMessageEditor(event, null)}
-      onOpenEventMessage={(event, message) => app.openEventMessageDetail(event, message)}
+      onCreateEventMessage={event => openEventMessageEditor(event, null)}
+      onOpenEventMessage={(event, message) => openEventMessageDetail(event, message)}
       onNavigate={onNavigate}
     />
   );
 };
 
 export const FormListFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
   const {
     currentUser,
     formDeleteKeyConfigured,
+    pinnedFormIds,
+  } = state;
+  const {
     forms,
     labels,
+  } = data;
+  const {
     handleArchiveForm,
     handleDeleteForm,
     handleDuplicateForm,
     handleTogglePinnedForm,
     onNavigate,
-    pinnedFormIds,
-  } = app;
+  } = actions;
 
   return (
     <FormListScreen
@@ -108,21 +130,28 @@ export const FormListFlow = ({ app }) => {
 };
 
 export const CreateFormFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
   const {
     activeEvent,
     draftForm,
     editingForm,
+  } = state;
+  const {
     externalBases,
     fieldCatalog,
     labels,
     membersConfig,
-    onNavigate,
-    handleSaveForm,
-    handleSavePreset,
     people,
     presets,
     scaleTaskCatalog,
-  } = app;
+  } = data;
+  const {
+    handleSaveForm,
+    handleSavePreset,
+    onNavigate,
+  } = actions;
 
   return (
     <CreateFormScreen
@@ -144,15 +173,27 @@ export const CreateFormFlow = ({ app }) => {
 };
 
 export const SettingsFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
   const {
     currentUser,
+    formDeleteKeyConfigured,
+  } = state;
+  const {
     externalBases,
     fieldCatalog,
-    formDeleteKeyConfigured,
     labels,
     membersConfig,
     messageTemplates,
     messagingConfig,
+    people,
+    personPresets,
+    presets,
+    scaleTaskCatalog,
+    users,
+  } = data;
+  const {
     handleDeleteExternalBase,
     handleDeleteFieldCatalogItem,
     handleDeleteLabel,
@@ -176,12 +217,7 @@ export const SettingsFlow = ({ app }) => {
     handleSaveUser,
     handleSyncExternalBase,
     handleSyncMembersConfig,
-    people,
-    personPresets,
-    presets,
-    scaleTaskCatalog,
-    users,
-  } = app;
+  } = actions;
 
   if (!canCreateForms(currentUser)) return null;
 

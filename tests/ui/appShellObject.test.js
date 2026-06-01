@@ -25,6 +25,11 @@ describe("appShellObject", () => {
       forms: [{ id: 2 }],
       events: [{ id: 3 }],
     });
+    expect(app.state).toEqual({ screen: "events", currentUser: { id: 1 } });
+    expect(app.data).toEqual({ forms: [{ id: 2 }], events: [{ id: 3 }] });
+    expect(app.actions).toEqual({ onNavigate });
+    expect(app.setters).toEqual({ setScreen });
+    expect(app.permissions.canCreateForms({ role: "admin" })).toBe(true);
     expect(app.onNavigate).toBe(onNavigate);
     expect(app.setScreen).toBe(setScreen);
     expect(app.canCreateForms({ role: "admin" })).toBe(true);

@@ -6,6 +6,7 @@
 import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
 import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
 import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, SettingsFlow } from "./AppShellMainFlows";
+import { getShellState } from "./lib/appShellObject";
 
 export const APP_SHELL_ROUTES = [
   {
@@ -15,17 +16,23 @@ export const APP_SHELL_ROUTES = [
   {
     screen: "events",
     component: EventsFlow,
-    canRender: app => Boolean(app.currentUser),
+    canRender: app => Boolean(getShellState(app).currentUser),
   },
   {
     screen: "eventMessageEditor",
     component: EventMessageEditorFlow,
-    canRender: app => Boolean(app.currentUser && app.activeEvent),
+    canRender: app => {
+      const state = getShellState(app);
+      return Boolean(state.currentUser && state.activeEvent);
+    },
   },
   {
     screen: "eventMessageDetail",
     component: EventMessageDetailFlow,
-    canRender: app => Boolean(app.currentUser && app.activeEvent && app.activeMessageId),
+    canRender: app => {
+      const state = getShellState(app);
+      return Boolean(state.currentUser && state.activeEvent && state.activeMessageId);
+    },
   },
   {
     screen: "list",
@@ -42,15 +49,15 @@ export const APP_SHELL_ROUTES = [
   {
     screen: "results",
     component: InternalResultsFlow,
-    canRender: app => Boolean(app.activeForm),
+    canRender: app => Boolean(getShellState(app).activeForm),
   },
   {
     screen: "respond",
     component: InternalRespondFlow,
-    canRender: app => Boolean(app.activeForm),
+    canRender: app => Boolean(getShellState(app).activeForm),
   },
 ];
 
 export const resolveAppShellRoute = app => APP_SHELL_ROUTES.find(route => (
-  route.screen === app.screen && (!route.canRender || route.canRender(app))
+  route.screen === getShellState(app).screen && (!route.canRender || route.canRender(app))
 )) || null;

@@ -271,6 +271,8 @@ Mapa curto das areas mais mexidas por agentes.
   Montagem dos handlers de eventos usados por `App.jsx`.
 - `frontend/src/lib/appShellObject.js`
   Montagem do objeto entregue ao viewport e ao shell autenticado a partir de blocos de estado, dados, acoes e setters.
+  Expoe blocos explicitos (`state`, `data`, `actions`, `setters`, `permissions`) e mantem campos planos por compatibilidade.
+  Consumidores principais devem usar os acessores `getShellState`, `getShellData`, `getShellActions`, `getShellSetters` e `getShellPermissions`.
 - `frontend/src/lib/appShellBuilder.js`
   Composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`, incluindo helpers puros para montar os blocos `data`, `state`, `actions`, `setters` e `permissions` fora de `App.jsx`.
 - `frontend/src/lib/appLifecycleEffects.js`

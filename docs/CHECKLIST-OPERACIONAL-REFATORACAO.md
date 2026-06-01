@@ -95,7 +95,9 @@ Checklist operacional:
 - iniciado neste ciclo: montagem dos inputs internos do controller saiu para `frontend/src/lib/appControllerInputs.js`, reduzindo a composicao manual em `appController.js`.
 - pendente apos revisao: `appController.js` ainda monta muitos blocos de handlers e dependencias transversais; proximo corte deve reduzir a composicao manual ou separar blocos de estado por dominio antes de criar novas acoes ali.
 - iniciado neste ciclo: `appShellBuilder.js` passou a montar `state`, `actions`, `setters` e `permissions` por helpers puros antes de chamar `buildShellApp`, reduzindo a composicao inline.
-- pendente apos revisao: `buildShellApp` ainda achata estado, dados, acoes e setters em um objeto grande; ainda vale reavaliar se `AppViewport` e `AppShellContent` podem receber blocos por dominio.
+- iniciado neste ciclo: `buildShellApp` passou a expor blocos explicitos `state`, `data`, `actions`, `setters` e `permissions`, mantendo campos planos apenas como compatibilidade.
+- iniciado neste ciclo: `AppViewport`, `AppPublicViewport`, `AppShellContent`, registry e adapters de fluxos principais passaram a consumir o shell via acessores de bloco (`getShellState`, `getShellData`, `getShellActions`, `getShellSetters`), reduzindo dependencia direta do objeto achatado.
+- pendente apos revisao: manter os campos planos do shell app apenas enquanto testes/consumidores legados ainda dependerem deles; novos fluxos devem usar blocos explicitos.
 
 Teste a reforcar:
 - `tests/ui/appBootstrap.test.js`
@@ -911,10 +913,11 @@ Teste a reforcar:
 5. Concluido em boa parte: `frontend/src/screens/createFormDomain.js`, `frontend/src/screens/ResultsScreen.jsx`, `frontend/src/components/ui.jsx` e `frontend/src/components/publicUi.jsx` viraram agregadores ou pontes menores, com reexports de compatibilidade.
 6. Concluido em parte neste ciclo: `frontend/src/screens/CreateFormScreen.jsx` ficou como composicao visual e o estado/handlers sairam para `frontend/src/screens/createFormController.js`.
 7. Concluido em parte neste ciclo: a superficie entre `createFormController.js` e `CreateFormPresenceSection.jsx` passou a usar blocos nomeados em vez de props planos.
-8. Prioridade atual: revisar `frontend/src/lib/appControllerInputs.js`, `frontend/src/lib/appShellBuilder.js` e `frontend/src/lib/appShellObject.js` para evitar que o acoplamento antigo do `App.jsx` fique apenas deslocado para novos hubs de composicao.
-9. Depois: remover duplicacao restante de defaults, modos e regras de `person_select`/`memberBinding` entre frontend, backend e shared.
-10. Depois: continuar os cortes pequenos da area admin/mensagens quando eles reduzirem responsabilidade real, como separar editor/lista de presets se o bloco voltar a crescer.
-10. Sempre: atualizar testes e documentacao a cada corte.
+8. Concluido em parte neste ciclo: `appShellObject.js` agora expoe blocos explicitos e os consumidores principais usam acessores de bloco.
+9. Prioridade atual: revisar `frontend/src/lib/appControllerInputs.js` e `frontend/src/lib/appShellBuilder.js` para reduzir a composicao manual restante sem criar novos hubs maiores.
+10. Depois: remover duplicacao restante de defaults, modos e regras de `person_select`/`memberBinding` entre frontend, backend e shared.
+11. Depois: continuar os cortes pequenos da area admin/mensagens quando eles reduzirem responsabilidade real, como separar editor/lista de presets se o bloco voltar a crescer.
+12. Sempre: atualizar testes e documentacao a cada corte.
 
 ## 15. Regras de seguranca durante a refatoracao
 
@@ -960,13 +963,13 @@ Teste a reforcar:
 
 Status apos revisao:
 - a refatoracao esta sendo efetiva nas areas onde o arquivo original perdeu responsabilidade de verdade, especialmente `App.jsx`, resultados, validadores, services principais e parte da central administrativa.
-- a refatoracao ainda nao deve ser considerada final porque alguns modulos novos viraram pontos de composicao grandes, principalmente `appControllerInputs.js`, `appShellBuilder.js` e o objeto achatado produzido por `appShellObject.js`.
+- a refatoracao ainda nao deve ser considerada final porque alguns modulos novos viraram pontos de composicao grandes, principalmente `appControllerInputs.js` e `appShellBuilder.js`; `appShellObject.js` ja expoe blocos explicitos, mas ainda mantem campos planos por compatibilidade.
 - a fronteira entre `createFormController.js` e `CreateFormPresenceSection.jsx` ja foi reduzida para blocos nomeados; o maior risco restante de acoplamento voltou para os hubs de composicao do shell do app.
 - cortes visuais pequenos, como listas extraidas de blocos administrativos, sao validos quando deixam o pai focado em estado/fluxo, mas nao devem virar prioridade acima da reducao de acoplamento entre dominios.
 
 Proximos cortes com maior retorno:
 - concluido neste ciclo: criar um controller/hook local para `CreateFormScreen.jsx`, agrupando estado, derived state e handlers por setup, campos, escala, templates e submit.
 - concluido neste ciclo: reduzir a passagem de props de `CreateFormPresenceSection` usando blocos nomeados, sem esconder regra de negocio dentro do componente visual.
-- trocar o `shellApp` achatado por blocos explicitos de `state`, `data`, `actions`, `setters` e `permissions`, ou por blocos de dominio, antes de adicionar novas telas ao shell.
+- concluido neste ciclo: trocar o `shellApp` achatado por blocos explicitos de `state`, `data`, `actions`, `setters` e `permissions`, mantendo compatibilidade temporaria com campos planos.
 - revisar `adminRoutes.mjs` apenas se usuarios, classificacoes e presets crescerem mais; por enquanto o maior ganho esta em padronizar o padrao repetido de rota/auditoria, nao em criar roteadores pequenos demais.
 - manter agregadores historicos apenas como compatibilidade; novos imports devem preferir os modulos especificos ja extraidos.

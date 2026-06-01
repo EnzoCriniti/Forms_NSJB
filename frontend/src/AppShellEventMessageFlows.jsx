@@ -8,19 +8,32 @@ import React from "react";
 import { selectEventForms, selectEventMessage } from "./lib/appShellContentSelectors";
 import { EventMessageDetailScreen } from "./screens/EventMessageDetailScreen";
 import { EventMessageEditorScreen } from "./screens/EventMessageEditorScreen";
+import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
 
 export const EventMessageEditorFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
+  const setters = getShellSetters(app);
   const {
     activeEvent,
     activeMessageId,
+  } = state;
+  const {
     forms,
     membersConfig,
     messageTemplates,
     messagingConfig,
     people,
     personPresets,
+  } = data;
+  const {
     handleSaveEventMessage,
-  } = app;
+  } = actions;
+  const {
+    setActiveMessageId,
+    setScreen,
+  } = setters;
 
   if (!activeEvent) return null;
 
@@ -37,11 +50,11 @@ export const EventMessageEditorFlow = ({ app }) => {
       onSave={payload => handleSaveEventMessage(activeEvent.id, payload)}
       onCancel={saved => {
         if (saved?.id) {
-          app.setActiveMessageId(saved.id);
-          app.setScreen("eventMessageDetail");
+          setActiveMessageId(saved.id);
+          setScreen("eventMessageDetail");
         } else {
-          app.setActiveMessageId(null);
-          app.setScreen("events");
+          setActiveMessageId(null);
+          setScreen("events");
         }
       }}
     />
@@ -49,7 +62,12 @@ export const EventMessageEditorFlow = ({ app }) => {
 };
 
 export const EventMessageDetailFlow = ({ app }) => {
-  const { activeEvent, activeMessageId, applyMessageDeletion, applyMessageUpdate } = app;
+  const state = getShellState(app);
+  const actions = getShellActions(app);
+  const setters = getShellSetters(app);
+  const { activeEvent, activeMessageId } = state;
+  const { applyMessageDeletion, applyMessageUpdate } = actions;
+  const { setActiveMessageId, setScreen } = setters;
 
   if (!activeEvent || !activeMessageId) return null;
 
@@ -60,13 +78,13 @@ export const EventMessageDetailFlow = ({ app }) => {
       onMessageUpdated={applyMessageUpdate}
       onMessageDeleted={id => {
         applyMessageDeletion(id);
-        app.setActiveMessageId(null);
-        app.setScreen("events");
+        setActiveMessageId(null);
+        setScreen("events");
       }}
-      onEdit={() => app.setScreen("eventMessageEditor")}
+      onEdit={() => setScreen("eventMessageEditor")}
       onBack={() => {
-        app.setActiveMessageId(null);
-        app.setScreen("events");
+        setActiveMessageId(null);
+        setScreen("events");
       }}
     />
   );

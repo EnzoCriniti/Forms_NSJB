@@ -8,14 +8,19 @@ import React from "react";
 import { COLORS } from "./components/ui";
 import { AppHeader } from "./components/AppHeader";
 import { AppShellRoutes } from "./AppShellRoutes";
+import { getShellActions, getShellState } from "./lib/appShellObject";
 
 export const AppShellContent = ({ app }) => {
+  const state = getShellState(app);
+  const actions = getShellActions(app);
   const {
     nav,
     screen,
     currentUser,
     theme,
     fontScale,
+  } = state;
+  const {
     onNavigate,
     onIncreaseFontScale,
     onDecreaseFontScale,
@@ -23,7 +28,7 @@ export const AppShellContent = ({ app }) => {
     onOpenSettings,
     onLogin,
     onLogout,
-  } = app;
+  } = actions;
 
   return (
     <div className="app-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>

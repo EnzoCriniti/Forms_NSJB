@@ -11,9 +11,20 @@ export const buildShellApp = ({
   setters,
   permissions,
 }) => ({
+  state,
+  data,
+  actions,
+  setters,
+  permissions,
   ...state,
   ...data,
   ...actions,
   ...setters,
   ...permissions,
 });
+
+export const getShellState = app => app.state || app;
+export const getShellData = app => app.data || app;
+export const getShellActions = app => app.actions || app;
+export const getShellSetters = app => app.setters || app;
+export const getShellPermissions = app => app.permissions || app;
