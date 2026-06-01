@@ -665,6 +665,7 @@ Checklist operacional:
 - iniciado neste ciclo: a lista de bases externas saiu para `ExternalBasesListPanel.jsx`.
 - iniciado neste ciclo: editores de campos e tarefas sairam de `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx` para `FieldCatalogEditorPanel.jsx` e `ScaleTaskCatalogEditorPanel.jsx`.
 - iniciado neste ciclo: `FieldCatalogEditorPanel.jsx` foi dividido em `FieldCatalogCoreEditorPanel.jsx` e `FieldCatalogAdvancedEditorPanel.jsx`.
+- iniciado neste ciclo: o bloco comum do editor avancado de campos saiu para `FieldCatalogAdvancedCommonPanel.jsx`, reduzindo a responsabilidade de `FieldCatalogAdvancedEditorPanel.jsx`.
 - iniciado neste ciclo: `adminOrganizationPanels.jsx` ficou como agregador historico; classificacoes e templates sairam para `LabelsPanel.jsx` e `TemplatesPanel.jsx`.
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar fluxo de catalogo em blocos ainda menores por dominio.
 - iniciado neste ciclo: bloco de vinculo de campos `person_select` saiu de `FieldCatalogPanel.jsx` para `FieldCatalogSelectionSourcePanel.jsx`, agora dividido em `FieldCatalogSelectionModePanel.jsx`, `FieldCatalogSelectionExternalBasePanel.jsx` e `FieldCatalogSelectionSummaryPanel.jsx`.

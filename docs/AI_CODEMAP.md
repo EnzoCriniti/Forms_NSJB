@@ -96,6 +96,8 @@ Mapa curto das areas mais mexidas por agentes.
   Secao de campos basicos do editor de campos base.
 - `frontend/src/features/admin/FieldCatalogAdvancedEditorPanel.jsx`
   Secao de configuracoes avancadas do editor de campos base.
+- `frontend/src/features/admin/FieldCatalogAdvancedCommonPanel.jsx`
+  Bloco comum de metadados, previa e acoes do editor avancado de campos base.
 - `frontend/src/features/admin/FieldCatalogListPanel.jsx`
   Lista paginada de campos base do catalogo administrativo, incluindo acoes de editar e remover.
 - `frontend/src/features/admin/FieldCatalogSelectionSourcePanel.jsx`
