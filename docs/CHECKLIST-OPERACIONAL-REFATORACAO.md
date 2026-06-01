@@ -659,6 +659,7 @@ Checklist operacional:
 - nao reintroduzir submit, validacao ou persistencia diretamente neles
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - iniciado neste ciclo: `adminAccessPanels.jsx` ficou como agregador historico; usuarios e bases externas sairam para `UsersManagementPanel.jsx` e `ExternalBasesPanel.jsx`.
+- iniciado neste ciclo: `ExternalBasesPanel.jsx` passou a usar `ExternalBasesEditorPanel.jsx` para separar o formulario do restante da lista.
 - iniciado neste ciclo: editores de campos e tarefas sairam de `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx` para `FieldCatalogEditorPanel.jsx` e `ScaleTaskCatalogEditorPanel.jsx`.
 - iniciado neste ciclo: `adminOrganizationPanels.jsx` ficou como agregador historico; classificacoes e templates sairam para `LabelsPanel.jsx` e `TemplatesPanel.jsx`.
 - pendente apos revisao: `adminCatalogPanels.jsx` ainda e o maior painel administrativo; se crescer mais, separar fluxo de catalogo em blocos ainda menores por dominio.

@@ -63,7 +63,9 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/UsersManagementPanel.jsx`
   Painel de administracao de usuarios.
 - `frontend/src/features/admin/ExternalBasesPanel.jsx`
-  Painel de administracao de bases externas.
+  Composicao visual do editor e da lista de bases externas.
+- `frontend/src/features/admin/ExternalBasesEditorPanel.jsx`
+  Editor de bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
   Seletor da aba de catalogos administrativos, alternando entre campos base e tarefas base.
 - `frontend/src/features/admin/FieldCatalogPanel.jsx`
