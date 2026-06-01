@@ -901,7 +901,8 @@ Teste a reforcar:
 
 - `DEFAULT_GRID_ROWS`, `DEFAULT_GRID_COLS` e `SCALE_PRESETS` aparecem em `frontend/src/screens/createFormDomain.js` e `frontend/src/features/admin/adminSettingsShared.jsx`
 - `FORM_MODES` aparece em `frontend/src/lib/forms.js`, `frontend/src/screens/createFormDomain.js`, `backend/services/formsService.mjs` e `backend/validators/formPayloadValidators.mjs`
-- a regra de `person_select` e `memberBinding` existe no frontend e no backend com implementacoes paralelas
+- concluido em parte: tipos canonicos de campo, origem de selecao e papeis de `memberBinding` sairam para `shared/formFieldRules.mjs`; frontend e backend consomem esse helper compartilhado
+- pendente apos este corte: ainda existem regras especificas de UI e payload de `person_select` em criacao de formulario/admin, que devem permanecer locais enquanto forem comportamento visual ou montagem de payload
 - o layout de topo publico se repete em `frontend/src/components/publicUi.jsx`
 - o padrao de auditoria manual se repete em `backend/routes/adminRoutes.mjs`, `backend/routes/formRoutes.mjs` e `backend/routes/systemRoutes.mjs`
 - o fluxo de query/load/paginate/sort aparece em `frontend/src/screens/ResultsScreen.jsx` e deveria ficar mais concentrado em helpers puros
@@ -917,8 +918,8 @@ Teste a reforcar:
 7. Concluido em parte neste ciclo: a superficie entre `createFormController.js` e `CreateFormPresenceSection.jsx` passou a usar blocos nomeados em vez de props planos.
 8. Concluido em parte neste ciclo: `appShellObject.js` agora expoe blocos explicitos e os consumidores principais usam acessores de bloco.
 9. Concluido em parte neste ciclo: `appControllerInputs.js` e `appShellBuilder.js` tiveram composicao manual reduzida sem mudar contratos.
-10. Prioridade atual: remover duplicacao restante de defaults, modos e regras de `person_select`/`memberBinding` entre frontend, backend e shared.
-11. Depois: continuar os cortes pequenos da area admin/mensagens quando eles reduzirem responsabilidade real, como separar editor/lista de presets se o bloco voltar a crescer.
+10. Concluido em parte neste ciclo: regras estruturais de campo, origem de selecao e papeis de `memberBinding` foram centralizadas em `shared/formFieldRules.mjs`.
+11. Prioridade atual: continuar os cortes pequenos da area admin/mensagens quando eles reduzirem responsabilidade real, como separar editor/lista de presets se o bloco voltar a crescer.
 12. Sempre: atualizar testes e documentacao a cada corte.
 
 ## 15. Regras de seguranca durante a refatoracao

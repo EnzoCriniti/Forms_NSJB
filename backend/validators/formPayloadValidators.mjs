@@ -9,6 +9,7 @@ import {
   validateSelectionSource,
 } from "./catalogPayloadValidators.mjs";
 import { FORM_MODE_VALUES } from "../../shared/formModes.mjs";
+import { MEMBER_BINDING_ROLE_VALUES, SELECTION_SOURCE_KINDS } from "../../shared/formFieldRules.mjs";
 import {
   assertPayload as assert,
   isIdLike,
@@ -22,7 +23,6 @@ import {
 const FORM_TYPES = ["presenca", "escala_organ"];
 const FORM_STATUS = ["rascunho", "aberto", "fechado", "arquivado"];
 const TOTAL_LAYOUT_STYLES = ["bar", "metric", "split", "number"];
-const MEMBER_BINDING_ROLES = ["primary", "secondary"];
 
 const validateFieldDefinition = field => {
   assert(isObject(field), "Campo de formulario invalido.");
@@ -36,8 +36,8 @@ const validateFieldDefinition = field => {
   if (field.memberBinding !== undefined && field.memberBinding !== null) {
     assert(isObject(field.memberBinding), "Vinculo de base do campo invalido.");
     assert(field.type === "person_select", "Somente campos de pessoa podem usar vinculo com a base.");
-    assert(field.memberBinding.source === undefined || field.memberBinding.source === "members", "Origem do vinculo do campo invalida.");
-    assert(field.memberBinding.role === undefined || MEMBER_BINDING_ROLES.includes(field.memberBinding.role), "Papel do vinculo do campo invalido.");
+    assert(field.memberBinding.source === undefined || field.memberBinding.source === SELECTION_SOURCE_KINDS.MEMBERS, "Origem do vinculo do campo invalida.");
+    assert(field.memberBinding.role === undefined || MEMBER_BINDING_ROLE_VALUES.includes(field.memberBinding.role), "Papel do vinculo do campo invalido.");
   }
   if (field.validation !== undefined && field.validation !== null) {
     assert(isObject(field.validation), "Regras de validacao invalidas.");

@@ -11,19 +11,24 @@ import {
   isObject,
   isOptionalString,
 } from "./payloadValidatorPrimitives.mjs";
+import {
+  FIELD_TYPES,
+  SELECTION_SOURCE_KIND_VALUES,
+  SELECTION_SOURCE_KINDS,
+} from "../../shared/formFieldRules.mjs";
 
-export const FIELD_TYPES = ["person_select", "yes_no", "number", "text", "grid"];
+export { FIELD_TYPES };
+
 export const FIELD_CATEGORIES = ["presenca", "quantidade", "texto", "avaliacao", "outro"];
 
 const SCALE_TASK_CATEGORIES = ["cozinha", "limpeza", "organizacao", "sessao", "outro"];
-const SELECTION_SOURCE_KINDS = ["members", "external_base"];
 
 export const validateSelectionSource = (type, selectionSource) => {
   if (selectionSource === undefined || selectionSource === null) return;
   assert(isObject(selectionSource), "Origem de selecao do campo invalida.");
   assert(type === "person_select", "Somente campos de pessoa podem usar origem de selecao.");
-  assert(SELECTION_SOURCE_KINDS.includes(selectionSource.kind), "Tipo de origem de selecao invalido.");
-  if (selectionSource.kind === "external_base") {
+  assert(SELECTION_SOURCE_KIND_VALUES.includes(selectionSource.kind), "Tipo de origem de selecao invalido.");
+  if (selectionSource.kind === SELECTION_SOURCE_KINDS.EXTERNAL_BASE) {
     assert(isIdLike(selectionSource.externalBaseId), "Base externa vinculada invalida.");
   }
 };

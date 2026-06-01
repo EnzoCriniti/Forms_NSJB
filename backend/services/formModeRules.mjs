@@ -5,13 +5,7 @@
  */
 
 import { FORM_MODES, FORM_MODE_VALUES } from "../../shared/formModes.mjs";
-
-const getSelectionSourceKind = field => {
-  if (!field || field.type !== "person_select") return null;
-  return field?.selectionSource?.kind === "external_base" ? "external_base" : "members";
-};
-
-const isMembersSelectionField = field => getSelectionSourceKind(field) === "members";
+import { isMembersSelectionField } from "../../shared/formFieldRules.mjs";
 
 const normalizeTotalLayoutStyle = style => {
   if (style === "bar" || style === "split") return "split";

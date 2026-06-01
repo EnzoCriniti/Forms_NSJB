@@ -455,6 +455,8 @@ Mapa curto das areas mais mexidas por agentes.
   Fonte de verdade para linhas, colunas e presets padrao dos campos de grade usados na criacao de formulario e no admin.
 - `shared/formModes.mjs`
   Valores canonicos dos modos estruturais `nucleo` e `geral`, compartilhados por frontend, backend e validadores.
+- `shared/formFieldRules.mjs`
+  Regras estruturais compartilhadas dos campos de formulario: tipos canonicos, origens de selecao, papeis de `memberBinding` e leitura da origem de campos `person_select`.
 - `shared/formRules.mjs`
   Validacao compartilhada dos valores de resposta dos campos.
 

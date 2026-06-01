@@ -4,8 +4,18 @@
  */
 
 import { FORM_MODES, FORM_MODE_VALUES } from "../../../shared/formModes.mjs";
+import {
+  getFieldSelectionSource,
+  isExternalBaseSelectionField,
+  isMembersSelectionField,
+} from "../../../shared/formFieldRules.mjs";
 
 export { FORM_MODES };
+export {
+  getFieldSelectionSource,
+  isExternalBaseSelectionField,
+  isMembersSelectionField,
+};
 
 export const summarizeFieldValidation = field => {
   const rules = field?.validation || {};
@@ -29,26 +39,10 @@ export const summarizeFieldValidation = field => {
 
 export const getVisibleFields = form => (form?.fieldDefinitions || []).filter(field => field.show !== false);
 
-export const getFieldSelectionSource = field => {
-  if (!field || field.type !== "person_select") return null;
-  const kind = field?.selectionSource?.kind;
-  if (kind === "external_base") {
-    return {
-      kind,
-      externalBaseId: field.selectionSource.externalBaseId ?? null,
-    };
-  }
-  return { kind: "members" };
-};
-
 export const getStoredFormMode = form => {
   const mode = form?.resultsConfig?.formMode;
   return FORM_MODE_VALUES.includes(mode) ? mode : null;
 };
-
-export const isMembersSelectionField = field => getFieldSelectionSource(field)?.kind === "members";
-
-export const isExternalBaseSelectionField = field => getFieldSelectionSource(field)?.kind === "external_base";
 
 export const getPeopleBaseFields = form => (form?.fieldDefinitions || []).filter(field => field.type === "person_select" && isMembersSelectionField(field));
 
