@@ -11,7 +11,17 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminSettingsController.js`
   Controller da central administrativa: estado local, tabs, cancelamentos e confirmacao de exclusao.
 - `frontend/src/features/admin/adminSettingsSubmitHandlers.js`
-  Handlers de submit da central administrativa: usuarios, classificacoes, bases externas, catalogos, tarefas, seguranca e exclusao confirmada.
+  Agregador dos handlers de submit da central administrativa, compondo os blocos de dominio.
+- `frontend/src/features/admin/adminSettingsAccessSubmitHandlers.js`
+  Handlers de submit administrativos para usuarios e bases externas.
+- `frontend/src/features/admin/adminSettingsCatalogSubmitHandlers.js`
+  Handlers de submit administrativos para campos base e tarefas base.
+- `frontend/src/features/admin/adminSettingsOrganizationSubmitHandlers.js`
+  Handler de submit administrativo para classificacoes.
+- `frontend/src/features/admin/adminSettingsSecuritySubmitHandlers.js`
+  Handler de submit administrativo para chave mestra.
+- `frontend/src/features/admin/adminSettingsDeleteSubmitHandlers.js`
+  Handler de confirmacao de exclusao da central administrativa.
 - `frontend/src/features/admin/AdminSettingsContent.jsx`
   Composicao visual da central administrativa: abas, paineis e modal de exclusao.
 - `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
