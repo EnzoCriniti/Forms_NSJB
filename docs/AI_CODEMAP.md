@@ -34,6 +34,8 @@ Mapa curto das areas mais mexidas por agentes.
   Configuracao global do painel administrativo de mensagens.
 - `frontend/src/features/admin/MessagingTemplatesBlock.jsx`
   Editor e lista de modelos de mensagens administrativas.
+- `frontend/src/features/admin/MessagingTemplatesList.jsx`
+  Lista visual de modelos de mensagens administrativas, incluindo acoes de editar e remover.
 - `frontend/src/features/admin/MessagingPresetsBlock.jsx`
   Editor e lista de presets de pessoas para mensagens administrativas.
 - `frontend/src/features/admin/messagingSettingsShared.js`
@@ -368,6 +370,7 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/CreateFormScreen.jsx`
   Configura campos do formulario e consome a biblioteca de campos. No mobile, o topo do formulario usa uma caixa de contexto com acento visual.
+  A tela ficou como composicao visual; estado, derived state e handlers ficam em `frontend/src/screens/createFormController.js`.
   O tipo `person_select` e o elo com a base sincronizada.
   Campos de pessoa agora podem ser `primary` ou `secondary` em `memberBinding.role`.
   So o campo `primary` habilita respondente principal, faltantes, resumo e filtro por grau.
@@ -377,6 +380,8 @@ Mapa curto das areas mais mexidas por agentes.
   Quando o formulario nasce dentro de um evento, o titulo de presenca e escala e padronizado e fica travado no editor.
 - `frontend/src/screens/CreateFormPresenceSection.jsx`
   Adaptador da secao de presenca do editor, montando lista/editor de campos e configuracao de resultados fora de `CreateFormScreen.jsx`.
+- `frontend/src/screens/createFormController.js`
+  Controller local da criacao de formulario: agrupa estado, derived state, handlers e blocos de props consumidos pela tela visual.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade, mas a tela principal importa os modulos especificos diretamente.
 - `frontend/src/screens/createFormDefaults.js`
