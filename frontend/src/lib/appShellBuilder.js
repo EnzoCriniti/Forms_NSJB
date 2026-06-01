@@ -81,22 +81,9 @@ export const buildAppShellRuntimeState = ({
   theme,
 }) => ({
   nav: buildAppNavItems({ currentUser, canCreateForms }),
-  screen: state.screen,
+  ...state,
   currentUser,
   theme,
-  fontScale: state.fontScale,
-  publicForm: state.publicForm,
-  publicRoute: state.publicRoute,
-  publicResultsEnabled: state.publicResultsEnabled,
-  publicResultsView: state.publicResultsView,
-  pinnedEventIds: state.pinnedEventIds,
-  pinnedFormIds: state.pinnedFormIds,
-  activeEventId: state.activeEventId,
-  activeMessageId: state.activeMessageId,
-  activeEvent: state.activeEvent,
-  activeForm: state.activeForm,
-  editingForm: state.editingForm,
-  draftForm: state.draftForm,
   formDeleteKeyConfigured,
 });
 

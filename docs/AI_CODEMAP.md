@@ -159,6 +159,7 @@ Mapa curto das areas mais mexidas por agentes.
   Controller de alto nivel do App: estado global, seletores derivados, handlers, efeitos de ciclo de vida, shell app e props do viewport.
 - `frontend/src/lib/appControllerInputs.js`
   Montagem pura dos inputs internos do controller do App para derived state, loaders, handlers, lifecycle e view model.
+  Usa listas de chaves por contrato para reduzir mapeamento manual repetido de `values` e `setters`.
 - `frontend/src/lib/appControllerState.js`
   Hook do estado global do App agrupado em blocos `values` e `setters`.
 - `frontend/src/lib/appControllerDerived.js`
@@ -275,6 +276,7 @@ Mapa curto das areas mais mexidas por agentes.
   Consumidores principais devem usar os acessores `getShellState`, `getShellData`, `getShellActions`, `getShellSetters` e `getShellPermissions`.
 - `frontend/src/lib/appShellBuilder.js`
   Composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`, incluindo helpers puros para montar os blocos `data`, `state`, `actions`, `setters` e `permissions` fora de `App.jsx`.
+  O runtime state reaproveita o bloco `state` montado antes, evitando remontagem campo a campo.
 - `frontend/src/lib/appLifecycleEffects.js`
   Hook dos efeitos de ciclo de vida do shell principal: persistencia, bootstrap inicial, rota publica, detalhes e validacao de sessao.
 - `frontend/src/lib/appSessionActions.js`

@@ -3,35 +3,113 @@
  * @summary Montagem dos inputs internos do controller do App.
  */
 
-export const buildAppControllerDerivedInput = values => ({
-  bootstrap: values.bootstrap,
-  responseDetails: values.responseDetails,
-  escalaDetails: values.escalaDetails,
-  currentUser: values.currentUser,
-  pinnedFormsByUser: values.pinnedFormsByUser,
-  pinnedEventsByUser: values.pinnedEventsByUser,
-  activeFormId: values.activeFormId,
-  activeEventId: values.activeEventId,
-  editingFormId: values.editingFormId,
-  draftForm: values.draftForm,
-  publicRoute: values.publicRoute,
-});
+const pick = (source, keys) => keys.reduce((picked, key) => ({
+  ...picked,
+  [key]: source[key],
+}), {});
+
+const CONTROLLER_DERIVED_VALUE_KEYS = [
+  "bootstrap",
+  "responseDetails",
+  "escalaDetails",
+  "currentUser",
+  "pinnedFormsByUser",
+  "pinnedEventsByUser",
+  "activeFormId",
+  "activeEventId",
+  "editingFormId",
+  "draftForm",
+  "publicRoute",
+];
+
+const CONTROLLER_LOADERS_VALUE_KEYS = [
+  "activeFormId",
+  "bootstrap",
+  "currentUser",
+  "detailLoading",
+  "escalaDetails",
+  "responseDetails",
+];
+
+const CONTROLLER_LOADERS_SETTER_KEYS = [
+  "setActiveFormId",
+  "setBootstrap",
+  "setDetailLoading",
+  "setError",
+  "setEscalaDetails",
+  "setFormDeleteKeyConfigured",
+  "setLoading",
+  "setResponseDetails",
+];
+
+const CONTROLLER_HANDLER_SETTER_KEYS = [
+  "setActiveEventId",
+  "setActiveFormId",
+  "setActiveMessageId",
+  "setBootstrap",
+  "setDraftForm",
+  "setEditingFormId",
+  "setEscalaDetails",
+  "setFontScale",
+  "setFormDeleteKeyConfigured",
+  "setPinnedEventsByUser",
+  "setPinnedFormsByUser",
+  "setResponseDetails",
+  "setScreen",
+  "setSession",
+];
+
+const CONTROLLER_LIFECYCLE_VALUE_KEYS = [
+  "authToken",
+  "currentUser",
+  "detailLoading",
+  "error",
+  "fontScale",
+  "pinnedEventsByUser",
+  "pinnedFormsByUser",
+  "screen",
+  "session",
+  "theme",
+];
+
+const CONTROLLER_LIFECYCLE_SETTER_KEYS = [
+  "setFontScale",
+  "setPublicRoute",
+  "setScreen",
+  "setSession",
+  "setTheme",
+];
+
+const CONTROLLER_VIEWMODEL_VALUE_KEYS = [
+  "activeEventId",
+  "activeMessageId",
+  "currentUser",
+  "draftForm",
+  "error",
+  "fontScale",
+  "formDeleteKeyConfigured",
+  "loading",
+  "publicRoute",
+  "screen",
+  "theme",
+];
+
+const CONTROLLER_VIEWMODEL_SETTER_KEYS = [
+  "setActiveEventId",
+  "setActiveFormId",
+  "setActiveMessageId",
+  "setDraftForm",
+  "setEditingFormId",
+  "setPublicRoute",
+  "setScreen",
+  "setTheme",
+];
+
+export const buildAppControllerDerivedInput = values => pick(values, CONTROLLER_DERIVED_VALUE_KEYS);
 
 export const buildAppControllerLoadersInput = ({ values, setters }) => ({
-  activeFormId: values.activeFormId,
-  bootstrap: values.bootstrap,
-  currentUser: values.currentUser,
-  detailLoading: values.detailLoading,
-  escalaDetails: values.escalaDetails,
-  responseDetails: values.responseDetails,
-  setActiveFormId: setters.setActiveFormId,
-  setBootstrap: setters.setBootstrap,
-  setDetailLoading: setters.setDetailLoading,
-  setError: setters.setError,
-  setEscalaDetails: setters.setEscalaDetails,
-  setFormDeleteKeyConfigured: setters.setFormDeleteKeyConfigured,
-  setLoading: setters.setLoading,
-  setResponseDetails: setters.setResponseDetails,
+  ...pick(values, CONTROLLER_LOADERS_VALUE_KEYS),
+  ...pick(setters, CONTROLLER_LOADERS_SETTER_KEYS),
 });
 
 export const buildAppControllerHandlersInput = ({
@@ -47,20 +125,7 @@ export const buildAppControllerHandlersInput = ({
   events: bootstrapData.events,
   refreshBootstrap: loaders.refreshBootstrap,
   refreshEscalaForForm: loaders.refreshEscalaForForm,
-  setActiveEventId: setters.setActiveEventId,
-  setActiveFormId: setters.setActiveFormId,
-  setActiveMessageId: setters.setActiveMessageId,
-  setBootstrap: setters.setBootstrap,
-  setDraftForm: setters.setDraftForm,
-  setEditingFormId: setters.setEditingFormId,
-  setEscalaDetails: setters.setEscalaDetails,
-  setFontScale: setters.setFontScale,
-  setFormDeleteKeyConfigured: setters.setFormDeleteKeyConfigured,
-  setPinnedEventsByUser: setters.setPinnedEventsByUser,
-  setPinnedFormsByUser: setters.setPinnedFormsByUser,
-  setResponseDetails: setters.setResponseDetails,
-  setScreen: setters.setScreen,
-  setSession: setters.setSession,
+  ...pick(setters, CONTROLLER_HANDLER_SETTER_KEYS),
 });
 
 export const buildAppControllerLifecycleInput = ({
@@ -71,30 +136,17 @@ export const buildAppControllerLifecycleInput = ({
   values,
 }) => ({
   activeForm: derived.activeForm,
-  authToken: values.authToken,
-  currentUser: values.currentUser,
-  detailLoading: values.detailLoading,
-  error: values.error,
   escalaByForm: derived.escalaByForm,
-  fontScale: values.fontScale,
   invalidateSession: sessionHandlers.invalidateSession,
   loadEscalaForForm: loaders.loadEscalaForForm,
   loadResponsesForForm: loaders.loadResponsesForForm,
-  pinnedEventsByUser: values.pinnedEventsByUser,
-  pinnedFormsByUser: values.pinnedFormsByUser,
   publicForm: derived.publicForm,
   publicResultsView: derived.publicResultsView,
   refreshBootstrap: loaders.refreshBootstrap,
   refreshFormDeleteKeyStatus: loaders.refreshFormDeleteKeyStatus,
   responsesByForm: derived.responsesByForm,
-  screen: values.screen,
-  session: values.session,
-  setFontScale: setters.setFontScale,
-  setPublicRoute: setters.setPublicRoute,
-  setScreen: setters.setScreen,
-  setSession: setters.setSession,
-  setTheme: setters.setTheme,
-  theme: values.theme,
+  ...pick(values, CONTROLLER_LIFECYCLE_VALUE_KEYS),
+  ...pick(setters, CONTROLLER_LIFECYCLE_SETTER_KEYS),
 });
 
 export const buildAppControllerViewModelInput = ({
@@ -110,25 +162,17 @@ export const buildAppControllerViewModelInput = ({
 }) => ({
   adminHandlers: handlers.adminHandlers,
   activeEvent: derived.activeEvent,
-  activeEventId: values.activeEventId,
   activeForm: derived.activeForm,
-  activeMessageId: values.activeMessageId,
   canCreateForms,
-  currentUser: values.currentUser,
-  draftForm: values.draftForm,
   editingForm: derived.editingForm,
-  error: values.error,
   escalaByForm: derived.escalaByForm,
   eventHandlers: handlers.eventHandlers,
   events: bootstrapData.events,
   externalBases: bootstrapData.externalBases,
   fieldCatalog: bootstrapData.fieldCatalog,
-  fontScale: values.fontScale,
-  formDeleteKeyConfigured: values.formDeleteKeyConfigured,
   formHandlers: handlers.formHandlers,
   forms: derived.forms,
   labels: bootstrapData.labels,
-  loading: values.loading,
   membersConfig: bootstrapData.membersConfig,
   messageTemplates: bootstrapData.messageTemplates,
   messagingConfig: bootstrapData.messagingConfig,
@@ -141,20 +185,11 @@ export const buildAppControllerViewModelInput = ({
   publicForm: derived.publicForm,
   publicResultsEnabled: derived.publicResultsEnabled,
   publicResultsView: derived.publicResultsView,
-  publicRoute: values.publicRoute,
   refreshBootstrap: loaders.refreshBootstrap,
   responsesByForm: derived.responsesByForm,
   scaleTaskCatalog: bootstrapData.scaleTaskCatalog,
-  screen: values.screen,
   sessionHandlers,
-  setActiveEventId: setters.setActiveEventId,
-  setActiveFormId: setters.setActiveFormId,
-  setActiveMessageId: setters.setActiveMessageId,
-  setDraftForm: setters.setDraftForm,
-  setEditingFormId: setters.setEditingFormId,
-  setPublicRoute: setters.setPublicRoute,
-  setScreen: setters.setScreen,
-  setTheme: setters.setTheme,
-  theme: values.theme,
   users: bootstrapData.users,
+  ...pick(values, CONTROLLER_VIEWMODEL_VALUE_KEYS),
+  ...pick(setters, CONTROLLER_VIEWMODEL_SETTER_KEYS),
 });

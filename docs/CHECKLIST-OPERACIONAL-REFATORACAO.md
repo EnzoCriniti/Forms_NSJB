@@ -97,6 +97,8 @@ Checklist operacional:
 - iniciado neste ciclo: `appShellBuilder.js` passou a montar `state`, `actions`, `setters` e `permissions` por helpers puros antes de chamar `buildShellApp`, reduzindo a composicao inline.
 - iniciado neste ciclo: `buildShellApp` passou a expor blocos explicitos `state`, `data`, `actions`, `setters` e `permissions`, mantendo campos planos apenas como compatibilidade.
 - iniciado neste ciclo: `AppViewport`, `AppPublicViewport`, `AppShellContent`, registry e adapters de fluxos principais passaram a consumir o shell via acessores de bloco (`getShellState`, `getShellData`, `getShellActions`, `getShellSetters`), reduzindo dependencia direta do objeto achatado.
+- iniciado neste ciclo: `appControllerInputs.js` passou a usar listas de chaves por contrato para montar inputs de derived, loaders, handlers, lifecycle e view model, reduzindo mapeamento manual repetido.
+- iniciado neste ciclo: `appShellBuilder.js` deixou de remontar o runtime state campo a campo e passou a reaproveitar o bloco `state` ja montado.
 - pendente apos revisao: manter os campos planos do shell app apenas enquanto testes/consumidores legados ainda dependerem deles; novos fluxos devem usar blocos explicitos.
 
 Teste a reforcar:
@@ -914,8 +916,8 @@ Teste a reforcar:
 6. Concluido em parte neste ciclo: `frontend/src/screens/CreateFormScreen.jsx` ficou como composicao visual e o estado/handlers sairam para `frontend/src/screens/createFormController.js`.
 7. Concluido em parte neste ciclo: a superficie entre `createFormController.js` e `CreateFormPresenceSection.jsx` passou a usar blocos nomeados em vez de props planos.
 8. Concluido em parte neste ciclo: `appShellObject.js` agora expoe blocos explicitos e os consumidores principais usam acessores de bloco.
-9. Prioridade atual: revisar `frontend/src/lib/appControllerInputs.js` e `frontend/src/lib/appShellBuilder.js` para reduzir a composicao manual restante sem criar novos hubs maiores.
-10. Depois: remover duplicacao restante de defaults, modos e regras de `person_select`/`memberBinding` entre frontend, backend e shared.
+9. Concluido em parte neste ciclo: `appControllerInputs.js` e `appShellBuilder.js` tiveram composicao manual reduzida sem mudar contratos.
+10. Prioridade atual: remover duplicacao restante de defaults, modos e regras de `person_select`/`memberBinding` entre frontend, backend e shared.
 11. Depois: continuar os cortes pequenos da area admin/mensagens quando eles reduzirem responsabilidade real, como separar editor/lista de presets se o bloco voltar a crescer.
 12. Sempre: atualizar testes e documentacao a cada corte.
 
@@ -963,7 +965,7 @@ Teste a reforcar:
 
 Status apos revisao:
 - a refatoracao esta sendo efetiva nas areas onde o arquivo original perdeu responsabilidade de verdade, especialmente `App.jsx`, resultados, validadores, services principais e parte da central administrativa.
-- a refatoracao ainda nao deve ser considerada final porque alguns modulos novos viraram pontos de composicao grandes, principalmente `appControllerInputs.js` e `appShellBuilder.js`; `appShellObject.js` ja expoe blocos explicitos, mas ainda mantem campos planos por compatibilidade.
+- a refatoracao ainda nao deve ser considerada final porque alguns modulos novos continuam concentrando composicao, mas `appControllerInputs.js`, `appShellBuilder.js` e `appShellObject.js` ja tiveram reducoes recentes de mapeamento manual e acoplamento ao objeto achatado.
 - a fronteira entre `createFormController.js` e `CreateFormPresenceSection.jsx` ja foi reduzida para blocos nomeados; o maior risco restante de acoplamento voltou para os hubs de composicao do shell do app.
 - cortes visuais pequenos, como listas extraidas de blocos administrativos, sao validos quando deixam o pai focado em estado/fluxo, mas nao devem virar prioridade acima da reducao de acoplamento entre dominios.
 
