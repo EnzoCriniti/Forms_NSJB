@@ -661,6 +661,7 @@ Checklist operacional:
 - se qualquer um deles passar a conter regra de fluxo, extrair para helper ou controller da modal
 - iniciado neste ciclo: `adminAccessPanels.jsx` ficou como agregador historico; usuarios e bases externas sairam para `UsersManagementPanel.jsx` e `ExternalBasesPanel.jsx`.
 - iniciado neste ciclo: `ExternalBasesPanel.jsx` passou a usar `ExternalBasesEditorPanel.jsx` para separar o formulario do restante da lista.
+- iniciado neste ciclo: `ExternalBasesEditorPanel.jsx` foi dividido em `ExternalBasesCoreEditorPanel.jsx` e `ExternalBasesSyncEditorPanel.jsx`.
 - iniciado neste ciclo: a lista de bases externas saiu para `ExternalBasesListPanel.jsx`.
 - iniciado neste ciclo: editores de campos e tarefas sairam de `FieldCatalogPanel.jsx` e `ScaleTaskCatalogPanel.jsx` para `FieldCatalogEditorPanel.jsx` e `ScaleTaskCatalogEditorPanel.jsx`.
 - iniciado neste ciclo: `FieldCatalogEditorPanel.jsx` foi dividido em `FieldCatalogCoreEditorPanel.jsx` e `FieldCatalogAdvancedEditorPanel.jsx`.

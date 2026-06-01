@@ -79,7 +79,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/ExternalBasesPanel.jsx`
   Composicao visual do editor e da lista de bases externas.
 - `frontend/src/features/admin/ExternalBasesEditorPanel.jsx`
-  Editor de bases externas.
+  Composicao visual dos blocos basico e de sincronizacao do editor de bases externas.
+- `frontend/src/features/admin/ExternalBasesCoreEditorPanel.jsx`
+  Bloco basico do editor de bases externas.
+- `frontend/src/features/admin/ExternalBasesSyncEditorPanel.jsx`
+  Bloco de sincronizacao e acoes do editor de bases externas.
 - `frontend/src/features/admin/ExternalBasesListPanel.jsx`
   Lista de bases externas administrativas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
