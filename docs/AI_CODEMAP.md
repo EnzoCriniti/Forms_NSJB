@@ -147,7 +147,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/AuditLogsPanel.jsx`
   Composicao visual da auditoria administrativa.
 - `frontend/src/features/admin/AuditLogsFiltersPanel.jsx`
-  Bloco de filtros da auditoria administrativa.
+  Composicao visual dos filtros da auditoria administrativa.
+- `frontend/src/features/admin/AuditLogsFilterFields.jsx`
+  Bloco dos campos de filtro da auditoria administrativa.
+- `frontend/src/features/admin/AuditLogsFiltersActions.jsx`
+  Bloco das acoes de filtro da auditoria administrativa.
 - `frontend/src/features/admin/AuditLogsSummaryBar.jsx`
   Barra de resumo e acoes da auditoria administrativa.
 - `frontend/src/features/admin/AuditLogsPaginationBar.jsx`
