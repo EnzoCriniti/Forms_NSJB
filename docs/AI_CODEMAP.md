@@ -122,6 +122,12 @@ Mapa curto das areas mais mexidas por agentes.
   Painel de administracao de classificacoes.
 - `frontend/src/features/admin/TemplatesPanel.jsx`
   Painel de administracao de templates.
+- `frontend/src/features/admin/CatalogManagementModal.jsx`
+  Modal legado de catalogos administrativos, com listas separadas de classificacoes e presets.
+- `frontend/src/features/admin/CatalogManagementLabelsList.jsx`
+  Lista visual de classificacoes do modal legado de catalogos.
+- `frontend/src/features/admin/CatalogManagementPresetsList.jsx`
+  Lista visual de presets do modal legado de catalogos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   Painel compartilhado da chave mestra e status da seguranca.
 - `frontend/src/features/admin/adminShellPanels.jsx`
