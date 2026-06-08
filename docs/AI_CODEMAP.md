@@ -382,8 +382,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appFormMutationActions.js`
   Acoes de mutacao de formularios: exclusao segura, respostas, escala e claim de vaga.
 - `frontend/src/lib/appFormHandlers.js`
-  Montagem dos handlers de formulario, resposta e escala usados por `App.jsx`, mantendo os wrappers fora do componente principal.
-  Consome os modulos menores de entrada e mutacao de formularios.
+  Agregador historico dos handlers de formularios usados por `App.jsx`. Mantem reexports de compatibilidade enquanto os handlers por dominio vivem em modulos menores.
+- `frontend/src/lib/appFormCreateHandlers.js`
+  Handlers de criacao, duplicacao e arquivamento de formularios usados pelo shell principal.
+- `frontend/src/lib/appFormInteractionHandlers.js`
+  Handlers de interacao com formularios, respostas e escala usados pelo shell principal.
 - `frontend/src/lib/appAdminActions.js`
   Agregador historico das acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos, mensagens e eventos.
 - `frontend/src/lib/appAdminListActions.js`

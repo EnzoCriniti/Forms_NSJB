@@ -75,6 +75,7 @@ Checklist operacional:
 - iniciado neste ciclo: wrappers de carregamento de dados sairam para `frontend/src/lib/appDataHandlers.js`.
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
 - iniciado neste ciclo: `appFormActions.js` virou agregador historico; as acoes de entrada e mutacao de formulario sairam para `appFormEntryActions.js` e `appFormMutationActions.js`.
+- iniciado neste ciclo: `appFormHandlers.js` virou agregador historico; os handlers de criacao e de interacao com formularios sairam para `appFormCreateHandlers.js` e `appFormInteractionHandlers.js`.
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
 - iniciado neste ciclo: `appAdminActions.js` foi dividido em modulos por dominio (`appAdminListActions.js`, `appAdminUserActions.js`, `appAdminMembersActions.js`, `appAdminMessagingActions.js` e `appAdminEventMessageActions.js`).
 - iniciado neste ciclo: `appAdminHandlers.js` foi dividido em wrappers por dominio (`appAdminListHandlers.js`, `appAdminUserHandlers.js`, `appAdminMembersHandlers.js`, `appAdminMessagingHandlers.js`, `appAdminEventMessageHandlers.js` e `appAdminSecurityHandlers.js`).
