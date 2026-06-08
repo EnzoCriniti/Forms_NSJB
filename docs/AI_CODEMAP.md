@@ -366,16 +366,28 @@ Mapa curto das areas mais mexidas por agentes.
   Agregador historico das acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos, mensagens e eventos.
 - `frontend/src/lib/appAdminListActions.js`
   Acoes de listas administrativas usadas pelo shell principal.
+- `frontend/src/lib/appAdminListHandlers.js`
+  Handlers de listas administrativas usados pelo shell principal.
 - `frontend/src/lib/appAdminUserActions.js`
   Acoes de usuarios usadas pelo shell principal.
+- `frontend/src/lib/appAdminUserHandlers.js`
+  Handlers de usuarios usados pelo shell principal.
 - `frontend/src/lib/appAdminMembersActions.js`
   Acoes de base de socios usadas pelo shell principal.
+- `frontend/src/lib/appAdminMembersHandlers.js`
+  Handlers de base de socios usados pelo shell principal.
 - `frontend/src/lib/appAdminMessagingActions.js`
   Acoes de mensagens administrativas usadas pelo shell principal.
+- `frontend/src/lib/appAdminMessagingHandlers.js`
+  Handlers de mensagens administrativas usados pelo shell principal.
 - `frontend/src/lib/appAdminEventMessageActions.js`
   Acoes de mensagens de evento usadas pelo shell principal.
+- `frontend/src/lib/appAdminEventMessageHandlers.js`
+  Handlers de mensagens de evento usados pelo shell principal.
+- `frontend/src/lib/appAdminSecurityHandlers.js`
+  Handlers de seguranca administrativa usados pelo shell principal.
 - `frontend/src/lib/appAdminHandlers.js`
-  Montagem dos handlers administrativos e de mensagens usados por `App.jsx`.
+  Agregador historico dos handlers administrativos e de mensagens usados por `App.jsx`.
 - `frontend/src/lib/appHandlerGroups.js`
   Montagem dos grupos de handlers do App: sessao, eventos, formularios/escala e administracao/mensagens.
 - `frontend/src/lib/appEventActions.js`

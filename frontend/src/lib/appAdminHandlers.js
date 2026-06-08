@@ -1,27 +1,9 @@
 /**
  * @file frontend/src/lib/appAdminHandlers.js
- * @summary Montagem dos handlers administrativos usados pelo App principal.
- * @responsibility Agrupar wrappers de usuarios, catalogos, bases, membros e mensagens fora de App.jsx.
+ * @summary Agregador historico dos handlers administrativos usados pelo App principal.
+ * @responsibility Manter compatibilidade enquanto os handlers por dominio vivem em modulos menores.
  */
 
-import {
-  applyAppMessageDeletion,
-  applyAppMessageUpdate,
-  deleteAppListResult,
-  deleteAppMessageTemplate,
-  deleteAppPersonPreset,
-  deleteAppUser,
-  openAppEventMessageDetail,
-  openAppEventMessageEditor,
-  saveAppEventMessage,
-  saveAppListResult,
-  saveAppMembersConfig,
-  saveAppMessageTemplate,
-  saveAppMessagingConfig,
-  saveAppPersonPreset,
-  saveAppUser,
-  syncAppMembersConfig,
-} from "./appAdminActions";
 import {
   deleteExternalBase as apiDeleteExternalBase,
   deleteFieldCatalogItem as apiDeleteFieldCatalogItem,
@@ -47,6 +29,12 @@ import {
   syncExternalBase as apiSyncExternalBase,
   syncMembersConfig as apiSyncMembersConfig,
 } from "./api";
+import { buildAppAdminEventMessageHandlers } from "./appAdminEventMessageHandlers";
+import { buildAppAdminListHandlers } from "./appAdminListHandlers";
+import { buildAppAdminMembersHandlers } from "./appAdminMembersHandlers";
+import { buildAppAdminMessagingHandlers } from "./appAdminMessagingHandlers";
+import { buildAppAdminSecurityHandlers } from "./appAdminSecurityHandlers";
+import { buildAppAdminUserHandlers } from "./appAdminUserHandlers";
 
 export const buildAppAdminHandlers = ({
   currentUser,
@@ -88,73 +76,75 @@ export const buildAppAdminHandlers = ({
   upsertBootstrapListItem,
   upsertNestedBootstrapItem,
 }) => {
-  const applyBootstrapListResult = (key, result, resultKey = key) => {
-    setBootstrap(prev => replaceBootstrapListFromResult(prev, key, result, resultKey));
-  };
+  const userHandlers = buildAppAdminUserHandlers({
+    currentUser,
+    deleteUser,
+    logout,
+    saveUser,
+    sanitizeUser,
+    setBootstrap,
+    setSession,
+    replaceBootstrapListFromResult,
+  });
+
+  const listHandlers = buildAppAdminListHandlers({
+    deleteExternalBase,
+    deleteFieldCatalogItem,
+    deleteLabel,
+    deletePreset,
+    deleteScaleTaskCatalogItem,
+    saveExternalBase,
+    saveFieldCatalogItem,
+    saveLabel,
+    savePeople,
+    savePreset,
+    saveScaleTaskCatalogItem,
+    syncExternalBase,
+    replaceBootstrapListFromResult,
+    setBootstrap,
+  });
+
+  const membersHandlers = buildAppAdminMembersHandlers({
+    replaceBootstrapList,
+    replaceBootstrapListFromResult,
+    saveMembersConfig,
+    setBootstrap,
+    syncMembersConfig,
+  });
+
+  const messagingHandlers = buildAppAdminMessagingHandlers({
+    deleteMessageTemplate,
+    deletePersonPreset,
+    removeBootstrapListItem,
+    replaceBootstrapList,
+    saveMessageTemplate,
+    saveMessagingConfig,
+    savePersonPreset,
+    setBootstrap,
+    upsertBootstrapListItem,
+  });
+
+  const eventMessageHandlers = buildAppAdminEventMessageHandlers({
+    removeNestedBootstrapItem,
+    saveEventMessage,
+    setActiveEventId,
+    setActiveMessageId,
+    setBootstrap,
+    setScreen,
+    upsertNestedBootstrapItem,
+  });
+
+  const securityHandlers = buildAppAdminSecurityHandlers({
+    saveFormDeleteKey,
+    setFormDeleteKeyConfigured,
+  });
 
   return {
-  handleSaveUser: async user => saveAppUser({ user, currentUser, saveUser, applyBootstrapListResult, sanitizeUser, setSession }),
-  handleDeleteUser: async id => {
-    await deleteAppUser({ id, currentUser, deleteUser, applyBootstrapListResult, logout });
-  },
-  handleSaveLabel: async label => {
-    await saveAppListResult({ payload: label, key: "labels", saveFn: saveLabel, applyBootstrapListResult });
-  },
-  handleDeleteLabel: async id => {
-    await deleteAppListResult({ id, key: "labels", deleteFn: deleteLabel, applyBootstrapListResult });
-  },
-  handleSavePreset: async preset => {
-    await saveAppListResult({ payload: preset, key: "presets", saveFn: savePreset, applyBootstrapListResult });
-  },
-  handleDeletePreset: async id => {
-    await deleteAppListResult({ id, key: "presets", deleteFn: deletePreset, applyBootstrapListResult });
-  },
-  handleSavePeople: async nextPeople => {
-    await saveAppListResult({ payload: nextPeople, key: "people", saveFn: savePeople, applyBootstrapListResult });
-  },
-  handleSaveMembersConfig: async nextConfig => saveAppMembersConfig({ nextConfig, saveMembersConfig, setBootstrap, replaceBootstrapListFromResult }),
-  handleSyncMembersConfig: async () => syncAppMembersConfig({ syncMembersConfig, setBootstrap, replaceBootstrapList }),
-  handleSaveExternalBase: async base => saveAppListResult({ payload: base, key: "externalBases", saveFn: saveExternalBase, applyBootstrapListResult }),
-  handleDeleteExternalBase: async id => deleteAppListResult({ id, key: "externalBases", deleteFn: deleteExternalBase, applyBootstrapListResult }),
-  handleSyncExternalBase: async id => saveAppListResult({ payload: id, key: "externalBases", saveFn: syncExternalBase, applyBootstrapListResult }),
-  handleSaveFieldCatalogItem: async item => {
-    await saveAppListResult({ payload: item, key: "fieldCatalog", saveFn: saveFieldCatalogItem, applyBootstrapListResult });
-  },
-  handleDeleteFieldCatalogItem: async id => {
-    await deleteAppListResult({ id, key: "fieldCatalog", deleteFn: deleteFieldCatalogItem, applyBootstrapListResult });
-  },
-  handleSaveScaleTaskCatalogItem: async item => {
-    await saveAppListResult({ payload: item, key: "scaleTaskCatalog", saveFn: saveScaleTaskCatalogItem, applyBootstrapListResult });
-  },
-  handleDeleteScaleTaskCatalogItem: async id => {
-    await deleteAppListResult({ id, key: "scaleTaskCatalog", deleteFn: deleteScaleTaskCatalogItem, applyBootstrapListResult });
-  },
-  handleSaveFormDeleteKey: async payload => {
-    const result = await saveFormDeleteKey(payload);
-    setFormDeleteKeyConfigured(Boolean(result.configured));
-    return result;
-  },
-  handleSaveMessagingConfig: async nextConfig => saveAppMessagingConfig({ nextConfig, saveMessagingConfig, setBootstrap, replaceBootstrapList }),
-  handleSaveMessageTemplate: async template => saveAppMessageTemplate({ template, saveMessageTemplate, setBootstrap, upsertBootstrapListItem }),
-  handleDeleteMessageTemplate: async id => {
-    await deleteAppMessageTemplate({ id, deleteMessageTemplate, setBootstrap, removeBootstrapListItem });
-  },
-  handleSavePersonPreset: async preset => saveAppPersonPreset({ preset, savePersonPreset, setBootstrap, upsertBootstrapListItem }),
-  handleDeletePersonPreset: async id => {
-    await deleteAppPersonPreset({ id, deletePersonPreset, setBootstrap, removeBootstrapListItem });
-  },
-  handleSaveEventMessage: async (eventId, payload) => saveAppEventMessage({ eventId, payload, saveEventMessage, setBootstrap, upsertNestedBootstrapItem }),
-  openEventMessageEditor: (event, message = null) => {
-    openAppEventMessageEditor({ event, message, setActiveEventId, setActiveMessageId, setScreen });
-  },
-  openEventMessageDetail: (event, message) => {
-    openAppEventMessageDetail({ event, message, setActiveEventId, setActiveMessageId, setScreen });
-  },
-  applyMessageUpdate: updated => {
-    applyAppMessageUpdate({ updated, setBootstrap, upsertNestedBootstrapItem });
-  },
-  applyMessageDeletion: messageId => {
-    applyAppMessageDeletion({ messageId, setBootstrap, removeNestedBootstrapItem });
-  },
+    ...userHandlers,
+    ...listHandlers,
+    ...membersHandlers,
+    ...messagingHandlers,
+    ...eventMessageHandlers,
+    ...securityHandlers,
   };
 };
