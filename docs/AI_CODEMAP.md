@@ -363,7 +363,17 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appFormHandlers.js`
   Montagem dos handlers de formulario, resposta e escala usados por `App.jsx`, mantendo os wrappers fora do componente principal.
 - `frontend/src/lib/appAdminActions.js`
-  Acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos e mensagens.
+  Agregador historico das acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos, mensagens e eventos.
+- `frontend/src/lib/appAdminListActions.js`
+  Acoes de listas administrativas usadas pelo shell principal.
+- `frontend/src/lib/appAdminUserActions.js`
+  Acoes de usuarios usadas pelo shell principal.
+- `frontend/src/lib/appAdminMembersActions.js`
+  Acoes de base de socios usadas pelo shell principal.
+- `frontend/src/lib/appAdminMessagingActions.js`
+  Acoes de mensagens administrativas usadas pelo shell principal.
+- `frontend/src/lib/appAdminEventMessageActions.js`
+  Acoes de mensagens de evento usadas pelo shell principal.
 - `frontend/src/lib/appAdminHandlers.js`
   Montagem dos handlers administrativos e de mensagens usados por `App.jsx`.
 - `frontend/src/lib/appHandlerGroups.js`

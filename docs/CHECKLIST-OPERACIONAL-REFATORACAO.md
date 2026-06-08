@@ -76,6 +76,7 @@ Checklist operacional:
 - iniciado neste ciclo: wrappers de carregamento de dados sairam para `frontend/src/lib/appDataHandlers.js`.
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
+- iniciado neste ciclo: `appAdminActions.js` foi dividido em modulos por dominio (`appAdminListActions.js`, `appAdminUserActions.js`, `appAdminMembersActions.js`, `appAdminMessagingActions.js` e `appAdminEventMessageActions.js`).
 - iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
 - iniciado neste ciclo: wrappers finos de eventos, formularios/escala e administracao/mensagens sairam para `frontend/src/lib/appEventHandlers.js`, `frontend/src/lib/appFormHandlers.js` e `frontend/src/lib/appAdminHandlers.js`.
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
