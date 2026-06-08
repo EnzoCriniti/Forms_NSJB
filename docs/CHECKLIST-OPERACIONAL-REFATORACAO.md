@@ -83,6 +83,7 @@ Checklist operacional:
 - iniciado: montagem do objeto `shellApp` saiu para `frontend/src/lib/appShellObject.js`
 - iniciado neste ciclo: composicao detalhada de state/data/actions/setters do `shellApp` saiu para `frontend/src/lib/appShellBuilder.js`.
 - iniciado: efeitos de ciclo de vida do shell sairam para `frontend/src/lib/appLifecycleEffects.js`
+- iniciado neste ciclo: `appLifecycleEffects.js` foi dividido em `appLifecycleBootstrapEffects.js`, `appLifecyclePreferenceEffects.js`, `appLifecycleNavigationEffects.js`, `appLifecycleDetailEffects.js` e `appLifecycleSessionValidationEffects.js`.
 - iniciado: acoes de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionActions.js`
 - iniciado neste ciclo: wrappers de sessao, navegacao e escala de fonte sairam para `frontend/src/lib/appSessionHandlers.js`.
 - iniciado neste ciclo: imports diretos da lista extensa de endpoints de dominio sairam de `App.jsx`; os builders de handlers agora importam suas APIs com fallback injetavel para testes.

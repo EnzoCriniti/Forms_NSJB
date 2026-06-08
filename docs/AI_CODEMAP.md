@@ -413,7 +413,17 @@ Mapa curto das areas mais mexidas por agentes.
   Composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`, incluindo helpers puros para montar os blocos `data`, `state`, `actions`, `setters` e `permissions` fora de `App.jsx`.
   O runtime state reaproveita o bloco `state` montado antes, evitando remontagem campo a campo.
 - `frontend/src/lib/appLifecycleEffects.js`
-  Hook dos efeitos de ciclo de vida do shell principal: persistencia, bootstrap inicial, rota publica, detalhes e validacao de sessao.
+  Agregador historico dos efeitos de ciclo de vida do shell principal. Mantem reexports para bootstrap, detalhes, navegacao, preferencias e validacao de sessao.
+- `frontend/src/lib/appLifecycleBootstrapEffects.js`
+  Efeitos de bootstrap inicial e persistencia de sessao do shell principal.
+- `frontend/src/lib/appLifecyclePreferenceEffects.js`
+  Efeitos de preferencias visuais e persistencia de pins do shell principal.
+- `frontend/src/lib/appLifecycleNavigationEffects.js`
+  Efeitos de navegacao publica e redirecionamento do shell principal.
+- `frontend/src/lib/appLifecycleDetailEffects.js`
+  Efeitos de carregamento incremental de detalhes do shell principal.
+- `frontend/src/lib/appLifecycleSessionValidationEffects.js`
+  Efeitos de validacao periodica de sessao do shell principal.
 - `frontend/src/lib/appSessionActions.js`
   Acoes de sessao, logout local, navegacao interna e escala de fonte do shell principal.
 - `frontend/src/lib/appSessionHandlers.js`
