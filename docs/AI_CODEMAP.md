@@ -376,9 +376,14 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appFormDrafts.js`
   Helpers puros para duplicar formulario e montar payload de salvamento a partir de formulario existente.
 - `frontend/src/lib/appFormActions.js`
-  Acoes do shell principal para criar, duplicar, salvar, arquivar, excluir, responder e atualizar escala de formularios.
+  Agregador historico das acoes do shell principal para formularios. Mantem reexports de compatibilidade.
+- `frontend/src/lib/appFormEntryActions.js`
+  Acoes de entrada e ciclo de vida inicial de formularios: criar a partir de evento, duplicar, salvar e arquivar.
+- `frontend/src/lib/appFormMutationActions.js`
+  Acoes de mutacao de formularios: exclusao segura, respostas, escala e claim de vaga.
 - `frontend/src/lib/appFormHandlers.js`
   Montagem dos handlers de formulario, resposta e escala usados por `App.jsx`, mantendo os wrappers fora do componente principal.
+  Consome os modulos menores de entrada e mutacao de formularios.
 - `frontend/src/lib/appAdminActions.js`
   Agregador historico das acoes do shell principal para usuarios, listas administrativas, bases externas, membros, catalogos, mensagens e eventos.
 - `frontend/src/lib/appAdminListActions.js`
@@ -411,6 +416,7 @@ Mapa curto das areas mais mexidas por agentes.
   Acoes do shell principal para salvar, publicar, excluir e fixar eventos.
 - `frontend/src/lib/appEventHandlers.js`
   Montagem dos handlers de eventos usados por `App.jsx`.
+  Consome as acoes de entrada de formulario para iniciar criacao a partir de evento.
 - `frontend/src/lib/appShellObject.js`
   Montagem do objeto entregue ao viewport e ao shell autenticado a partir de blocos de estado, dados, acoes e setters.
   Expoe blocos explicitos (`state`, `data`, `actions`, `setters`, `permissions`) e mantem campos planos por compatibilidade.

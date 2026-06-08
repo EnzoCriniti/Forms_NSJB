@@ -4,7 +4,7 @@
  * @responsibility Agrupar wrappers de eventos para reduzir a orquestracao manual em App.jsx.
  */
 
-import { startEventFormCreation } from "./appFormActions";
+import { startEventFormCreation } from "./appFormEntryActions";
 import { deleteAppEvent, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "./appEventActions";
 import {
   deleteEvent as apiDeleteEvent,

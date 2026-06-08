@@ -4,7 +4,8 @@
  * @responsibility Agrupar wrappers de formularios, respostas e escala fora de App.jsx.
  */
 
-import { archiveAppForm, claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppForm, saveAppResponse, startDuplicateForm } from "./appFormActions";
+import { archiveAppForm, saveAppForm, startDuplicateForm } from "./appFormEntryActions";
+import { claimAppEscalaSlot, deleteAppForm, saveAppEscala, saveAppResponse } from "./appFormMutationActions";
 import {
   claimEscalaSlot as apiClaimEscalaSlot,
   deleteForm as apiDeleteForm,
