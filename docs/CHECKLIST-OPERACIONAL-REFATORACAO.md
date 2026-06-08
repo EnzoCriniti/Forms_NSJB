@@ -79,6 +79,7 @@ Checklist operacional:
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
 - iniciado neste ciclo: `appAdminActions.js` foi dividido em modulos por dominio (`appAdminListActions.js`, `appAdminUserActions.js`, `appAdminMembersActions.js`, `appAdminMessagingActions.js` e `appAdminEventMessageActions.js`).
 - iniciado neste ciclo: `appAdminHandlers.js` foi dividido em wrappers por dominio (`appAdminListHandlers.js`, `appAdminUserHandlers.js`, `appAdminMembersHandlers.js`, `appAdminMessagingHandlers.js`, `appAdminEventMessageHandlers.js` e `appAdminSecurityHandlers.js`).
+- iniciado neste ciclo: `appAdminListHandlers.js` foi quebrado em blocos de catalogo e listas operacionais (`appAdminCatalogListHandlers.js` e `appAdminPeopleExternalHandlers.js`).
 - iniciado: acoes de eventos sairam para `frontend/src/lib/appEventActions.js`
 - iniciado neste ciclo: wrappers finos de eventos, formularios/escala e administracao/mensagens sairam para `frontend/src/lib/appEventHandlers.js`, `frontend/src/lib/appFormHandlers.js` e `frontend/src/lib/appAdminHandlers.js`.
 - iniciado neste ciclo: `appEventHandlers.js` e `appFormHandlers.js` passaram a consumir os modulos menores de acoes de formulario, reduzindo dependencia direta do agregador historico.

@@ -392,7 +392,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appAdminListActions.js`
   Acoes de listas administrativas usadas pelo shell principal.
 - `frontend/src/lib/appAdminListHandlers.js`
-  Handlers de listas administrativas usados pelo shell principal.
+  Agregador historico dos handlers de listas administrativas usados pelo shell principal.
+- `frontend/src/lib/appAdminCatalogListHandlers.js`
+  Handlers de catalogo administrativo: labels, presets, campos e tarefas base.
+- `frontend/src/lib/appAdminPeopleExternalHandlers.js`
+  Handlers administrativos de pessoas e bases externas.
 - `frontend/src/lib/appAdminUserActions.js`
   Acoes de usuarios usadas pelo shell principal.
 - `frontend/src/lib/appAdminUserHandlers.js`
