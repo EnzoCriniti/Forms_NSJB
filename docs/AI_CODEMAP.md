@@ -260,8 +260,19 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appController.js`
   Controller de alto nivel do App: estado global, seletores derivados, handlers, efeitos de ciclo de vida, shell app e props do viewport.
 - `frontend/src/lib/appControllerInputs.js`
-  Montagem pura dos inputs internos do controller do App para derived state, loaders, handlers, lifecycle e view model.
-  Usa listas de chaves por contrato para reduzir mapeamento manual repetido de `values` e `setters`.
+  Agregador historico dos inputs internos do controller do App. Mantem reexports para derived state, loaders, handlers, lifecycle e view model.
+- `frontend/src/lib/appControllerInputKeys.js`
+  Listas de chaves canonicas usadas pelos inputs do controller do App.
+- `frontend/src/lib/appControllerDerivedInput.js`
+  Inputs de derived state do controller do App.
+- `frontend/src/lib/appControllerLoadersInput.js`
+  Inputs de carregadores do controller do App.
+- `frontend/src/lib/appControllerHandlersInput.js`
+  Inputs de handlers do controller do App.
+- `frontend/src/lib/appControllerLifecycleInput.js`
+  Inputs de lifecycle do controller do App.
+- `frontend/src/lib/appControllerViewModelInput.js`
+  Inputs do view model do controller do App.
 - `frontend/src/lib/appControllerState.js`
   Hook do estado global do App agrupado em blocos `values` e `setters`.
 - `frontend/src/lib/appControllerDerived.js`

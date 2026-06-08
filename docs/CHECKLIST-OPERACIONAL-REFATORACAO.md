@@ -94,12 +94,12 @@ Checklist operacional:
 - iniciado neste ciclo: montagem final do `shellApp` e das props do viewport saiu para `frontend/src/lib/appControllerViewModel.js`.
 - iniciado neste ciclo: loaders, grupos de handlers e lifecycle do controller sairam para `frontend/src/lib/appControllerLoaders.js`, `frontend/src/lib/appControllerHandlers.js` e `frontend/src/lib/appControllerLifecycle.js`.
 - iniciado neste ciclo: selecao dos blocos do bootstrap consumidos pelo controller saiu para `frontend/src/lib/appControllerBootstrap.js`.
-- iniciado neste ciclo: montagem dos inputs internos do controller saiu para `frontend/src/lib/appControllerInputs.js`, reduzindo a composicao manual em `appController.js`.
+- iniciado neste ciclo: montagem dos inputs internos do controller saiu para `frontend/src/lib/appControllerInputs.js`, agora dividido em builders por dominio e listas de chaves em `appControllerInputKeys.js`.
 - pendente apos revisao: `appController.js` ainda monta muitos blocos de handlers e dependencias transversais; proximo corte deve reduzir a composicao manual ou separar blocos de estado por dominio antes de criar novas acoes ali.
 - iniciado neste ciclo: `appShellBuilder.js` passou a montar `state`, `actions`, `setters` e `permissions` por helpers puros antes de chamar `buildShellApp`, reduzindo a composicao inline.
 - iniciado neste ciclo: `buildShellApp` passou a expor blocos explicitos `state`, `data`, `actions`, `setters` e `permissions`, mantendo campos planos apenas como compatibilidade.
 - iniciado neste ciclo: `AppViewport`, `AppPublicViewport`, `AppShellContent`, registry e adapters de fluxos principais passaram a consumir o shell via acessores de bloco (`getShellState`, `getShellData`, `getShellActions`, `getShellSetters`), reduzindo dependencia direta do objeto achatado.
-- iniciado neste ciclo: `appControllerInputs.js` passou a usar listas de chaves por contrato para montar inputs de derived, loaders, handlers, lifecycle e view model, reduzindo mapeamento manual repetido.
+- iniciado neste ciclo: `appControllerInputs.js` virou agregador historico; os builders de derived, loaders, handlers, lifecycle e view model sairam para modulos proprios.
 - iniciado neste ciclo: `appShellBuilder.js` deixou de remontar o runtime state campo a campo e passou a reaproveitar o bloco `state` ja montado.
 - pendente apos revisao: manter os campos planos do shell app apenas enquanto testes/consumidores legados ainda dependerem deles; novos fluxos devem usar blocos explicitos.
 
