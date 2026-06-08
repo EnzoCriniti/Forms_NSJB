@@ -129,7 +129,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/CatalogManagementPresetsList.jsx`
   Lista visual de presets do modal legado de catalogos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
-  Painel compartilhado da chave mestra e status da seguranca.
+  Painel compartilhado da chave mestra e status da seguranca, agora dividido em form e status.
+- `frontend/src/features/admin/SecurityKeyFormPanel.jsx`
+  Formulario da chave mestra da seguranca administrativa.
+- `frontend/src/features/admin/SecurityStatusPanel.jsx`
+  Painel de status da seguranca administrativa.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   Chrome compartilhado da central administrativa, com a barra de abas e o resumo da aba ativa.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
@@ -536,7 +540,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminOrganizationPanels.jsx`
   Componentes compartilhados das classificacoes e templates administrativos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
-  UI compartilhada da seguranca administrativa.
+  UI compartilhada da seguranca administrativa, dividida em formulario e status.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   UI compartilhada da navegacao e resumo da central administrativa.
 - `frontend/src/lib/forms.js`
