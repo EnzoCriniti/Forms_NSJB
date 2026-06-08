@@ -585,6 +585,7 @@ Checklist operacional:
 - iniciado: payloads de usuarios, classificacoes, bases externas, catalogos, tarefas e chave mestra sairam para `frontend/src/features/admin/adminSettingsPayloads.js`
 - iniciado: fluxo repetido de busy/feedback/sucesso/erro dos submits e exclusoes confirmadas saiu para `frontend/src/features/admin/adminSettingsActions.js`
 - iniciado neste ciclo: handlers de submit e exclusao confirmada sairam para `frontend/src/features/admin/adminSettingsSubmitHandlers.js`, agora divididos por dominio em `adminSettingsAccessSubmitHandlers.js`, `adminSettingsCatalogSubmitHandlers.js`, `adminSettingsOrganizationSubmitHandlers.js`, `adminSettingsSecuritySubmitHandlers.js` e `adminSettingsDeleteSubmitHandlers.js`
+- iniciado neste ciclo: `adminSettingsAccessSubmitHandlers.js` foi dividido em `adminSettingsUserSubmitHandlers.js` e `adminSettingsExternalBaseSubmitHandlers.js`, reduzindo o acoplamento entre usuario e base externa.
 - iniciado: composicao visual de abas, paineis e modal de exclusao saiu para `frontend/src/features/admin/AdminSettingsContent.jsx`
 - iniciado: selecao/renderizacao dos paineis por aba saiu para `frontend/src/features/admin/AdminSettingsTabPanel.jsx`
 - iniciado: props entregues a `AdminSettingsTabPanel.jsx` passaram a ser agrupadas por dominio (`access`, `members`, `catalog`, `organization`, `security`, `messaging`, `audit`, `shared`)

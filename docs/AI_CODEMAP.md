@@ -13,7 +13,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminSettingsSubmitHandlers.js`
   Agregador dos handlers de submit da central administrativa, compondo os blocos de dominio.
 - `frontend/src/features/admin/adminSettingsAccessSubmitHandlers.js`
-  Handlers de submit administrativos para usuarios e bases externas.
+  Agregador dos handlers de submit administrativos para usuarios e bases externas.
+- `frontend/src/features/admin/adminSettingsUserSubmitHandlers.js`
+  Handlers de submit administrativos para usuarios.
+- `frontend/src/features/admin/adminSettingsExternalBaseSubmitHandlers.js`
+  Handlers de submit administrativos para bases externas e sincronizacao.
 - `frontend/src/features/admin/adminSettingsCatalogSubmitHandlers.js`
   Handlers de submit administrativos para campos base e tarefas base.
 - `frontend/src/features/admin/adminSettingsOrganizationSubmitHandlers.js`
