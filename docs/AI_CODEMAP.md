@@ -324,7 +324,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appPinning.js`
   Helpers puros para alternar e remover itens fixados por usuario.
 - `frontend/src/lib/appDataLoad.js`
-  Helpers do carregamento de dados do app: refresh do bootstrap, status da chave de exclusao e carregamento incremental de respostas/escala por formulario.
+  Agregador historico do carregamento de dados do app. Mantem reexports para bootstrap, status da chave de exclusao e carregamento incremental de respostas/escala por formulario.
+- `frontend/src/lib/appDetailLoaders.js`
+  Loaders incrementais de respostas e escala por formulario.
+- `frontend/src/lib/appBootstrapRefresh.js`
+  Refresh do bootstrap do app.
+- `frontend/src/lib/appFormDeleteKeyStatus.js`
+  Refresh do status da chave de exclusao do app.
 - `frontend/src/lib/appDataHandlers.js`
   Montagem dos handlers de carregamento usados por `App.jsx`: bootstrap, status da chave de exclusao, respostas e escala.
 - `frontend/src/components/AppHeader.jsx`

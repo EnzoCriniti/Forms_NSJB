@@ -71,8 +71,7 @@ Checklist operacional:
 - simplificar `refreshBootstrap`, `loadResponsesForForm` e `loadEscalaForForm` para um padrao unico de carregamento e erro
 - iniciado: decisao de detalhe para respostas/escala saiu para `resolveAppDetailLoadRequest` em `frontend/src/lib/appShell.js`
 - iniciado: loaders incrementais de respostas e escala sairam para `frontend/src/lib/appDataLoad.js`
-- iniciado: refresh de bootstrap saiu para `refreshAppBootstrap` em `frontend/src/lib/appDataLoad.js`
-- iniciado: refresh do status da chave de exclusao saiu para `refreshFormDeleteKeyConfiguredStatus` em `frontend/src/lib/appDataLoad.js`
+- iniciado neste ciclo: `appDataLoad.js` virou agregador historico; os loaders de detalhes sairam para `appDetailLoaders.js`, o refresh de bootstrap saiu para `appBootstrapRefresh.js` e o refresh do status da chave saiu para `appFormDeleteKeyStatus.js`.
 - iniciado neste ciclo: wrappers de carregamento de dados sairam para `frontend/src/lib/appDataHandlers.js`.
 - iniciado: acoes de formulario, resposta e escala sairam para `frontend/src/lib/appFormActions.js`
 - iniciado: acoes administrativas e de mensagens sairam para `frontend/src/lib/appAdminActions.js`
