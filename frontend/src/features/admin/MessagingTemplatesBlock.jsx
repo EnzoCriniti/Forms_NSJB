@@ -1,43 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { ConfirmModal, FeedbackBanner } from "../../components/ui";
-import { runMessagingSettingsAction } from "./messagingSettingsActions";
 import { MessagingTemplatesList } from "./MessagingTemplatesList";
-import { emptyMessageTemplateDraft } from "./messagingSettingsShared";
 import { MessagingTemplatesEditorPanel } from "./MessagingTemplatesEditorPanel";
+import { useMessagingTemplatesController } from "./useMessagingTemplatesController";
 
 export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
-  const [draft, setDraft] = useState(emptyMessageTemplateDraft);
-  const [busy, setBusy] = useState(false);
-  const [feedback, setFeedback] = useState(null);
-  const [pendingDelete, setPendingDelete] = useState(null);
-
-  const submit = async () => {
-    if (!draft.name.trim() || !draft.body.trim()) return;
-    await runMessagingSettingsAction({
-      loadingMessage: draft.id ? "Salvando modelo..." : "Criando modelo...",
-      successMessage: "Modelo salvo.",
-      setBusy,
-      setFeedback,
-      execute: () => onSave({
-        id: draft.id || undefined,
-        name: draft.name.trim(),
-        type: draft.type,
-        body: draft.body,
-      }),
-      onSuccess: () => setDraft(emptyMessageTemplateDraft),
-    });
-  };
-
-  const confirmDelete = async () => {
-    if (!pendingDelete) return;
-    await runMessagingSettingsAction({
-      successMessage: "Modelo removido.",
-      setFeedback,
-      execute: () => onDelete(pendingDelete.id),
-      onSuccess: () => setPendingDelete(null),
-    });
-    setPendingDelete(null);
-  };
+  const {
+    draft,
+    setDraft,
+    busy,
+    feedback,
+    pendingDelete,
+    setPendingDelete,
+    submit,
+    confirmDelete,
+  } = useMessagingTemplatesController({ onSave, onDelete });
 
   return (
     <section className="settings-grid" style={{ marginTop: 24 }}>
