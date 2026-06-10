@@ -189,6 +189,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `docs/CHECKLIST-OPERACIONAL-REFATORACAO.md`
   Checklist operacional com pente fino por arquivo real, usado como guia principal de limpeza estrutural.
+- `docs/PADROES-CODIGO.md`
+  Padrao atual para novas implementacoes frontend: tela fina, controller local, helpers de dominio, shell por blocos e admin por dominio.
 - `frontend/src/App.jsx`
   Entrada principal do frontend. Renderiza `AppViewport` com as props montadas por `frontend/src/lib/appController.js`.
 - `frontend/src/screens/createFormDomain.js`

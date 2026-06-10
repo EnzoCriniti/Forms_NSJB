@@ -13,6 +13,7 @@ Este checklist nao e generico. Ele foi montado a partir da leitura dos arquivos 
 
 - Fazer mudancas pequenas e localizadas.
 - Mudar uma area por vez.
+- Para novas implementacoes frontend, seguir `docs/PADROES-CODIGO.md` antes de criar tela, controller, helper ou modulo de dominio.
 - Nao alterar regra de negocio sem entender o contrato atual.
 - Nao remover comportamento sem confirmar que existe substituto equivalente.
 - Nao renomear rotas, campos ou funcoes publicas sem necessidade real.
