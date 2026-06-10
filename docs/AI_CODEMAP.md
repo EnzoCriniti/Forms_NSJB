@@ -274,7 +274,13 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appControllerViewModelInput.js`
   Inputs do view model do controller do App.
 - `frontend/src/lib/appControllerState.js`
-  Hook do estado global do App agrupado em blocos `values` e `setters`.
+  Agregador historico do estado global do App. Mantem reexports dos blocos de routing, preferencias e bootstrap/detalhes.
+- `frontend/src/lib/appControllerRoutingState.js`
+  Estado de routing e selecao global do App: tela, ids ativos, rascunho, edicao e rota publica.
+- `frontend/src/lib/appControllerPreferenceState.js`
+  Estado de preferencias do App: sessao, tema, fonte e pins.
+- `frontend/src/lib/appControllerBootstrapState.js`
+  Estado de bootstrap e detalhes do App: loading, erro, bootstrap bruto, detalhes e chave mestra.
 - `frontend/src/lib/appControllerDerived.js`
   Hook dos dados derivados do controller do App, delegando a `buildAppShellDerivedState`.
 - `frontend/src/lib/appControllerViewModel.js`

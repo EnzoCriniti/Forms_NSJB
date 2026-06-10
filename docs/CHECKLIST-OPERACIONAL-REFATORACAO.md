@@ -95,6 +95,7 @@ Checklist operacional:
 - iniciado neste ciclo: montagem das props finais de `AppViewport` saiu para `frontend/src/lib/appViewportProps.js`, removendo prop morta de mensagem.
 - iniciado neste ciclo: estado global, derived state, handlers, lifecycle e montagem final do viewport sairam de `App.jsx` para `frontend/src/lib/appController.js`; `App.jsx` ficou como entrada fina.
 - iniciado neste ciclo: estado inicial e seletores derivados do controller sairam para `frontend/src/lib/appControllerState.js` e `frontend/src/lib/appControllerDerived.js`.
+- iniciado neste ciclo: `appControllerState.js` foi quebrado em blocos de routing, preferencias e bootstrap/detalhes (`appControllerRoutingState.js`, `appControllerPreferenceState.js` e `appControllerBootstrapState.js`).
 - iniciado neste ciclo: montagem final do `shellApp` e das props do viewport saiu para `frontend/src/lib/appControllerViewModel.js`.
 - iniciado neste ciclo: loaders, grupos de handlers e lifecycle do controller sairam para `frontend/src/lib/appControllerLoaders.js`, `frontend/src/lib/appControllerHandlers.js` e `frontend/src/lib/appControllerLifecycle.js`.
 - iniciado neste ciclo: selecao dos blocos do bootstrap consumidos pelo controller saiu para `frontend/src/lib/appControllerBootstrap.js`.
