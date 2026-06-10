@@ -25,7 +25,7 @@ export const buildCreateFormInitialState = ({ form, isDuplicateMode = false }) =
       closingDate: "",
       status: "rascunho",
       totalExpected: "",
-      closingText: "Este formulario nao esta mais aceitando respostas.",
+      closingText: "Este formulário não está mais aceitando respostas.",
       fields,
       resultsConfig: createDefaultResultsConfig(fields),
       scaleLimit: 1,
@@ -81,8 +81,8 @@ export const buildCreateFormFormatSelectionState = nextFormat => {
 };
 
 export const buildCreateFormSaveOutcome = ({ form, isDuplicateMode = false }) => ({
-  title: form && !isDuplicateMode ? "Formulario alterado com sucesso" : "Formulario salvo com sucesso",
+  title: form && !isDuplicateMode ? "Formulário alterado com sucesso" : "Formulário salvo com sucesso",
   message: form && !isDuplicateMode
-    ? "As alteracoes foram gravadas e ja estao disponiveis na listagem."
-    : "O formulario foi salvo e ja esta disponivel na listagem.",
+    ? "As alterações foram gravadas e já estão disponíveis na listagem."
+    : "O formulário foi salvo e já está disponível na listagem.",
 });

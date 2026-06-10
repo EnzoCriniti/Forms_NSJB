@@ -366,12 +366,12 @@ describe("createFormDomain", () => {
 
   it("monta a mensagem de sucesso do salvamento de forma consistente", () => {
     expect(buildCreateFormSaveOutcome({ form: null, isDuplicateMode: false })).toEqual({
-      title: "Formulario salvo com sucesso",
-      message: "O formulario foi salvo e ja esta disponivel na listagem.",
+      title: "Formulário salvo com sucesso",
+      message: "O formulário foi salvo e já está disponível na listagem.",
     });
     expect(buildCreateFormSaveOutcome({ form: { id: 1 }, isDuplicateMode: false })).toEqual({
-      title: "Formulario alterado com sucesso",
-      message: "As alteracoes foram gravadas e ja estao disponiveis na listagem.",
+      title: "Formulário alterado com sucesso",
+      message: "As alterações foram gravadas e já estão disponíveis na listagem.",
     });
   });
 

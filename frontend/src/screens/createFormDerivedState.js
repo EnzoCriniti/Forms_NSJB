@@ -49,7 +49,7 @@ export const buildCreateFormDerivedState = ({
     : (selectedCatalogItem?.selectionSource?.kind === "external_base" ? selectedCatalogItem.selectionSource : { kind: "members" });
   const currentFieldSourceLabel = nFieldMode === "catalog"
     ? (selectedCatalogItem ? `Campo da biblioteca: ${selectedCatalogItem.name}` : "Selecione um campo base")
-    : "Campo local deste formulario";
+    : "Campo local deste formulário";
   const membersFieldsCount = fields.filter(isMembersSelectionField).length;
   const activeModeOption = FORM_MODE_OPTIONS.find(option => option.id === formMode) || FORM_MODE_OPTIONS[0];
   const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId)

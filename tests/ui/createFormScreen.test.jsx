@@ -66,7 +66,7 @@ describe("CreateFormScreen", () => {
     const titleInput = screen.getByDisplayValue("Presenca Sessao de Maio - 20/05/2026");
     expect(titleInput).toHaveAttribute("readonly");
 
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].title).toBe("Presenca Sessao de Maio - 20/05/2026");
@@ -116,7 +116,7 @@ describe("CreateFormScreen", () => {
 
     expect(screen.queryByText("Pre-visualizacao do formulario")).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Visualizar formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Visualizar formulário" }));
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Preview" },
     });
@@ -128,7 +128,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Formulario Preview")).toBeInTheDocument();
     expect(screen.getAllByText("Descricao da previa")).toHaveLength(2);
     expect(screen.getAllByText("Nome")).not.toHaveLength(0);
-    expect(screen.getByRole("button", { name: "Ocultar visualizacao" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ocultar visualização" })).toBeInTheDocument();
   });
 
   it("desabilita total esperado e lista completa sem vinculo com socios", () => {
@@ -168,7 +168,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Geral" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual([]);
@@ -209,7 +209,7 @@ describe("CreateFormScreen", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Remover" })[0]);
     fireEvent.click(screen.getByRole("button", { name: "Adicionar Vai?" }));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].resultsConfig).toEqual({
@@ -249,7 +249,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "11" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "15h - Sessao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -270,7 +270,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
       target: { value: "Formulario Vinculado" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -311,7 +311,7 @@ describe("CreateFormScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "77" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -343,7 +343,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByLabelText("Maximo de caracteres"), { target: { value: "10" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Observacao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions.find(field => field.label === "Observacao")?.validation).toEqual({
@@ -380,7 +380,7 @@ describe("CreateFormScreen", () => {
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "15h - Sessao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -422,7 +422,7 @@ describe("CreateFormScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Novo campo local" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -462,7 +462,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByDisplayValue("Audio"), { target: { value: "Audio e video" } });
     fireEvent.change(screen.getByDisplayValue("2"), { target: { value: "Bom" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar campo" }));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -504,7 +504,7 @@ describe("CreateFormScreen", () => {
     expect(screen.queryByText("Adicionar linha")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
@@ -542,7 +542,7 @@ describe("CreateFormScreen", () => {
     );
 
     expect(screen.queryByText("15h")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].resultsConfig.totalsLayout).toEqual([{ fieldId: 2, style: "split" }]);
@@ -625,12 +625,12 @@ describe("CreateFormScreen", () => {
     expect(screen.queryByText("Templates de formulario")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
 
-    await waitFor(() => expect(screen.getByText("Formulario alterado com sucesso")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Formulário alterado com sucesso")).toBeInTheDocument());
     expect(onNavigate).not.toHaveBeenCalled();
 
-    fireEvent.click(screen.getByRole("button", { name: "Voltar para Formularios" }));
+    fireEvent.click(screen.getByRole("button", { name: "Voltar para Formulários" }));
 
     expect(onNavigate).toHaveBeenCalledWith("list");
   });

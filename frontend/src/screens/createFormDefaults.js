@@ -18,16 +18,16 @@ export const FORM_MODE_OPTIONS = [
   {
     id: FORM_MODES.NUCLEO,
     title: "Presenca do nucleo",
-    desc: "Ja nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
+    desc: "Já nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
     badge: "Base central ativa",
-    bullets: ["Campo Nome obrigatorio", "Resumo e faltantes liberados", "Filtro por grau nos resultados"],
+    bullets: ["Campo Nome obrigatório", "Resumo e faltantes liberados", "Filtro por grau nos resultados"],
   },
   {
     id: FORM_MODES.GERAL,
     title: "Formulario geral",
-    desc: "Nao usa a base central de socios. Permite campos livres e bases externas.",
+    desc: "Não usa a base central de sócios. Permite campos livres e bases externas.",
     badge: "Fluxo livre",
-    bullets: ["Sem nome fixo da base central", "Aceita bases externas no catalogo", "Sem logica de faltantes do nucleo"],
+    bullets: ["Sem nome fixo da base central", "Aceita bases externas no catálogo", "Sem lógica de faltantes do núcleo"],
   },
 ];
 

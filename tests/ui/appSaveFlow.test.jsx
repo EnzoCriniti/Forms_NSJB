@@ -130,14 +130,14 @@ describe("App save flow", () => {
     const actions = container.querySelector(".card-actions");
     fireEvent.click(within(actions).getByRole("button", { name: "Editar formulário" }));
 
-    await screen.findByText("Editar Formulario");
+    await screen.findByText("Editar Formulário");
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
     fireEvent.click(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes"));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
 
-    await waitFor(() => expect(screen.getByText("Formulario alterado com sucesso")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Formulário alterado com sucesso")).toBeInTheDocument());
 
-    fireEvent.click(screen.getByRole("button", { name: "Voltar para Formularios" }));
+    fireEvent.click(screen.getByRole("button", { name: "Voltar para Formulários" }));
     await openTestEvent();
     fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
 
@@ -187,13 +187,13 @@ describe("App save flow", () => {
     const actions = container.querySelector(".card-actions");
     fireEvent.click(within(actions).getByRole("button", { name: "Duplicar" }));
 
-    await screen.findByText("Novo Formulario");
+    await screen.findByText("Novo Formulário");
     expect(screen.getByDisplayValue("Presenca Edicao (Copia)")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Rascunho")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
-    await waitFor(() => expect(screen.getByText("Formulario salvo com sucesso")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Formulário salvo com sucesso")).toBeInTheDocument());
   });
 
   it("abre resposta pelo fluxo interno quando usuario esta logado", async () => {

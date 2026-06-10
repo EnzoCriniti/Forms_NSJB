@@ -47,7 +47,7 @@ const renderPresenceField = (field, people) => {
       <div key={field.id} style={{ padding: "16px 20px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
         <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 10 }}>{label}</label>
         <div style={{ display: "flex", gap: 10 }}>
-          {["Sim", "Nao"].map(option => (
+          {["Sim", "Não"].map(option => (
             <button
               key={option}
               disabled
@@ -155,7 +155,7 @@ const ScalePreview = ({ title, description, scaleSections, scaleLimit }) => (
       </div>
       <h3 style={{ margin: 0, fontSize: 20, lineHeight: 1.15 }}>{title || "Nova escala"}</h3>
       <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 13, lineHeight: 1.5 }}>
-        {description || "A descricao da escala aparecera aqui para orientar os participantes."}
+        {description || "A descrição da escala aparecerá aqui para orientar os participantes."}
       </p>
     </div>
     <div style={{ padding: 20 }}>
@@ -202,17 +202,17 @@ export const CreateFormLivePreview = ({
       <div style={{ background: COLORS.primaryDark, padding: "18px 20px", color: "#fff" }}>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.18)", fontSize: 11, fontWeight: 700, marginBottom: 10 }}>
           <Icon name="eye" size={12} />
-          Pre-visualizacao publica
+          Pré-visualização pública
         </div>
-        <h3 style={{ margin: 0, fontSize: 20, lineHeight: 1.15 }}>{title || "Novo formulario"}</h3>
+        <h3 style={{ margin: 0, fontSize: 20, lineHeight: 1.15 }}>{title || "Novo formulário"}</h3>
         <p style={{ margin: "6px 0 0", color: "rgba(255,255,255,0.82)", fontSize: 13, lineHeight: 1.5 }}>
-          {description || "A descricao do formulario aparecera aqui para orientar o preenchimento."}
+          {description || "A descrição do formulário aparecerá aqui para orientar o preenchimento."}
         </p>
       </div>
       <div style={{ background: COLORS.surface }}>
         {visibleFields.length === 0 ? (
           <div style={{ padding: 20, fontSize: 12, color: COLORS.textMuted }}>
-            Nenhum campo visivel adicionado ainda.
+            Nenhum campo visível adicionado ainda.
           </div>
         ) : (
           visibleFields.map(field => renderPresenceField(field, people))
@@ -236,7 +236,7 @@ export const CreateFormLivePreview = ({
             Enviar resposta
           </button>
           <p style={{ fontSize: 11, color: COLORS.textMuted, margin: "8px 0 0", textAlign: "center" }}>
-            {closingText || "Este formulario nao esta mais aceitando respostas."}
+            {closingText || "Este formulário não está mais aceitando respostas."}
           </p>
         </div>
       </div>

@@ -46,7 +46,7 @@ describe("Forms flow", () => {
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Avaliacao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     const payload = onSaveForm.mock.calls[0][0];

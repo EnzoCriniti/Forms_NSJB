@@ -129,11 +129,11 @@ export const useCreateFormController = ({
   const isEditingExistingForm = Boolean(form) && !isDuplicateMode;
   const showTypeSetup = !form && !isDuplicateMode && setupStep === "type";
   const templateSummary = format === "escala_organ"
-    ? `Salvando ${scaleDraft.length} secoes como template reutilizavel.`
-    : `Salvando ${fields.length} campos como template reutilizavel.`;
+    ? `Salvando ${scaleDraft.length} seções como template reutilizável.`
+    : `Salvando ${fields.length} campos como template reutilizável.`;
   const templateDescription = format === "presenca"
-    ? "campos, configuracao de resultados, descricao, texto de fechamento e classificacoes."
-    : "secoes da escala, descricao, texto de fechamento e classificacoes.";
+    ? "campos, configuração de resultados, descrição, texto de fechamento e classificações."
+    : "seções da escala, descrição, texto de fechamento e classificações.";
 
   const fieldHandlers = buildCreateFormFieldHandlers({
     fieldDraft,
@@ -239,8 +239,8 @@ export const useCreateFormController = ({
     showTypeSetup,
     headerProps: {
       onBack: goBack,
-      title: form && !isDuplicateMode ? "Editar Formulario" : "Novo Formulario",
-      subtitle: showTypeSetup ? "Escolha o tipo antes de abrir o editor" : "Configure o formulario e salve na base local",
+      title: form && !isDuplicateMode ? "Editar Formulário" : "Novo Formulário",
+      subtitle: showTypeSetup ? "Escolha o tipo antes de abrir o editor" : "Configure o formulário e salve na base local",
     },
     typeSetupProps: {
       format,
@@ -269,7 +269,7 @@ export const useCreateFormController = ({
     },
     previewToggleProps: {
       variant: showPreview ? "secondary" : "primary",
-      label: showPreview ? "Ocultar visualizacao" : "Visualizar formulario",
+      label: showPreview ? "Ocultar visualização" : "Visualizar formulário",
       onClick: setupHandlers.togglePreview,
     },
     basicsProps: {
@@ -295,7 +295,7 @@ export const useCreateFormController = ({
       labels,
       selectedLabels: selLabels,
       onToggleLabel: setupHandlers.togLabel,
-      peopleConfigLabel: formMode === FORM_MODES.NUCLEO ? (membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configuracoes > Base de socios.") : "Base central bloqueada neste formulario geral.",
+      peopleConfigLabel: formMode === FORM_MODES.NUCLEO ? (membersConfig.sheetUrl ? "Google Sheets configurado." : "Configure a fonte em Configurações > Base de sócios.") : "Base central bloqueada neste formulário geral.",
     },
     previewProps: {
       showPreview,
@@ -399,8 +399,8 @@ export const useCreateFormController = ({
       onGoBack: goBack,
       saveSuccessTitle: saveSuccess?.title,
       saveSuccessMessage: saveSuccess?.message,
-      submitButtonLabel: `${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulario"}`,
-      saveButtonLabel: event ? "Voltar para o evento" : "Voltar para Formularios",
+      submitButtonLabel: `${form && !isDuplicateMode ? "Salvar" : "Publicar"} ${format === "escala_organ" ? "Escala" : "Formulário"}`,
+      saveButtonLabel: event ? "Voltar para o evento" : "Voltar para Formulários",
       templateSummary,
       templateDescription,
       templateButtonLabel: "Salvar como Template",
