@@ -11,7 +11,7 @@ export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, on
   if (!eligible) {
     return (
       <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-        Vincule um formulario de presenca ou escala da organ para habilitar mensagens neste evento.
+        Vincule um formulário de presença ou escala da organ para habilitar mensagens neste evento.
       </div>
     );
   }

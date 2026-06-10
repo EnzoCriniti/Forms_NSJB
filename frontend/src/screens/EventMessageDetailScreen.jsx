@@ -111,7 +111,7 @@ export const EventMessageDetailScreen = ({
       setCopiedKey(key);
       setTimeout(() => setCopiedKey(current => current === key ? null : current), 1500);
     } else {
-      setFeedback({ tone: "info", message: "Copie manualmente: seu navegador bloqueou a copia automatica." });
+      setFeedback({ tone: "info", message: "Copie manualmente: seu navegador bloqueou a cópia automática." });
     }
   };
 
@@ -131,7 +131,7 @@ export const EventMessageDetailScreen = ({
         <ScreenHeader
           className="settings-top-card"
           leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
-          title="Mensagem nao encontrada"
+          title="Mensagem não encontrada"
           titleSize={20}
         />
       </div>

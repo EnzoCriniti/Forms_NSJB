@@ -16,8 +16,8 @@ export const EventPaginationControls = ({ pagination, totalItems, onPrevious, on
       </div>
       <div style={{ display: "flex", gap: 8 }}>
         <Btn v="secondary" sz="sm" onClick={onPrevious} disabled={pagination.safePage === 1}>Anterior</Btn>
-        <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {pagination.safePage} de {pagination.totalPages}</div>
-        <Btn v="secondary" sz="sm" onClick={onNext} disabled={pagination.safePage === pagination.totalPages}>Proxima</Btn>
+        <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Página {pagination.safePage} de {pagination.totalPages}</div>
+        <Btn v="secondary" sz="sm" onClick={onNext} disabled={pagination.safePage === pagination.totalPages}>Próxima</Btn>
       </div>
     </div>
   );

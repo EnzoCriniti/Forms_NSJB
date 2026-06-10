@@ -70,7 +70,7 @@ describe("EventsScreen — aba Mensagens", () => {
 
     fireEvent.click(screen.getByText("Evento Vazio - 21/05/2026"));
 
-    expect(screen.getByRole("button", { name: /Formularios/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Formulários/ })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Mensagens/ })).not.toBeInTheDocument();
   });
 

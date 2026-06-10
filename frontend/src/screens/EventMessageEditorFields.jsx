@@ -42,27 +42,27 @@ export const EventMessageEditorFields = ({
           <option key={type} value={type}>{MESSAGE_TYPE_LABELS[type]}</option>
         ))}
       </select>
-      {draft.id && <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>O tipo nao pode ser alterado depois de criado.</span>}
+      {draft.id && <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>O tipo não pode ser alterado depois de criado.</span>}
     </label>
 
     {isDmType && !messagingConfig?.publicBaseUrl && (
-      <FeedbackBanner tone="info" message="URL publica do app nao configurada - os links wa.me geraram caminhos relativos. Defina em Configuracoes > Mensagens." />
+      <FeedbackBanner tone="info" message="URL pública do app não configurada - os links wa.me gerarão caminhos relativos. Defina em Configurações > Mensagens." />
     )}
 
     {isDmType && !phoneColumnConfigured && (
-      <FeedbackBanner tone="info" message="Coluna de telefone nao configurada. Defina em Configuracoes > Membros antes de criar lembretes por mensagem direta." />
+      <FeedbackBanner tone="info" message="Coluna de telefone não configurada. Defina em Configurações > Membros antes de criar lembretes por mensagem direta." />
     )}
 
     {draft.type !== "new_scale" && (
       <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-        Formulario alvo
+        Formulário alvo
         <select value={draft.formId || ""} onChange={event => onChange({ formId: event.target.value })} style={inputStyle}>
           <option value="">Selecione...</option>
           {targetForms.map(form => (
             <option key={form.id} value={form.id}>{form.title}</option>
           ))}
         </select>
-        {targetForms.length === 0 && <span style={{ fontSize: 11, color: COLORS.warning }}>Nenhum formulario compativel vinculado a este evento.</span>}
+        {targetForms.length === 0 && <span style={{ fontSize: 11, color: COLORS.warning }}>Nenhum formulário compatível vinculado a este evento.</span>}
       </label>
     )}
 

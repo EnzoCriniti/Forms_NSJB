@@ -22,7 +22,7 @@ export const MessageSchedulePanel = ({ draft, selectedForm, inputStyle, onChange
         Janela
         <select value={draft.windowOption || ""} onChange={event => onChange({ windowOption: event.target.value, scheduledFor: "" })} style={inputStyle}>
           <option value="">Sem agendamento (rascunho)</option>
-          <option value="morning_of_closing">Manha do fechamento (07h)</option>
+          <option value="morning_of_closing">Manhã do fechamento (07h)</option>
           <option value="12h_before">12h antes do fechamento</option>
           <option value="1h_before">1h antes do fechamento</option>
         </select>
@@ -40,10 +40,10 @@ export const MessageSchedulePanel = ({ draft, selectedForm, inputStyle, onChange
     )}
     <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
       <input type="checkbox" checked={draft.autoDispatchEnabled} onChange={event => onChange({ autoDispatchEnabled: event.target.checked })} />
-      Permitir disparo automatico no horario agendado
+      Permitir disparo automático no horário agendado
     </label>
     <span style={{ fontSize: 11, color: COLORS.textMuted }}>
-      Se desabilitado, no horario agendado a mensagem fica como "pronta" aguardando disparo manual.
+      Se desabilitado, no horário agendado a mensagem fica como "pronta" aguardando disparo manual.
     </span>
   </fieldset>
 );

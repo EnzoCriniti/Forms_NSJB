@@ -64,7 +64,7 @@ export const MessageDetailSummaryPanel = ({
       <span>Evento: <strong style={{ color: COLORS.text }}>{event?.title}</strong></span>
       {message.scheduledFor && <span>Agendada: {formatDateTime(message.scheduledFor)}</span>}
       {message.sentAt && <span>Disparada: {formatDateTime(message.sentAt)}</span>}
-      <span>Auto: {message.autoDispatchEnabled ? "sim" : "nao"}</span>
+      <span>Auto: {message.autoDispatchEnabled ? "sim" : "não"}</span>
     </div>
 
     <MessagePreviewPanel
@@ -96,23 +96,23 @@ export const MessagePreviewPanel = ({ loading, preview, copiedKey, onCopy, recip
           </div>
         </div>
       ) : (
-        <div style={{ fontSize: 12, color: COLORS.textMuted }}>Preview indisponivel.</div>
+        <div style={{ fontSize: 12, color: COLORS.textMuted }}>Preview indisponível.</div>
       )}
     </div>
 
     {!loading && preview && preview.kind === "group" && (
       <div style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12, fontSize: 13, color: COLORS.textSecondary }}>
-        Mensagem destinada ao grupo {preview.groupName ? <strong style={{ color: COLORS.text }}>{preview.groupName}</strong> : <em>(nome do grupo nao configurado)</em>}. Cole o texto acima no grupo do WhatsApp.
+        Mensagem destinada ao grupo {preview.groupName ? <strong style={{ color: COLORS.text }}>{preview.groupName}</strong> : <em>(nome do grupo não configurado)</em>}. Cole o texto acima no grupo do WhatsApp.
       </div>
     )}
 
     {!loading && preview && preview.kind === "dm" && (
       <div>
         <h4 style={{ margin: "0 0 8px", fontSize: 13, color: COLORS.textSecondary }}>
-          Destinatarios ({recipientsActive.length} com telefone{recipientsSkipped.length > 0 ? `, ${recipientsSkipped.length} sem telefone` : ""})
+          Destinatários ({recipientsActive.length} com telefone{recipientsSkipped.length > 0 ? `, ${recipientsSkipped.length} sem telefone` : ""})
         </h4>
         {recipientsActive.length === 0 && recipientsSkipped.length === 0 && (
-          <div style={{ fontSize: 12, color: COLORS.textMuted }}>Nenhum destinatario calculado.</div>
+          <div style={{ fontSize: 12, color: COLORS.textMuted }}>Nenhum destinatário calculado.</div>
         )}
         <div style={{ display: "grid", gap: 6 }}>
           {recipientsActive.map(recipient => (
@@ -129,7 +129,7 @@ export const MessagePreviewPanel = ({ loading, preview, copiedKey, onCopy, recip
 
 export const MessageLogsPanel = ({ logs, formatDateTime }) => (
   <section style={{ marginTop: 24 }}>
-    <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Historico de disparos</h3>
+    <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Histórico de disparos</h3>
     {logs.length === 0 ? (
       <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
         Nenhum disparo registrado ainda.
@@ -148,7 +148,7 @@ export const MessageLogsPanel = ({ logs, formatDateTime }) => (
             {log.groupName && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>Grupo: {log.groupName}</div>}
             {Array.isArray(log.recipients) && log.recipients.length > 0 && (
               <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>
-                {log.recipients.filter(item => !item.skipped).length} destinatario(s){log.recipients.some(item => item.skipped) ? `, ${log.recipients.filter(item => item.skipped).length} ignorado(s)` : ""}
+                {log.recipients.filter(item => !item.skipped).length} destinatário(s){log.recipients.some(item => item.skipped) ? `, ${log.recipients.filter(item => item.skipped).length} ignorado(s)` : ""}
               </div>
             )}
           </div>

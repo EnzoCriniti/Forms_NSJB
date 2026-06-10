@@ -54,7 +54,7 @@ describe("EventMessageEditorScreen", () => {
   it("mostra mensagem de fallback quando evento nao tem form elegivel", () => {
     render(<EventMessageEditorScreen {...baseProps} eventForms={[]} onSave={vi.fn()} onCancel={vi.fn()} />);
 
-    expect(screen.getByText(/Vincule um formulario antes de criar mensagens/)).toBeInTheDocument();
+    expect(screen.getByText(/Vincule um formulário antes de criar mensagens/)).toBeInTheDocument();
   });
 
   it("aplica corpo do modelo selecionado", () => {
@@ -120,7 +120,7 @@ describe("EventMessageEditorScreen", () => {
 
     fireEvent.change(screen.getByLabelText("Tipo da mensagem"), { target: { value: "fill_reminder" } });
 
-    expect(screen.getByText(/Coluna de telefone nao configurada/)).toBeInTheDocument();
+    expect(screen.getByText(/Coluna de telefone não configurada/)).toBeInTheDocument();
   });
 
   it("usa preset de pessoas no tipo 2 quando selecionado", async () => {

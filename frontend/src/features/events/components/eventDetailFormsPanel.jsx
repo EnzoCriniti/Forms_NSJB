@@ -41,7 +41,7 @@ export const EventDetailFormsPanel = ({
   if (forms.length === 0) {
     return (
       <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-        Nenhum formulario criado neste evento.
+        Nenhum formulário criado neste evento.
       </div>
     );
   }

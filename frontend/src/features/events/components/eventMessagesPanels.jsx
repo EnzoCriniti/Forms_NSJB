@@ -28,10 +28,10 @@ export const MessageRecipientsPanel = ({
   onChange,
 }) => (
   <fieldset style={panelStyle}>
-    <legend style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, padding: "0 6px" }}>Destinatarios</legend>
+    <legend style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, padding: "0 6px" }}>Destinatários</legend>
     <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
       <input type="radio" checked={draft.recipientsMode === "auto"} onChange={() => onChange({ recipientsMode: "auto" })} />
-      Quem ainda nao respondeu (automatico)
+      Quem ainda não respondeu (automático)
     </label>
     <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
       <input type="radio" checked={draft.recipientsMode === "preset"} onChange={() => onChange({ recipientsMode: "preset" })} disabled={personPresets.length === 0} />
@@ -47,14 +47,14 @@ export const MessageRecipientsPanel = ({
     )}
     <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
       <input type="radio" checked={draft.recipientsMode === "manual"} onChange={() => onChange({ recipientsMode: "manual" })} />
-      Selecao manual
+      Seleção manual
     </label>
     {draft.recipientsMode === "manual" && (
       <ManualPersonPicker people={people} selected={draft.recipientsPersonKeys} onChange={keys => onChange({ recipientsPersonKeys: keys })} inputStyle={inputStyle} />
     )}
     {draft.type === "fill_reminder" && (
       <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-        Base publica: {messagingConfig?.publicBaseUrl ? "configurada" : "ausente"}{selectedForm?.closing ? ` - fechamento: ${new Date(selectedForm.closing).toLocaleString("pt-BR")}` : ""}
+        Base pública: {messagingConfig?.publicBaseUrl ? "configurada" : "ausente"}{selectedForm?.closing ? ` - fechamento: ${new Date(selectedForm.closing).toLocaleString("pt-BR")}` : ""}
       </div>
     )}
   </fieldset>

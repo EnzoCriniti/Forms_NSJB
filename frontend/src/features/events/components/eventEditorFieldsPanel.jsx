@@ -46,7 +46,7 @@ export const EventEditorFieldsPanel = ({ draft, onChangeDraft, onCancel, onSave,
         </label>
       </div>
       <label style={labelStyle}>
-        Descricao
+        Descrição
         <textarea value={draft.description || ""} onChange={event => onChangeDraft(current => ({ ...current, description: event.target.value }))} rows={3} style={{ ...inputStyle, resize: "vertical" }} />
       </label>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>

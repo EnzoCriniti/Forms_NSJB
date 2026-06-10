@@ -5,7 +5,7 @@ export const EventDeleteConfirmModal = ({ event, busy, onCancel, onConfirm }) =>
   <ConfirmModal
     open={Boolean(event)}
     title="Excluir evento"
-    message={`Excluir o evento "${event?.title || ""}" remove apenas o agrupamento. Os formularios continuam salvos.`}
+    message={`Excluir o evento "${event?.title || ""}" remove apenas o agrupamento. Os formulários continuam salvos.`}
     confirmLabel="Excluir"
     tone="danger"
     busy={busy}

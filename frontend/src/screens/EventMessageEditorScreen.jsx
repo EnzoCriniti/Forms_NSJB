@@ -55,11 +55,11 @@ export const EventMessageEditorScreen = ({
 
   const submit = async () => {
     if (!draft.body.trim()) {
-      setFeedback({ tone: "error", message: "Corpo da mensagem e obrigatorio." });
+      setFeedback({ tone: "error", message: "Corpo da mensagem é obrigatório." });
       return;
     }
     if (draft.type !== "new_scale" && !draft.formId) {
-      setFeedback({ tone: "error", message: "Selecione o formulario alvo." });
+      setFeedback({ tone: "error", message: "Selecione o formulário alvo." });
       return;
     }
     setSaving(true);
@@ -83,7 +83,7 @@ export const EventMessageEditorScreen = ({
           leading={<Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />}
           title="Nova mensagem"
         />
-        <FeedbackBanner tone="info" message="Este evento nao possui formulario de presenca ou escala vinculado. Vincule um formulario antes de criar mensagens." />
+        <FeedbackBanner tone="info" message="Este evento não possui formulário de presença ou escala vinculado. Vincule um formulário antes de criar mensagens." />
       </div>
     );
   }

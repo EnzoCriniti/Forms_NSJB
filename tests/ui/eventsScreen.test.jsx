@@ -71,7 +71,7 @@ describe("EventsScreen", () => {
     fireEvent.change(screen.getByLabelText("Data"), { target: { value: "2026-06-20" } });
     fireEvent.change(screen.getByLabelText("Abertura"), { target: { value: "2026-06-10T08:00" } });
     fireEvent.change(screen.getByLabelText("Fechamento"), { target: { value: "2026-06-18T18:00" } });
-    fireEvent.change(screen.getByLabelText("Descricao"), { target: { value: "Evento operacional" } });
+    fireEvent.change(screen.getByLabelText("Descrição"), { target: { value: "Evento operacional" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar evento" }));
 
     await waitFor(() => expect(onSaveEvent).toHaveBeenCalledWith(expect.objectContaining({
