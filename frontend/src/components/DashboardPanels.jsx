@@ -11,7 +11,7 @@ export const DashboardHeader = ({ onNavigate, user }) => (
   <div className="dashboard-hero" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
     <div>
       <h2 style={{ margin: 0, fontSize: 24, color: COLORS.text }}>Dashboard</h2>
-      <p style={{ margin: "6px 0 0", fontSize: 13, color: COLORS.textMuted }}>Resumo operacional da aplicacao sem entrar nas Configuracoes.</p>
+      <p style={{ margin: "6px 0 0", fontSize: 13, color: COLORS.textMuted }}>Resumo operacional da aplicação sem entrar nas Configurações.</p>
     </div>
     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
       {user?.role === "admin" && <Btn icon="calendar" aria-label="Eventos" title="Eventos" onClick={() => onNavigate("events")} />}
@@ -24,9 +24,9 @@ export const DashboardEmptyState = ({ onNavigate, user }) => (
     <div style={{ width: 56, height: 56, borderRadius: "50%", margin: "0 auto 14px", display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.primaryLight, color: COLORS.primary }}>
       <Icon name="chart" size={26} />
     </div>
-    <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>Nenhum formulario cadastrado</h3>
+    <h3 style={{ margin: "0 0 8px", fontSize: 18 }}>Nenhum formulário cadastrado</h3>
     <p style={{ margin: "0 auto 16px", maxWidth: 520, color: COLORS.textSecondary, fontSize: 13, lineHeight: 1.5 }}>
-      Quando houver formularios, este painel mostra o volume aberto, o andamento das respostas e os prazos mais proximos.
+      Quando houver formulários, este painel mostra o volume aberto, o andamento das respostas e os prazos mais próximos.
     </p>
     {user?.role === "admin" && <Btn icon="calendar" aria-label="Eventos" title="Eventos" onClick={() => onNavigate("events")} />}
   </div>
@@ -58,13 +58,13 @@ export const DashboardUpcomingClosings = ({ forms, onNavigate, formatClosing = v
   <div className="dashboard-panel dashboard-upcoming" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
       <div>
-        <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Proximos fechamentos</div>
-        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>Ordenado pelo prazo mais proximo.</div>
+        <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Próximos fechamentos</div>
+        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>Ordenado pelo prazo mais próximo.</div>
       </div>
-      <div style={{ fontSize: 11, color: COLORS.textMuted }}>{forms.length} formulario{forms.length !== 1 ? "s" : ""}</div>
+      <div style={{ fontSize: 11, color: COLORS.textMuted }}>{forms.length} formulário{forms.length !== 1 ? "s" : ""}</div>
     </div>
     {forms.length === 0 ? (
-      <div style={{ padding: "18px 0", color: COLORS.textMuted, fontSize: 13 }}>Nenhum formulario aberto com fechamento definido.</div>
+      <div style={{ padding: "18px 0", color: COLORS.textMuted, fontSize: 13 }}>Nenhum formulário aberto com fechamento definido.</div>
     ) : (
       <div style={{ display: "grid", gap: 10 }}>
         {forms.map(form => (
@@ -76,7 +76,7 @@ export const DashboardUpcomingClosings = ({ forms, onNavigate, formatClosing = v
                 <TypeBadge type={form.type} />
               </div>
               <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 4 }}>
-                {form.sessionName || "Sem sessao"}{form.closing ? ` • Fecha em ${formatClosing(form.closing)}` : ""}
+                {form.sessionName || "Sem sessão"}{form.closing ? ` • Fecha em ${formatClosing(form.closing)}` : ""}
               </div>
             </div>
             <Btn v="secondary" sz="sm" icon="eye" onClick={() => onNavigate("results", form)}>Abrir resultados</Btn>

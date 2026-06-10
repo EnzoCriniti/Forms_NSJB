@@ -58,20 +58,20 @@ export const DashboardScreen = ({ onNavigate, forms = [], labels = [], people = 
   );
 
   const quickStats = [
-    { label: "Formularios", value: safeForms.length, note: `${presenceForms.length} presenca | ${scaleForms.length} escala`, color: COLORS.primary },
-    { label: "Abertos", value: openForms.length, note: "em operacao", color: COLORS.accent },
-    { label: "Rascunhos", value: draftForms.length, note: "nao publicados", color: COLORS.warning },
-    { label: "Arquivados", value: archivedForms.length, note: "fora da lista publica", color: COLORS.textSecondary },
+    { label: "Formulários", value: safeForms.length, note: `${presenceForms.length} presença | ${scaleForms.length} escala`, color: COLORS.primary },
+    { label: "Abertos", value: openForms.length, note: "em operação", color: COLORS.accent },
+    { label: "Rascunhos", value: draftForms.length, note: "não publicados", color: COLORS.warning },
+    { label: "Arquivados", value: archivedForms.length, note: "fora da lista pública", color: COLORS.textSecondary },
     { label: "Respostas", value: totalPresenceResponses, note: totalExpectedPresence > 0 ? `${formatPercent(totalPresenceResponses, totalExpectedPresence)} do previsto` : "sem meta prevista", color: COLORS.primary },
     { label: "Vagas escala", value: totalScaleFilled, note: `${totalScalePending} pendentes`, color: COLORS.accent },
   ];
 
   const baseCards = [
-    { label: "Classificacoes", value: labels.length, note: "categorias administrativas" },
+    { label: "Classificações", value: labels.length, note: "categorias administrativas" },
     { label: "Pessoas", value: people.length, note: "base vinculada" },
     { label: "Presets", value: presets.length, note: "modelos salvos" },
-    { label: "Campos base", value: fieldCatalog.length, note: "campos padrao" },
-    { label: "Tarefas base", value: scaleTaskCatalog.length, note: "funcoes da escala" },
+    { label: "Campos base", value: fieldCatalog.length, note: "campos padrão" },
+    { label: "Tarefas base", value: scaleTaskCatalog.length, note: "funções da escala" },
   ];
 
   const emptyState = safeForms.length === 0;
@@ -100,19 +100,19 @@ export const DashboardScreen = ({ onNavigate, forms = [], labels = [], people = 
 
             <div style={{ display: "grid", gap: 10 }}>
               <div className="dashboard-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Distribuicao</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Distribuição</div>
                 <div style={{ display: "grid", gap: 10 }}>
-                  <DashboardMiniRow label="Presenca" value={presenceForms.length} note={`${totalPresenceResponses} respostas`} />
+                  <DashboardMiniRow label="Presença" value={presenceForms.length} note={`${totalPresenceResponses} respostas`} />
                   <DashboardMiniRow label="Escala da Organ" value={scaleForms.length} note={`${totalScaleFilled} vagas ocupadas`} />
-                  <DashboardMiniRow label="Arquivados" value={archivedForms.length} note="fora da operacao" />
+                  <DashboardMiniRow label="Arquivados" value={archivedForms.length} note="fora da operação" />
                 </div>
               </div>
 
               <div className="dashboard-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
                 <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Atalhos</div>
                 <div style={{ display: "grid", gap: 8 }}>
-                  <Btn v="secondary" icon="list" onClick={() => onNavigate("list")}>Ver formularios</Btn>
-                  {user?.role === "admin" && <Btn icon="plus" onClick={() => onNavigate("create")}>Criar novo formulario</Btn>}
+                  <Btn v="secondary" icon="list" onClick={() => onNavigate("list")}>Ver formulários</Btn>
+                  {user?.role === "admin" && <Btn icon="plus" onClick={() => onNavigate("create")}>Criar novo formulário</Btn>}
                 </div>
               </div>
             </div>

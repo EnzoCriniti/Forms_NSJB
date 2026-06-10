@@ -30,7 +30,7 @@ describe("DashboardPanels", () => {
 
     render(<DashboardEmptyState onNavigate={onNavigate} user={{ role: "admin" }} />);
 
-    expect(screen.getByText("Nenhum formulario cadastrado")).toBeInTheDocument();
+    expect(screen.getByText("Nenhum formulário cadastrado")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Eventos" })).toBeInTheDocument();
   });
 });
