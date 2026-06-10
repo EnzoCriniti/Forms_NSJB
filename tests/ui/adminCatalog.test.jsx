@@ -180,7 +180,7 @@ describe("AdminSettingsModal catalogo", () => {
     );
 
     fireEvent.click(screen.getAllByRole("button", { name: "Remover" })[1]);
-    expect(screen.getByRole("heading", { name: "Excluir usuario" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Excluir usuário" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Excluir" }));
 
     expect(onDeleteUser).toHaveBeenCalledWith(2);
@@ -207,7 +207,7 @@ describe("AdminSettingsModal catalogo", () => {
     fireEvent.click(screen.getByRole("button", { name: "Exclusao segura" }));
     fireEvent.change(screen.getByPlaceholderText("Chave mestra atual"), { target: { value: "antiga" } });
     fireEvent.change(screen.getByPlaceholderText("Nova chave mestra"), { target: { value: "nova" } });
-    fireEvent.click(screen.getByRole("button", { name: "Salvar alteracao" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar alteração" }));
 
     expect(onSaveFormDeleteKey).toHaveBeenCalledWith({
       currentMasterKey: "antiga",
@@ -256,7 +256,7 @@ describe("AdminSettingsModal catalogo", () => {
     fireEvent.change(screen.getByPlaceholderText("https://docs.google.com/spreadsheets/d/..."), {
       target: { value: "https://docs.google.com/spreadsheets/d/teste123/edit#gid=0" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Salvar configuracao" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar configuração" }));
 
     await waitFor(() => expect(onSaveMembersConfig).toHaveBeenCalledWith(expect.objectContaining({
       sheetUrl: "https://docs.google.com/spreadsheets/d/teste123/edit#gid=0",
@@ -266,7 +266,7 @@ describe("AdminSettingsModal catalogo", () => {
     fireEvent.click(screen.getByRole("button", { name: "Sincronizar agora" }));
 
     await waitFor(() => expect(onSyncMembersConfig).toHaveBeenCalled());
-    expect(screen.getByText("Previa da base atual (2)")).toBeInTheDocument();
+    expect(screen.getByText("Prévia da base atual (2)")).toBeInTheDocument();
     expect(screen.getByText("Ana")).toBeInTheDocument();
     expect(screen.getByText("Bruno")).toBeInTheDocument();
   });
@@ -276,10 +276,10 @@ describe("AdminSettingsModal catalogo", () => {
     render(<AdminSettingsModal {...baseProps} onSaveExternalBase={onSaveExternalBase} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Bases externas" }));
-    fireEvent.change(screen.getByPlaceholderText("Ex: Congregacoes, Turnos, Equipes"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex.: Congregações, Turnos, Equipes"), {
       target: { value: "Congregacoes" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Explique onde essa base sera usada no sistema."), {
+    fireEvent.change(screen.getByPlaceholderText("Explique onde essa base será usada no sistema."), {
       target: { value: "Lista de congregacoes para visitantes." },
     });
     fireEvent.change(screen.getByPlaceholderText("https://docs.google.com/spreadsheets/d/..."), {

@@ -5,7 +5,6 @@
  */
 
 import React from "react";
-import { SplitSection } from "../../components/ui";
 import { SecurityKeyFormPanel } from "./SecurityKeyFormPanel";
 import { SecurityStatusPanel } from "./SecurityStatusPanel";
 
@@ -17,19 +16,29 @@ export const SecurityPanel = ({
   busyAction,
   onCancelSecurity,
 }) => (
-  <SplitSection
-    leftTitle={formDeleteKeyConfigured ? "Alterar chave mestra" : "Cadastrar chave mestra"}
-    rightTitle="Status da seguranca"
-    left={(
-      <SecurityKeyFormPanel
-        formDeleteKeyConfigured={formDeleteKeyConfigured}
-        securityDraft={securityDraft}
-        setSecurityDraft={setSecurityDraft}
-        submitSecurity={submitSecurity}
-        busyAction={busyAction}
-        onCancelSecurity={onCancelSecurity}
-      />
-    )}
-    right={<SecurityStatusPanel formDeleteKeyConfigured={formDeleteKeyConfigured} />}
-  />
+  <section className="msg-card">
+    <header className="msg-card__head">
+      <h3 className="msg-card__title">Exclusão segura</h3>
+      <p className="msg-card__hint">
+        Defina a chave mestra exigida para excluir formulários e os dados associados.
+      </p>
+    </header>
+    <div className="msg-split">
+      <div className="msg-form">
+        <h4 className="msg-subtitle">{formDeleteKeyConfigured ? "Alterar chave mestra" : "Cadastrar chave mestra"}</h4>
+        <SecurityKeyFormPanel
+          formDeleteKeyConfigured={formDeleteKeyConfigured}
+          securityDraft={securityDraft}
+          setSecurityDraft={setSecurityDraft}
+          submitSecurity={submitSecurity}
+          busyAction={busyAction}
+          onCancelSecurity={onCancelSecurity}
+        />
+      </div>
+      <div>
+        <h4 className="msg-subtitle">Status da segurança</h4>
+        <SecurityStatusPanel formDeleteKeyConfigured={formDeleteKeyConfigured} />
+      </div>
+    </div>
+  </section>
 );

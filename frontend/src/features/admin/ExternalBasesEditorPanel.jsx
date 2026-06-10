@@ -9,7 +9,7 @@ export const ExternalBasesEditorPanel = ({
   submitExternalBaseSync,
   busyAction,
 }) => (
-  <div style={{ display: "grid", gap: 10 }}>
+  <>
     <ExternalBasesCoreEditorPanel externalBaseDraft={externalBaseDraft} setExternalBaseDraft={setExternalBaseDraft} />
     <ExternalBasesSyncEditorPanel
       externalBaseDraft={externalBaseDraft}
@@ -18,5 +18,5 @@ export const ExternalBasesEditorPanel = ({
       submitExternalBaseSync={submitExternalBaseSync}
       busyAction={busyAction}
     />
-  </div>
+  </>
 );

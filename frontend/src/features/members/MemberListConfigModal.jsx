@@ -9,30 +9,7 @@ import { COLORS, Btn, FeedbackBanner, resolveActionErrorMessage } from "../../co
 
 const PAGE_SIZE = 12;
 
-const inputStyle = {
-  width: "100%",
-  minHeight: 42,
-  padding: "10px 12px",
-  border: `1px solid ${COLORS.border}`,
-  borderRadius: 10,
-  background: COLORS.surface,
-  color: COLORS.text,
-  boxShadow: "var(--shadow-sm)",
-};
-
-const infoCardStyle = {
-  background: COLORS.surfaceAlt,
-  border: `1px solid ${COLORS.borderLight}`,
-  borderRadius: 12,
-  padding: 14,
-};
-
-const sectionTitleStyle = {
-  display: "block",
-  fontSize: 13,
-  color: COLORS.text,
-  marginBottom: 4,
-};
+const gridTwo = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12 };
 
 const formatSyncDate = value => {
   if (!value) return "Nunca sincronizado";
@@ -94,147 +71,137 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
   };
 
   return (
-    <div style={{ position: "relative", display: "grid", gap: 16 }}>
+    <div className="msg-settings" style={{ position: "relative" }}>
       {toast && <FeedbackBanner fixed tone={toast.type} message={toast.message} />}
 
-      <section style={infoCardStyle}>
-        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
+      <section className="msg-card">
+        <header className="msg-card__head">
+          <h3 className="msg-card__title">Base central de sócios</h3>
+          <p className="msg-card__hint">
+            Os formulários, escalas e automações futuras consomem esta base a partir do banco.
+          </p>
+        </header>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12 }}>
           <div>
-            <strong style={{ display: "block", fontSize: 13, color: COLORS.text }}>Base central de socios</strong>
-            <div style={{ marginTop: 4, fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.5 }}>
-              Os formularios, escalas e automacoes futuras consomem esta base a partir do banco.
-            </div>
+            <span className="msg-label">Status</span>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)", marginTop: 4 }}>{syncStatusLabel(config)}</div>
           </div>
-          <div style={{ textAlign: "right", minWidth: 180 }}>
-            <div style={{ fontSize: 11, color: COLORS.textMuted, textTransform: "uppercase", fontWeight: 800 }}>Status</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>{syncStatusLabel(config)}</div>
-            <div style={{ marginTop: 4, fontSize: 11, color: COLORS.textMuted }}>
-              Ultima sincronizacao: {formatSyncDate(config?.lastSyncedAt)}
-            </div>
+          <div>
+            <span className="msg-label">Última sincronização</span>
+            <div style={{ fontSize: 13, color: "var(--text-secondary)", marginTop: 4 }}>{formatSyncDate(config?.lastSyncedAt)}</div>
           </div>
         </div>
       </section>
 
-      <section style={{ display: "grid", gap: 12 }}>
-        <div>
-          <strong style={{ ...sectionTitleStyle }}>Origem da base</strong>
-          <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Conecte a planilha e informe apenas o mapeamento principal. Os campos extras ficam separados mais abaixo.</div>
-        </div>
+      <section className="msg-card">
+        <header className="msg-card__head">
+          <h3 className="msg-card__title">Origem e mapeamento</h3>
+          <p className="msg-card__hint">
+            Conecte a planilha e informe o mapeamento principal. Os campos extras ficam separados mais abaixo.
+          </p>
+        </header>
+        <div className="msg-form">
+          <label className="msg-field">
+            <span className="msg-label">Tipo de origem</span>
+            <select className="msg-input" value={draft.sourceType || "google_sheets"} onChange={event => setDraft({ ...draft, sourceType: event.target.value })}>
+              <option value="google_sheets">Google Sheets</option>
+            </select>
+          </label>
+          <label className="msg-field">
+            <span className="msg-label">Link público do Google Sheets</span>
+            <input className="msg-input" value={draft.sheetUrl || ""} onChange={e => setDraft({ ...draft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." />
+          </label>
+          <label className="msg-field">
+            <span className="msg-label">Aba / intervalo do Google Sheets</span>
+            <input className="msg-input" value={draft.range || ""} onChange={e => setDraft({ ...draft, range: e.target.value })} placeholder="Socios!A:B" />
+            <span className="msg-hint">Use o formato Aba!A:B. Exemplo: Socios!A:B.</span>
+          </label>
 
-        <section style={infoCardStyle}>
-          <div style={{ display: "grid", gap: 10 }}>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Tipo de origem</label>
-              <select value={draft.sourceType || "google_sheets"} onChange={event => setDraft({ ...draft, sourceType: event.target.value })} style={inputStyle}>
-                <option value="google_sheets">Google Sheets</option>
-              </select>
-            </div>
-
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Link publico do Google Sheets</label>
-              <input value={draft.sheetUrl || ""} onChange={e => setDraft({ ...draft, sheetUrl: e.target.value })} placeholder="https://docs.google.com/spreadsheets/d/..." style={inputStyle} />
-            </div>
-
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Aba / intervalo do Google Sheets</label>
-              <input value={draft.range || ""} onChange={e => setDraft({ ...draft, range: e.target.value })} placeholder="Socios!A:B" style={inputStyle} />
-            </div>
-
-            <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
-              Use o formato <strong style={{ color: COLORS.text }}>Aba!A:B</strong>. Exemplo: <strong style={{ color: COLORS.text }}>Socios!A:B</strong>.
-            </div>
-          </div>
-        </section>
-
-        <section style={infoCardStyle}>
-          <div style={{ marginBottom: 10 }}>
-            <strong style={{ ...sectionTitleStyle, marginBottom: 2 }}>Mapeamento principal</strong>
-            <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Esses campos sao os minimos para o sistema identificar a pessoa na base.</div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do grau</label>
-              <input value={draft.grauColumn || ""} onChange={e => setDraft({ ...draft, grauColumn: e.target.value })} placeholder="A" style={inputStyle} />
-            </div>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do nome</label>
-              <input value={draft.nameColumn || ""} onChange={e => setDraft({ ...draft, nameColumn: e.target.value })} placeholder="B" style={inputStyle} />
-            </div>
-          </div>
-          <div style={{ marginTop: 10, fontSize: 11, color: COLORS.textMuted }}>Informe apenas a letra da coluna: `A`, `B`, `C`...</div>
-        </section>
-
-        <details style={infoCardStyle} open={Boolean(draft.phoneColumn || draft.externalIdColumn || draft.activeColumn)}>
-          <summary style={{ cursor: "pointer", fontSize: 13, fontWeight: 700, color: COLORS.text }}>Campos extras opcionais</summary>
-          <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
-            <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Preencha apenas se a sua planilha tiver esses dados e voce quiser reaproveita-los na base interna.</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do telefone</label>
-                <input value={draft.phoneColumn || ""} onChange={e => setDraft({ ...draft, phoneColumn: e.target.value })} placeholder="C" style={inputStyle} />
-              </div>
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna do id externo</label>
-                <input value={draft.externalIdColumn || ""} onChange={e => setDraft({ ...draft, externalIdColumn: e.target.value })} placeholder="D" style={inputStyle} />
-              </div>
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Coluna de ativo</label>
-                <input value={draft.activeColumn || ""} onChange={e => setDraft({ ...draft, activeColumn: e.target.value })} placeholder="E" style={inputStyle} />
-              </div>
-            </div>
-          </div>
-        </details>
-
-        <section style={infoCardStyle}>
-          <div style={{ marginBottom: 10 }}>
-            <strong style={{ ...sectionTitleStyle, marginBottom: 2 }}>Automacao</strong>
-            <div style={{ fontSize: 12, color: COLORS.textSecondary }}>Defina se a base pode ser atualizada automaticamente e com qual frequencia.</div>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) 220px", gap: 10 }}>
-            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: COLORS.textSecondary }}>
-              <input type="checkbox" checked={draft.syncEnabled !== false} onChange={e => setDraft({ ...draft, syncEnabled: e.target.checked })} />
-              Permitir sincronizacao automatica desta base
+          <h4 className="msg-subtitle" style={{ marginTop: 6 }}>Mapeamento principal</h4>
+          <div style={gridTwo}>
+            <label className="msg-field">
+              <span className="msg-label">Coluna do grau</span>
+              <input className="msg-input" value={draft.grauColumn || ""} onChange={e => setDraft({ ...draft, grauColumn: e.target.value })} placeholder="A" />
             </label>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Frequencia da sincronizacao (horas)</label>
-              <input type="number" min="1" value={draft.syncFrequencyHours || 24} onChange={e => setDraft({ ...draft, syncFrequencyHours: Number(e.target.value) || 24 })} style={inputStyle} />
-            </div>
+            <label className="msg-field">
+              <span className="msg-label">Coluna do nome</span>
+              <input className="msg-input" value={draft.nameColumn || ""} onChange={e => setDraft({ ...draft, nameColumn: e.target.value })} placeholder="B" />
+            </label>
           </div>
-        </section>
+          <span className="msg-hint">Informe apenas a letra da coluna: A, B, C...</span>
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <Btn onClick={handleSave} loading={saving}>Salvar configuracao</Btn>
-          <Btn v="secondary" onClick={handleSync} loading={syncing} disabled={!draft.sheetUrl || draft.syncEnabled === false}>Sincronizar agora</Btn>
-        </div>
+          <details open={Boolean(draft.phoneColumn || draft.externalIdColumn || draft.activeColumn)}>
+            <summary className="msg-subtitle" style={{ cursor: "pointer" }}>Campos extras opcionais</summary>
+            <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
+              <span className="msg-hint">Preencha apenas se a sua planilha tiver esses dados e você quiser reaproveitá-los na base interna.</span>
+              <div style={gridTwo}>
+                <label className="msg-field">
+                  <span className="msg-label">Coluna do telefone</span>
+                  <input className="msg-input" value={draft.phoneColumn || ""} onChange={e => setDraft({ ...draft, phoneColumn: e.target.value })} placeholder="C" />
+                </label>
+                <label className="msg-field">
+                  <span className="msg-label">Coluna do id externo</span>
+                  <input className="msg-input" value={draft.externalIdColumn || ""} onChange={e => setDraft({ ...draft, externalIdColumn: e.target.value })} placeholder="D" />
+                </label>
+                <label className="msg-field">
+                  <span className="msg-label">Coluna de ativo</span>
+                  <input className="msg-input" value={draft.activeColumn || ""} onChange={e => setDraft({ ...draft, activeColumn: e.target.value })} placeholder="E" />
+                </label>
+              </div>
+            </div>
+          </details>
 
-        <div style={{ fontSize: 12, color: COLORS.textMuted, lineHeight: 1.55 }}>
-          O banco passa a ser a fonte operacional da aplicacao. A planilha funciona como origem externa de sincronizacao.
+          <h4 className="msg-subtitle" style={{ marginTop: 6 }}>Automação</h4>
+          <label className="msg-check">
+            <input type="checkbox" checked={draft.syncEnabled !== false} onChange={e => setDraft({ ...draft, syncEnabled: e.target.checked })} />
+            Permitir sincronização automática desta base
+          </label>
+          <label className="msg-field" style={{ maxWidth: 240 }}>
+            <span className="msg-label">Frequência da sincronização (horas)</span>
+            <input className="msg-input" type="number" min="1" value={draft.syncFrequencyHours || 24} onChange={e => setDraft({ ...draft, syncFrequencyHours: Number(e.target.value) || 24 })} />
+          </label>
+
+          <div className="msg-actions">
+            <Btn onClick={handleSave} loading={saving}>Salvar configuração</Btn>
+            <Btn v="secondary" onClick={handleSync} loading={syncing} disabled={!draft.sheetUrl || draft.syncEnabled === false}>Sincronizar agora</Btn>
+          </div>
+          <span className="msg-hint">
+            O banco passa a ser a fonte operacional da aplicação. A planilha funciona como origem externa de sincronização.
+          </span>
         </div>
       </section>
 
-      <section style={{ ...infoCardStyle, paddingTop: 12 }}>
-        <strong style={{ display: "block", fontSize: 12, color: COLORS.text }}>Previa da base atual ({people.length})</strong>
-        <div style={{ maxHeight: 260, overflowY: "auto", overflowX: "hidden", marginTop: 8, paddingRight: 8 }}>
-          {visiblePeople.map(person => (
-            <div key={`${person.externalKey || person.id}-${person.name}`} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) auto auto", gap: 12, padding: "9px 0", fontSize: 12, borderBottom: `1px solid ${COLORS.borderLight}` }}>
-              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{person.name}</span>
-              <strong style={{ minWidth: 28, textAlign: "right" }}>{person.grau || "-"}</strong>
-              <span style={{ minWidth: 80, textAlign: "right", color: person.active === false ? COLORS.danger : COLORS.textMuted }}>
-                {person.active === false ? "Inativo" : "Ativo"}
-              </span>
+      <section className="msg-card">
+        <header className="msg-card__head">
+          <h3 className="msg-card__title">Prévia da base atual ({people.length})</h3>
+        </header>
+        {people.length === 0 ? (
+          <div className="msg-empty">Nenhum sócio na base ainda.</div>
+        ) : (
+          <>
+            <div style={{ maxHeight: 260, overflowY: "auto", overflowX: "hidden", paddingRight: 8 }}>
+              {visiblePeople.map(person => (
+                <div key={`${person.externalKey || person.id}-${person.name}`} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.2fr) auto auto", gap: 12, padding: "9px 0", fontSize: 12, borderBottom: "1px solid var(--border-light)" }}>
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{person.name}</span>
+                  <strong style={{ minWidth: 28, textAlign: "right" }}>{person.grau || "-"}</strong>
+                  <span style={{ minWidth: 80, textAlign: "right", color: person.active === false ? "var(--danger)" : "var(--text-muted)" }}>
+                    {person.active === false ? "Inativo" : "Ativo"}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        {people.length > PAGE_SIZE && (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 11, color: COLORS.textMuted }}>
-              {((safePage - 1) * PAGE_SIZE) + 1}-{Math.min(safePage * PAGE_SIZE, people.length)} de {people.length}
-            </span>
-            <div style={{ display: "flex", gap: 6 }}>
-              <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.max(1, current - 1))} disabled={safePage === 1}>Anterior</Btn>
-              <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.min(totalPages, current + 1))} disabled={safePage === totalPages}>Proxima</Btn>
-            </div>
-          </div>
+            {people.length > PAGE_SIZE && (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+                <span className="msg-hint">
+                  {((safePage - 1) * PAGE_SIZE) + 1}-{Math.min(safePage * PAGE_SIZE, people.length)} de {people.length}
+                </span>
+                <div style={{ display: "flex", gap: 6 }}>
+                  <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.max(1, current - 1))} disabled={safePage === 1}>Anterior</Btn>
+                  <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.min(totalPages, current + 1))} disabled={safePage === totalPages}>Próxima</Btn>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </section>
     </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Btn, COLORS } from "../../components/ui";
+import { Btn } from "../../components/ui";
 
 export const ExternalBasesSyncEditorPanel = ({
   externalBaseDraft,
@@ -9,13 +9,13 @@ export const ExternalBasesSyncEditorPanel = ({
   busyAction,
 }) => (
   <>
-    <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>
-      <input type="checkbox" checked={externalBaseDraft.syncEnabled !== false} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, syncEnabled: e.target.checked })} /> Permitir sincronizacao automatica
+    <label className="msg-check">
+      <input type="checkbox" checked={externalBaseDraft.syncEnabled !== false} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, syncEnabled: e.target.checked })} /> Permitir sincronização automática
     </label>
-    <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>
-      <input type="checkbox" checked={externalBaseDraft.active !== false} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, active: e.target.checked })} /> Disponivel para novos campos
+    <label className="msg-check">
+      <input type="checkbox" checked={externalBaseDraft.active !== false} onChange={e => setExternalBaseDraft({ ...externalBaseDraft, active: e.target.checked })} /> Disponível para novos campos
     </label>
-    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+    <div className="msg-actions" style={{ flexWrap: "wrap" }}>
       <Btn onClick={submitExternalBase} loading={busyAction === "externalBase"}>{externalBaseDraft.id ? "Salvar base" : "Criar base"}</Btn>
       <Btn v="secondary" onClick={() => submitExternalBaseSync(externalBaseDraft.id)} disabled={!externalBaseDraft.id || !externalBaseDraft.sheetUrl} loading={busyAction === `externalBaseSync:${externalBaseDraft.id}`}>Sincronizar agora</Btn>
       {externalBaseDraft.id && <Btn v="ghost" onClick={() => setExternalBaseDraft({

@@ -13,9 +13,9 @@ export const ExternalBasesListPanel = ({
     emptyText="Nenhuma base externa cadastrada."
     renderItem={base => (
       <div key={base.id} className="settings-row">
-        <div>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <strong>{base.name}</strong>
-          <div>{base.active === false ? "Inativa" : "Ativa"} â€¢ {base.items?.length || 0} opcao(oes) â€¢ {base.lastSyncedAt ? `Sincronizada em ${new Date(base.lastSyncedAt).toLocaleString("pt-BR")}` : "Ainda nao sincronizada"}</div>
+          <div>{base.active === false ? "Inativa" : "Ativa"} • {base.items?.length || 0} opção(ões) • {base.lastSyncedAt ? `Sincronizada em ${new Date(base.lastSyncedAt).toLocaleString("pt-BR")}` : "Ainda não sincronizada"}</div>
           {base.description && <div>{base.description}</div>}
         </div>
         <Btn v="secondary" sz="sm" onClick={() => setExternalBaseDraft({ ...base, syncEnabled: base.syncEnabled !== false })}>Editar</Btn>
