@@ -8,9 +8,9 @@ import { nowIso } from "../database/shared.mjs";
 import { findUserByUsername, setUserPasswordSecret } from "../repositories/usersRepository.mjs";
 import {
   createAuthSessionRecord,
-  findActiveAuthSessionByRole,
   findAuthSessionByTokenHash,
   revokeAuthSessionRecord,
+  revokeAuthSessionsByRole,
   revokeAuthSessionsByUserId,
   touchAuthSessionRecord,
 } from "../repositories/sessionsRepository.mjs";
@@ -89,12 +89,7 @@ export const loginWithCredentials = async ({ username, password }) => {
   }
 
   if (user.role === "admin") {
-    const now = new Date().toISOString();
-    const minLastUsedAt = new Date(Date.now() - SESSION_IDLE_TIMEOUT_MS).toISOString();
-    const activeAdminSession = await findActiveAuthSessionByRole("admin", now, minLastUsedAt);
-    if (activeAdminSession) {
-      throw makeError("Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o tempo de inatividade.", 409, "AUTH_ADMIN_SESSION_ACTIVE");
-    }
+    await revokeAuthSessionsByRole("admin");
   } else {
     await revokeAuthSessionsByUserId(user.id);
   }

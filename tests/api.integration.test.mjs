@@ -388,14 +388,12 @@ test("nova sessao admin revoga sessoes de outros administradores", async () => {
       username: "admin2",
       password: "admin234",
     });
-    assert.equal(secondLoginRes.status, 409);
-    const secondLogin = await secondLoginRes.json();
-    assert.equal(secondLogin.code, "AUTH_ADMIN_SESSION_ACTIVE");
+    assert.equal(secondLoginRes.status, 200);
 
     const firstMeRes = await fetch(`${ctx.baseUrl}/api/auth/me`, {
       headers: { Authorization: `Bearer ${firstAdminToken}` },
     });
-    assert.equal(firstMeRes.status, 200);
+    assert.equal(firstMeRes.status, 401);
   } finally {
     await ctx.cleanup();
   }

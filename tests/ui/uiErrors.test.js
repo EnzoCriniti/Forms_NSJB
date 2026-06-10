@@ -11,7 +11,6 @@ describe("uiErrors", () => {
   it("normaliza erros conhecidos de autenticacao", () => {
     expect(resolveActionErrorMessage({ code: "AUTH_INVALID_PAYLOAD" })).toBe("Informe usuário e senha.");
     expect(resolveActionErrorMessage({ code: "AUTH_INVALID_CREDENTIALS" })).toBe("Usuário ou senha inválidos.");
-    expect(resolveActionErrorMessage({ code: "AUTH_ADMIN_SESSION_ACTIVE" })).toContain("administrador conectado");
   });
 
   it("normaliza erro de rede e conflito de escala", () => {

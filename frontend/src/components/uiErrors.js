@@ -12,9 +12,6 @@ export const resolveActionErrorMessage = error => {
   if (error?.code === "AUTH_INVALID_CREDENTIALS" || /usuario ou senha invalidos/i.test(message)) {
     return "Usuário ou senha inválidos.";
   }
-  if (error?.code === "AUTH_ADMIN_SESSION_ACTIVE" || /administrador conectado em outro dispositivo/i.test(message)) {
-    return "Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o timeout de inatividade.";
-  }
   const isNetworkError = !error?.status && /fetch|network|failed to fetch|networkerror/i.test(message);
   if (isNetworkError) {
     return "Falha de comunicação com a API. Verifique a conexão e tente novamente.";

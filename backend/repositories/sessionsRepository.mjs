@@ -47,32 +47,6 @@ export const revokeAuthSessionsByRole = async role => {
   `, [nowIso(), role]);
 };
 
-export const findActiveAuthSessionByRole = async (role, now, minLastUsedAt) => {
-  if (!role) return null;
-  return database.queryOne(`
-    SELECT
-      s.id AS session_id,
-      s.user_id,
-      s.token_hash,
-      s.created_at,
-      s.expires_at,
-      s.revoked_at,
-      s.last_used_at,
-      u.id AS id,
-      u.name,
-      u.username,
-      u.role
-    FROM auth_sessions s
-    INNER JOIN users u ON u.id = s.user_id
-    WHERE u.role = ?
-      AND s.revoked_at IS NULL
-      AND s.expires_at > ?
-      AND s.last_used_at >= ?
-    ORDER BY s.last_used_at DESC, s.id DESC
-    LIMIT 1
-  `, [role, now, minLastUsedAt]);
-};
-
 export const findAuthSessionByTokenHash = async tokenHash => database.queryOne(`
   SELECT
     s.id AS session_id,
