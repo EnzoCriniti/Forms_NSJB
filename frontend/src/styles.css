@@ -22,6 +22,15 @@
   --text-muted: #8a9a8a;
   --shadow-sm: 0 1px 2px rgba(15, 38, 24, 0.06), 0 8px 20px rgba(15, 38, 24, 0.05);
   --shadow-md: 0 10px 30px rgba(15, 38, 24, 0.1);
+  --header-bg: #1a6b3c;
+  --header-fg: #ffffff;
+  --header-fg-muted: rgba(255, 255, 255, 0.7);
+  --header-control-bg: rgba(255, 255, 255, 0.12);
+  --header-control-bg-strong: rgba(255, 255, 255, 0.2);
+  --header-control-border: rgba(255, 255, 255, 0.28);
+  --on-primary: #ffffff;
+  --on-warning: #8a5a00;
+  --focus-ring: rgba(26, 107, 60, 0.16);
   --type-scale-bg: #e3f2fd;
   --type-scale-text: #1565c0;
   --feedback-success-bg: #eef8ef;
@@ -64,6 +73,10 @@
   --text-muted: #809889;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.22);
   --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.32);
+  --header-bg: #0f241a;
+  --on-primary: #07140d;
+  --on-warning: #ffe0a3;
+  --focus-ring: rgba(85, 183, 122, 0.32);
   --type-scale-bg: #183044;
   --type-scale-text: #90caf9;
   --feedback-success-bg: rgba(85, 183, 122, 0.14);
@@ -265,7 +278,7 @@ input[type="radio"] {
 
 .ui-btn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(26, 107, 60, 0.16);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .ui-btn:hover:not(:disabled) {
@@ -589,6 +602,10 @@ input[type="radio"] {
   color: var(--text) !important;
 }
 
+:root[data-theme="dark"] .settings-tabs button.settings-tab[data-variant="primary"] {
+  background: linear-gradient(135deg, #1f6b40, #0c2017) !important;
+}
+
 :root[data-theme="dark"] .settings-tabs button.settings-tab[data-variant="secondary"] {
   background: rgba(255, 255, 255, 0.04) !important;
 }
@@ -710,6 +727,178 @@ input[type="radio"] {
 
 .admin-field label {
   display: block;
+}
+
+/* Messaging settings — depth cards + split layout (design pilot) */
+.msg-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.msg-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0)) padding-box,
+    var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  padding: 20px 22px;
+}
+
+:root[data-theme="dark"] .msg-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0)) padding-box,
+    var(--surface);
+}
+
+.msg-card__head {
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+.msg-card__title {
+  align-items: center;
+  color: var(--text);
+  display: flex;
+  font-size: 15px;
+  font-weight: 700;
+  gap: 9px;
+  margin: 0;
+}
+
+.msg-card__title::before {
+  background: linear-gradient(180deg, var(--accent), var(--primary));
+  border-radius: 999px;
+  content: "";
+  display: inline-block;
+  height: 16px;
+  width: 4px;
+}
+
+.msg-card__hint {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.45;
+  margin: 6px 0 0;
+}
+
+.msg-split {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+}
+
+.msg-form {
+  display: grid;
+  gap: 13px;
+}
+
+.msg-field {
+  display: grid;
+  gap: 6px;
+}
+
+.msg-label {
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.msg-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 10px 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.msg-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26, 107, 60, 0.14);
+  outline: none;
+}
+
+textarea.msg-input {
+  resize: vertical;
+}
+
+.msg-hint {
+  color: var(--text-muted);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.msg-check {
+  align-items: center;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  gap: 9px;
+}
+
+.msg-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.msg-subtitle {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.msg-empty {
+  background: var(--surface-alt);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 18px;
+  text-align: center;
+}
+
+.msg-list {
+  display: grid;
+  gap: 10px;
+}
+
+.msg-people {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.msg-people__row {
+  align-items: center;
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  gap: 9px;
+  padding: 7px 8px;
+  transition: background-color 0.12s ease;
+}
+
+.msg-people__row:hover {
+  background: var(--surface-alt);
+}
+
+.msg-people__tag {
+  color: var(--warning);
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .admin-field input,
@@ -1072,10 +1261,10 @@ input[type="radio"] {
 
 .app-header button.app-header__mobile-font-button {
   align-items: center;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--header-control-bg);
+  border: 1px solid var(--header-control-border);
   border-radius: 8px;
-  color: #fff;
+  color: var(--header-fg);
   cursor: pointer;
   display: inline-flex;
   font-size: 11px;
@@ -1717,6 +1906,15 @@ button:not(.ui-btn):focus-visible {
   .settings-grid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .msg-split {
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+
+  .msg-card {
+    padding: 16px;
   }
 
   .settings-row {

@@ -23,9 +23,6 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
     if (error?.code === "AUTH_INVALID_CREDENTIALS" || /usuario ou senha invalidos|usu[aá]rio ou senha inv[aá]lidos/i.test(message)) {
       return "Usuário ou senha inválidos.";
     }
-    if (error?.code === "AUTH_ADMIN_SESSION_ACTIVE" || /administrador conectado em outro dispositivo/i.test(message)) {
-      return "Já existe um administrador conectado em outro dispositivo. Aguarde o logout ou o tempo de inatividade.";
-    }
     return resolveActionErrorMessage(error);
   };
 
@@ -58,7 +55,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         title="Diminuir fonte"
         aria-label="Diminuir fonte"
         disabled={fontScale <= 0.9}
-        style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
+        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
       >
         A-
       </Btn>
@@ -69,7 +66,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         title="Aumentar fonte"
         aria-label="Aumentar fonte"
         disabled={fontScale >= 1.3}
-        style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
+        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
       >
         A+
       </Btn>
@@ -78,20 +75,20 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         sz="sm"
         onClick={onToggleTheme}
         title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
-        style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", padding: "8px 10px", minHeight: 38 }}
+        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", padding: "8px 10px", minHeight: 38 }}
       >
         <ThemeIcon theme={theme} />
       </Btn>
       {user.role === "admin" && (
-        <Btn v="ghost" sz="sm" onClick={onOpenSettings} style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38 }}>
+        <Btn v="ghost" sz="sm" onClick={onOpenSettings} style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38 }}>
           Configuracoes
         </Btn>
       )}
-      <div style={{ color: "#fff", fontSize: 12, textAlign: "right", lineHeight: 1.2 }}>
+      <div style={{ color: "var(--header-fg)", fontSize: 12, textAlign: "right", lineHeight: 1.2 }}>
         <strong>{user.name}</strong>
-        <div style={{ color: "rgba(255,255,255,0.72)" }}>{ROLES[user.role]?.label}</div>
+        <div style={{ color: "var(--header-fg-muted)" }}>{ROLES[user.role]?.label}</div>
       </div>
-      <Btn v="ghost" sz="sm" onClick={onLogout} style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", minHeight: 38 }}>
+      <Btn v="ghost" sz="sm" onClick={onLogout} style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38 }}>
         Sair
       </Btn>
     </div>
@@ -116,7 +113,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
           style={{ width: "100%" }}
           onKeyDown={e => { if (e.key === "Enter") submit(); }}
         />
-        <Btn onClick={submit} loading={saving} style={{ background: "var(--primary)", color: "#fff", minHeight: 42, boxShadow: "var(--shadow-sm)", width: "100%" }}>Entrar</Btn>
+        <Btn onClick={submit} loading={saving} style={{ background: "var(--primary)", color: "var(--on-primary)", minHeight: 42, boxShadow: "var(--shadow-sm)", width: "100%" }}>Entrar</Btn>
         {feedback && <FeedbackBanner fixed tone={feedback.tone} title={feedback.title} message={feedback.message} />}
       </div>
     );
@@ -129,13 +126,13 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         sz="sm"
         onClick={onToggleTheme}
         title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
-        style={{ border: "1px solid rgba(255,255,255,0.28)", background: "rgba(255,255,255,0.08)", color: "#fff", padding: "8px 10px", minHeight: 38 }}
+        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", padding: "8px 10px", minHeight: 38 }}
       >
         <ThemeIcon theme={theme} />
       </Btn>
       <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Usuário" style={{ width: 140 }} />
       <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" type="password" style={{ width: 128 }} onKeyDown={e => { if (e.key === "Enter") submit(); }} />
-      <Btn onClick={submit} loading={saving} style={{ background: "#fff", color: "var(--primary)", minHeight: 38, boxShadow: "var(--shadow-sm)" }}>Entrar</Btn>
+      <Btn onClick={submit} loading={saving} style={{ background: "var(--header-fg)", color: "var(--header-bg)", minHeight: 38, boxShadow: "var(--shadow-sm)" }}>Entrar</Btn>
       {feedback && <FeedbackBanner fixed tone={feedback.tone} title={feedback.title} message={feedback.message} />}
     </div>
   );

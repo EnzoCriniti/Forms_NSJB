@@ -57,7 +57,7 @@ export const AppHeader = ({
 
   return (
     <>
-      <header className="app-header" data-screen={screen} style={{ background: "var(--primary)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+      <header className="app-header" data-screen={screen} style={{ background: "var(--header-bg)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
           {currentUser && ["respond", "results"].includes(screen) && (
             <button
@@ -66,7 +66,7 @@ export const AppHeader = ({
               onClick={() => onNavigate("list")}
               aria-label="Voltar para listagem"
               title="Voltar para listagem"
-              style={{ width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.12)", color: "#fff", cursor: "pointer", flex: "0 0 auto" }}
+              style={{ width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "var(--header-control-bg)", color: "var(--header-fg)", cursor: "pointer", flex: "0 0 auto" }}
             >
               <Icon name="back" size={18} />
             </button>
@@ -77,12 +77,12 @@ export const AppHeader = ({
               className="app-header__menu-toggle"
               onClick={() => setDrawerOpen(true)}
               aria-label="Abrir menu"
-              style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.12)", color: "#fff", cursor: "pointer", flex: "0 0 auto" }}
+              style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "var(--header-control-bg)", color: "var(--header-fg)", cursor: "pointer", flex: "0 0 auto" }}
             >
               <Icon name="menu" size={18} />
             </button>
           )}
-          <span title={`Dados base JSON v${appData.version}`} style={{ fontWeight: 700, fontSize: 16, color: "#fff", letterSpacing: 0, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>NSJB Forms</span>
+          <span title={`Dados base JSON v${appData.version}`} style={{ fontWeight: 700, fontSize: 16, color: "var(--header-fg)", letterSpacing: 0, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>NSJB Forms</span>
         </div>
         <nav className="app-nav" style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
           {nav.map(n => (
@@ -92,8 +92,8 @@ export const AppHeader = ({
               style={{
                 display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 10, fontSize: 12, fontWeight: 700,
                 border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
-                background: screen === n.key ? "rgba(255,255,255,0.2)" : "transparent",
-                color: screen === n.key ? "#fff" : "rgba(255,255,255,0.7)",
+                background: screen === n.key ? "var(--header-control-bg-strong)" : "transparent",
+                color: screen === n.key ? "var(--header-fg)" : "var(--header-fg-muted)",
               }}
             >
               <Icon name={n.icon} size={14} />

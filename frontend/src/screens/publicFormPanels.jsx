@@ -45,7 +45,7 @@ export const PublicResponseErrorBanner = ({ submitError }) => (
 );
 
 export const PublicResponseEditingBanner = ({ editing }) => (
-  editing ? <div style={{ background: COLORS.warningLight, border: `1px solid ${COLORS.warning}`, padding: "10px 24px", display: "flex", alignItems: "center", gap: 8 }}><Icon name="edit" size={14} /><span style={{ fontSize: 12, fontWeight: 600, color: "#b86e00" }}>Modo de edição - atualizando resposta já enviada</span></div> : null
+  editing ? <div style={{ background: COLORS.warningLight, border: `1px solid ${COLORS.warning}`, padding: "10px 24px", display: "flex", alignItems: "center", gap: 8 }}><Icon name="edit" size={14} /><span style={{ fontSize: 12, fontWeight: 600, color: "var(--on-warning)" }}>Modo de edição - atualizando resposta já enviada</span></div> : null
 );
 
 export const PublicResponseEditModal = ({ selectedPerson, onCancel, onConfirm }) => (

@@ -19,8 +19,8 @@ export const EscalaResultsOverview = ({
     </div>
     {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
     {!canEdit && (
-      <div style={{ background: "#fff8e1", border: "1px solid #ffe082", borderRadius: 10, padding: "10px 16px", marginBottom: 16, fontSize: 13, color: "#795548", display: "flex", alignItems: "center", gap: 8 }}>
-        <span>Voce nao tem permissao para editar esta escala. Apenas administradores podem fazer alteracoes.</span>
+      <div style={{ marginBottom: 16 }}>
+        <FeedbackBanner tone="info" title="Somente leitura" message="Voce nao tem permissao para editar esta escala. Apenas administradores podem fazer alteracoes." />
       </div>
     )}
     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, marginBottom: 20 }}>
