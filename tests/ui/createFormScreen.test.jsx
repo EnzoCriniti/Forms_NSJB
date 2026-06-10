@@ -44,10 +44,10 @@ describe("CreateFormScreen", () => {
     renderNewForm();
 
     expect(screen.getByRole("spinbutton")).not.toBeDisabled();
-    expect(screen.getByText("Configuracao dos Resultados")).toBeInTheDocument();
+    expect(screen.getByText("Configuração dos Resultados")).toBeInTheDocument();
     expect(screen.getByLabelText("Habilitar pesquisa na planilha de respostas")).toBeInTheDocument();
     expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).not.toBeDisabled();
-    expect(screen.getByLabelText("Permitir visualizacao publica dos resultados")).toBeInTheDocument();
+    expect(screen.getByLabelText("Permitir visualização pública dos resultados")).toBeInTheDocument();
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
   });
 
@@ -124,7 +124,7 @@ describe("CreateFormScreen", () => {
       target: { value: "Descricao da previa" },
     });
 
-    expect(screen.getByText("Pre-visualizacao do formulario")).toBeInTheDocument();
+    expect(screen.getByText("Pré-visualização do formulário")).toBeInTheDocument();
     expect(screen.getByText("Formulario Preview")).toBeInTheDocument();
     expect(screen.getAllByText("Descricao da previa")).toHaveLength(2);
     expect(screen.getAllByText("Nome")).not.toHaveLength(0);
@@ -570,7 +570,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByLabelText("Limite por pessoa na escala"), {
       target: { value: "2" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Adicionar secao" }));
+    fireEvent.click(screen.getByRole("button", { name: "Adicionar seção" }));
     fireEvent.click(screen.getByRole("button", { name: "Tarefa existente" }));
     fireEvent.change(screen.getByDisplayValue("Selecione uma tarefa base"), { target: { value: "31" } });
     fireEvent.change(screen.getByDisplayValue("Preparacao do jantar"), { target: { value: "Jantar 17h" } });
@@ -618,8 +618,8 @@ describe("CreateFormScreen", () => {
       />,
     );
 
-    expect(screen.getByText("Tipo do formulario")).toBeInTheDocument();
-    expect(screen.getByText("O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario.")).toBeInTheDocument();
+    expect(screen.getByText("Tipo do formulário")).toBeInTheDocument();
+    expect(screen.getByText("O tipo e a estrutura do formulário vigente ficam travados na edição. Para mudar isso, use duplicação ou crie um novo formulário.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Salvar como Template" })).not.toBeInTheDocument();
     expect(screen.queryByText("Modo do formulario")).not.toBeInTheDocument();
     expect(screen.queryByText("Templates de formulario")).not.toBeInTheDocument();

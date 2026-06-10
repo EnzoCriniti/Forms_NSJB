@@ -248,9 +248,9 @@ export const useCreateFormController = ({
       onContinue: setupHandlers.continueSetup,
     },
     contextProps: {
-      title: "Tipo do formulario",
-      body: format === "escala_organ" ? "Escala da Organ" : "Presenca",
-      footer: "O tipo e a estrutura do formulario vigente ficam travados na edicao. Para mudar isso, use duplicacao ou crie um novo formulario.",
+      title: "Tipo do formulário",
+      body: format === "escala_organ" ? "Escala da Organ" : "Presença",
+      footer: "O tipo e a estrutura do formulário vigente ficam travados na edição. Para mudar isso, use duplicação ou crie um novo formulário.",
     },
     modePanelProps: {
       activeModeOption: derived.activeModeOption,

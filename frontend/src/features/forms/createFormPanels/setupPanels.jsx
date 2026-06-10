@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { COLORS, Btn, Icon, FieldControl, SurfacePanel } from "../../../components/ui";
+import { COLORS, Btn, Icon } from "../../../components/ui";
 
 export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, options, onSelectMode }) => (
   <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
@@ -106,11 +106,11 @@ export const FormHeaderPanel = ({ onBack, title, subtitle }) => (
 );
 
 export const FormContextPanel = ({ title, body, footer }) => (
-  <SurfacePanel style={{ marginBottom: 14 }}>
-    <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 4 }}>{title}</div>
-    <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>{body}</div>
-    <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>{footer}</div>
-  </SurfacePanel>
+  <section className="msg-card" style={{ marginBottom: 14 }}>
+    <div className="msg-label" style={{ marginBottom: 4 }}>{title}</div>
+    <div style={{ fontSize: 13, fontWeight: 800, color: "var(--text)" }}>{body}</div>
+    <div className="msg-hint" style={{ marginTop: 4 }}>{footer}</div>
+  </section>
 );
 
 export const FormBasicsPanel = ({
@@ -138,84 +138,92 @@ export const FormBasicsPanel = ({
   onToggleLabel,
   peopleConfigLabel,
 }) => (
-  <>
-    <div style={{ display: "grid", gap: 14, marginBottom: 20 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
-        <FieldControl label="Titulo" required>
-          <input
-            value={formTitle}
-            onChange={onTitleChange}
-            readOnly={shouldPresetTitle}
-            placeholder={shouldPresetTitle ? "Titulo padronizado pelo evento" : "Ex: Presenca Sessao de Escala - 02/05/2026"}
-            aria-readonly={shouldPresetTitle}
-            style={{
-              ...inp,
-              fontSize: 14,
-              background: shouldPresetTitle ? COLORS.surfaceAlt : COLORS.surface,
-              cursor: shouldPresetTitle ? "not-allowed" : "text",
-            }}
-          />
-          <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-            {shouldPresetTitle
-              ? "O nome deste formulario e padronizado pelo evento."
-              : "O nome pode ser editado nesta tela."}
-          </div>
-        </FieldControl>
-      </div>
-      <FieldControl label="Descricao / Instrucoes">
-        <textarea value={previewDescription} onChange={onDescriptionChange} rows={3} placeholder="Prezada Irmandade..." style={{ ...inp, resize: "vertical" }} />
-      </FieldControl>
+  <section className="msg-card" style={{ marginBottom: 20 }}>
+    <header className="msg-card__head">
+      <h3 className="msg-card__title">Dados do formulário</h3>
+      <p className="msg-card__hint">Informações principais que aparecem no link público.</p>
+    </header>
+    <div className="msg-form">
+      <label className="msg-field">
+        <span className="msg-label">Título <span style={{ color: COLORS.danger }}>*</span></span>
+        <input
+          className="msg-input"
+          value={formTitle}
+          onChange={onTitleChange}
+          readOnly={shouldPresetTitle}
+          placeholder={shouldPresetTitle ? "Titulo padronizado pelo evento" : "Ex: Presenca Sessao de Escala - 02/05/2026"}
+          aria-readonly={shouldPresetTitle}
+          style={shouldPresetTitle ? { background: "var(--surface-alt)", cursor: "not-allowed" } : undefined}
+        />
+        <span className="msg-hint">
+          {shouldPresetTitle
+            ? "O nome deste formulário é padronizado pelo evento."
+            : "O nome pode ser editado nesta tela."}
+        </span>
+      </label>
+      <label className="msg-field">
+        <span className="msg-label">Descrição / Instruções</span>
+        <textarea className="msg-input" value={previewDescription} onChange={onDescriptionChange} rows={3} placeholder="Prezada Irmandade..." />
+      </label>
       <div className="create-form-meta-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
-        <FieldControl label="Abertura programada" hint="O formulario vai para aberto automaticamente nesta data.">
-          <input type="date" value={eventDate} onChange={onEventDateChange} style={inp} />
-        </FieldControl>
-        <FieldControl label="Fechamento automatico" hint="Quando chegar este horario, o formulario fecha sozinho.">
-          <input type="datetime-local" value={closingDate} onChange={onClosingDateChange} style={inp} />
-        </FieldControl>
-        <FieldControl label="Status">
-          <select value={status} onChange={onStatusChange} style={inp}>
+        <label className="msg-field">
+          <span className="msg-label">Abertura programada</span>
+          <input className="msg-input" type="date" value={eventDate} onChange={onEventDateChange} />
+          <span className="msg-hint">O formulário vai para aberto automaticamente nesta data.</span>
+        </label>
+        <label className="msg-field">
+          <span className="msg-label">Fechamento automático</span>
+          <input className="msg-input" type="datetime-local" value={closingDate} onChange={onClosingDateChange} />
+          <span className="msg-hint">Quando chegar este horário, o formulário fecha sozinho.</span>
+        </label>
+        <label className="msg-field">
+          <span className="msg-label">Status</span>
+          <select className="msg-input" value={status} onChange={onStatusChange}>
             <option value="rascunho">Rascunho</option>
             <option value="aberto">Aberto</option>
             <option value="fechado">Fechado</option>
             <option value="arquivado">Arquivado</option>
           </select>
-        </FieldControl>
+        </label>
       </div>
       <div className="create-form-meta-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-        <FieldControl label="Total esperado" hint={linkedPeopleField
-          ? `Se deixar em branco, o total sera assumido pela base carregada (${peopleCount} pessoas).`
-          : formMode === "geral"
-            ? "Formulario geral nao usa a base central, entao o sistema nao controla faltantes esperados."
-            : "Sem vinculo com a base completa, o sistema nao controla faltantes esperados."}>
+        <label className="msg-field">
+          <span className="msg-label">Total esperado</span>
           <input
+            className="msg-input"
             type="number"
             min="0"
             value={linkedPeopleField ? totalExpected : ""}
             onChange={onTotalExpectedChange}
             placeholder={linkedPeopleField ? String(peopleCount || "") : "Disponivel apenas com campo de pessoa vinculada"}
             disabled={!linkedPeopleField}
-            style={{ ...inp, opacity: linkedPeopleField ? 1 : 0.7 }}
+            style={{ opacity: linkedPeopleField ? 1 : 0.7 }}
           />
-        </FieldControl>
-        <FieldControl label="Texto de fechamento">
-          <input value={closingText} onChange={onClosingTextChange} style={inp} />
-        </FieldControl>
+          <span className="msg-hint">{linkedPeopleField
+            ? `Se deixar em branco, o total será assumido pela base carregada (${peopleCount} pessoas).`
+            : formMode === "geral"
+              ? "Formulário geral não usa a base central, então o sistema não controla faltantes esperados."
+              : "Sem vínculo com a base completa, o sistema não controla faltantes esperados."}</span>
+        </label>
+        <label className="msg-field">
+          <span className="msg-label">Texto de fechamento</span>
+          <input className="msg-input" value={closingText} onChange={onClosingTextChange} />
+        </label>
+      </div>
+      <label className="msg-field">
+        <span className="msg-label">Classificações</span>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {labels.map(label => (
+            <button key={label.id} onClick={() => onToggleLabel(label.id)} style={{ padding: "4px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "2px solid", cursor: "pointer", transition: "all 0.15s", borderColor: selectedLabels.includes(label.id) ? label.color : COLORS.borderLight, background: selectedLabels.includes(label.id) ? label.color : "transparent", color: selectedLabels.includes(label.id) ? "#fff" : label.color }}>{label.name}</button>
+          ))}
+        </div>
+      </label>
+      <div className="create-form-people-bar" style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+        <Icon name="user" size={14} />
+        <span style={{ fontSize: 12, color: COLORS.textMuted }}>
+          <strong style={{ color: COLORS.text }}>{peopleCount} pessoas</strong> carregadas. {peopleConfigLabel}
+        </span>
       </div>
     </div>
-
-    <FieldControl label="Classificacoes" style={{ marginBottom: 20 }}>
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-        {labels.map(label => (
-          <button key={label.id} onClick={() => onToggleLabel(label.id)} style={{ padding: "4px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "2px solid", cursor: "pointer", transition: "all 0.15s", borderColor: selectedLabels.includes(label.id) ? label.color : COLORS.borderLight, background: selectedLabels.includes(label.id) ? label.color : "transparent", color: selectedLabels.includes(label.id) ? "#fff" : label.color }}>{label.name}</button>
-        ))}
-      </div>
-    </FieldControl>
-
-    <div className="create-form-people-bar" style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: "10px 14px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-      <Icon name="user" size={14} />
-      <span style={{ fontSize: 12, color: COLORS.textMuted }}>
-        <strong style={{ color: COLORS.text }}>{peopleCount} pessoas</strong> carregadas. {peopleConfigLabel}
-      </span>
-    </div>
-  </>
+  </section>
 );
