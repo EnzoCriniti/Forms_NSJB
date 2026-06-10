@@ -25,7 +25,13 @@ export const createAppServer = async () => {
       const handled = await handleApiRequest(req, res, url);
       if (!handled) sendJson(res, 404, { error: "Not found" });
     } catch (error) {
-      sendJson(res, 400, { error: error.message || "Unexpected error" });
+      if (res.headersSent) return;
+      if (error?.statusCode) {
+        sendJson(res, error.statusCode, { error: error.message, code: error.code || undefined });
+        return;
+      }
+      console.error("Erro nao tratado na API:", error);
+      sendJson(res, 500, { error: "Erro interno do servidor." });
     }
   });
 };

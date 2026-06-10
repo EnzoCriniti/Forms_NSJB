@@ -1959,3 +1959,16 @@ test("event message cancel e delete via API", async () => {
     await ctx.cleanup();
   }
 });
+
+test("rejeita body acima do limite com 413", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const oversized = { title: "x".repeat(1_200_000) };
+    const res = await authedJson(ctx.baseUrl, "/api/forms", oversized, adminToken);
+    assert.equal(res.status, 413);
+    assert.equal((await res.json()).code, "PAYLOAD_TOO_LARGE");
+  } finally {
+    await ctx.cleanup();
+  }
+});

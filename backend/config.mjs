@@ -5,6 +5,7 @@
  */
 
 export const API_PORT = Number(process.env.NSJB_API_PORT || 8787);
+export const MAX_BODY_BYTES = Number(process.env.NSJB_MAX_BODY_BYTES || 1_048_576);
 export const ORCHESTRATOR_INTERVAL_MS = Number(process.env.NSJB_ORCHESTRATOR_INTERVAL_MS || 60_000);
 export const DB_DRIVER = String(process.env.NSJB_DB_DRIVER || "postgres").toLowerCase();
 export const PGHOST = process.env.NSJB_PGHOST || "postgres";

@@ -13,7 +13,8 @@ const VISITOR_ACTOR = { id: null, name: "Visitante", role: "visitor" };
 export const readBody = async req => {
   try {
     return await parseBody(req);
-  } catch {
+  } catch (error) {
+    if (error?.statusCode) throw error;
     return null;
   }
 };
