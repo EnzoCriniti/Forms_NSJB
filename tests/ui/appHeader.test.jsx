@@ -39,7 +39,7 @@ describe("AppHeader", () => {
 
     expect(screen.getByRole("dialog", { name: "Menu principal" })).toBeInTheDocument();
     expect(screen.getByText("Conta")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
 
     expect(onOpenSettings).toHaveBeenCalledTimes(1);
 

@@ -165,8 +165,8 @@ export const AppHeader = ({
               <div className="app-header-drawer__account">
                 <span className="app-header-drawer__account-badge">{userInitials}</span>
                 <div>
-                  <strong>{currentUser?.name || "Usuario"}</strong>
-                  <small>{currentUser?.role === "admin" ? "Administrador" : "Visualizacao"}</small>
+                  <strong>{currentUser?.name || "Usuário"}</strong>
+                  <small>{currentUser?.role === "admin" ? "Administrador" : "Visualização"}</small>
                 </div>
               </div>
               <div className="app-header-drawer__actions">
@@ -175,7 +175,7 @@ export const AppHeader = ({
                 </button>
                 {currentUser?.role === "admin" && (
                   <button type="button" className="app-header-drawer__action app-header-drawer__action--primary" onClick={openSettingsAndClose}>
-                    <span>Configuracoes</span>
+                    <span>Configurações</span>
                   </button>
                 )}
                 <button type="button" className="app-header-drawer__action app-header-drawer__action--danger" onClick={logoutAndClose}>

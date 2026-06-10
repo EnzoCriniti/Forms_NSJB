@@ -81,7 +81,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
       </Btn>
       {user.role === "admin" && (
         <Btn v="ghost" sz="sm" onClick={onOpenSettings} style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38 }}>
-          Configuracoes
+          Configurações
         </Btn>
       )}
       <div style={{ color: "var(--header-fg)", fontSize: 12, textAlign: "right", lineHeight: 1.2 }}>

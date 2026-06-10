@@ -106,11 +106,11 @@ describe("App dashboard flow", () => {
     render(<App />);
 
     await screen.findByRole("button", { name: "Dashboard" });
-    fireEvent.click(screen.getByRole("button", { name: "Configuracoes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
 
     expect(await screen.findByRole("button", { name: "Acessos" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Configuracoes" })).toBeInTheDocument();
-    expect(screen.getByText("Gerencie usuarios, seguranca, bases e catalogos do sistema")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Configurações" })).toBeInTheDocument();
+    expect(screen.getByText("Gerencie usuários, segurança, bases e catálogos do sistema")).toBeInTheDocument();
   });
 
   it("mostra a tela de login quando nao ha sessao", async () => {

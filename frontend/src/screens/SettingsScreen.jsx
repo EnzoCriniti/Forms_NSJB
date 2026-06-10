@@ -13,8 +13,8 @@ export const SettingsScreen = ({ onNavigate, ...props }) => (
     <ScreenHeader
       className="settings-top-card"
       leading={<Btn v="ghost" icon="back" onClick={() => onNavigate("list")} aria-label="Voltar" />}
-      title="Configuracoes"
-      subtitle="Gerencie usuarios, seguranca, bases e catalogos do sistema"
+      title="Configurações"
+      subtitle="Gerencie usuários, segurança, bases e catálogos do sistema"
     />
     <AdminSettingsModal
       {...props}
