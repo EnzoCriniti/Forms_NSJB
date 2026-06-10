@@ -25,7 +25,7 @@ export const AppHeader = ({
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const canOpenDrawer = Boolean(currentUser);
-  const userInitials = String(currentUser?.name || "Usuario")
+  const userInitials = String(currentUser?.name || "Usuário")
     .trim()
     .split(/\s+/)
     .slice(0, 2)

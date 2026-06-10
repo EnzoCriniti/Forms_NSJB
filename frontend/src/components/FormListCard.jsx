@@ -86,7 +86,7 @@ export const FormListCard = ({
               </span>
             )}
             {isPinned && (
-              <span title="Formulario fixado" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: 999, background: COLORS.warningLight, color: COLORS.warning }}>
+              <span title="Formulário fixado" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: 999, background: COLORS.warningLight, color: COLORS.warning }}>
                 <Icon name="pin" size={12} />
               </span>
             )}
@@ -125,12 +125,12 @@ export const FormListCard = ({
                 icon="pin"
                 sz="sm"
                 style={LIST_ACTION_STYLE}
-                title={isPinned ? "Desfixar formulario" : "Fixar formulario"}
-                aria-label={isPinned ? "Desfixar formulario" : "Fixar formulario"}
+                title={isPinned ? "Desfixar formulário" : "Fixar formulário"}
+                aria-label={isPinned ? "Desfixar formulário" : "Fixar formulário"}
                 onClick={() => onTogglePinnedForm?.(form.id)}
               />
             )}
-            {canCreateForms(user) && <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar formulario" aria-label="Editar formulario" onClick={() => onNavigate("create", form)} />}
+            {canCreateForms(user) && <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar formulário" aria-label="Editar formulário" onClick={() => onNavigate("create", form)} />}
             {canCreateForms(user) && <Btn v="ghost" icon="clipboard" sz="sm" style={LIST_ACTION_STYLE} title="Duplicar" aria-label="Duplicar" onClick={() => onDuplicateForm?.(form)} />}
             {canCreateForms(user) && (
               <Btn
@@ -138,8 +138,8 @@ export const FormListCard = ({
                 icon={form.status === "arquivado" ? "upload" : "archive"}
                 sz="sm"
                 style={LIST_ACTION_STYLE}
-                title={form.status === "arquivado" ? "Restaurar formulario" : "Arquivar formulario"}
-                aria-label={form.status === "arquivado" ? "Restaurar formulario" : "Arquivar formulario"}
+                title={form.status === "arquivado" ? "Restaurar formulário" : "Arquivar formulário"}
+                aria-label={form.status === "arquivado" ? "Restaurar formulário" : "Arquivar formulário"}
                 onClick={toggleArchive}
                 loading={archiveBusy}
               />
@@ -169,12 +169,12 @@ export const FormListCard = ({
                   icon="pin"
                   sz="sm"
                   style={LIST_ACTION_STYLE}
-                  title={isPinned ? "Desfixar formulario" : "Fixar formulario"}
-                  aria-label={isPinned ? "Desfixar formulario" : "Fixar formulario"}
+                  title={isPinned ? "Desfixar formulário" : "Fixar formulário"}
+                  aria-label={isPinned ? "Desfixar formulário" : "Fixar formulário"}
                   onClick={() => onTogglePinnedForm?.(form.id)}
                 />
               )}
-              {canCreateForms(user) && <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar formulario" aria-label="Editar formulario" onClick={() => onNavigate("create", form)} />}
+              {canCreateForms(user) && <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar formulário" aria-label="Editar formulário" onClick={() => onNavigate("create", form)} />}
               {canCreateForms(user) && <Btn v="ghost" icon="clipboard" sz="sm" style={LIST_ACTION_STYLE} title="Duplicar" aria-label="Duplicar" onClick={() => onDuplicateForm?.(form)} />}
               {canCreateForms(user) && (
                 <Btn
@@ -182,8 +182,8 @@ export const FormListCard = ({
                   icon={form.status === "arquivado" ? "upload" : "archive"}
                   sz="sm"
                   style={LIST_ACTION_STYLE}
-                  title={form.status === "arquivado" ? "Restaurar formulario" : "Arquivar formulario"}
-                  aria-label={form.status === "arquivado" ? "Restaurar formulario" : "Arquivar formulario"}
+                  title={form.status === "arquivado" ? "Restaurar formulário" : "Arquivar formulário"}
+                  aria-label={form.status === "arquivado" ? "Restaurar formulário" : "Arquivar formulário"}
                   onClick={toggleArchive}
                   loading={archiveBusy}
                 />

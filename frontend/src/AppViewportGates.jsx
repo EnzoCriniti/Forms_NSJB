@@ -18,7 +18,7 @@ export const AppErrorGate = ({ error, onRetry }) => (
 );
 
 export const AppDetailLoadingGate = () => (
-  <AppStatusScreen loading tone="loading" message="Carregando dados do formulario..." />
+  <AppStatusScreen loading tone="loading" message="Carregando dados do formulário..." />
 );
 
 export const AppLoginGate = ({

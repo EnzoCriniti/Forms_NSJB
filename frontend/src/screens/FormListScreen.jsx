@@ -76,8 +76,8 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
       setFeedback({
         tone: "success",
         message: nextStatus === "arquivado"
-          ? "Formulario arquivado com sucesso."
-          : "Formulario restaurado como rascunho.",
+          ? "Formulário arquivado com sucesso."
+          : "Formulário restaurado como rascunho.",
       });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -89,7 +89,7 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
   const confirmDelete = async () => {
     if (!pendingDelete || !onDeleteForm) return;
     setDeleting(true);
-    setDeleteFeedback({ tone: "loading", message: "Excluindo formulario..." });
+    setDeleteFeedback({ tone: "loading", message: "Excluindo formulário..." });
     try {
       await onDeleteForm(pendingDelete.id, deleteMasterKey.trim());
       setFeedback({ tone: "success", message: "Excluido com sucesso." });
@@ -98,7 +98,7 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
       setDeleteFeedback(null);
     } catch (error) {
       const message = error?.code === "MASTER_KEY_NOT_CONFIGURED"
-        ? "Nenhuma chave mestra configurada. Configure em Configuracoes > Operacoes criticas antes de excluir formularios."
+        ? "Nenhuma chave mestra configurada. Configure em Configurações > Operações críticas antes de excluir formulários."
         : resolveActionErrorMessage(error);
       setDeleteFeedback({ tone: "error", message });
     } finally {
@@ -156,15 +156,15 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.max(1, current - 1))} disabled={safePage === 1}>Anterior</Btn>
-            <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Pagina {safePage} de {totalPages}</div>
-            <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.min(totalPages, current + 1))} disabled={safePage === totalPages}>Proxima</Btn>
+            <div style={{ display: "flex", alignItems: "center", fontSize: 13, color: COLORS.textSecondary, padding: "0 8px" }}>Página {safePage} de {totalPages}</div>
+            <Btn v="secondary" sz="sm" onClick={() => setPage(current => Math.min(totalPages, current + 1))} disabled={safePage === totalPages}>Próxima</Btn>
           </div>
         </div>
       )}
       <ConfirmModal
         open={Boolean(pendingDelete)}
-        title="Excluir formulario"
-        message={`Excluir o formulario "${pendingDelete?.title || ""}" remove respostas, response_values e dados de escala associados.`}
+        title="Excluir formulário"
+        message={`Excluir o formulário "${pendingDelete?.title || ""}" remove respostas, response_values e dados de escala associados.`}
         confirmLabel="Excluir"
         tone="danger"
         busy={deleting}
@@ -179,7 +179,7 @@ export const FormListScreen = ({ onNavigate, onDuplicateForm, onArchiveForm, onT
       >
         <div style={{ display: "grid", gap: 10 }}>
           {deleteFeedback && <FeedbackBanner tone={deleteFeedback.tone} message={deleteFeedback.message} />}
-          {formDeleteKeyConfigured === false && <FeedbackBanner tone="info" message="Nenhuma chave mestra configurada. Configure em Configuracoes > Operacoes criticas antes de excluir formularios." />}
+          {formDeleteKeyConfigured === false && <FeedbackBanner tone="info" message="Nenhuma chave mestra configurada. Configure em Configurações > Operações críticas antes de excluir formulários." />}
           {formDeleteKeyConfigured === null && <FeedbackBanner tone="loading" message="Verificando status da chave mestra..." />}
           <div style={{ fontSize: 12, color: COLORS.textSecondary, lineHeight: 1.5 }}>
             A exclusao remove respostas, response_values, escala e dados associados. Digite a chave mestra para continuar.

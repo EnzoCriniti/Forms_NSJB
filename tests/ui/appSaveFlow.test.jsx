@@ -128,7 +128,7 @@ describe("App save flow", () => {
     await screen.findByText(/Presenca Edicao/i);
 
     const actions = container.querySelector(".card-actions");
-    fireEvent.click(within(actions).getByRole("button", { name: "Editar formulario" }));
+    fireEvent.click(within(actions).getByRole("button", { name: "Editar formulário" }));
 
     await screen.findByText("Editar Formulario");
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));

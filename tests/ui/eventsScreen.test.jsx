@@ -178,6 +178,6 @@ describe("EventsScreen", () => {
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo formulario" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Editar formulario" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Editar formulário" })).not.toBeInTheDocument();
   });
 });

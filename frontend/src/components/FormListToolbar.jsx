@@ -54,7 +54,7 @@ export const FormListToolbar = ({
   <div className="form-list-toolbar" style={{ display: "grid", gap: 10, marginBottom: 14, padding: 12, background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, boxShadow: "var(--shadow-sm)" }}>
     <div style={{ position: "relative", minWidth: 220 }}>
       <div style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: COLORS.textMuted }}><Icon name="search" size={16} /></div>
-      <input value={search} onChange={event => onSearchChange(event.target.value)} placeholder="Buscar por titulo, data, classificacao ou status..." style={searchStyle} />
+      <input value={search} onChange={event => onSearchChange(event.target.value)} placeholder="Buscar por título, data, classificação ou status..." style={searchStyle} />
       {search && (
         <button
           type="button"
@@ -93,18 +93,18 @@ export const FormListToolbar = ({
           </select>
           <select value={type || ""} onChange={event => onTypeChange(event.target.value || null)} style={controlStyle}>
             <option value="">Todos os tipos</option>
-            <option value="presenca">Presenca</option>
+            <option value="presenca">Presença</option>
             <option value="escala_organ">Escala da Organ</option>
           </select>
           <select value={label || ""} onChange={event => onLabelChange(event.target.value ? Number(event.target.value) : null)} style={controlStyle}>
-            <option value="">Todas as classificacoes</option>
+            <option value="">Todas as classificações</option>
             {labels.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
         </>
       )}
       <select value={sortBy} onChange={event => onSortChange(event.target.value)} style={controlStyle}>
       <option value="date_desc">Mais recentes</option>
-      <option value="title">Titulo</option>
+      <option value="title">Título</option>
       <option value="status">Status</option>
       <option value="responses">Mais preenchidos</option>
       </select>

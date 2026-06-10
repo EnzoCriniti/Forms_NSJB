@@ -93,7 +93,7 @@ describe("FormListScreen", () => {
   it("filtra formularios pelo campo de busca", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
 
-    fireEvent.change(screen.getByPlaceholderText("Buscar por titulo, data, classificacao ou status..."), {
+    fireEvent.change(screen.getByPlaceholderText("Buscar por título, data, classificação ou status..."), {
       target: { value: "Beneficente" },
     });
 
@@ -115,7 +115,7 @@ describe("FormListScreen", () => {
 
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={extendedForms} />);
 
-    fireEvent.change(screen.getByPlaceholderText("Buscar por titulo, data, classificacao ou status..."), {
+    fireEvent.change(screen.getByPlaceholderText("Buscar por título, data, classificação ou status..."), {
       target: { value: "evento" },
     });
 
@@ -123,7 +123,7 @@ describe("FormListScreen", () => {
     expect(screen.getByText("26/04/2026")).toBeInTheDocument();
     expect(screen.queryByText("Presenca Sessao de Escala")).not.toBeInTheDocument();
 
-    fireEvent.change(screen.getByPlaceholderText("Buscar por titulo, data, classificacao ou status..."), {
+    fireEvent.change(screen.getByPlaceholderText("Buscar por título, data, classificação ou status..."), {
       target: { value: "reuniao" },
     });
 
@@ -150,7 +150,7 @@ describe("FormListScreen", () => {
     expect(screen.getByText("Formulario 7")).toBeInTheDocument();
     expect(screen.getByText("07/05/2026")).toBeInTheDocument();
     expect(screen.queryByText("Formulario 1")).not.toBeInTheDocument();
-    expect(screen.getByText("Pagina 1 de 2")).toBeInTheDocument();
+    expect(screen.getByText("Página 1 de 2")).toBeInTheDocument();
   });
 
   it("deduplica classificacoes repetidas no card", () => {
@@ -216,8 +216,8 @@ describe("FormListScreen", () => {
   it("nao mostra fixar formulario para usuario apenas de visualizacao", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "viewer", name: "Viewer" }} labels={labels} forms={forms} />);
 
-    expect(screen.queryByRole("button", { name: "Fixar formulario" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Desfixar formulario" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Fixar formulário" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Desfixar formulário" })).not.toBeInTheDocument();
   });
 
   it("move as acoes de edicao para baixo quando o card nao tem base vinculada", () => {
@@ -246,7 +246,7 @@ describe("FormListScreen", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} onDeleteForm={onDeleteForm} formDeleteKeyConfigured={true} />);
 
     fireEvent.click(screen.getAllByRole("button", { name: "Excluir" })[0]);
-    const modal = screen.getByRole("heading", { name: "Excluir formulario" }).closest(".modal-card");
+    const modal = screen.getByRole("heading", { name: "Excluir formulário" }).closest(".modal-card");
     expect(modal).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Chave mestra"), { target: { value: "segredo" } });
     fireEvent.click(within(modal).getByRole("button", { name: "Excluir" }));
@@ -294,7 +294,7 @@ describe("FormListScreen", () => {
     expect(within(cards[0]).getByText("Presenca Evento Beneficente")).toBeInTheDocument();
     expect(within(cards[0]).getByText("26/04/2026")).toBeInTheDocument();
 
-    fireEvent.click(screen.getAllByRole("button", { name: "Desfixar formulario" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "Desfixar formulário" })[0]);
     expect(onTogglePinnedForm).toHaveBeenCalledWith(2);
 
     rerender(
@@ -311,7 +311,7 @@ describe("FormListScreen", () => {
     cards = Array.from(container.querySelectorAll(".form-card"));
     expect(within(cards[0]).getByText("Presenca Sessao de Escala")).toBeInTheDocument();
     expect(within(cards[0]).getByText("02/05/2026")).toBeInTheDocument();
-    fireEvent.click(screen.getAllByRole("button", { name: "Fixar formulario" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "Fixar formulário" })[0]);
     expect(onTogglePinnedForm).toHaveBeenCalledWith(1);
   });
 
@@ -320,7 +320,7 @@ describe("FormListScreen", () => {
 
     fireEvent.click(screen.getAllByRole("button", { name: "Excluir" })[0]);
 
-    expect(screen.getByText("Nenhuma chave mestra configurada. Configure em Configuracoes > Operacoes criticas antes de excluir formularios.")).toBeInTheDocument();
+    expect(screen.getByText("Nenhuma chave mestra configurada. Configure em Configurações > Operações críticas antes de excluir formulários.")).toBeInTheDocument();
     expect(screen.getByLabelText("Chave mestra")).toBeDisabled();
   });
 });
