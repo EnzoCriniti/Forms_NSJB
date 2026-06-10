@@ -27,7 +27,7 @@ describe("Forms flow", () => {
     render(<CreateFormScreen {...baseProps} onSaveForm={onSaveForm} />);
     fireEvent.click(screen.getByRole("button", { name: "Continuar para o editor" }));
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Completo" },
     });
 

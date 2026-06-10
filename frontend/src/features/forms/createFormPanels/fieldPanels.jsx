@@ -202,8 +202,8 @@ const FieldEditorSourcePanel = ({
       {nFieldMode === "local" && (
         <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
           {formMode === "nucleo"
-            ? "Este campo fica apenas neste formulario e nao entra no catalogo global."
-            : "No formulario geral, campos locais nao usam a base central de socios."}
+            ? "Este campo fica apenas neste formulário e não entra no catálogo global."
+            : "No formulário geral, campos locais não usam a base central de sócios."}
         </div>
       )}
     </div>
@@ -214,7 +214,7 @@ const FieldEditorSourcePanel = ({
       </div>
       {nFieldMode === "catalog" && (
         <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 6 }}>
-          O tipo e o vinculo base chegam da configuracao global do campo selecionado.
+          O tipo e o vínculo base chegam da configuração global do campo selecionado.
         </div>
       )}
     </div>
@@ -235,7 +235,7 @@ const FieldEditorDefinitionPanel = ({
 }) => (
   <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "grid", gap: 12 }}>
     <div>
-      <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>2. Definicao principal</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>2. Definição principal</div>
       <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4, marginBottom: 8 }}>
         Escolha o tipo e escreva o texto que vai aparecer para quem responder.
       </div>
@@ -245,38 +245,38 @@ const FieldEditorDefinitionPanel = ({
       </select>
       {nFieldMode === "catalog" && (
         <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
-          O tipo vem da configuracao global do campo base.
+          O tipo vem da configuração global do campo base.
         </div>
       )}
     </div>
     <div>
       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
-        {nType === "person_select" ? "Rotulo (ex: Nome)" : "Pergunta / Rotulo"}
+        {nType === "person_select" ? "Rótulo (ex: Nome)" : "Pergunta / Rótulo"}
       </label>
       <input value={nLabel} onChange={event => onSetNLabel(event.target.value)} placeholder={nType === "person_select" ? "Nome" : "Ex: Vai ao Jantar?"} style={inp} autoFocus />
     </div>
     {nType === "person_select" && (
       <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
         <div style={{ padding: 12, borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.borderLight}` }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Vinculo configurado no campo</div>
+          <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.primary, marginBottom: 4 }}>Vínculo configurado no campo</div>
           <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
             {formMode === "nucleo"
-              ? "Campos locais usam a base central de socios como origem. Quando o campo vem da biblioteca, a origem ja chega definida ali. Este editor nao troca a base."
-              : "Formulario geral nao usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
+              ? "Campos locais usam a base central de sócios como origem. Quando o campo vem da biblioteca, a origem já chega definida ali. Este editor não troca a base."
+              : "Formulário geral não usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
           </div>
         </div>
         <div style={{ display: "grid", gap: 6 }}>
-          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Vinculo ativo do campo</label>
+          <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Vínculo ativo do campo</label>
           <div style={{ padding: 10, borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surface }}>
             {activeSelectionSource?.kind === "external_base"
               ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
-              : "Base central de socios"}
+              : "Base central de sócios"}
           </div>
         </div>
         <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
           {formMode === "nucleo"
-            ? "Se a lista vier da biblioteca, a origem ja foi definida na configuracao do campo."
-            : "Campos gerais so aceitam seletores ligados a bases externas configuradas na biblioteca."}
+            ? "Se a lista vier da biblioteca, a origem já foi definida na configuração do campo."
+            : "Campos gerais só aceitam seletores ligados a bases externas configuradas na biblioteca."}
         </div>
         <div style={{ padding: "10px 12px", borderRadius: 10, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt }}>
           <div style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.4, color: COLORS.textMuted, marginBottom: 4 }}>
@@ -285,7 +285,7 @@ const FieldEditorDefinitionPanel = ({
           <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>
             {activeSelectionSource?.kind === "external_base"
               ? `Base externa sincronizada: ${externalBaseMap.get(String(activeSelectionSource.externalBaseId || ""))?.name || "base externa"}`
-              : "Base central de socios"}
+              : "Base central de sócios"}
           </div>
         </div>
       </div>
@@ -317,13 +317,13 @@ const FieldEditorExtrasPanel = ({
     <div>
       <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 6 }}>3. Ajustes extras</div>
       <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
-        Esta etapa so aparece para finalizar validacoes, obrigatoriedade ou a montagem de grade.
+        Esta etapa só aparece para finalizar validações, obrigatoriedade ou a montagem de grade.
       </div>
     </div>
     {(nType === "text" || nType === "number") && (
       <div className="create-form-validation-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
         <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
-          {nType === "text" ? "Minimo de caracteres" : "Valor minimo"}
+          {nType === "text" ? "Mínimo de caracteres" : "Valor mínimo"}
           <input
             type="number"
             min="0"
@@ -333,7 +333,7 @@ const FieldEditorExtrasPanel = ({
           />
         </label>
         <label style={{ fontSize: 11, fontWeight: 600, color: COLORS.textSecondary, display: "block" }}>
-          {nType === "text" ? "Maximo de caracteres" : "Valor maximo"}
+          {nType === "text" ? "Máximo de caracteres" : "Valor máximo"}
           <input
             type="number"
             min="0"

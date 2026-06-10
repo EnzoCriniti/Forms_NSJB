@@ -51,7 +51,7 @@ export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, 
           <div style={{ fontSize: 11, color: COLORS.textSecondary, marginTop: 3 }}>{activeModeOption.desc}</div>
         </div>
         <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-          {formMode === "nucleo" ? `${membersFieldsCount} campo(s) ligado(s) a base central` : "Base central desativada neste formulario"}
+          {formMode === "nucleo" ? `${membersFieldsCount} campo(s) ligado(s) à base central` : "Base central desativada neste formulário"}
         </div>
       </div>
     </div>
@@ -151,7 +151,7 @@ export const FormBasicsPanel = ({
           value={formTitle}
           onChange={onTitleChange}
           readOnly={shouldPresetTitle}
-          placeholder={shouldPresetTitle ? "Titulo padronizado pelo evento" : "Ex: Presenca Sessao de Escala - 02/05/2026"}
+          placeholder={shouldPresetTitle ? "Título padronizado pelo evento" : "Ex: Presença Sessão de Escala - 02/05/2026"}
           aria-readonly={shouldPresetTitle}
           style={shouldPresetTitle ? { background: "var(--surface-alt)", cursor: "not-allowed" } : undefined}
         />
@@ -195,7 +195,7 @@ export const FormBasicsPanel = ({
             min="0"
             value={linkedPeopleField ? totalExpected : ""}
             onChange={onTotalExpectedChange}
-            placeholder={linkedPeopleField ? String(peopleCount || "") : "Disponivel apenas com campo de pessoa vinculada"}
+            placeholder={linkedPeopleField ? String(peopleCount || "") : "Disponível apenas com campo de pessoa vinculada"}
             disabled={!linkedPeopleField}
             style={{ opacity: linkedPeopleField ? 1 : 0.7 }}
           />

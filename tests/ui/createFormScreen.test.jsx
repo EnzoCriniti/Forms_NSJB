@@ -117,7 +117,7 @@ describe("CreateFormScreen", () => {
     expect(screen.queryByText("Pre-visualizacao do formulario")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Visualizar formulário" }));
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Preview" },
     });
     fireEvent.change(screen.getByPlaceholderText("Prezada Irmandade..."), {
@@ -165,7 +165,7 @@ describe("CreateFormScreen", () => {
     renderNewForm({ onSaveForm });
 
     fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Geral" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
@@ -241,7 +241,7 @@ describe("CreateFormScreen", () => {
       }],
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Catalogado" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
@@ -267,7 +267,7 @@ describe("CreateFormScreen", () => {
 
     renderNewForm({ onSaveForm });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Vinculado" },
     });
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
@@ -304,7 +304,7 @@ describe("CreateFormScreen", () => {
       ],
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario com Base Externa" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
@@ -334,13 +334,13 @@ describe("CreateFormScreen", () => {
 
     renderNewForm({ onSaveForm });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Validado" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
     fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "text" } });
-    fireEvent.change(screen.getByLabelText("Minimo de caracteres"), { target: { value: "3" } });
-    fireEvent.change(screen.getByLabelText("Maximo de caracteres"), { target: { value: "10" } });
+    fireEvent.change(screen.getByLabelText("Mínimo de caracteres"), { target: { value: "3" } });
+    fireEvent.change(screen.getByLabelText("Máximo de caracteres"), { target: { value: "10" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Observacao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
@@ -368,7 +368,7 @@ describe("CreateFormScreen", () => {
       }],
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Catalogado" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
@@ -493,7 +493,7 @@ describe("CreateFormScreen", () => {
       }],
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario com matriz" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
@@ -564,7 +564,7 @@ describe("CreateFormScreen", () => {
       }],
     });
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca Sessao de Escala - 02/05/2026"), {
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Escala Teste" },
     });
     fireEvent.change(screen.getByLabelText("Limite por pessoa na escala"), {

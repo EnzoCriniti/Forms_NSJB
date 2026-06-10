@@ -29,7 +29,7 @@ describe("CreateFormScreen form modes", () => {
     expect(screen.getByText("Modo ativo: Presenca do nucleo")).toBeInTheDocument();
     expect(screen.getAllByText("Base central ativa").length).toBeGreaterThan(0);
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
-    expect(screen.getByText("1 campo(s) ligado(s) a base central")).toBeInTheDocument();
+    expect(screen.getByText("1 campo(s) ligado(s) à base central")).toBeInTheDocument();
   });
 
   it("atualiza o resumo ao trocar para formulario geral", () => {
@@ -39,7 +39,7 @@ describe("CreateFormScreen form modes", () => {
 
     expect(screen.getByText("Modo ativo: Formulario geral")).toBeInTheDocument();
     expect(screen.getAllByText("Fluxo livre").length).toBeGreaterThan(0);
-    expect(screen.getByText("Base central desativada neste formulario")).toBeInTheDocument();
+    expect(screen.getByText("Base central desativada neste formulário")).toBeInTheDocument();
     expect(screen.getByRole("spinbutton")).toBeDisabled();
   });
 
@@ -52,7 +52,7 @@ describe("CreateFormScreen form modes", () => {
     const typeSelect = screen.getByDisplayValue("Sim / Nao");
     expect(screen.queryByRole("option", { name: "Seletor por base" })).not.toBeInTheDocument();
     expect(typeSelect).toBeInTheDocument();
-    expect(screen.getByText("No formulario geral, campos locais nao usam a base central de socios.")).toBeInTheDocument();
+    expect(screen.getByText("No formulário geral, campos locais não usam a base central de sócios.")).toBeInTheDocument();
   });
 
   it("filtra a biblioteca no formulario geral para manter apenas bases externas", () => {
@@ -106,7 +106,7 @@ describe("CreateFormScreen form modes", () => {
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
 
     expect(screen.getByText("1. Origem do campo")).toBeInTheDocument();
-    expect(screen.getByText("2. Definicao principal")).toBeInTheDocument();
+    expect(screen.getByText("2. Definição principal")).toBeInTheDocument();
     expect(screen.getByText("3. Ajustes extras")).toBeInTheDocument();
     expect(screen.getByText("Campo local deste formulário")).toBeInTheDocument();
     expect(screen.getByText("Esse campo nao precisa de configuracao extra. Se o texto ja estiver certo, ele pode ser adicionado agora.")).toBeInTheDocument();
