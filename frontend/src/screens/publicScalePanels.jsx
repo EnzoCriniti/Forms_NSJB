@@ -44,7 +44,7 @@ export const PublicScaleMetricsPanel = ({ filled, pending, total, scaleLimit }) 
       </div>
     </div>
     <p style={{ margin: "0 0 14px", color: COLORS.textSecondary, fontSize: 13 }}>
-      Escolha uma vaga pendente para preencher seu nome. Cada nome pode ocupar ate {scaleLimit} vaga{scaleLimit !== 1 ? "s" : ""} nesta escala.
+      Escolha uma vaga pendente para preencher seu nome. Cada nome pode ocupar até {scaleLimit} vaga{scaleLimit !== 1 ? "s" : ""} nesta escala.
     </p>
   </>
 );

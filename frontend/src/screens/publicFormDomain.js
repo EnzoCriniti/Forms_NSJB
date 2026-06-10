@@ -23,7 +23,7 @@ export const buildPublicPersonSelectOptions = ({ field, form, people, externalBa
   return {
     options: options.filter(item => item.active !== false),
     placeholder: isExternal
-      ? "Selecione uma opcao..."
+      ? "Selecione uma opção..."
       : isPrimary
         ? "Selecione seu nome..."
         : "Selecione uma pessoa...",

@@ -121,7 +121,7 @@ describe("PublicFormScreen", () => {
       target: { value: "Maria" },
     });
 
-    expect(screen.getByText("Esta pessoa ja respondeu e novas respostas estao bloqueadas para este formulario.")).toBeInTheDocument();
+    expect(screen.getByText("Esta pessoa já respondeu e novas respostas estão bloqueadas para este formulário.")).toBeInTheDocument();
     expect(screen.queryByText("Resposta ja enviada")).not.toBeInTheDocument();
   });
 

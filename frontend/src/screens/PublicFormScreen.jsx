@@ -51,7 +51,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
     if (!matchedResponse) return;
     if (duplicateResponsesBlocked) {
       setEditModal(false);
-      setSubmitError("Esta pessoa ja respondeu e novas respostas estao bloqueadas para este formulario.");
+      setSubmitError("Esta pessoa já respondeu e novas respostas estão bloqueadas para este formulário.");
       return;
     }
     setEditModal(true);
@@ -81,7 +81,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   const submit = async () => {
     if (personField && !selectedPerson) return;
     if (duplicateResponseLocked) {
-      setSubmitError("Esta pessoa ja respondeu e novas respostas estao bloqueadas para este formulario.");
+      setSubmitError("Esta pessoa já respondeu e novas respostas estão bloqueadas para este formulário.");
       return;
     }
     const validationError = validateResponseValuesAgainstForm(form, values);
@@ -155,7 +155,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
         })}
         <div style={{ padding: "20px 24px 0" }}>
           <Btn sz="lg" icon={editing ? "edit" : "check"} style={{ width: "100%", justifyContent: "center" }} onClick={submit} loading={submitting} disabled={submitting || duplicateResponseLocked}>{editing ? "Atualizar Resposta" : "Enviar Resposta"}</Btn>
-          <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", marginTop: 8 }}>Voce pode editar sua resposta enquanto o formulario estiver aberto.</p>
+          <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", marginTop: 8 }}>Você pode editar sua resposta enquanto o formulário estiver aberto.</p>
         </div>
       </PublicScreenFrame>
       {editModal && <PublicResponseEditModal selectedPerson={selectedPerson} onCancel={cancelEdit} onConfirm={confirmEdit} />}

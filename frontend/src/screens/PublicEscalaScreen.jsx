@@ -43,7 +43,7 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
       setSignName("");
     } catch (saveError) {
       if (saveError?.status === 409 || saveError?.code === "ESCALA_CONFLICT" || saveError?.code === "ESCALA_LIMIT_REACHED") {
-        setError(saveError.message || "A escala foi atualizada por outra pessoa. Recarregue a pagina e tente novamente.");
+        setError(saveError.message || "A escala foi atualizada por outra pessoa. Recarregue a página e tente novamente.");
         return;
       }
       setError(resolveActionErrorMessage(saveError));

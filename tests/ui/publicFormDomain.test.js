@@ -21,7 +21,7 @@ describe("publicFormDomain", () => {
 
     expect(members.placeholder).toBe("Selecione seu nome...");
     expect(members.options).toEqual([{ value: "Maria", label: "Maria" }]);
-    expect(external.placeholder).toBe("Selecione uma opcao...");
+    expect(external.placeholder).toBe("Selecione uma opção...");
     expect(external.options).toEqual([{ value: "CENTRAL", label: "Central", active: true }]);
   });
 

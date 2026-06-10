@@ -8,8 +8,8 @@ import { getScalePersonLimit } from "../lib/forms";
 
 export const buildPublicScaleLimitMessage = limit => (
   limit === 1
-    ? "Este nome ja esta em uma vaga desta escala."
-    : "Este nome ja atingiu o limite de vagas desta escala."
+    ? "Este nome já está em uma vaga desta escala."
+    : "Este nome já atingiu o limite de vagas desta escala."
 );
 
 export const countPublicScaleAssignments = (sections, personName) => {
