@@ -62,7 +62,7 @@ export const EscalaSectionsPanel = ({
           ))}
           {canEdit && (
             <div style={{ padding: "8px 16px", background: COLORS.surfaceAlt }}>
-              <Btn v="secondary" icon="plus" sz="sm" onClick={() => onAddSlot(sectionIndex)} loading={busyAction === "add"}>Adicionar vaga nesta secao</Btn>
+              <Btn v="secondary" icon="plus" sz="sm" onClick={() => onAddSlot(sectionIndex)} loading={busyAction === "add"}>Adicionar vaga nesta seção</Btn>
             </div>
           )}
         </div>

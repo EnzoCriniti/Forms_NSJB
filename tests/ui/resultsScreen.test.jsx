@@ -225,10 +225,10 @@ describe("ResultsScreen", () => {
     );
 
     expect(screen.getByRole("button", { name: "Vai?" })).toBeInTheDocument();
-    expect(screen.getByText("Totalizacao")).toBeInTheDocument();
+    expect(screen.getByText("Totalização")).toBeInTheDocument();
     expect(screen.getAllByText("1").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Sim").length).toBeGreaterThan(0);
-    expect(screen.getByText("Nao")).toBeInTheDocument();
+    expect(screen.getByText("Não")).toBeInTheDocument();
   });
 
   it("nao mostra filtro por grau sem campo principal vinculado a base", () => {

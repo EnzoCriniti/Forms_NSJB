@@ -10,7 +10,7 @@ export const PresenceTotalsPanel = ({ filteredResponses, totalsLayout }) => (
   <div className="totals-panel" style={{ background: COLORS.surface, borderRadius: 10, padding: 16, marginBottom: 12, border: `1px solid ${COLORS.borderLight}` }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
       <div>
-        <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Totalizacao</div>
+        <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Totalização</div>
         <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>{totalsLayout.length} indicador{totalsLayout.length !== 1 ? "es" : ""} configurado{totalsLayout.length !== 1 ? "s" : ""}</div>
       </div>
       <div style={{ fontSize: 11, color: COLORS.textMuted }}>{filteredResponses.length} resposta{filteredResponses.length !== 1 ? "s" : ""}</div>
@@ -31,7 +31,7 @@ export const PresenceTotalsPanel = ({ filteredResponses, totalsLayout }) => (
                 </span>
                 <span style={{ display: "flex", flexDirection: "column", gap: 2, textAlign: "right" }}>
                   <strong style={{ fontSize: 24, lineHeight: 1, color: COLORS.danger }}>{nao}</strong>
-                  <span style={{ fontSize: 12, color: COLORS.textMuted }}>Nao</span>
+                  <span style={{ fontSize: 12, color: COLORS.textMuted }}>Não</span>
                 </span>
               </div>
             </div>

@@ -66,7 +66,7 @@ export const EscalaResultsPanel = ({
     <ConfirmModal
       open={Boolean(pendingRemoval)}
       title="Remover vaga"
-      message="Tem certeza que deseja remover a pessoa desta vaga? A alteraÃ§Ã£o serÃ¡ salva imediatamente."
+      message="Tem certeza que deseja remover a pessoa desta vaga? A alteração será salva imediatamente."
       confirmLabel="Remover"
       tone="danger"
       busy={busyAction === "remove"}

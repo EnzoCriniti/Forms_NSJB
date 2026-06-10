@@ -141,7 +141,7 @@ describe("App save flow", () => {
     await openTestEvent();
     fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
 
-    await screen.findByText("Totalizacao");
+    await screen.findByText("Totalização");
     expect(screen.queryByText("Use a lupinha ao lado do nome de cada coluna para filtrar.")).not.toBeInTheDocument();
     expect(screen.queryByText("Joao")).not.toBeInTheDocument();
   }, 10000);
