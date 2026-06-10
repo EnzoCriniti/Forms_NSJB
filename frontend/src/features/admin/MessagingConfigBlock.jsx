@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Btn, COLORS, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
-import { messagingInputStyle } from "./messagingSettingsShared";
+import { Btn, FeedbackBanner, resolveActionErrorMessage } from "../../components/ui";
 
 export const MessagingConfigBlock = ({ messagingConfig, onSave }) => {
   const [draft, setDraft] = useState(() => ({
@@ -13,10 +12,10 @@ export const MessagingConfigBlock = ({ messagingConfig, onSave }) => {
 
   const submit = async () => {
     setBusy(true);
-    setFeedback({ tone: "loading", message: "Salvando configuracao..." });
+    setFeedback({ tone: "loading", message: "Salvando configuração..." });
     try {
       await onSave(draft);
-      setFeedback({ tone: "success", message: "Configuracao salva." });
+      setFeedback({ tone: "success", message: "Configuração salva." });
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
     } finally {
@@ -25,42 +24,37 @@ export const MessagingConfigBlock = ({ messagingConfig, onSave }) => {
   };
 
   return (
-    <div>
-      <h4 style={{ margin: "0 0 10px" }}>Configuracao global</h4>
-      <div style={{ display: "grid", gap: 12 }}>
-        <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-          Nome do grupo do WhatsApp
-          <input
-            value={draft.whatsappGroupName}
-            onChange={event => setDraft(current => ({ ...current, whatsappGroupName: event.target.value }))}
-            placeholder="Ex.: Irmandade NSJB"
-            style={messagingInputStyle}
-          />
-        </label>
-        <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-          URL publica do app
-          <input
-            value={draft.publicBaseUrl}
-            onChange={event => setDraft(current => ({ ...current, publicBaseUrl: event.target.value }))}
-            placeholder="https://app.exemplo.com"
-            style={messagingInputStyle}
-          />
-          <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>
-            Usada para gerar os links publicos dos formularios nas mensagens.
-          </span>
-        </label>
-        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: COLORS.text }}>
-          <input
-            type="checkbox"
-            checked={draft.autoDispatchEnabled}
-            onChange={event => setDraft(current => ({ ...current, autoDispatchEnabled: event.target.checked }))}
-          />
-          Disparo automatico de mensagens agendadas
-        </label>
-        {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
-        <div>
-          <Btn onClick={submit} loading={busy} disabled={busy}>Salvar configuracao</Btn>
-        </div>
+    <div className="msg-form">
+      <label className="msg-field">
+        <span className="msg-label">Nome do grupo do WhatsApp</span>
+        <input
+          className="msg-input"
+          value={draft.whatsappGroupName}
+          onChange={event => setDraft(current => ({ ...current, whatsappGroupName: event.target.value }))}
+          placeholder="Ex.: Irmandade NSJB"
+        />
+      </label>
+      <label className="msg-field">
+        <span className="msg-label">URL pública do app</span>
+        <input
+          className="msg-input"
+          value={draft.publicBaseUrl}
+          onChange={event => setDraft(current => ({ ...current, publicBaseUrl: event.target.value }))}
+          placeholder="https://app.exemplo.com"
+        />
+        <span className="msg-hint">Usada para gerar os links públicos dos formulários nas mensagens.</span>
+      </label>
+      <label className="msg-check">
+        <input
+          type="checkbox"
+          checked={draft.autoDispatchEnabled}
+          onChange={event => setDraft(current => ({ ...current, autoDispatchEnabled: event.target.checked }))}
+        />
+        Disparo automático de mensagens agendadas
+      </label>
+      {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
+      <div className="msg-actions">
+        <Btn onClick={submit} loading={busy} disabled={busy}>Salvar configuração</Btn>
       </div>
     </div>
   );

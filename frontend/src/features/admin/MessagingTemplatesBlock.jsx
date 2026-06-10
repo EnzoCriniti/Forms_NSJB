@@ -3,6 +3,7 @@ import { ConfirmModal, FeedbackBanner } from "../../components/ui";
 import { MessagingTemplatesList } from "./MessagingTemplatesList";
 import { MessagingTemplatesEditorPanel } from "./MessagingTemplatesEditorPanel";
 import { useMessagingTemplatesController } from "./useMessagingTemplatesController";
+import { emptyMessageTemplateDraft } from "./messagingSettingsShared";
 
 export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
   const {
@@ -17,7 +18,7 @@ export const MessagingTemplatesBlock = ({ templates, onSave, onDelete }) => {
   } = useMessagingTemplatesController({ onSave, onDelete });
 
   return (
-    <section className="settings-grid" style={{ marginTop: 24 }}>
+    <section className="msg-split">
       <MessagingTemplatesEditorPanel
         draft={draft}
         setDraft={setDraft}

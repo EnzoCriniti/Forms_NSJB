@@ -1,15 +1,13 @@
 import React from "react";
-import { Btn, COLORS } from "../../components/ui";
+import { Btn } from "../../components/ui";
 
 export const MessagingPresetsList = ({ presets, onEdit, onRequestDelete }) => (
   <div>
-    <h4 style={{ margin: "0 0 10px" }}>Presets existentes</h4>
+    <h4 className="msg-subtitle">Presets existentes</h4>
     {presets.length === 0 ? (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-        Nenhum preset cadastrado.
-      </div>
+      <div className="msg-empty">Nenhum preset cadastrado.</div>
     ) : (
-      <div style={{ display: "grid", gap: 10 }}>
+      <div className="msg-list">
         {presets.map(preset => (
           <div key={preset.id} className="settings-row">
             <div style={{ minWidth: 0, flex: 1 }}>

@@ -25,7 +25,7 @@ describe("MessagingSettingsPanel", () => {
   it("renderiza configuracao, modelos e presets", () => {
     render(<MessagingSettingsPanel {...baseProps} />);
 
-    expect(screen.getByText("Configuracao global")).toBeInTheDocument();
+    expect(screen.getByText("Configuração global")).toBeInTheDocument();
     expect(screen.getByText("Modelos existentes")).toBeInTheDocument();
     expect(screen.getByText("Presets existentes")).toBeInTheDocument();
   });

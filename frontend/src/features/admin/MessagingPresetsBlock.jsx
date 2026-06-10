@@ -3,6 +3,7 @@ import { ConfirmModal, FeedbackBanner } from "../../components/ui";
 import { useMessagingPresetsController } from "./useMessagingPresetsController";
 import { MessagingPresetsList } from "./MessagingPresetsList";
 import { MessagingPresetsEditorPanel } from "./MessagingPresetsEditorPanel";
+import { emptyPersonPresetDraft } from "./messagingSettingsShared";
 
 export const MessagingPresetsBlock = ({ presets, people, onSave, onDelete }) => {
   const {
@@ -22,7 +23,7 @@ export const MessagingPresetsBlock = ({ presets, people, onSave, onDelete }) => 
   } = useMessagingPresetsController({ people, onSave, onDelete });
 
   return (
-    <section className="settings-grid" style={{ marginTop: 24 }}>
+    <section className="msg-split">
       <MessagingPresetsEditorPanel
         draft={draft}
         setDraft={setDraft}

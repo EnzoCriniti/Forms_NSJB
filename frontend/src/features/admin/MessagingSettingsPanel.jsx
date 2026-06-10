@@ -20,15 +20,44 @@ export const MessagingSettingsPanel = ({
   onSavePersonPreset,
   onDeletePersonPreset,
 }) => (
-  <section className="settings-grid">
-    <MessagingConfigBlock messagingConfig={messagingConfig} onSave={onSaveMessagingConfig} />
-    <div style={{ gridColumn: "1 / -1", borderTop: "1px solid var(--border-light)", marginTop: 8 }} />
-    <div style={{ gridColumn: "1 / -1" }}>
-      <MessagingTemplatesBlock templates={messageTemplates} onSave={onSaveMessageTemplate} onDelete={onDeleteMessageTemplate} />
-    </div>
-    <div style={{ gridColumn: "1 / -1", borderTop: "1px solid var(--border-light)", marginTop: 8 }} />
-    <div style={{ gridColumn: "1 / -1" }}>
-      <MessagingPresetsBlock presets={personPresets} people={people} onSave={onSavePersonPreset} onDelete={onDeletePersonPreset} />
-    </div>
-  </section>
+  <div className="msg-settings">
+    <section className="msg-card">
+      <header className="msg-card__head">
+        <h3 className="msg-card__title">Configuração global</h3>
+        <p className="msg-card__hint">
+          Define o grupo do WhatsApp, o link público usado nas mensagens e o disparo automático dos agendamentos.
+        </p>
+      </header>
+      <MessagingConfigBlock messagingConfig={messagingConfig} onSave={onSaveMessagingConfig} />
+    </section>
+
+    <section className="msg-card">
+      <header className="msg-card__head">
+        <h3 className="msg-card__title">Modelos de mensagem</h3>
+        <p className="msg-card__hint">
+          Crie textos reaproveitáveis com placeholders para anúncios, lembretes de presença e vagas em aberto.
+        </p>
+      </header>
+      <MessagingTemplatesBlock
+        templates={messageTemplates}
+        onSave={onSaveMessageTemplate}
+        onDelete={onDeleteMessageTemplate}
+      />
+    </section>
+
+    <section className="msg-card">
+      <header className="msg-card__head">
+        <h3 className="msg-card__title">Presets de pessoas</h3>
+        <p className="msg-card__hint">
+          Agrupe destinatários frequentes para escolher rapidamente quem recebe cada disparo.
+        </p>
+      </header>
+      <MessagingPresetsBlock
+        presets={personPresets}
+        people={people}
+        onSave={onSavePersonPreset}
+        onDelete={onDeletePersonPreset}
+      />
+    </section>
+  </div>
 );
