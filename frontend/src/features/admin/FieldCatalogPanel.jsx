@@ -1,5 +1,4 @@
 import React from "react";
-import { SplitSection } from "../../components/ui";
 import { FieldCatalogEditorPanel } from "./FieldCatalogEditorPanel";
 import { FieldCatalogListPanel } from "./FieldCatalogListPanel";
 
@@ -14,10 +13,9 @@ export const FieldCatalogPanel = ({
   requestDelete,
   onCancelFieldCatalog,
 }) => (
-  <SplitSection
-    leftTitle={fieldCatalogDraft.id ? "Editar campo base" : "Novo campo base"}
-    rightTitle="Campos cadastrados"
-    left={(
+  <div className="msg-split">
+    <div>
+      <h4 className="msg-subtitle">{fieldCatalogDraft.id ? "Editar campo base" : "Novo campo base"}</h4>
       <FieldCatalogEditorPanel
         fieldCatalogDraft={fieldCatalogDraft}
         setFieldCatalogDraft={setFieldCatalogDraft}
@@ -26,8 +24,9 @@ export const FieldCatalogPanel = ({
         busyAction={busyAction}
         onCancelFieldCatalog={onCancelFieldCatalog}
       />
-    )}
-    right={(
+    </div>
+    <div>
+      <h4 className="msg-subtitle">Campos cadastrados</h4>
       <FieldCatalogListPanel
         externalBases={externalBases}
         fieldCatalog={fieldCatalog}
@@ -35,6 +34,6 @@ export const FieldCatalogPanel = ({
         requestDelete={requestDelete}
         setFieldCatalogDraft={setFieldCatalogDraft}
       />
-    )}
-  />
+    </div>
+  </div>
 );

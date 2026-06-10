@@ -6,7 +6,7 @@ export const AuditLogsTable = ({ items }) => (
     <table className="ui-table" style={{ fontSize: 12, minWidth: 920 }}>
       <thead>
         <tr>
-          {["Data", "Usuario", "Acao", "Status", "Tela", "Entidade", "Mensagem", "Metadata"].map(label => (
+          {["Data", "Usuário", "Ação", "Status", "Tela", "Entidade", "Mensagem", "Metadata"].map(label => (
             <th key={label}>{label}</th>
           ))}
         </tr>

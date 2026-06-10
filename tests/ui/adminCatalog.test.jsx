@@ -109,9 +109,9 @@ describe("AdminSettingsModal catalogo", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
     fireEvent.click(screen.getByRole("button", { name: "Tarefas da escala" }));
-    fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: preparo_jantar"), { target: { value: "preparo_jantar" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Preparo do jantar"), { target: { value: "Preparo do jantar" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Preparacao do jantar"), { target: { value: "Preparacao do jantar" } });
+    fireEvent.change(screen.getByPlaceholderText("Opcional. Ex.: preparo_jantar"), { target: { value: "preparo_jantar" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex.: Preparo do jantar"), { target: { value: "Preparo do jantar" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex.: Preparação do jantar"), { target: { value: "Preparacao do jantar" } });
     fireEvent.click(screen.getByRole("button", { name: "Criar tarefa" }));
 
     expect(onSaveScaleTaskCatalogItem).toHaveBeenCalledWith(expect.objectContaining({
@@ -329,11 +329,11 @@ describe("AdminSettingsModal catalogo", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Templates" }));
     expect(screen.getByText("Como os templates funcionam")).toBeInTheDocument();
-    expect(screen.getByText("Templates de formulario existentes")).toBeInTheDocument();
+    expect(screen.getByText("Templates de formulário existentes")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Criar template" })).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText("Nome do template")).not.toBeInTheDocument();
-    expect(screen.getByText("Presenca do nucleo - 2 campos - Criado por Admin")).toBeInTheDocument();
-    expect(screen.getByText("Formulario geral - 1 campos - Criado por Admin")).toBeInTheDocument();
+    expect(screen.getByText("Presença do núcleo - 2 campos - Criado por Admin")).toBeInTheDocument();
+    expect(screen.getByText("Formulário geral - 1 campos - Criado por Admin")).toBeInTheDocument();
   });
 });
 

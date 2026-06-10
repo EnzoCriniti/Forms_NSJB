@@ -28,10 +28,16 @@ export const CatalogManagementPanel = ({
   onDeleteScaleTaskCatalogItem,
   onCancelScaleTask,
 }) => (
-  <section>
-    <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+  <section className="msg-card">
+    <header className="msg-card__head">
+      <h3 className="msg-card__title">Campos e tarefas</h3>
+      <p className="msg-card__hint">
+        Biblioteca reutilizável de campos de formulário e tarefas da escala.
+      </p>
+    </header>
+    <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
       {[
-        { key: "fields", label: "Campos de formulario" },
+        { key: "fields", label: "Campos de formulário" },
         { key: "tasks", label: "Tarefas da escala" },
       ].map(item => (
         <Btn

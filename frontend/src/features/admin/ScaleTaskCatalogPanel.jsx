@@ -1,5 +1,4 @@
 import React from "react";
-import { SplitSection } from "../../components/ui";
 import { ScaleTaskCatalogEditorPanel } from "./ScaleTaskCatalogEditorPanel";
 import { ScaleTaskCatalogListPanel } from "./ScaleTaskCatalogListPanel";
 
@@ -13,10 +12,9 @@ export const ScaleTaskCatalogPanel = ({
   requestDelete,
   onCancelScaleTask,
 }) => (
-  <SplitSection
-    leftTitle={scaleTaskDraft.id ? "Editar tarefa base" : "Nova tarefa base"}
-    rightTitle="Tarefas cadastradas"
-    left={(
+  <div className="msg-split">
+    <div className="msg-form">
+      <h4 className="msg-subtitle">{scaleTaskDraft.id ? "Editar tarefa base" : "Nova tarefa base"}</h4>
       <ScaleTaskCatalogEditorPanel
         scaleTaskDraft={scaleTaskDraft}
         setScaleTaskDraft={setScaleTaskDraft}
@@ -24,14 +22,15 @@ export const ScaleTaskCatalogPanel = ({
         busyAction={busyAction}
         onCancelScaleTask={onCancelScaleTask}
       />
-    )}
-    right={(
+    </div>
+    <div>
+      <h4 className="msg-subtitle">Tarefas cadastradas</h4>
       <ScaleTaskCatalogListPanel
         onDeleteScaleTaskCatalogItem={onDeleteScaleTaskCatalogItem}
         requestDelete={requestDelete}
         scaleTaskCatalog={scaleTaskCatalog}
         setScaleTaskDraft={setScaleTaskDraft}
       />
-    )}
-  />
+    </div>
+  </div>
 );
