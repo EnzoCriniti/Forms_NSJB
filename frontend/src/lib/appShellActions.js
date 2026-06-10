@@ -1,0 +1,20 @@
+export const buildAppShellActions = ({
+  adminHandlers,
+  eventHandlers,
+  formHandlers,
+  navigate,
+  sessionHandlers,
+  setTheme,
+  theme,
+}) => ({
+  onNavigate: navigate,
+  onIncreaseFontScale: sessionHandlers.increaseFontScale,
+  onDecreaseFontScale: sessionHandlers.decreaseFontScale,
+  onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
+  onOpenSettings: () => navigate("settings"),
+  onLogin: sessionHandlers.login,
+  onLogout: sessionHandlers.logout,
+  ...eventHandlers,
+  ...formHandlers,
+  ...adminHandlers,
+});

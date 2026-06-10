@@ -435,7 +435,17 @@ Mapa curto das areas mais mexidas por agentes.
   Expoe blocos explicitos (`state`, `data`, `actions`, `setters`, `permissions`) e mantem campos planos por compatibilidade.
   Consumidores principais devem usar os acessores `getShellState`, `getShellData`, `getShellActions`, `getShellSetters` e `getShellPermissions`.
 - `frontend/src/lib/appShellBuilder.js`
-  Composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`, incluindo helpers puros para montar os blocos `data`, `state`, `actions`, `setters` e `permissions` fora de `App.jsx`.
+  Agregador historico da composicao detalhada do objeto `shellApp` usado por `AppViewport` e `AppShellContent`.
+- `frontend/src/lib/appShellData.js`
+  Montagem do bloco `data` do `shellApp`.
+- `frontend/src/lib/appShellState.js`
+  Montagem dos blocos `state` e `runtime state` do `shellApp`.
+- `frontend/src/lib/appShellActions.js`
+  Montagem do bloco `actions` do `shellApp`.
+- `frontend/src/lib/appShellSetters.js`
+  Montagem do bloco `setters` do `shellApp`.
+- `frontend/src/lib/appShellPermissions.js`
+  Montagem do bloco `permissions` do `shellApp`.
   O runtime state reaproveita o bloco `state` montado antes, evitando remontagem campo a campo.
 - `frontend/src/lib/appLifecycleEffects.js`
   Agregador historico dos efeitos de ciclo de vida do shell principal. Mantem reexports para bootstrap, detalhes, navegacao, preferencias e validacao de sessao.

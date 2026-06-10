@@ -102,6 +102,7 @@ Checklist operacional:
 - iniciado neste ciclo: montagem dos inputs internos do controller saiu para `frontend/src/lib/appControllerInputs.js`, agora dividido em builders por dominio e listas de chaves em `appControllerInputKeys.js`.
 - pendente apos revisao: `appController.js` ainda monta muitos blocos de handlers e dependencias transversais; proximo corte deve reduzir a composicao manual ou separar blocos de estado por dominio antes de criar novas acoes ali.
 - iniciado neste ciclo: `appShellBuilder.js` passou a montar `state`, `actions`, `setters` e `permissions` por helpers puros antes de chamar `buildShellApp`, reduzindo a composicao inline.
+- iniciado neste ciclo: `appShellBuilder.js` virou agregador historico; os blocos do shell foram separados em `appShellData.js`, `appShellState.js`, `appShellActions.js`, `appShellSetters.js` e `appShellPermissions.js`.
 - iniciado neste ciclo: `buildShellApp` passou a expor blocos explicitos `state`, `data`, `actions`, `setters` e `permissions`, mantendo campos planos apenas como compatibilidade.
 - iniciado neste ciclo: `AppViewport`, `AppPublicViewport`, `AppShellContent`, registry e adapters de fluxos principais passaram a consumir o shell via acessores de bloco (`getShellState`, `getShellData`, `getShellActions`, `getShellSetters`), reduzindo dependencia direta do objeto achatado.
 - iniciado neste ciclo: `appControllerInputs.js` virou agregador historico; os builders de derived, loaders, handlers, lifecycle e view model sairam para modulos proprios.

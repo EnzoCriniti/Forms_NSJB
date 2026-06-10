@@ -1,132 +1,21 @@
 /**
  * @file frontend/src/lib/appShellBuilder.js
- * @summary Montagem do objeto do shell a partir do estado atual do App.
- * @responsibility Manter a composicao detalhada de state/data/actions fora de App.jsx.
+ * @summary Agregador historico da montagem do objeto do shell.
+ * @responsibility Manter a composicao do shell em blocos pequenos e reutilizaveis.
  */
 
-import { buildAppNavItems } from "./appNav";
+import { buildAppShellActions } from "./appShellActions";
+import { buildAppShellData } from "./appShellData";
+import { buildAppShellPermissions } from "./appShellPermissions";
+import { buildAppShellSetters } from "./appShellSetters";
+import { buildAppShellRuntimeState } from "./appShellState";
 import { buildShellApp } from "./appShellObject";
 
-export const buildAppShellData = ({
-  escalaByForm,
-  events,
-  externalBases,
-  fieldCatalog,
-  forms,
-  labels,
-  membersConfig,
-  messageTemplates,
-  messagingConfig,
-  people,
-  personPresets,
-  presets,
-  responsesByForm,
-  scaleTaskCatalog,
-  users,
-}) => ({
-  forms,
-  labels,
-  people,
-  presets,
-  fieldCatalog,
-  scaleTaskCatalog,
-  events,
-  messageTemplates,
-  personPresets,
-  messagingConfig,
-  membersConfig,
-  externalBases,
-  users,
-  responsesByForm,
-  escalaByForm,
-});
-
-export const buildAppShellState = ({
-  activeEvent,
-  activeEventId,
-  activeForm,
-  activeMessageId,
-  draftForm,
-  editingForm,
-  fontScale,
-  pinnedEventIds,
-  pinnedFormIds,
-  publicForm,
-  publicResultsEnabled,
-  publicResultsView,
-  publicRoute,
-  screen,
-}) => ({
-  screen,
-  fontScale,
-  publicForm,
-  publicRoute,
-  publicResultsEnabled,
-  publicResultsView,
-  pinnedEventIds,
-  pinnedFormIds,
-  activeEventId,
-  activeMessageId,
-  activeEvent,
-  activeForm,
-  editingForm,
-  draftForm,
-});
-
-export const buildAppShellRuntimeState = ({
-  canCreateForms,
-  currentUser,
-  formDeleteKeyConfigured,
-  state,
-  theme,
-}) => ({
-  nav: buildAppNavItems({ currentUser, canCreateForms }),
-  ...state,
-  currentUser,
-  theme,
-  formDeleteKeyConfigured,
-});
-
-export const buildAppShellActions = ({
-  adminHandlers,
-  eventHandlers,
-  formHandlers,
-  navigate,
-  sessionHandlers,
-  setTheme,
-  theme,
-}) => ({
-  onNavigate: navigate,
-  onIncreaseFontScale: sessionHandlers.increaseFontScale,
-  onDecreaseFontScale: sessionHandlers.decreaseFontScale,
-  onToggleTheme: () => setTheme(theme === "dark" ? "light" : "dark"),
-  onOpenSettings: () => navigate("settings"),
-  onLogin: sessionHandlers.login,
-  onLogout: sessionHandlers.logout,
-  ...eventHandlers,
-  ...formHandlers,
-  ...adminHandlers,
-});
-
-export const buildAppShellSetters = ({
-  setActiveEventId,
-  setActiveFormId,
-  setActiveMessageId,
-  setDraftForm,
-  setEditingFormId,
-  setScreen,
-}) => ({
-  setActiveMessageId,
-  setActiveEventId,
-  setScreen,
-  setDraftForm,
-  setEditingFormId,
-  setActiveFormId,
-});
-
-export const buildAppShellPermissions = ({ canCreateForms }) => ({
-  canCreateForms,
-});
+export { buildAppShellData } from "./appShellData";
+export { buildAppShellActions } from "./appShellActions";
+export { buildAppShellSetters } from "./appShellSetters";
+export { buildAppShellPermissions } from "./appShellPermissions";
+export { buildAppShellState, buildAppShellRuntimeState } from "./appShellState";
 
 export const buildAppShell = ({
   adminHandlers,
