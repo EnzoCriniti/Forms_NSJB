@@ -14,7 +14,7 @@ describe("CreateFormFieldPreview", () => {
       />,
     );
 
-    expect(screen.getByText("Previa do campo")).toBeInTheDocument();
+    expect(screen.getByText("Prévia do campo")).toBeInTheDocument();
     expect(screen.getByText("Nome")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Selecione uma pessoa...")).toBeDisabled();
   });

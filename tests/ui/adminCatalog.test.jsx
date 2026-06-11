@@ -59,9 +59,9 @@ describe("AdminSettingsModal catalogo", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
     fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: presenca_sessao"), { target: { value: "presenca_sessao" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca em sessao"), { target: { value: "Presenca em sessao" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Sessao"), { target: { value: "Sessao" } });
-    expect(screen.getByText("Previa do campo")).toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença em sessão"), { target: { value: "Presenca em sessao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Sessão"), { target: { value: "Sessao" } });
+    expect(screen.getByText("Prévia do campo")).toBeInTheDocument();
     expect(screen.getByText("Sessao")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Criar campo" }));
 
@@ -88,8 +88,8 @@ describe("AdminSettingsModal catalogo", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
     fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: presenca_sessao"), { target: { value: "congregacoes" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca em sessao"), { target: { value: "Congregacoes" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Sessao"), { target: { value: "Congregacao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença em sessão"), { target: { value: "Congregacoes" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Sessão"), { target: { value: "Congregacao" } });
     fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "person_select" } });
     fireEvent.click(screen.getByRole("button", { name: /Base externa/i }));
     fireEvent.click(screen.getByRole("button", { name: "Criar campo" }));
@@ -128,8 +128,8 @@ describe("AdminSettingsModal catalogo", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Campos e tarefas" }));
     fireEvent.change(screen.getByPlaceholderText("Opcional. Ex: presenca_sessao"), { target: { value: "avaliacao_matriz" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Presenca em sessao"), { target: { value: "Avaliacao em matriz" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Sessao"), { target: { value: "Avaliacao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença em sessão"), { target: { value: "Avaliacao em matriz" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Sessão"), { target: { value: "Avaliacao" } });
     fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "grid" } });
     fireEvent.change(screen.getByDisplayValue("Opcao 1"), { target: { value: "Audio" } });
     fireEvent.change(screen.getByDisplayValue("3"), { target: { value: "Bom" } });

@@ -17,11 +17,11 @@ export const FieldCatalogCoreEditorPanel = ({
     </AdminField>
     <AdminField>
       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome administrativo</label>
-      <input value={fieldCatalogDraft.name} onChange={event => setFieldCatalogDraft({ ...fieldCatalogDraft, name: event.target.value })} placeholder="Ex: Presenca em sessao" style={ADMIN_INPUT_STYLE} />
+      <input value={fieldCatalogDraft.name} onChange={event => setFieldCatalogDraft({ ...fieldCatalogDraft, name: event.target.value })} placeholder="Ex: Presença em sessão" style={ADMIN_INPUT_STYLE} />
     </AdminField>
     <AdminField>
-      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome exibido no formulario</label>
-      <input value={fieldCatalogDraft.defaultLabel} onChange={event => setFieldCatalogDraft({ ...fieldCatalogDraft, defaultLabel: event.target.value })} placeholder="Ex: Sessao" style={ADMIN_INPUT_STYLE} />
+      <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary }}>Nome exibido no formulário</label>
+      <input value={fieldCatalogDraft.defaultLabel} onChange={event => setFieldCatalogDraft({ ...fieldCatalogDraft, defaultLabel: event.target.value })} placeholder="Ex: Sessão" style={ADMIN_INPUT_STYLE} />
     </AdminField>
     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
       <AdminField>

@@ -21,7 +21,7 @@ export const FieldCatalogPreview = ({ draft, externalBases }) => {
   return (
     <div style={{ background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 12 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center", marginBottom: 10 }}>
-        <strong style={{ fontSize: 12, color: COLORS.text }}>Previa do campo</strong>
+        <strong style={{ fontSize: 12, color: COLORS.text }}>Prévia do campo</strong>
         <span style={{ fontSize: 10, color: COLORS.textMuted, fontWeight: 800, textTransform: "uppercase" }}>{fieldTypeLabels[draft.type]}</span>
       </div>
       <div style={{ fontSize: 12, fontWeight: 800, color: COLORS.text, marginBottom: 8 }}>{label}</div>

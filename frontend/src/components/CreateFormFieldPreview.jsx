@@ -39,7 +39,7 @@ export const CreateFormFieldPreview = ({
 
   return (
     <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 10, padding: 14, height: "100%" }}>
-      <div style={{ fontSize: 10, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Previa do campo</div>
+      <div style={{ fontSize: 10, fontWeight: 700, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Prévia do campo</div>
       <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10, color: COLORS.text }}>
         {fieldLabel}{required ? <span style={{ color: COLORS.danger }}> *</span> : ""}
       </div>

@@ -70,8 +70,8 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
 
     <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
       {[
-        { id: "presenca", title: "Presenca", desc: "Perguntas, acompanhantes, totalizacao e controle de envio." },
-        { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsaveis e auxiliares." },
+        { id: "presenca", title: "Presença", desc: "Perguntas, acompanhantes, totalização e controle de envio." },
+        { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsáveis e auxiliares." },
       ].map(option => (
         <button
           className="create-form-type-card"

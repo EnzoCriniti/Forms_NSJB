@@ -19,7 +19,7 @@ export const CatalogManagementPresetsList = ({ presets, onRemovePreset }) => {
         <div key={preset.id} style={row}>
           <div style={{ minWidth: 0 }}>
             <strong style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "block" }}>{preset.name}</strong>
-            <div style={{ color: COLORS.textMuted, marginTop: 2 }}>{preset.type === "escala_organ" ? "Escala da Organ" : "Presenca"} â€¢ {preset.fields} campos â€¢ Criado por {preset.createdBy || "Sistema"}</div>
+            <div style={{ color: COLORS.textMuted, marginTop: 2 }}>{preset.type === "escala_organ" ? "Escala da Organ" : "Presença"} • {preset.fields} campos • Criado por {preset.createdBy || "Sistema"}</div>
           </div>
           <span style={{ color: COLORS.textMuted }}>#{preset.id}</span>
           <Btn v="danger" sz="sm" icon="trash" onClick={() => onRemovePreset(preset.id)}>Remover</Btn>

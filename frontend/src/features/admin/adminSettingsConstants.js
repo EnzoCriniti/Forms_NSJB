@@ -28,18 +28,18 @@ export const fieldTypeLabels = {
 };
 
 export const fieldCategoryLabels = {
-  presenca: "Presenca",
+  presenca: "Presença",
   quantidade: "Quantidade",
   texto: "Texto",
-  avaliacao: "Avaliacao",
+  avaliacao: "Avaliação",
   outro: "Outro",
 };
 
 export const taskCategoryLabels = {
   cozinha: "Cozinha",
   limpeza: "Limpeza",
-  organizacao: "Organizacao",
-  sessao: "Sessao",
+  organizacao: "Organização",
+  sessao: "Sessão",
   outro: "Outro",
 };
 
