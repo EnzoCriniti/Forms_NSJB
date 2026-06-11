@@ -21,8 +21,8 @@ export const ADMIN_INPUT_STYLE = {
 
 export const fieldTypeLabels = {
   person_select: "Seletor por base",
-  yes_no: "Sim / Nao",
-  number: "Numero",
+  yes_no: "Sim / Não",
+  number: "Número",
   text: "Texto",
   grid: "Grade",
 };

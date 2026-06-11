@@ -36,7 +36,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Templates de formulário")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
     expect(screen.getByText("1 campo configurado")).toBeInTheDocument();
-    expect(screen.getByText("Presenca do nucleo")).toBeInTheDocument();
+    expect(screen.getByText("Presença do núcleo")).toBeInTheDocument();
     expect(container.querySelector(".create-form-mobile-hero")).toBeInTheDocument();
   });
 
@@ -164,7 +164,7 @@ describe("CreateFormScreen", () => {
 
     renderNewForm({ onSaveForm });
 
-    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulário geral/i }));
     fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
       target: { value: "Formulario Geral" },
     });
@@ -338,7 +338,7 @@ describe("CreateFormScreen", () => {
       target: { value: "Formulario Validado" },
     });
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "text" } });
+    fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "text" } });
     fireEvent.change(screen.getByLabelText("Mínimo de caracteres"), { target: { value: "3" } });
     fireEvent.change(screen.getByLabelText("Máximo de caracteres"), { target: { value: "10" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Observacao" } });
@@ -375,7 +375,7 @@ describe("CreateFormScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "11" } });
 
-    const typeSelect = screen.getByDisplayValue("Sim / Nao");
+    const typeSelect = screen.getByDisplayValue("Sim / Não");
     expect(typeSelect).toBeDisabled();
 
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "15h - Sessao" } });

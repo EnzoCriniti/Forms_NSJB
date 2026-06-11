@@ -26,7 +26,7 @@ describe("CreateFormScreen form modes", () => {
   it("destaca o resumo do modo nucleo por padrao", () => {
     renderNewForm();
 
-    expect(screen.getByText("Modo ativo: Presenca do nucleo")).toBeInTheDocument();
+    expect(screen.getByText("Modo ativo: Presença do núcleo")).toBeInTheDocument();
     expect(screen.getAllByText("Base central ativa").length).toBeGreaterThan(0);
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
     expect(screen.getByText("1 campo(s) ligado(s) à base central")).toBeInTheDocument();
@@ -35,9 +35,9 @@ describe("CreateFormScreen form modes", () => {
   it("atualiza o resumo ao trocar para formulario geral", () => {
     renderNewForm();
 
-    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulário geral/i }));
 
-    expect(screen.getByText("Modo ativo: Formulario geral")).toBeInTheDocument();
+    expect(screen.getByText("Modo ativo: Formulário geral")).toBeInTheDocument();
     expect(screen.getAllByText("Fluxo livre").length).toBeGreaterThan(0);
     expect(screen.getByText("Base central desativada neste formulário")).toBeInTheDocument();
     expect(screen.getByRole("spinbutton")).toBeDisabled();
@@ -46,10 +46,10 @@ describe("CreateFormScreen form modes", () => {
   it("remove o seletor por base local no formulario geral", () => {
     renderNewForm();
 
-    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulário geral/i }));
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
 
-    const typeSelect = screen.getByDisplayValue("Sim / Nao");
+    const typeSelect = screen.getByDisplayValue("Sim / Não");
     expect(screen.queryByRole("option", { name: "Seletor por base" })).not.toBeInTheDocument();
     expect(typeSelect).toBeInTheDocument();
     expect(screen.getByText("No formulário geral, campos locais não usam a base central de sócios.")).toBeInTheDocument();
@@ -91,7 +91,7 @@ describe("CreateFormScreen form modes", () => {
       externalBases: [{ id: 7, name: "Congregacoes", active: true, items: [] }],
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulário geral/i }));
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
     fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
 
@@ -172,7 +172,7 @@ describe("CreateFormScreen form modes", () => {
     expect(screen.getByRole("option", { name: "Template Nucleo (Presença)" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Template Geral (Presença)" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulário geral/i }));
 
     expect(screen.getByRole("option", { name: "Template Geral (Presença)" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Template Nucleo (Presença)" })).not.toBeInTheDocument();

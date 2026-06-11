@@ -32,17 +32,17 @@ describe("Forms flow", () => {
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "number" } });
+    fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "number" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Convidados" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
 
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "text" } });
+    fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "text" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Observacao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
 
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
-    fireEvent.change(screen.getByDisplayValue("Sim / Nao"), { target: { value: "grid" } });
+    fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "grid" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Avaliacao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
 
