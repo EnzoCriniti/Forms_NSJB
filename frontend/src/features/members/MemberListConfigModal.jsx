@@ -21,9 +21,9 @@ const formatSyncDate = value => {
 };
 
 const syncStatusLabel = config => {
-  if (!config?.sheetUrl) return "Origem nao configurada";
-  if (!config?.syncEnabled) return "Sincronizacao desativada";
-  if (!config?.lastSyncedAt) return "Aguardando primeira sincronizacao";
+  if (!config?.sheetUrl) return "Origem não configurada";
+  if (!config?.syncEnabled) return "Sincronização desativada";
+  if (!config?.lastSyncedAt) return "Aguardando primeira sincronização";
   return "Base sincronizada";
 };
 
@@ -44,10 +44,10 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
 
   const handleSave = async () => {
     setSaving(true);
-    setToast({ type: "loading", message: "Salvando configuracao da base..." });
+    setToast({ type: "loading", message: "Salvando configuração da base..." });
     try {
       await onSave(draft);
-      setToast({ type: "success", message: "Configuracao da base salva." });
+      setToast({ type: "success", message: "Configuração da base salva." });
     } catch (error) {
       setToast({ type: "error", message: resolveActionErrorMessage(error) });
     } finally {
@@ -58,7 +58,7 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
 
   const handleSync = async () => {
     setSyncing(true);
-    setToast({ type: "loading", message: "Sincronizando base de socios..." });
+    setToast({ type: "loading", message: "Sincronizando base de sócios..." });
     try {
       const result = await onSync();
       setToast({ type: "success", message: `${result.importedCount} socios sincronizados.` });

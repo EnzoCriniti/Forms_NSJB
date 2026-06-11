@@ -33,7 +33,7 @@ describe("CreateFormScreen", () => {
   it("inicia novo formulario sem template selecionado", () => {
     const { container } = renderNewForm({ presets: [{ id: 1, type: "presenca", name: "Template A" }] });
 
-    expect(screen.getByText("Templates de formulario")).toBeInTheDocument();
+    expect(screen.getByText("Templates de formulário")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
     expect(screen.getByText("1 campo configurado")).toBeInTheDocument();
     expect(screen.getByText("Presenca do nucleo")).toBeInTheDocument();
@@ -622,7 +622,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("O tipo e a estrutura do formulário vigente ficam travados na edição. Para mudar isso, use duplicação ou crie um novo formulário.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Salvar como Template" })).not.toBeInTheDocument();
     expect(screen.queryByText("Modo do formulario")).not.toBeInTheDocument();
-    expect(screen.queryByText("Templates de formulario")).not.toBeInTheDocument();
+    expect(screen.queryByText("Templates de formulário")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
     fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));

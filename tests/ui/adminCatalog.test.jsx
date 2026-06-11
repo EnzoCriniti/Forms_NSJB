@@ -190,7 +190,7 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveFormDeleteKey = vi.fn().mockResolvedValue({ configured: true });
     render(<AdminSettingsModal {...baseProps} onSaveFormDeleteKey={onSaveFormDeleteKey} formDeleteKeyConfigured={false} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Exclusao segura" }));
+    fireEvent.click(screen.getByRole("button", { name: "Exclusão segura" }));
     fireEvent.change(screen.getByPlaceholderText("Nova chave mestra"), { target: { value: "segredo-novo" } });
     fireEvent.click(screen.getByRole("button", { name: "Cadastrar chave" }));
 
@@ -204,7 +204,7 @@ describe("AdminSettingsModal catalogo", () => {
     const onSaveFormDeleteKey = vi.fn().mockResolvedValue({ configured: true });
     render(<AdminSettingsModal {...baseProps} onSaveFormDeleteKey={onSaveFormDeleteKey} formDeleteKeyConfigured={true} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Exclusao segura" }));
+    fireEvent.click(screen.getByRole("button", { name: "Exclusão segura" }));
     fireEvent.change(screen.getByPlaceholderText("Chave mestra atual"), { target: { value: "antiga" } });
     fireEvent.change(screen.getByPlaceholderText("Nova chave mestra"), { target: { value: "nova" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar alteração" }));
@@ -252,7 +252,7 @@ describe("AdminSettingsModal catalogo", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Base de socios" }));
+    fireEvent.click(screen.getByRole("button", { name: "Base de sócios" }));
     fireEvent.change(screen.getByPlaceholderText("https://docs.google.com/spreadsheets/d/..."), {
       target: { value: "https://docs.google.com/spreadsheets/d/teste123/edit#gid=0" },
     });
@@ -365,8 +365,8 @@ describe("AdminSettingsModal auditoria", () => {
 
     render(<AdminSettingsModal {...baseProps} />);
 
-    expect(screen.getByRole("button", { name: "Historico" })).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Historico" }));
+    expect(screen.getByRole("button", { name: "Histórico" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Histórico" }));
 
     expect(await screen.findByText("Formulario criado.")).toBeInTheDocument();
     expect(fetchAuditLogsMock).toHaveBeenCalledWith(expect.objectContaining({
@@ -385,7 +385,7 @@ describe("AdminSettingsModal auditoria", () => {
   it("nao mostra a aba de auditoria para viewer", () => {
     render(<AdminSettingsModal {...baseProps} currentUser={{ id: 2, name: "Viewer", role: "viewer" }} />);
 
-    expect(screen.queryByRole("button", { name: "Historico" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Histórico" })).not.toBeInTheDocument();
   });
 
   it("mostra estado vazio quando nao ha logs", async () => {
@@ -397,7 +397,7 @@ describe("AdminSettingsModal auditoria", () => {
     });
 
     render(<AdminSettingsModal {...baseProps} />);
-    fireEvent.click(screen.getByRole("button", { name: "Historico" }));
+    fireEvent.click(screen.getByRole("button", { name: "Histórico" }));
 
     expect(await screen.findByText("Nenhum log encontrado para os filtros atuais.")).toBeInTheDocument();
   });

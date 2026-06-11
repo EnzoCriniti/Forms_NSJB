@@ -52,7 +52,7 @@ export const UserManagementModal = ({ users, onCreate, onClose }) => {
         <div style={{ display: "grid", gap: 10 }}>
           {feedback && <FeedbackBanner tone={feedback.tone} title={feedback.title} message={feedback.message} />}
           <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Nome exibido" style={input} />
-          <input value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} placeholder="Nome de usuario" style={input} />
+          <input value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} placeholder="Nome de usuário" style={input} />
           <input value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Senha" type="password" style={input} />
           <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={input}>
             <option value="viewer">Visualizador</option>

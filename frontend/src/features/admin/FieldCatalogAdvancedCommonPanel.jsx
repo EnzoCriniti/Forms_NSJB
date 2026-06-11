@@ -21,7 +21,7 @@ export const FieldCatalogAdvancedCommonPanel = ({
       style={ADMIN_INPUT_STYLE}
     />
     <div style={{ fontSize: 11, color: COLORS.textMuted }}>
-      Identificador previsto: <strong style={{ color: COLORS.text }}>{normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel) || "sera gerado ao preencher o nome"}</strong>
+      Identificador previsto: <strong style={{ color: COLORS.text }}>{normalizeIdentifier(fieldCatalogDraft.key || fieldCatalogDraft.name || fieldCatalogDraft.defaultLabel) || "será gerado ao preencher o nome"}</strong>
     </div>
     <FieldCatalogPreview draft={fieldCatalogDraft} externalBases={externalBases} />
     <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 12, color: COLORS.textSecondary }}>

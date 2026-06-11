@@ -216,7 +216,7 @@ describe("App dashboard flow", () => {
     fireEvent.click(screen.getByText("Evento Dashboard - 10/05/2026"));
 
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Novo formulario" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Novo formulário" })).not.toBeInTheDocument();
   });
 });
 

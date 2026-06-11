@@ -120,7 +120,7 @@ describe("EventsScreen", () => {
     );
 
     fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
-    fireEvent.click(screen.getByRole("button", { name: "Novo formulario" }));
+    fireEvent.click(screen.getByRole("button", { name: "Novo formulário" }));
 
     expect(onCreateFormInEvent).toHaveBeenCalledWith(events[0]);
   });
@@ -177,7 +177,7 @@ describe("EventsScreen", () => {
     fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Novo formulario" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Novo formulário" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Editar formulário" })).not.toBeInTheDocument();
   });
 });

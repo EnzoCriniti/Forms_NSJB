@@ -12,7 +12,7 @@ import { FieldCatalogPreviewGrid } from "./FieldCatalogPreviewGrid";
 import { FieldCatalogPreviewPersonSelect } from "./FieldCatalogPreviewPersonSelect";
 
 export const FieldCatalogPreview = ({ draft, externalBases }) => {
-  const label = draft.defaultLabel.trim() || draft.name.trim() || "Rotulo do campo";
+  const label = draft.defaultLabel.trim() || draft.name.trim() || "Rótulo do campo";
   const gridRows = draft.gridSchema?.rows?.filter(Boolean)?.length ? draft.gridSchema.rows.filter(Boolean) : DEFAULT_GRID_ROWS;
   const gridCols = draft.gridSchema?.cols?.filter(Boolean)?.length ? draft.gridSchema.cols.filter(Boolean) : DEFAULT_GRID_COLS;
   const externalBase = draft.selectionSource?.kind === "external_base"

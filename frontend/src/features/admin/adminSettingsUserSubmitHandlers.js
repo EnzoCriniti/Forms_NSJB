@@ -16,8 +16,8 @@ export const buildAdminSettingsUserSubmitHandlers = ({
     const isEdit = Boolean(userDraft.id);
     await runSubmit({
       actionKey: "user",
-      loadingMessage: isEdit ? "Salvando usuario..." : "Criando usuario...",
-      successMessage: isEdit ? "AlteraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes salvas." : "Criado com sucesso.",
+      loadingMessage: isEdit ? "Salvando usuário..." : "Criando usuário...",
+      successMessage: isEdit ? "Alterações salvas." : "Criado com sucesso.",
       execute: () => onSaveUser(buildAdminUserPayload(userDraft)),
       onSuccess: () => setUserDraft(emptyUserDraft),
     });

@@ -28,7 +28,7 @@ describe("CreateFormTemplateBar", () => {
       />,
     );
 
-    expect(screen.getByText("Templates de formulario")).toBeInTheDocument();
+    expect(screen.getByText("Templates de formulário")).toBeInTheDocument();
     expect(screen.getByRole("option", { name: "Presenca base (Presenca)" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Escala" })).not.toBeInTheDocument();
 

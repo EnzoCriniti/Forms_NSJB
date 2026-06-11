@@ -21,7 +21,7 @@ export const FieldCatalogListPanel = ({
           <div>{item.defaultLabel || item.name} - {fieldTypeLabels[item.type]} - {fieldCategoryLabels[item.category]} - {item.active ? "Ativo" : "Inativo"}</div>
           <div>Id: {item.key}</div>
           {item.type === "person_select" && (
-            <div>Vinculo: {item.selectionSource?.kind === "external_base" ? `Base externa ${getExternalBaseName(externalBases, item.selectionSource.externalBaseId)}` : "Base central de socios"}</div>
+            <div>Vínculo: {item.selectionSource?.kind === "external_base" ? `Base externa ${getExternalBaseName(externalBases, item.selectionSource.externalBaseId)}` : "Base central de sócios"}</div>
           )}
           {item.description && <div>{item.description}</div>}
         </div>

@@ -39,7 +39,7 @@ export const CreateFormTemplateBar = ({
   <div className="create-form-template-bar" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20, padding: "10px 14px", background: COLORS.surfaceAlt, borderRadius: 10, border: `1px solid ${COLORS.borderLight}` }}>
     <Icon name="clipboard" size={14} />
     <div style={{ minWidth: 0 }}>
-      <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, whiteSpace: "nowrap" }}>Templates de formulario</div>
+      <div style={{ fontSize: 12, fontWeight: 600, color: COLORS.textSecondary, whiteSpace: "nowrap" }}>Templates de formulário</div>
       <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>Escolha um modelo inicial para o formulario atual.</div>
     </div>
     <select value={preset || ""} onChange={event => onApplyTemplate(event.target.value || null)} style={{ ...inputStyle, flex: 1, maxWidth: 320 }}>

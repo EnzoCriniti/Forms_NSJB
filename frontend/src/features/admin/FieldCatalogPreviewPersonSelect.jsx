@@ -16,12 +16,12 @@ export const FieldCatalogPreviewPersonSelect = ({ draft, externalBase }) => (
         boxShadow: "var(--shadow-sm)",
       }}
     >
-      <option>{draft.selectionSource?.kind === "external_base" ? "Selecione uma opcao..." : "Selecione uma pessoa..."}</option>
+      <option>{draft.selectionSource?.kind === "external_base" ? "Selecione uma opção..." : "Selecione uma pessoa..."}</option>
     </select>
     <div style={{ marginTop: 8, fontSize: 11, color: COLORS.textMuted, lineHeight: 1.45 }}>
       {draft.selectionSource?.kind === "external_base"
-        ? `Vinculo configurado: ${externalBase?.name || "base externa"}`
-        : "Vinculo configurado: base central de socios"}
+        ? `Vínculo configurado: ${externalBase?.name || "base externa"}`
+        : "Vínculo configurado: base central de sócios"}
     </div>
   </>
 );
