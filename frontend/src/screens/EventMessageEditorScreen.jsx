@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Btn, COLORS, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
+import { Btn, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { EventMessageEditorFields } from "./EventMessageEditorFields";
 import { DM_TYPES, TYPE_TO_FORM_TYPE, buildEventMessageSavePayload, buildEventMessageTypePatch, buildInitialEventMessageDraft, eligibleTypesForEvent } from "./eventMessageDomain";
 
@@ -98,7 +98,7 @@ export const EventMessageEditorScreen = ({
         titleSize={20}
       />
 
-      <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, display: "grid", gap: 16 }}>
+      <section className="msg-card msg-form">
         <EventMessageEditorFields
           compatibleTemplates={compatibleTemplates}
           draft={draft}

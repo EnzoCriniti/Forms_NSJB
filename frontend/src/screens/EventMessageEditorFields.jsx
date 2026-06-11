@@ -35,14 +35,14 @@ export const EventMessageEditorFields = ({
   targetForms,
 }) => (
   <>
-    <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-      Tipo da mensagem
-      <select value={draft.type} onChange={event => onSwitchType(event.target.value)} style={inputStyle} disabled={Boolean(draft.id)}>
+    <label className="msg-field">
+      <span className="msg-label">Tipo da mensagem</span>
+      <select className="msg-input" value={draft.type} onChange={event => onSwitchType(event.target.value)} disabled={Boolean(draft.id)}>
         {eligibleTypes.map(type => (
           <option key={type} value={type}>{MESSAGE_TYPE_LABELS[type]}</option>
         ))}
       </select>
-      {draft.id && <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>O tipo não pode ser alterado depois de criado.</span>}
+      {draft.id && <span className="msg-hint">O tipo não pode ser alterado depois de criado.</span>}
     </label>
 
     {isDmType && !messagingConfig?.publicBaseUrl && (
@@ -54,35 +54,35 @@ export const EventMessageEditorFields = ({
     )}
 
     {draft.type !== "new_scale" && (
-      <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-        Formulário alvo
-        <select value={draft.formId || ""} onChange={event => onChange({ formId: event.target.value })} style={inputStyle}>
+      <label className="msg-field">
+        <span className="msg-label">Formulário alvo</span>
+        <select className="msg-input" value={draft.formId || ""} onChange={event => onChange({ formId: event.target.value })}>
           <option value="">Selecione...</option>
           {targetForms.map(form => (
             <option key={form.id} value={form.id}>{form.title}</option>
           ))}
         </select>
-        {targetForms.length === 0 && <span style={{ fontSize: 11, color: COLORS.warning }}>Nenhum formulário compatível vinculado a este evento.</span>}
+        {targetForms.length === 0 && <span className="msg-hint" style={{ color: COLORS.warning }}>Nenhum formulário compatível vinculado a este evento.</span>}
       </label>
     )}
 
     {compatibleTemplates.length > 0 && (
-      <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-        Modelo (opcional)
-        <select value={draft.templateId || ""} onChange={event => onApplyTemplate(event.target.value)} style={inputStyle}>
+      <label className="msg-field">
+        <span className="msg-label">Modelo (opcional)</span>
+        <select className="msg-input" value={draft.templateId || ""} onChange={event => onApplyTemplate(event.target.value)}>
           <option value="">Sem modelo</option>
           {compatibleTemplates.map(template => (
             <option key={template.id} value={template.id}>{template.name}</option>
           ))}
         </select>
-        <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>Selecionar substitui o corpo abaixo. Edite como quiser depois.</span>
+        <span className="msg-hint">Selecionar substitui o corpo abaixo. Edite como quiser depois.</span>
       </label>
     )}
 
-    <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-      Corpo
-      <textarea value={draft.body} onChange={event => onChange({ body: event.target.value })} rows={8} placeholder="Ola {{person.name}}..." style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
-      <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>
+    <label className="msg-field">
+      <span className="msg-label">Corpo</span>
+      <textarea className="msg-input" value={draft.body} onChange={event => onChange({ body: event.target.value })} rows={8} placeholder="Ola {{person.name}}..." />
+      <span className="msg-hint">
         Placeholders: <code>{"{{event.title}}"}</code>, <code>{"{{event.date}}"}</code>, <code>{"{{event.closing}}"}</code>, <code>{"{{form.title}}"}</code>, <code>{"{{form.publicLink}}"}</code>, <code>{"{{forms.list}}"}</code>, <code>{"{{person.name}}"}</code>, <code>{"{{group.name}}"}</code>.
       </span>
     </label>

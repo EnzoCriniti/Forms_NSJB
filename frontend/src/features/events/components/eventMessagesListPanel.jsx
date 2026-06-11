@@ -10,7 +10,7 @@ import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../../../components/Mes
 export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, onOpen }) => {
   if (!eligible) {
     return (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+      <div className="msg-empty" style={{ textAlign: "left" }}>
         Vincule um formulário de presença ou escala da organ para habilitar mensagens neste evento.
       </div>
     );
@@ -18,7 +18,7 @@ export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, on
 
   if (messages.length === 0) {
     return (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13, display: "grid", gap: 12, justifyItems: "start" }}>
+      <div className="msg-empty" style={{ textAlign: "left", display: "grid", gap: 12, justifyItems: "start" }}>
         Nenhuma mensagem cadastrada neste evento.
         {canManage && onCreate && <Btn icon="plus" sz="sm" onClick={onCreate}>Nova mensagem</Btn>}
       </div>

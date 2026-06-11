@@ -59,12 +59,12 @@ export const MessageDetailSummaryPanel = ({
   recipientsActive,
   recipientsSkipped,
 }) => (
-  <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, display: "grid", gap: 16 }}>
-    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
-      <span>Evento: <strong style={{ color: COLORS.text }}>{event?.title}</strong></span>
-      {message.scheduledFor && <span>Agendada: {formatDateTime(message.scheduledFor)}</span>}
-      {message.sentAt && <span>Disparada: {formatDateTime(message.sentAt)}</span>}
-      <span>Auto: {message.autoDispatchEnabled ? "sim" : "não"}</span>
+  <section className="msg-card" style={{ display: "grid", gap: 16 }}>
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <DetailMetaChip label="Evento" value={event?.title} strong />
+      {message.scheduledFor && <DetailMetaChip label="Agendamento" value={formatDateTime(message.scheduledFor)} />}
+      {message.sentAt && <DetailMetaChip label="Envio" value={formatDateTime(message.sentAt)} />}
+      <DetailMetaChip label="Auto" value={message.autoDispatchEnabled ? "sim" : "não"} />
     </div>
 
     <MessagePreviewPanel
@@ -129,9 +129,9 @@ export const MessagePreviewPanel = ({ loading, preview, copiedKey, onCopy, recip
 
 export const MessageLogsPanel = ({ logs, formatDateTime }) => (
   <section style={{ marginTop: 24 }}>
-    <h3 style={{ margin: "0 0 12px", fontSize: 16 }}>Histórico de disparos</h3>
+    <h3 className="msg-card__title" style={{ margin: "0 0 12px", fontSize: 16 }}>Histórico de disparos</h3>
     {logs.length === 0 ? (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+      <div className="msg-empty" style={{ textAlign: "left" }}>
         Nenhum disparo registrado ainda.
       </div>
     ) : (
@@ -156,6 +156,13 @@ export const MessageLogsPanel = ({ logs, formatDateTime }) => (
       </div>
     )}
   </section>
+);
+
+const DetailMetaChip = ({ label, value, strong = false }) => (
+  <span style={{ display: "inline-flex", alignItems: "baseline", gap: 6, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}`, borderRadius: 999, padding: "5px 12px", fontSize: 12, color: COLORS.textMuted }}>
+    <span style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.4, fontSize: 10 }}>{label}</span>
+    <strong style={{ color: COLORS.text, fontWeight: strong ? 800 : 600 }}>{value}</strong>
+  </span>
 );
 
 const RecipientRow = ({ recipient, skipped = false }) => (
