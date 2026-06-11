@@ -6,7 +6,7 @@
 
 export const createDefaultScaleSections = () => [];
 
-export const createLocalScaleSection = () => ({ source: "local", title: "Nova secao", responsaveis: 1, auxiliares: 2 });
+export const createLocalScaleSection = () => ({ source: "local", title: "Nova seção", responsaveis: 1, auxiliares: 2 });
 
 export const updateScaleSection = (sections, index, patch) => sections.map((section, sectionIndex) => (
   sectionIndex === index ? { ...section, ...patch } : section

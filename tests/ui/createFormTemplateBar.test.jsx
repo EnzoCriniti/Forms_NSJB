@@ -29,7 +29,7 @@ describe("CreateFormTemplateBar", () => {
     );
 
     expect(screen.getByText("Templates de formulário")).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Presenca base (Presenca)" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Presenca base (Presença)" })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: "Escala" })).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });

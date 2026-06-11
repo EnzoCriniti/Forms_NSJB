@@ -39,6 +39,6 @@ export const MessageStatusBadge = ({ status }) => {
 
 export const MESSAGE_TYPE_LABELS = {
   new_scale: "Anuncio (grupo)",
-  fill_reminder: "Lembrete de presenca",
+  fill_reminder: "Lembrete de presença",
   open_slots: "Vagas em aberto",
 };

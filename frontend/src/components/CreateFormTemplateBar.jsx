@@ -44,7 +44,7 @@ export const CreateFormTemplateBar = ({
     </div>
     <select value={preset || ""} onChange={event => onApplyTemplate(event.target.value || null)} style={{ ...inputStyle, flex: 1, maxWidth: 320 }}>
       <option value="">Template vazio</option>
-      {visiblePresets.map(item => <option key={item.id} value={item.id}>{item.name} ({item.type === "escala_organ" ? "Escala" : "Presenca"})</option>)}
+      {visiblePresets.map(item => <option key={item.id} value={item.id}>{item.name} ({item.type === "escala_organ" ? "Escala" : "Presença"})</option>)}
     </select>
     {preset && <span style={{ fontSize: 11, color: COLORS.accent, fontWeight: 700, display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap" }}><Icon name="check" size={12} /> Aplicado</span>}
     {preset && <Btn v="ghost" sz="sm" onClick={onClearTemplate}>Limpar</Btn>}

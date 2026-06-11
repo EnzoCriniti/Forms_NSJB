@@ -169,12 +169,12 @@ describe("CreateFormScreen form modes", () => {
       ],
     });
 
-    expect(screen.getByRole("option", { name: "Template Nucleo (Presenca)" })).toBeInTheDocument();
-    expect(screen.queryByRole("option", { name: "Template Geral (Presenca)" })).not.toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Template Nucleo (Presença)" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Template Geral (Presença)" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Formulario geral/i }));
 
-    expect(screen.getByRole("option", { name: "Template Geral (Presenca)" })).toBeInTheDocument();
-    expect(screen.queryByRole("option", { name: "Template Nucleo (Presenca)" })).not.toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Template Geral (Presença)" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Template Nucleo (Presença)" })).not.toBeInTheDocument();
   });
 });

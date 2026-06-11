@@ -90,7 +90,7 @@ describe("EventsScreen — aba Mensagens", () => {
     fireEvent.click(screen.getByRole("button", { name: /Mensagens \(2\)/ }));
 
     expect(screen.getByText("Anuncio (grupo)")).toBeInTheDocument();
-    expect(screen.getByText("Lembrete de presenca")).toBeInTheDocument();
+    expect(screen.getByText("Lembrete de presença")).toBeInTheDocument();
     expect(screen.getByText("Rascunho")).toBeInTheDocument();
     expect(screen.getByText("Agendada")).toBeInTheDocument();
   });

@@ -58,7 +58,7 @@ export const useCreateFormController = ({
   const [closingDate, setClosingDate] = useState("");
   const [status, setStatus] = useState("rascunho");
   const [totalExpected, setTotalExpected] = useState("");
-  const [closingText, setClosingText] = useState("Este formulario nao esta mais aceitando respostas.");
+  const [closingText, setClosingText] = useState("Este formulário não está mais aceitando respostas.");
   const [fields, setFields] = useState(createDefaultPresenceFields(FORM_MODES.NUCLEO));
   const [resultsConfig, setResultsConfig] = useState(() => createDefaultResultsConfig(createDefaultPresenceFields(FORM_MODES.NUCLEO)));
   const [scaleLimit, setScaleLimit] = useState(1);
