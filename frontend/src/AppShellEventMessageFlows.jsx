@@ -52,6 +52,8 @@ export const EventMessageEditorFlow = ({ app }) => {
         if (saved?.id) {
           setActiveMessageId(saved.id);
           setScreen("eventMessageDetail");
+        } else if (activeMessageId) {
+          setScreen("eventMessageDetail");
         } else {
           setActiveMessageId(null);
           setScreen("events");
