@@ -25,7 +25,7 @@ export const buildPresenceCsv = ({ columns, rows, showLinkedRows, getFieldValue,
 };
 
 export const buildEscalaCsv = sections => {
-  const headers = ["Secao", "Funcao", "Pessoa", "Status"];
+  const headers = ["Seção", "Função", "Pessoa", "Status"];
   const rows = sections.flatMap(section => section.slots.map(slot => [
     section.title,
     slot.role,

@@ -201,7 +201,7 @@ describe("resultsDomain", () => {
       { title: "Sala", slots: [{ role: "Responsavel", person: "Maria" }, { role: "Auxiliar", person: "" }] },
     ]);
 
-    expect(csv).toBe('"Secao";"Funcao";"Pessoa";"Status"\n"Sala";"Responsavel";"Maria";"Preenchida"\n"Sala";"Auxiliar";"";"Pendente"');
+    expect(csv).toBe('"Seção";"Função";"Pessoa";"Status"\n"Sala";"Responsavel";"Maria";"Preenchida"\n"Sala";"Auxiliar";"";"Pendente"');
   });
 
   it("monta metricas e mutacoes puras da escala", () => {
