@@ -43,6 +43,6 @@ describe("uiBadges", () => {
     );
 
     expect(screen.getByText("Escala da Organ")).toBeInTheDocument();
-    expect(screen.getByText("Presen\u00c3\u00a7a")).toBeInTheDocument();
+    expect(screen.getByText("Presen\u00e7a")).toBeInTheDocument();
   });
 });

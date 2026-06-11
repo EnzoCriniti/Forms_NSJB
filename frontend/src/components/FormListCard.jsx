@@ -107,17 +107,15 @@ export const FormListCard = ({
         </div>
         <div
           className="card-primary-actions card-primary-actions--inline"
-          style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}
+          style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: 12 }}
           onClick={event => event.stopPropagation()}
         >
           <Btn icon="link" onClick={openPublicForm}>Responder</Btn>
           {canOpenResults && <Btn v="secondary" icon="eye" onClick={openResults}>Ver resultados</Btn>}
-        </div>
-        {!showFillSummary && (
+          {!showFillSummary && (
           <div
             className="card-secondary-actions card-secondary-actions--bottom"
-            style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", marginTop: 12 }}
-            onClick={event => event.stopPropagation()}
+            style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end", marginLeft: "auto" }}
           >
             {canPinForms && (
               <Btn
@@ -146,7 +144,8 @@ export const FormListCard = ({
             )}
             {canCreateForms(user) && <Btn v="danger" icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir" aria-label="Excluir" onClick={() => onDeleteForm?.(form)} />}
           </div>
-        )}
+          )}
+        </div>
       </div>
       {showFillSummary && (
         <div className="form-card-side" style={{ display: "grid", gap: 10, flexShrink: 0, width: 246 }}>
