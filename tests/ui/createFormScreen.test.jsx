@@ -87,11 +87,13 @@ describe("CreateFormScreen", () => {
 
     const titleInput = screen.getByDisplayValue("Escala da Organ - 20/05/2026");
     expect(titleInput).toHaveAttribute("readonly");
+    expect(screen.queryByText("Total esperado")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Publicar Escala" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].title).toBe("Escala da Organ - 20/05/2026");
+    expect(onSaveForm.mock.calls[0][0].totalExpected).toBe(0);
   });
 
   it("volta para o evento de origem quando o formulario foi aberto dentro dele", () => {

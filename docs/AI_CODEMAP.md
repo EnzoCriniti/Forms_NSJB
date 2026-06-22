@@ -610,6 +610,7 @@ Mapa curto das areas mais mexidas por agentes.
   Handlers de submit do formulario, montagem do payload final, erro de acao e modal de sucesso.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
+  Em escala da organ, o painel de dados basicos nao exibe `Total esperado`; esse controle pertence apenas a formularios de presenca.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`

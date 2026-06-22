@@ -114,6 +114,7 @@ export const FormContextPanel = ({ title, body, footer }) => (
 );
 
 export const FormBasicsPanel = ({
+  format,
   inp,
   formTitle,
   shouldPresetTitle,
@@ -186,7 +187,8 @@ export const FormBasicsPanel = ({
           </select>
         </label>
       </div>
-      <div className="create-form-meta-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div className="create-form-meta-grid-2" style={{ display: "grid", gridTemplateColumns: format === "escala_organ" ? "1fr" : "1fr 1fr", gap: 14 }}>
+        {format !== "escala_organ" && (
         <label className="msg-field">
           <span className="msg-label">Total esperado</span>
           <input
@@ -205,6 +207,7 @@ export const FormBasicsPanel = ({
               ? "Formulário geral não usa a base central, então o sistema não controla faltantes esperados."
               : "Sem vínculo com a base completa, o sistema não controla faltantes esperados."}</span>
         </label>
+        )}
         <label className="msg-field">
           <span className="msg-label">Texto de fechamento</span>
           <input className="msg-input" value={closingText} onChange={onClosingTextChange} />

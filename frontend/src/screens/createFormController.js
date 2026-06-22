@@ -273,6 +273,7 @@ export const useCreateFormController = ({
       onClick: setupHandlers.togglePreview,
     },
     basicsProps: {
+      format,
       inp,
       formTitle,
       shouldPresetTitle,
