@@ -573,6 +573,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/createFormController.js`
   Controller local da criacao de formulario: agrupa estado, derived state, handlers e blocos de props consumidos pela tela visual.
   A fronteira com a secao de presenca e organizada por blocos de props, nao por lista plana.
+  O retorno do editor pode vir por `onBack` explicito; o contexto de evento deve ser usado apenas para criacao dentro de evento, nao para edicao comum de formulario.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade, mas a tela principal importa os modulos especificos diretamente.
 - `frontend/src/screens/createFormDefaults.js`

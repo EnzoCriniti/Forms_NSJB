@@ -40,6 +40,7 @@ export const useCreateFormController = ({
   isDuplicateMode,
   labels,
   membersConfig,
+  onBack,
   onNavigate,
   onSaveForm,
   onSavePreset,
@@ -47,7 +48,7 @@ export const useCreateFormController = ({
   presets,
   scaleTaskCatalog,
 }) => {
-  const goBack = () => onNavigate(event ? "events" : "list");
+  const goBack = onBack || (() => onNavigate(event ? "events" : "list"));
   const [format, setFormat] = useState("presenca");
   const [formMode, setFormMode] = useState(FORM_MODES.NUCLEO);
   const [preset, setPreset] = useState(null);

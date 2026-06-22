@@ -13,6 +13,7 @@ import { CreateFormPresenceSection } from "./CreateFormPresenceSection";
 import { useCreateFormController } from "./createFormController";
 
 export const CreateFormScreen = ({
+  onBack,
   onNavigate,
   people = [],
   membersConfig = {},
@@ -35,6 +36,7 @@ export const CreateFormScreen = ({
     isDuplicateMode,
     labels,
     membersConfig,
+    onBack,
     onNavigate,
     onSaveForm,
     onSavePreset,

@@ -138,6 +138,7 @@ export const CreateFormFlow = ({ app }) => {
   const state = getShellState(app);
   const data = getShellData(app);
   const actions = getShellActions(app);
+  const setters = getShellSetters(app);
   const {
     activeEvent,
     draftForm,
@@ -157,9 +158,29 @@ export const CreateFormFlow = ({ app }) => {
     handleSavePreset,
     onNavigate,
   } = actions;
+  const {
+    setActiveEventId,
+    setActiveFormId,
+    setDraftForm,
+    setEditingFormId,
+    setScreen,
+  } = setters;
+  const creationEvent = !editingForm && !draftForm ? activeEvent : null;
+  const handleBack = () => {
+    if (creationEvent) {
+      onNavigate("events");
+      return;
+    }
+    setDraftForm(null);
+    setEditingFormId(null);
+    setActiveFormId(null);
+    setActiveEventId(null);
+    setScreen("list");
+  };
 
   return (
     <CreateFormScreen
+      onBack={handleBack}
       onNavigate={onNavigate}
       people={people}
       membersConfig={membersConfig}
@@ -171,7 +192,7 @@ export const CreateFormFlow = ({ app }) => {
       onSavePreset={handleSavePreset}
       onSaveForm={handleSaveForm}
       form={editingForm}
-      event={activeEvent}
+      event={creationEvent}
       isDuplicateMode={Boolean(draftForm)}
     />
   );

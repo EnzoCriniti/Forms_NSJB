@@ -7,6 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
+import { CreateFormFlow } from "../../frontend/src/AppShellMainFlows.jsx";
 import { CreateFormScreen } from "../../frontend/src/screens/CreateFormScreen.jsx";
 
 const baseProps = {
@@ -120,6 +121,97 @@ describe("CreateFormScreen", () => {
     fireEvent.click(screen.getByLabelText("Voltar"));
 
     expect(onNavigate).toHaveBeenCalledWith("events");
+  });
+
+  it("usa o retorno explicito ao editar formulario mesmo com evento ativo", () => {
+    const onBack = vi.fn();
+    const onNavigate = vi.fn();
+
+    render(
+      <CreateFormScreen
+        {...baseProps}
+        onBack={onBack}
+        onNavigate={onNavigate}
+        event={{
+          id: 77,
+          title: "Evento ainda ativo",
+          date: "2026-05-20",
+        }}
+        form={{
+          id: 7,
+          type: "presenca",
+          status: "rascunho",
+          title: "Formulario em edicao",
+          labels: [],
+          fieldDefinitions: [
+            { id: 1, type: "text", label: "Observacao", required: false, show: true, total: false },
+          ],
+          resultsConfig: {},
+          scaleSections: [],
+        }}
+      />,
+    );
+
+    fireEvent.click(screen.getByLabelText("Voltar"));
+
+    expect(onBack).toHaveBeenCalledTimes(1);
+    expect(onNavigate).not.toHaveBeenCalled();
+  });
+
+  it("volta da edicao no shell para a listagem de formularios", () => {
+    const setters = {
+      setActiveEventId: vi.fn(),
+      setActiveFormId: vi.fn(),
+      setDraftForm: vi.fn(),
+      setEditingFormId: vi.fn(),
+      setScreen: vi.fn(),
+    };
+
+    render(
+      <CreateFormFlow
+        app={{
+          state: {
+            activeEvent: { id: 77, title: "Evento ainda ativo" },
+            draftForm: null,
+            editingForm: {
+              id: 7,
+              type: "presenca",
+              status: "rascunho",
+              title: "Formulario em edicao",
+              labels: [],
+              fieldDefinitions: [
+                { id: 1, type: "text", label: "Observacao", required: false, show: true, total: false },
+              ],
+              resultsConfig: {},
+              scaleSections: [],
+            },
+          },
+          data: {
+            externalBases: [],
+            fieldCatalog: [],
+            labels: [],
+            membersConfig: {},
+            people: [],
+            presets: [],
+            scaleTaskCatalog: [],
+          },
+          actions: {
+            handleSaveForm: vi.fn(),
+            handleSavePreset: vi.fn(),
+            onNavigate: vi.fn(),
+          },
+          setters,
+        }}
+      />,
+    );
+
+    fireEvent.click(screen.getByLabelText("Voltar"));
+
+    expect(setters.setDraftForm).toHaveBeenCalledWith(null);
+    expect(setters.setEditingFormId).toHaveBeenCalledWith(null);
+    expect(setters.setActiveFormId).toHaveBeenCalledWith(null);
+    expect(setters.setActiveEventId).toHaveBeenCalledWith(null);
+    expect(setters.setScreen).toHaveBeenCalledWith("list");
   });
 
   it("abre a pre-visualizacao e reflete o rascunho atual", () => {
