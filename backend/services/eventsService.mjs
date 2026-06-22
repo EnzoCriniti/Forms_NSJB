@@ -7,6 +7,7 @@
 import { nowIso } from "../database/shared.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
 import { deleteEventRecord, findEventById, listEvents, upsertEventRecord } from "../repositories/eventsRepository.mjs";
+import { captureEventParticipation } from "./eventParticipationService.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
@@ -34,8 +35,8 @@ const ensureLinkedFormsExist = async formIds => {
 };
 
 const normalizeStatus = (requestedStatus, formIds, existingEvent) => {
-  if (requestedStatus === "publicado" || existingEvent?.status === "publicado") return "publicado";
   if (requestedStatus === "encerrado") return "encerrado";
+  if (requestedStatus === "publicado" || existingEvent?.status === "publicado") return "publicado";
   return formIds.length > 0 ? "pronto" : "rascunho";
 };
 
@@ -51,6 +52,7 @@ export const saveEvent = async payload => {
   const formIds = normalizeFormIds(payload.formIds);
   await ensureLinkedFormsExist(formIds);
 
+  const status = normalizeStatus(payload.status, formIds, existingEvent);
   const eventId = await upsertEventRecord({
     id: payload.id ? Number(payload.id) : null,
     title,
@@ -58,14 +60,18 @@ export const saveEvent = async payload => {
     date: payload.date || null,
     opening: payload.opening || null,
     closing: payload.closing || null,
-    status: normalizeStatus(payload.status, formIds, existingEvent),
+    status,
     formIds,
     eligibleGraus: normalizeEligibleGraus(payload.eligibleGraus),
     messageConfig: payload.messageConfig && typeof payload.messageConfig === "object" ? payload.messageConfig : {},
     publishedAt: existingEvent?.publishedAt || payload.publishedAt || null,
   });
 
-  return findEventById(eventId);
+  const savedEvent = await findEventById(eventId);
+  if (status === "encerrado" && existingEvent?.status !== "encerrado") {
+    await captureEventParticipation(savedEvent);
+  }
+  return savedEvent;
 };
 
 export const publishEvent = async eventId => {

@@ -1,0 +1,62 @@
+/**
+ * @file shared/eventParticipation.mjs
+ * @summary Calculo puro do snapshot de participacao de um evento.
+ * @responsibility Cruzar base de socios esperados com respostas no fechamento do evento.
+ *
+ * O snapshot e gravado quando o evento e encerrado para que o historico de
+ * "quem era esperado x quem preencheu" sobreviva a mudancas posteriores na base
+ * de socios. Alimenta o BI por socio.
+ */
+
+import { filterByEligibleGraus } from "./grauEligibility.mjs";
+import { getPersonKey, getResponsePersonKey } from "./personIdentity.mjs";
+
+export const minutesBetween = (fromIso, toIso) => {
+  if (!fromIso || !toIso) return null;
+  const from = new Date(fromIso).getTime();
+  const to = new Date(toIso).getTime();
+  if (!Number.isFinite(from) || !Number.isFinite(to)) return null;
+  if (to < from) return null;
+  return Math.round((to - from) / 60000);
+};
+
+const isActivePerson = person => person?.active !== false;
+
+/**
+ * Monta as linhas do snapshot (uma por socio esperado x formulario de presenca).
+ * @param {object} event evento com eligibleGraus e opening.
+ * @param {number[]} presencaFormIds ids dos formularios de presenca do evento.
+ * @param {object[]} people base de socios.
+ * @param {Record<number, object[]>} responsesByForm respostas por formulario.
+ * @param {string} capturedAt timestamp da captura.
+ */
+export const buildParticipationRows = ({ event, presencaFormIds = [], people = [], responsesByForm = {}, capturedAt }) => {
+  const expectedPeople = filterByEligibleGraus(people.filter(isActivePerson), event?.eligibleGraus);
+  const rows = [];
+
+  for (const formId of presencaFormIds) {
+    const responses = responsesByForm[formId] || [];
+    const responseByKey = new Map(responses.map(response => [getResponsePersonKey(response), response]));
+
+    for (const person of expectedPeople) {
+      const personKey = getPersonKey(person);
+      const response = responseByKey.get(personKey) || null;
+      const filled = Boolean(response);
+      const respondedAt = filled ? (response.createdAt || null) : null;
+      rows.push({
+        eventId: event?.id ?? null,
+        formId,
+        personKey,
+        personName: person?.name || "",
+        grau: person?.grau || "",
+        expected: true,
+        filled,
+        respondedAt,
+        timeToFillMinutes: filled ? minutesBetween(event?.opening, respondedAt) : null,
+        capturedAt,
+      });
+    }
+  }
+
+  return rows;
+};

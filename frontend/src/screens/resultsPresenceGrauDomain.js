@@ -3,11 +3,9 @@
  * @summary Ordenacao canonica dos graus na planilha de presenca.
  */
 
-export const normalizeGrauToken = value => String(value || "")
-  .trim()
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "")
-  .toUpperCase();
+import { normalizeGrauToken } from "../../../shared/grauEligibility.mjs";
+
+export { normalizeGrauToken };
 
 export const getGrauPriority = grau => {
   const normalized = normalizeGrauToken(grau);

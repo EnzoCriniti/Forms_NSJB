@@ -145,6 +145,23 @@ const ensureSchema = async pool => {
       )
     `);
     await client.query("CREATE INDEX IF NOT EXISTS idx_message_dispatch_log_message_id ON message_dispatch_log(message_id)");
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS event_participation (
+        id BIGSERIAL PRIMARY KEY,
+        event_id BIGINT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+        form_id BIGINT REFERENCES forms(id) ON DELETE CASCADE,
+        person_key TEXT NOT NULL,
+        person_name TEXT NOT NULL,
+        grau TEXT,
+        expected BOOLEAN NOT NULL DEFAULT TRUE,
+        filled BOOLEAN NOT NULL DEFAULT FALSE,
+        responded_at TIMESTAMPTZ,
+        time_to_fill_minutes INTEGER,
+        captured_at TIMESTAMPTZ NOT NULL
+      )
+    `);
+    await client.query("CREATE INDEX IF NOT EXISTS idx_event_participation_event ON event_participation(event_id)");
+    await client.query("CREATE INDEX IF NOT EXISTS idx_event_participation_person ON event_participation(person_key)");
   } finally {
     client.release();
   }
