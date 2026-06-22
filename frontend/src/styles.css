@@ -1649,8 +1649,10 @@ button:not(.ui-btn):focus-visible {
   }
 
   .create-form-type-grid,
+  .create-form-meta-grid-4,
   .create-form-meta-grid-3,
   .create-form-meta-grid-2,
+  .create-form-meta-grid-1,
   .create-form-editor-grid,
   .create-form-validation-grid,
   .create-form-scale-row,

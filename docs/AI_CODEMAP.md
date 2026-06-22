@@ -612,6 +612,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
   Em escala da organ, o painel de dados basicos nao exibe `Total esperado`; esse controle pertence apenas a formularios de presenca.
+  Na box de dados, abertura, fechamento, status e texto de fechamento ficam no mesmo grid de metadados.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`

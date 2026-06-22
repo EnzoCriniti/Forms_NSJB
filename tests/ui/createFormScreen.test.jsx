@@ -51,6 +51,15 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
   });
 
+  it("mantem status e texto de fechamento alinhados no mesmo bloco de dados", () => {
+    const { container } = renderNewForm();
+
+    const metaGrid = container.querySelector(".create-form-meta-grid-4");
+    expect(metaGrid).toBeInTheDocument();
+    expect(metaGrid).toContainElement(screen.getByText("Status"));
+    expect(metaGrid).toContainElement(screen.getByText("Texto de fechamento"));
+  });
+
   it("preset o nome do formulario quando e criado dentro de um evento", async () => {
     const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
 

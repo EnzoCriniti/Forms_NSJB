@@ -166,7 +166,7 @@ export const FormBasicsPanel = ({
         <span className="msg-label">Descrição / Instruções</span>
         <textarea className="msg-input" value={previewDescription} onChange={onDescriptionChange} rows={3} placeholder="Prezada Irmandade..." />
       </label>
-      <div className="create-form-meta-grid-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+      <div className="create-form-meta-grid-4" style={{ display: "grid", gridTemplateColumns: "1fr 1fr minmax(130px, 0.7fr) minmax(220px, 1.3fr)", gap: 14, alignItems: "start" }}>
         <label className="msg-field">
           <span className="msg-label">Abertura programada</span>
           <input className="msg-input" type="date" value={eventDate} onChange={onEventDateChange} />
@@ -186,9 +186,13 @@ export const FormBasicsPanel = ({
             <option value="arquivado">Arquivado</option>
           </select>
         </label>
+        <label className="msg-field">
+          <span className="msg-label">Texto de fechamento</span>
+          <input className="msg-input" value={closingText} onChange={onClosingTextChange} />
+        </label>
       </div>
-      <div className="create-form-meta-grid-2" style={{ display: "grid", gridTemplateColumns: format === "escala_organ" ? "1fr" : "1fr 1fr", gap: 14 }}>
-        {format !== "escala_organ" && (
+      {format !== "escala_organ" && (
+      <div className="create-form-meta-grid-1" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
         <label className="msg-field">
           <span className="msg-label">Total esperado</span>
           <input
@@ -207,12 +211,8 @@ export const FormBasicsPanel = ({
               ? "Formulário geral não usa a base central, então o sistema não controla faltantes esperados."
               : "Sem vínculo com a base completa, o sistema não controla faltantes esperados."}</span>
         </label>
-        )}
-        <label className="msg-field">
-          <span className="msg-label">Texto de fechamento</span>
-          <input className="msg-input" value={closingText} onChange={onClosingTextChange} />
-        </label>
       </div>
+      )}
       <label className="msg-field">
         <span className="msg-label">Classificações</span>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
