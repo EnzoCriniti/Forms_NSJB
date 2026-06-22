@@ -12,6 +12,7 @@ export const EventsScreen = ({
   events = [],
   forms = [],
   labels = [],
+  people = [],
   user,
   pinnedEventIds = [],
   pinnedFormIds = [],
@@ -93,6 +94,7 @@ export const EventsScreen = ({
         onChangeDraft={setDraft}
         onSave={save}
         saving={saving}
+        people={people}
       />
     );
   }

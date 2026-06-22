@@ -16,6 +16,7 @@ export const emptyEventDraft = {
   closing: "",
   status: "rascunho",
   formIds: [],
+  eligibleGraus: [],
   messageConfig: {},
 };
 
@@ -26,6 +27,7 @@ export const buildEventDraft = event => ({
   ...emptyEventDraft,
   ...(event || {}),
   formIds: Array.isArray(event?.formIds) ? event.formIds : [],
+  eligibleGraus: Array.isArray(event?.eligibleGraus) ? event.eligibleGraus : [],
   date: event?.date || "",
   opening: event?.opening || "",
   closing: event?.closing || "",

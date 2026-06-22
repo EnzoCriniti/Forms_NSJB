@@ -16,6 +16,7 @@ const mapEventRow = row => ({
   closing: row.closing,
   status: row.status,
   formIds: parseJson(row.form_ids_json, []),
+  eligibleGraus: parseJson(row.eligible_graus_json, []),
   messageConfig: parseJson(row.message_config_json, {}),
   publishedAt: row.published_at,
   createdAt: row.created_at,
@@ -23,14 +24,14 @@ const mapEventRow = row => ({
 });
 
 export const listEvents = async () => (await database.queryMany(`
-  SELECT id, title, description, date, opening, closing, status, form_ids_json, message_config_json, published_at, created_at, updated_at
+  SELECT id, title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at
   FROM events
   ORDER BY date DESC NULLS LAST, id DESC
 `)).map(mapEventRow);
 
 export const findEventById = async eventId => {
   const row = await database.queryOne(`
-    SELECT id, title, description, date, opening, closing, status, form_ids_json, message_config_json, published_at, created_at, updated_at
+    SELECT id, title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at
     FROM events
     WHERE id = ?
   `, [eventId]);
@@ -42,7 +43,7 @@ export const upsertEventRecord = async payload => {
   if (payload.id) {
     await database.execute(`
       UPDATE events
-      SET title = ?, description = ?, date = ?, opening = ?, closing = ?, status = ?, form_ids_json = ?, message_config_json = ?,
+      SET title = ?, description = ?, date = ?, opening = ?, closing = ?, status = ?, form_ids_json = ?, eligible_graus_json = ?, message_config_json = ?,
           published_at = ?, updated_at = ?
       WHERE id = ?
     `, [
@@ -53,6 +54,7 @@ export const upsertEventRecord = async payload => {
       payload.closing,
       payload.status,
       stringifyJson(payload.formIds),
+      stringifyJson(payload.eligibleGraus),
       stringifyJson(payload.messageConfig),
       payload.publishedAt,
       now,
@@ -63,8 +65,8 @@ export const upsertEventRecord = async payload => {
 
   const result = await database.execute(`
     INSERT INTO events (
-      title, description, date, opening, closing, status, form_ids_json, message_config_json, published_at, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING id
   `, [
     payload.title,
@@ -74,6 +76,7 @@ export const upsertEventRecord = async payload => {
     payload.closing,
     payload.status,
     stringifyJson(payload.formIds),
+    stringifyJson(payload.eligibleGraus),
     stringifyJson(payload.messageConfig),
     payload.publishedAt,
     now,

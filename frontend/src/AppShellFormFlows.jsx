@@ -7,6 +7,7 @@
 import React from "react";
 import { buildPublicFormResultsPath } from "./lib/appPublicRoutes";
 import { selectFormResponses, selectFormSections } from "./lib/appShellContentSelectors";
+import { filterPeopleByEligibleGraus } from "./screens/eventGrauDomain";
 import { ResultsScreen } from "./screens/ResultsScreen";
 import { PublicFormScreen } from "./screens/PublicFormScreen";
 import { PublicEscalaScreen } from "./screens/PublicEscalaScreen";
@@ -17,10 +18,15 @@ export const InternalResultsFlow = ({ app }) => {
   const data = getShellData(app);
   const actions = getShellActions(app);
   const { activeForm, currentUser } = state;
-  const { escalaByForm, labels, people, responsesByForm } = data;
+  const { escalaByForm, events, labels, people, responsesByForm } = data;
   const { handleSaveEscala, onNavigate } = actions;
 
   if (!activeForm) return null;
+
+  const eventForForm = (events || []).find(event => (event.formIds || []).includes(activeForm.id));
+  const expectedPeople = eventForForm
+    ? filterPeopleByEligibleGraus(people, eventForForm.eligibleGraus)
+    : people;
 
   return (
     <ResultsScreen
@@ -28,7 +34,7 @@ export const InternalResultsFlow = ({ app }) => {
       form={activeForm}
       responses={selectFormResponses(responsesByForm, activeForm.id)}
       sections={selectFormSections(escalaByForm, activeForm.id)}
-      people={people}
+      people={expectedPeople}
       user={currentUser}
       labels={labels}
       onSaveSections={sections => handleSaveEscala(activeForm.id, sections)}

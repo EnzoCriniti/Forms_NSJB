@@ -30,6 +30,7 @@ CREATE TABLE events (
   closing TIMESTAMPTZ,
   status TEXT NOT NULL DEFAULT 'rascunho',
   form_ids_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+  eligible_graus_json JSONB NOT NULL DEFAULT '[]'::jsonb,
   message_config_json JSONB NOT NULL DEFAULT '{}'::jsonb,
   published_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL,

@@ -171,6 +171,32 @@ describe("EventsScreen", () => {
     await waitFor(() => expect(onDeleteEvent).toHaveBeenCalledWith(10));
   });
 
+  it("marca graus elegiveis ao salvar o evento", async () => {
+    const onSaveEvent = vi.fn(async payload => ({ ...payload, id: 12, status: "rascunho", formIds: [] }));
+
+    render(
+      <EventsScreen
+        events={[]}
+        forms={forms}
+        user={admin}
+        people={[{ name: "Ana", grau: "QM" }, { name: "Bruno", grau: "CDC" }]}
+        onSaveEvent={onSaveEvent}
+        onDeleteEvent={vi.fn()}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Novo evento" }));
+    fireEvent.change(screen.getByLabelText("Nome do evento"), { target: { value: "Evento Grau" } });
+    fireEvent.click(screen.getByRole("button", { name: "QM" }));
+    fireEvent.click(screen.getByRole("button", { name: "Salvar evento" }));
+
+    await waitFor(() => expect(onSaveEvent).toHaveBeenCalledWith(expect.objectContaining({
+      title: "Evento Grau",
+      eligibleGraus: ["QM"],
+    })));
+  });
+
   it("edita mensagem editavel pela listagem do evento", () => {
     const onEditEventMessage = vi.fn();
 

@@ -27,5 +27,9 @@ export const validateEventPayload = payload => {
   for (const formId of payload.formIds) {
     assert(Number.isInteger(Number(formId)) && Number(formId) > 0, "Formulario do evento invalido.");
   }
+  assert(payload.eligibleGraus === undefined || Array.isArray(payload.eligibleGraus), "Graus elegiveis do evento precisam ser um array.");
+  for (const grau of payload.eligibleGraus || []) {
+    assert(typeof grau === "string", "Grau elegivel do evento invalido.");
+  }
   assert(payload.messageConfig === undefined || payload.messageConfig === null || isObject(payload.messageConfig), "Configuracao de mensagem do evento invalida.");
 };

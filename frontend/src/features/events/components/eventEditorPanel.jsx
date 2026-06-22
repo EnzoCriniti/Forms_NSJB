@@ -2,7 +2,7 @@ import React from "react";
 import { Btn, ScreenHeader } from "../../../components/ui";
 import { EventEditorFieldsPanel } from "./eventEditorFieldsPanel";
 
-export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, saving, title }) => (
+export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, saving, title, people }) => (
   <div>
     <ScreenHeader
       className="settings-top-card"
@@ -16,6 +16,7 @@ export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, savin
       onChangeDraft={onChangeDraft}
       onSave={onSave}
       saving={saving}
+      people={people}
     />
   </div>
 );

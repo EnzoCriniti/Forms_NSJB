@@ -21,6 +21,10 @@ const normalizeFormIds = ids => [...new Set((ids || [])
   .map(id => Number(id))
   .filter(id => Number.isInteger(id) && id > 0))];
 
+const normalizeEligibleGraus = graus => [...new Set((Array.isArray(graus) ? graus : [])
+  .map(grau => String(grau || "").trim())
+  .filter(Boolean))];
+
 const ensureLinkedFormsExist = async formIds => {
   for (const formId of formIds) {
     if (!(await findFormById(formId))) {
@@ -56,6 +60,7 @@ export const saveEvent = async payload => {
     closing: payload.closing || null,
     status: normalizeStatus(payload.status, formIds, existingEvent),
     formIds,
+    eligibleGraus: normalizeEligibleGraus(payload.eligibleGraus),
     messageConfig: payload.messageConfig && typeof payload.messageConfig === "object" ? payload.messageConfig : {},
     publishedAt: existingEvent?.publishedAt || payload.publishedAt || null,
   });

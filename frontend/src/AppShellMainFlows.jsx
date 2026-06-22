@@ -49,6 +49,7 @@ export const EventsFlow = ({ app }) => {
     events,
     forms,
     labels,
+    people,
   } = data;
   const {
     applyMessageDeletion,
@@ -73,6 +74,7 @@ export const EventsFlow = ({ app }) => {
       events={events}
       forms={forms}
       labels={labels}
+      people={people}
       user={currentUser}
       pinnedEventIds={pinnedEventIds}
       pinnedFormIds={pinnedFormIds}

@@ -88,6 +88,7 @@ const ensureSchema = async pool => {
     await client.query("CREATE INDEX IF NOT EXISTS idx_events_status ON events(status)");
     await client.query("CREATE INDEX IF NOT EXISTS idx_events_date ON events(date)");
     await client.query("ALTER TABLE events ADD COLUMN IF NOT EXISTS opening TIMESTAMPTZ");
+    await client.query("ALTER TABLE events ADD COLUMN IF NOT EXISTS eligible_graus_json JSONB NOT NULL DEFAULT '[]'::jsonb");
     await client.query(`
       CREATE TABLE IF NOT EXISTS message_templates (
         id BIGSERIAL PRIMARY KEY,

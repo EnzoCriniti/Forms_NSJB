@@ -5,6 +5,7 @@
 
 import React from "react";
 import { Btn, COLORS } from "../../../components/ui";
+import { buildEligibleGrauOptions, isGrauSelected, toggleEligibleGrau } from "../../../screens/eventGrauDomain";
 
 const inputStyle = {
   padding: "10px 12px",
@@ -22,7 +23,11 @@ const labelStyle = {
   color: COLORS.textSecondary,
 };
 
-export const EventEditorFieldsPanel = ({ draft, onChangeDraft, onCancel, onSave, saving }) => (
+export const EventEditorFieldsPanel = ({ draft, onChangeDraft, onCancel, onSave, saving, people = [] }) => {
+  const grauOptions = buildEligibleGrauOptions(people);
+  const eligibleGraus = Array.isArray(draft.eligibleGraus) ? draft.eligibleGraus : [];
+
+  return (
   <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18 }}>
     <div style={{ display: "grid", gap: 14 }}>
       <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 12 }}>
@@ -49,10 +54,45 @@ export const EventEditorFieldsPanel = ({ draft, onChangeDraft, onCancel, onSave,
         Descrição
         <textarea value={draft.description || ""} onChange={event => onChangeDraft(current => ({ ...current, description: event.target.value }))} rows={3} style={{ ...inputStyle, resize: "vertical" }} />
       </label>
+      <div style={labelStyle}>
+        Graus que devem preencher
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {grauOptions.map(grau => {
+            const selected = isGrauSelected(eligibleGraus, grau);
+            return (
+              <button
+                key={grau}
+                type="button"
+                onClick={() => onChangeDraft(current => ({ ...current, eligibleGraus: toggleEligibleGrau(current.eligibleGraus, grau) }))}
+                aria-pressed={selected}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  border: `1px solid ${selected ? COLORS.primary : COLORS.border}`,
+                  background: selected ? COLORS.primaryLight : COLORS.surface,
+                  color: selected ? COLORS.primary : COLORS.textSecondary,
+                }}
+              >
+                {selected ? "✓ " : ""}{grau}
+              </button>
+            );
+          })}
+        </div>
+        <span style={{ fontWeight: 400, color: COLORS.textMuted, fontSize: 11 }}>
+          Deixe sem marcar para cobrar todos os graus. Marcando, só os graus selecionados entram na conta de quem faltou.
+        </span>
+      </div>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
         <Btn v="secondary" onClick={onCancel}>Cancelar</Btn>
         <Btn icon="save" onClick={onSave} loading={saving} disabled={!draft.title.trim()}>Salvar evento</Btn>
       </div>
     </div>
   </section>
-);
+  );
+};

@@ -15,7 +15,7 @@ import {
   EventMessagesPanel,
 } from "../features/events/components/eventsPanels";
 
-export const EventEditView = ({ draft, feedback, onCancel, onChangeDraft, onSave, saving }) => (
+export const EventEditView = ({ draft, feedback, onCancel, onChangeDraft, onSave, saving, people }) => (
   <div>
     {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
     <EventEditorPanel
@@ -24,6 +24,7 @@ export const EventEditView = ({ draft, feedback, onCancel, onChangeDraft, onSave
       onCancel={onCancel}
       onSave={onSave}
       saving={saving}
+      people={people}
       title={draft.id ? "Editar evento" : "Novo evento"}
     />
   </div>
