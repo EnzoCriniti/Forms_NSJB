@@ -13,9 +13,6 @@ export const buildPresenceStats = ({
   selectedGrau,
   expectedTotal,
   filteredRowsLength,
-  totalsLayoutLength,
-  linkedPeople,
-  peopleLength,
 }) => {
   if (hasExpectedTotal) {
     return [
@@ -26,8 +23,6 @@ export const buildPresenceStats = ({
 
   return [
     { l: "Respostas", v: filteredResponsesLength, s: "recebidas", c: "#0f8b6b" },
-    { l: "Campos totalizaveis", v: totalsLayoutLength, s: "configurados", c: "#1f7a9a" },
-    { l: "Base vinculada", v: linkedPeople ? "Sim" : "Nao", s: linkedPeople ? `${peopleLength} pessoas` : "sem controle de faltantes", c: "#444444" },
   ];
 };
 

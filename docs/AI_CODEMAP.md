@@ -695,6 +695,7 @@ Mapa curto das areas mais mexidas por agentes.
   Normalizacao e ordenacao canonica de graus, alem das opcoes de grau da planilha de presenca.
 - `frontend/src/screens/resultsPresenceTableDomain.js`
   Linhas, respostas base, stats, totais, layout de totais, resumo e largura minima da planilha de presenca.
+  O resumo superior evita cards auxiliares de configuracao; sem total esperado, mostra apenas respostas recebidas.
 - `frontend/src/screens/resultsPresenceFilterDomain.js`
   Botoes de filtro, filtro por coluna/grau, filtro de respostas, ordenacao de linhas e opcoes do filtro ativo.
 - `frontend/src/screens/resultsEscalaDomain.js`

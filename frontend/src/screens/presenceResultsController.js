@@ -89,9 +89,6 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
     selectedGrau,
     expectedTotal,
     filteredRowsLength: filteredRows.length,
-    totalsLayoutLength: totalsLayout.length,
-    linkedPeople,
-    peopleLength: people.length,
   });
   const totalsWithSummary = attachPresenceTotalsSummary({ totalsLayout, totals });
 

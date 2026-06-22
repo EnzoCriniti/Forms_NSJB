@@ -45,7 +45,7 @@ describe("resultsDomain", () => {
       peopleLength: 4,
     })[1].l).toBe("Faltam");
 
-    expect(buildPresenceStats({
+    const statsWithoutExpected = buildPresenceStats({
       hasExpectedTotal: false,
       filteredResponsesLength: 2,
       selectedGrau: "todos",
@@ -54,7 +54,10 @@ describe("resultsDomain", () => {
       totalsLayoutLength: 1,
       linkedPeople: true,
       peopleLength: 4,
-    })[1].l).toBe("Campos totalizaveis");
+    });
+
+    expect(statsWithoutExpected).toHaveLength(1);
+    expect(statsWithoutExpected[0].l).toBe("Respostas");
   });
 
   it("monta linhas de tabela com ou sem base vinculada", () => {
