@@ -52,6 +52,7 @@ export const buildAppHandlerGroups = ({
     fontScaleStep: FONT_SCALE_STEP,
     persistSession,
     resolveAppNavigation,
+    setActiveEventId,
     setActiveFormId,
     setDraftForm,
     setEditingFormId,

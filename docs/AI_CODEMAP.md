@@ -499,10 +499,12 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/EventsScreen.jsx`
   Tela de eventos para contas logadas. Admin lista, cria, edita, fixa e exclui eventos; viewer acessa os eventos e formularios vinculados sem acoes administrativas.
+  A selecao do detalhe sincroniza `activeEventId` no shell para que botoes de voltar de formularios vinculados retornem ao evento; clique direto na aba `Eventos` limpa essa selecao e abre a listagem.
 - `frontend/src/screens/EventsScreenViews.jsx`
   Views de lista, detalhe e edicao da tela de eventos, extraidas de `EventsScreen.jsx`.
 - `frontend/src/screens/eventsScreenController.js`
   Controller da tela de eventos: estado de modo, selecao, feedback, paginacao e acoes de salvar, publicar, encerrar e excluir.
+  Sincroniza `initialSelectedEventId` com o modo detalhe/lista e avisa o shell quando um evento e aberto, salvo ou limpo.
 - `frontend/src/screens/eventsDomain.js`
   Helpers puros da tela de eventos: draft inicial, ordenacao por fixados/data, selecao de formularios visiveis, elegibilidade de mensagens e paginacao.
 - `frontend/src/features/events/components/eventsPanels.jsx`

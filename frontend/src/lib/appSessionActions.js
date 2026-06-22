@@ -57,6 +57,7 @@ export const navigateAppScreen = ({
   canCreateForms,
   canViewForm,
   resolveAppNavigation,
+  setActiveEventId,
   setActiveFormId,
   setDraftForm,
   setEditingFormId,
@@ -79,6 +80,9 @@ export const navigateAppScreen = ({
   }
   if (decision.activeFormId) {
     setActiveFormId(decision.activeFormId);
+  }
+  if (Object.prototype.hasOwnProperty.call(decision, "activeEventId")) {
+    setActiveEventId(decision.activeEventId);
   }
   setScreen(decision.screen);
 };

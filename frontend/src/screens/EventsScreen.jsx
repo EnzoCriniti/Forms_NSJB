@@ -30,6 +30,7 @@ export const EventsScreen = ({
   onOpenEventMessage,
   onEditEventMessage,
   onDeleteEventMessage,
+  onSelectEvent,
   onNavigate,
 }) => {
   const controller = useEventsScreenController({
@@ -43,6 +44,7 @@ export const EventsScreen = ({
     onPublishEvent,
     onDeleteEvent,
     onDeleteEventMessage,
+    onSelectEvent,
   });
 
   const {
@@ -111,7 +113,10 @@ export const EventsScreen = ({
         labels={labels}
         messagesEligible={messagesEligible}
         onArchiveForm={onArchiveForm}
-        onBack={() => setMode("list")}
+        onBack={() => {
+          onSelectEvent?.(null);
+          setMode("list");
+        }}
         onChangeDetailTab={setDetailTab}
         onClose={close}
         onCreateForm={() => onCreateFormInEvent(selectedEvent)}

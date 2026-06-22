@@ -4,7 +4,7 @@
  * @responsibility Agrupar estado, seletores e acoes usadas por EventsScreen.
  */
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { resolveActionErrorMessage } from "../components/ui";
 import { deleteEventMessage as apiDeleteEventMessage } from "../lib/api";
 import { buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateItems, selectEventForms, sortEvents } from "./eventsDomain";
@@ -20,6 +20,7 @@ export const useEventsScreenController = ({
   onPublishEvent,
   onDeleteEvent,
   onDeleteEventMessage,
+  onSelectEvent,
 }) => {
   const canManageEvents = user?.role === "admin";
   const [mode, setMode] = useState(initialSelectedEventId ? "detail" : "list");
@@ -46,8 +47,21 @@ export const useEventsScreenController = ({
   const eventsPagination = paginateItems({ items: sortedEvents, page: eventsPage });
   const formsPagination = paginateItems({ items: eventForms, page: formsPage });
 
+  useEffect(() => {
+    if (initialSelectedEventId) {
+      setSelectedEventId(initialSelectedEventId);
+      setFormsPage(1);
+      setDetailTab("forms");
+      setMode("detail");
+      return;
+    }
+    setSelectedEventId(null);
+    setMode("list");
+  }, [initialSelectedEventId]);
+
   const openEvent = event => {
     setSelectedEventId(event.id);
+    onSelectEvent?.(event.id);
     setFormsPage(1);
     setDetailTab("forms");
     setMode("detail");
@@ -79,6 +93,7 @@ export const useEventsScreenController = ({
     try {
       const saved = await onSaveEvent(draft);
       setSelectedEventId(saved.id);
+      onSelectEvent?.(saved.id);
       setDraft(buildEventDraft(saved));
       setMode("detail");
       setFeedback({ tone: "success", message: "Evento salvo." });

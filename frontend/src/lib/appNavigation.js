@@ -20,6 +20,10 @@ export const resolveAppNavigation = ({
     return { screen: "events", clearDraft: false };
   }
 
+  if (nextScreen === "events" && currentUser) {
+    return { screen: "events", clearDraft: true, activeEventId: null };
+  }
+
   const targetForm = form || activeForm;
   if (nextScreen === "results" && targetForm && !canViewForm(currentUser, targetForm)) {
     return { screen: "list", clearDraft: false };

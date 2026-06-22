@@ -12,7 +12,7 @@ import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
 import { ReportsScreen } from "./screens/ReportsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
-import { getShellActions, getShellData, getShellState } from "./lib/appShellObject";
+import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
 
 export const DashboardFlow = ({ app }) => {
   const state = getShellState(app);
@@ -36,6 +36,7 @@ export const EventsFlow = ({ app }) => {
   const state = getShellState(app);
   const data = getShellData(app);
   const actions = getShellActions(app);
+  const setters = getShellSetters(app);
   const {
     activeEventId,
     currentUser,
@@ -63,6 +64,7 @@ export const EventsFlow = ({ app }) => {
     openEventMessageDetail,
     openEventMessageEditor,
   } = actions;
+  const { setActiveEventId } = setters;
 
   if (!currentUser) return null;
 
@@ -89,6 +91,7 @@ export const EventsFlow = ({ app }) => {
       onOpenEventMessage={(event, message) => openEventMessageDetail(event, message)}
       onEditEventMessage={(event, message) => openEventMessageEditor(event, message)}
       onDeleteEventMessage={applyMessageDeletion}
+      onSelectEvent={setActiveEventId}
       onNavigate={onNavigate}
     />
   );
