@@ -15,7 +15,6 @@ export const AdminSettingsContent = ({
   tabs,
   tab,
   setTab,
-  activeTab,
   feedback,
   users,
   labels,
@@ -83,7 +82,7 @@ export const AdminSettingsContent = ({
       </div>
     )}
 
-    <AdminSettingsHeader tabs={tabs} tab={tab} setTab={setTab} activeTab={activeTab} />
+    <AdminSettingsHeader tabs={tabs} tab={tab} setTab={setTab} />
 
     {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} fixed />}
 

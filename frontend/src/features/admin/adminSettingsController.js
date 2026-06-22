@@ -45,7 +45,6 @@ export const useAdminSettingsController = ({
   const [pendingDelete, setPendingDelete] = useState(null);
 
   const tabs = buildAdminSettingsTabs(currentUser);
-  const activeTab = tabs.find(item => item.key === tab) || tabs[0];
 
   const requestDelete = (title, message, confirmLabel, onConfirm) => {
     setPendingDelete({ title, message, confirmLabel, onConfirm });
@@ -98,7 +97,6 @@ export const useAdminSettingsController = ({
     tab,
     setTab,
     tabs,
-    activeTab,
     userDraft,
     setUserDraft,
     labelDraft,

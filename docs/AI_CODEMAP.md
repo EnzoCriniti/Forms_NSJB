@@ -141,7 +141,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/SecurityStatusPanel.jsx`
   Painel de status da seguranca administrativa.
 - `frontend/src/features/admin/adminShellPanels.jsx`
-  Chrome compartilhado da central administrativa, com a barra de abas e o resumo da aba ativa.
+  Chrome compartilhado da central administrativa, com a barra de abas; o resumo duplicado da aba ativa foi removido.
 - `frontend/src/features/admin/adminSettingsShared.jsx`
   Agregador historico dos helpers compartilhados do admin. Mantem reexports de compatibilidade; os paineis administrativos ja consomem os modulos menores diretamente.
 - `frontend/src/features/admin/adminSettingsConstants.js`
@@ -631,7 +631,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   UI compartilhada da seguranca administrativa, dividida em formulario e status.
 - `frontend/src/features/admin/adminShellPanels.jsx`
-  UI compartilhada da navegacao e resumo da central administrativa.
+  UI compartilhada da navegacao da central administrativa.
 - `frontend/src/lib/forms.js`
   Agregador historico dos helpers de formulario. Mantem reexports de formatacao, leitura de campos/modos e resultados.
 - `frontend/src/lib/formFieldAccess.js`

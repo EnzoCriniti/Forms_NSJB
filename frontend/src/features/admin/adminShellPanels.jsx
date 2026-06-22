@@ -1,13 +1,13 @@
 /**
  * @file frontend/src/features/admin/adminShellPanels.jsx
  * @summary Chrome compartilhado da central administrativa.
- * @responsibility Conter a barra de abas e o resumo da aba ativa.
+ * @responsibility Conter a barra de abas da central administrativa.
  */
 
 import React from "react";
 import { Btn, COLORS } from "../../components/ui";
 
-export const AdminSettingsHeader = ({ tabs, tab, setTab, activeTab }) => (
+export const AdminSettingsHeader = ({ tabs, tab, setTab }) => (
   <>
     <div className="settings-tabs" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
       {tabs.map(item => (
@@ -33,14 +33,6 @@ export const AdminSettingsHeader = ({ tabs, tab, setTab, activeTab }) => (
           <span className="settings-tab__description" aria-hidden="true">{item.description}</span>
         </Btn>
       ))}
-    </div>
-
-    <div className="settings-active-panel">
-      <div className="settings-active-panel__eyebrow">Modulo administrativo</div>
-      <div>
-        <strong>{activeTab.label}</strong>
-        <span>{activeTab.description}</span>
-      </div>
     </div>
   </>
 );
