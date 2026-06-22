@@ -46,11 +46,14 @@ CREATE TABLE responses (
   respondent_name TEXT NOT NULL,
   respondent_grau TEXT,
   respondent_key TEXT NOT NULL,
+  person_key TEXT,
   values_json JSONB NOT NULL DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ NOT NULL,
   updated_at TIMESTAMPTZ NOT NULL,
   UNIQUE (form_id, respondent_key)
 );
+
+CREATE INDEX idx_responses_person_key ON responses(person_key);
 
 CREATE TABLE escala_assignments (
   form_id BIGINT PRIMARY KEY REFERENCES forms(id) ON DELETE CASCADE,

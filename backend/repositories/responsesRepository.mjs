@@ -6,6 +6,7 @@
 
 import { nowIso, parseJson, stringifyJson } from "../database/shared.mjs";
 import { database } from "../database/index.mjs";
+import { normalizePersonKey } from "../../shared/personIdentity.mjs";
 
 const isFilledValue = value => {
   if (value === undefined || value === null) return false;
@@ -152,7 +153,7 @@ const groupStoredValuesByResponseId = rows => rows.reduce((index, row) => {
 
 export const listResponsesByFormId = async formId => {
   const responses = await database.queryMany(`
-    SELECT id, respondent_name, respondent_grau, values_json, updated_at
+    SELECT id, respondent_name, respondent_grau, person_key, values_json, created_at, updated_at
     FROM responses
     WHERE form_id = ?
     ORDER BY lower(respondent_name) ASC
@@ -173,7 +174,9 @@ export const listResponsesByFormId = async formId => {
       id: row.id,
       respondentName: row.respondent_name,
       respondentGrau: row.respondent_grau,
+      personKey: row.person_key || normalizePersonKey(row.respondent_name),
       values,
+      createdAt: row.created_at,
       updatedAt: row.updated_at,
     };
   });
@@ -220,6 +223,7 @@ export const listResponseValuesByFormId = async formId => {
 export const upsertResponseRecord = async ({ formId, respondentName, respondentGrau, values, fieldDefinitions = [] }) => {
   const now = nowIso();
   const respondentKey = respondentName.trim().toLowerCase();
+  const personKey = normalizePersonKey(respondentName);
   const existingResponse = await database.queryOne("SELECT id FROM responses WHERE form_id = ? AND respondent_key = ?", [formId, respondentKey]);
   const normalizedValues = Object.entries(values || {})
     .map(([key, value]) => {
@@ -236,11 +240,12 @@ export const upsertResponseRecord = async ({ formId, respondentName, respondentG
 
   return database.withTransaction(async tx => {
     await tx.execute(`
-      INSERT INTO responses (form_id, respondent_name, respondent_grau, respondent_key, values_json, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO responses (form_id, respondent_name, respondent_grau, respondent_key, person_key, values_json, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(form_id, respondent_key) DO UPDATE SET
         respondent_name = excluded.respondent_name,
         respondent_grau = excluded.respondent_grau,
+        person_key = excluded.person_key,
         values_json = excluded.values_json,
         updated_at = excluded.updated_at
       RETURNING id
@@ -249,6 +254,7 @@ export const upsertResponseRecord = async ({ formId, respondentName, respondentG
       respondentName,
       respondentGrau || "",
       respondentKey,
+      personKey,
       stringifyJson(values || {}),
       now,
       now,

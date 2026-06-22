@@ -3,6 +3,8 @@
  * @summary Linhas, totais e largura da planilha de presenca.
  */
 
+import { getPersonKey, getResponsePersonKey } from "../../../shared/personIdentity.mjs";
+
 export const NO_VALUES = ["Nao", "NÃƒÂ£o", "NÃƒÆ’Ã‚Â£o", "NÃƒÆ’Ã‚Æ’Ãƒâ€šÃ‚Â£o"];
 
 export const buildPresenceStats = ({
@@ -40,14 +42,17 @@ export const buildPresenceTableRows = ({ responses = [], people = [], showLinked
     }));
   }
 
-  const responseByName = new Map(responses.map(response => [response.respondentName, response]));
-  return people.map(person => ({
-    key: `${person.grau}-${person.name}`,
-    grau: person.grau || "",
-    name: person.name || "",
-    status: responseByName.has(person.name) ? "Respondido" : "Pendente",
-    response: responseByName.get(person.name) || null,
-  }));
+  const responseByPersonKey = new Map(responses.map(response => [getResponsePersonKey(response), response]));
+  return people.map(person => {
+    const response = responseByPersonKey.get(getPersonKey(person)) || null;
+    return {
+      key: `${person.grau}-${person.name}`,
+      grau: person.grau || "",
+      name: person.name || "",
+      status: response ? "Respondido" : "Pendente",
+      response,
+    };
+  });
 };
 
 export const buildPresenceBaseResponses = ({ responses = [], people = [], showLinkedRows = false }) => {
@@ -55,8 +60,8 @@ export const buildPresenceBaseResponses = ({ responses = [], people = [], showLi
     return responses;
   }
 
-  const peopleNames = new Set(people.map(person => person.name));
-  return responses.filter(response => peopleNames.has(response.respondentName));
+  const peopleKeys = new Set(people.map(getPersonKey));
+  return responses.filter(response => peopleKeys.has(getResponsePersonKey(response)));
 };
 
 export const buildPresenceTotals = ({ columns = [], responses = [], getFieldValue }) => {

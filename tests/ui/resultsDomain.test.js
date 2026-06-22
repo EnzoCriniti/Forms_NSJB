@@ -73,6 +73,26 @@ describe("resultsDomain", () => {
     ]);
   });
 
+  it("cruza base e respostas por identidade ignorando acento e espacos", () => {
+    const responses = [
+      { id: 7, respondentGrau: "CI", respondentName: "ANA   PESSOA", personKey: "ana pessoa" },
+    ];
+    const rows = buildPresenceTableRows({
+      responses,
+      people: [{ grau: "CI", name: "Ana Pessôa" }],
+      showLinkedRows: true,
+    });
+    expect(rows[0].status).toBe("Respondido");
+    expect(rows[0].response).toBe(responses[0]);
+
+    const legacy = buildPresenceTableRows({
+      responses: [{ id: 8, respondentName: "José da Silva" }],
+      people: [{ name: "JOSE DA SILVA" }],
+      showLinkedRows: true,
+    });
+    expect(legacy[0].status).toBe("Respondido");
+  });
+
   it("filtra respostas base e totaliza colunas configuradas", () => {
     const responses = [
       { respondentName: "Maria", 2: "Sim", 3: 2 },

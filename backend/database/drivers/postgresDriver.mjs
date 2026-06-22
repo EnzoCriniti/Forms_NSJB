@@ -69,6 +69,8 @@ const ensureSchema = async pool => {
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS synced_at TIMESTAMPTZ");
     await client.query("CREATE INDEX IF NOT EXISTS idx_people_external_key ON people(external_key)");
     await client.query("ALTER TABLE field_catalog ADD COLUMN IF NOT EXISTS selection_source_json JSONB NOT NULL DEFAULT '{}'::jsonb");
+    await client.query("ALTER TABLE responses ADD COLUMN IF NOT EXISTS person_key TEXT");
+    await client.query("CREATE INDEX IF NOT EXISTS idx_responses_person_key ON responses(person_key)");
     await client.query(`
       CREATE TABLE IF NOT EXISTS events (
         id BIGSERIAL PRIMARY KEY,
