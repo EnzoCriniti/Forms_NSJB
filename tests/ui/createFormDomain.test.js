@@ -254,7 +254,7 @@ describe("createFormDomain", () => {
     }));
   });
 
-  it("monta campo de presenca com horario obrigatorio e rotulo composto", () => {
+  it("monta campo de presenca com horario opcional e rotulo composto quando preenchido", () => {
     const payload = buildFieldSavePayload({
       fields: [],
       editingFieldId: null,
@@ -278,6 +278,34 @@ describe("createFormDomain", () => {
       label: "15h - Reuniao de diretoria",
       baseLabel: "Reuniao de diretoria",
       scheduleText: "15h",
+      required: true,
+    }));
+  });
+
+  it("monta campo de presenca sem horario mantendo o rotulo base", () => {
+    const payload = buildFieldSavePayload({
+      fields: [],
+      editingFieldId: null,
+      nFieldMode: "local",
+      nCatalogId: "",
+      nType: "yes_no",
+      nLabel: "Reuniao de diretoria",
+      nScheduleText: "",
+      nRequired: true,
+      nPersonRole: "primary",
+      nValidation: {},
+      nGridRows: [],
+      nGridCols: [],
+      filteredFieldCatalog: [],
+    });
+
+    const field = mergeSavedField(payload);
+
+    expect(field).toEqual(expect.objectContaining({
+      type: "yes_no",
+      label: "Reuniao de diretoria",
+      baseLabel: "Reuniao de diretoria",
+      scheduleText: "",
       required: true,
     }));
   });
@@ -371,7 +399,7 @@ describe("createFormDomain", () => {
     expect(derived.isFieldSaveDisabled).toBe(true);
   });
 
-  it("exige horario para salvar campo de presenca que nao e seletor de pessoa", () => {
+  it("permite salvar campo de presenca sem horario", () => {
     const withoutSchedule = buildCreateFormDerivedState({
       format: "presenca",
       formMode: FORM_MODES.NUCLEO,
@@ -385,22 +413,7 @@ describe("createFormDomain", () => {
       nLabel: "Reuniao de diretoria",
       nScheduleText: "",
     });
-    const withSchedule = buildCreateFormDerivedState({
-      format: "presenca",
-      formMode: FORM_MODES.NUCLEO,
-      fields: [],
-      fieldCatalog: [],
-      resultsConfig: { totalsLayout: [] },
-      editingFieldId: null,
-      nFieldMode: "local",
-      nType: "yes_no",
-      nCatalogId: "",
-      nLabel: "Reuniao de diretoria",
-      nScheduleText: "15h",
-    });
-
-    expect(withoutSchedule.isFieldSaveDisabled).toBe(true);
-    expect(withSchedule.isFieldSaveDisabled).toBe(false);
+    expect(withoutSchedule.isFieldSaveDisabled).toBe(false);
   });
 
   it("aplica template preservando os dados principais do formulario", () => {

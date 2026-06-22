@@ -50,7 +50,7 @@ export const buildFieldSavePayload = ({
   const resolvedType = catalogItem?.type || nType;
   const baseLabel = nLabel.trim() || (resolvedType === "person_select" ? "Nome" : "");
   const scheduleText = resolvedType === "person_select" ? "" : String(nScheduleText || "").trim();
-  if (!baseLabel || (resolvedType !== "person_select" && !scheduleText)) return null;
+  if (!baseLabel) return null;
   const label = buildScheduledFieldLabel({ type: resolvedType, label: baseLabel, scheduleText });
 
   const catalogProps = catalogItem

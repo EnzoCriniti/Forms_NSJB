@@ -20,7 +20,6 @@ export const buildCreateFormDerivedState = ({
   nType,
   nCatalogId,
   nLabel,
-  nScheduleText,
 }) => {
   const linkedPeopleField = hasLinkedPeopleField({ fieldDefinitions: fields });
   const totalizableFields = (fields || []).filter(field => field.total);
@@ -55,7 +54,6 @@ export const buildCreateFormDerivedState = ({
   const activeModeOption = FORM_MODE_OPTIONS.find(option => option.id === formMode) || FORM_MODE_OPTIONS[0];
   const isFieldSaveDisabled = (nFieldMode === "catalog" && !nCatalogId)
     || (nType !== "person_select" && !nLabel.trim())
-    || (nType !== "person_select" && !String(nScheduleText || "").trim())
     || (!canUseMembersBase && nFieldMode === "local" && nType === "person_select");
 
   return {
