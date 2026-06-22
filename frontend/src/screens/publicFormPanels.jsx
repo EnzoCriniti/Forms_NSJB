@@ -1,5 +1,5 @@
 import React from "react";
-import { COLORS, Btn, FeedbackBanner, Icon } from "../components/ui";
+import { COLORS, Btn, Icon } from "../components/ui";
 import { PublicScreenFrame, PublicScreenHeader, PublicScreenLayout } from "./publicScreenFrame";
 
 export const PublicResponseSuccessPanel = ({ isInternal, form, onBack, resultsHref, readingControls, editing }) => (
@@ -40,8 +40,27 @@ export const PublicResponseHeader = ({ isInternal, form, onBack, resultsHref, re
   />
 );
 
-export const PublicResponseErrorBanner = ({ submitError }) => (
-  submitError ? <div style={{ padding: "10px 24px 0" }}><FeedbackBanner tone="error" message={submitError} /></div> : null
+export const PublicResponseErrorPopup = ({ submitError, onClose }) => (
+  submitError ? (
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="public-response-error-title"
+      aria-describedby="public-response-error-message"
+      style={{ position: "fixed", inset: 0, background: "rgba(15, 23, 42, 0.42)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 140, padding: 16 }}
+    >
+      <div style={{ width: "min(380px, 100%)", background: COLORS.surface, border: `1px solid ${COLORS.danger}`, borderRadius: 14, boxShadow: "0 20px 50px rgba(15, 23, 42, 0.28)", padding: 22, textAlign: "center" }}>
+        <div style={{ width: 48, height: 48, borderRadius: "50%", background: COLORS.dangerLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 14px", color: COLORS.danger }}>
+          <Icon name="warning" size={24} />
+        </div>
+        <h3 id="public-response-error-title" style={{ margin: "0 0 8px", fontSize: 17, color: COLORS.text }}>Revise o preenchimento</h3>
+        <p id="public-response-error-message" style={{ margin: "0 0 18px", fontSize: 13, lineHeight: 1.5, color: COLORS.textSecondary }}>
+          {submitError}
+        </p>
+        <Btn v="danger" onClick={onClose} style={{ minWidth: 120, justifyContent: "center" }}>Entendi</Btn>
+      </div>
+    </div>
+  ) : null
 );
 
 export const PublicResponseEditingBanner = ({ editing }) => (

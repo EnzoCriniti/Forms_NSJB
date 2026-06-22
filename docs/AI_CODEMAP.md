@@ -711,6 +711,7 @@ Mapa curto das areas mais mexidas por agentes.
   Helpers puros do fluxo publico: opcoes de selecao de pessoa e busca de resposta existente.
 - `frontend/src/screens/publicFormPanels.jsx`
   Blocos compartilhados do fluxo publico e interno de resposta: cabeÃ§alho, aviso de erro, aviso de ediÃ§Ã£o, sucesso e modal de ediÃ§Ã£o.
+  Erros de envio do formulario aparecem em popup fixo (`PublicResponseErrorPopup`) para nao deslocar os campos.
 - `frontend/src/screens/PublicEscalaScreen.jsx`
   Renderiza a escala publica e tambem o modo interno `variant="internal"` para contas logadas.
 - `frontend/src/screens/publicScaleDomain.js`

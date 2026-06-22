@@ -6,7 +6,7 @@
 
 import React, { useMemo, useState } from "react";
 import { COLORS, Btn, resolveActionErrorMessage } from "../components/ui";
-import { PublicResponseEditingBanner, PublicResponseEditModal, PublicResponseErrorBanner, PublicResponseFieldPanel, PublicResponseHeader, PublicResponseSuccessPanel } from "./publicFormPanels";
+import { PublicResponseEditingBanner, PublicResponseEditModal, PublicResponseErrorPopup, PublicResponseFieldPanel, PublicResponseHeader, PublicResponseSuccessPanel } from "./publicFormPanels";
 import { PublicScreenFrame, PublicScreenLayout } from "./publicScreenFrame";
 import { getPersonField, getVisibleFields, isPrimaryPeopleBaseField, summarizeFieldValidation, validateResponseValuesAgainstForm } from "../lib/forms";
 import { buildPublicPersonSelectOptions, findExistingPublicResponse, findSelectedPublicPerson } from "./publicFormDomain";
@@ -79,14 +79,17 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   };
 
   const submit = async () => {
-    if (personField && !selectedPerson) return;
-    if (duplicateResponseLocked) {
-      setSubmitError("Esta pessoa já respondeu e novas respostas estão bloqueadas para este formulário.");
-      return;
-    }
     const validationError = validateResponseValuesAgainstForm(form, values);
     if (validationError) {
       setSubmitError(validationError);
+      return;
+    }
+    if (personField && !selectedPerson) {
+      setSubmitError("Selecione uma pessoa válida para responder este formulário.");
+      return;
+    }
+    if (duplicateResponseLocked) {
+      setSubmitError("Esta pessoa já respondeu e novas respostas estão bloqueadas para este formulário.");
       return;
     }
     setSubmitting(true);
@@ -113,7 +116,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   return (
     <PublicScreenLayout maxWidth={680}>
       <PublicResponseHeader isInternal={isInternal} form={form} onBack={onBack} resultsHref={resultsHref} readingControls={readingControls} />
-      <PublicResponseErrorBanner submitError={submitError} />
+      <PublicResponseErrorPopup submitError={submitError} onClose={() => setSubmitError("")} />
       <PublicResponseEditingBanner editing={editing} />
       <PublicScreenFrame isInternal={isInternal} cardStyle={{ padding: "0 0 24px" }}>
         {fields.map(field => {

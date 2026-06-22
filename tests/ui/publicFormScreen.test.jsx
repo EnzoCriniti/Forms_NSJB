@@ -231,6 +231,22 @@ describe("PublicFormScreen", () => {
 
     expect(onSaveResponse).not.toHaveBeenCalled();
     expect(screen.queryByText("Resposta enviada!")).not.toBeInTheDocument();
+    expect(screen.getByRole("alertdialog", { name: "Revise o preenchimento" })).toBeInTheDocument();
+    expect(screen.getByText("Vai comparecer? e obrigatorio.")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Entendi" }));
+    expect(screen.queryByRole("alertdialog", { name: "Revise o preenchimento" })).not.toBeInTheDocument();
+  });
+
+  it("mostra popup de erro quando tenta enviar sem selecionar pessoa", () => {
+    const onSaveResponse = vi.fn();
+    render(<PublicFormScreen form={form} responses={[]} onSaveResponse={onSaveResponse} onBack={vi.fn()} people={people} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
+
+    expect(onSaveResponse).not.toHaveBeenCalled();
+    expect(screen.getByRole("alertdialog", { name: "Revise o preenchimento" })).toBeInTheDocument();
+    expect(screen.getByText("Nome e obrigatorio.")).toBeInTheDocument();
   });
 
   it("bloqueia envio quando a resposta nao respeita a validacao do campo", () => {
@@ -259,6 +275,7 @@ describe("PublicFormScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Enviar Resposta" }));
 
     expect(onSaveResponse).not.toHaveBeenCalled();
+    expect(screen.getByRole("alertdialog", { name: "Revise o preenchimento" })).toBeInTheDocument();
     expect(screen.getByText("Observacao precisa ter pelo menos 3 caracteres.")).toBeInTheDocument();
   });
 });
