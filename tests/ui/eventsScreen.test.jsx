@@ -8,6 +8,7 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { EventsScreen } from "../../frontend/src/screens/EventsScreen.jsx";
+import { COLORS } from "../../frontend/src/components/ui.jsx";
 import { deleteEventMessage } from "../../frontend/src/lib/api.js";
 
 vi.mock("../../frontend/src/lib/api.js", () => ({
@@ -116,6 +117,28 @@ describe("EventsScreen", () => {
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
     expect(screen.queryByText("Escala Maio")).not.toBeInTheDocument();
+  });
+
+  it("destaca a borda do card de evento no hover", () => {
+    render(
+      <EventsScreen
+        events={events}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    const eventCard = screen.getByRole("button", { name: /Evento Maio - 20\/05\/2026/i });
+
+    fireEvent.mouseEnter(eventCard);
+    expect(eventCard.style.borderColor).toBe(COLORS.primary);
+
+    fireEvent.mouseLeave(eventCard);
+    expect(eventCard.style.borderColor).toBe(COLORS.borderLight);
   });
 
   it("cria formulario a partir do evento selecionado", () => {

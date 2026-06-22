@@ -15,7 +15,9 @@ export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, on
         onOpen(event);
       }
     }}
-    style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer" }}
+    style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", transition: "all 0.15s", touchAction: "manipulation" }}
+    onMouseEnter={eventMouseEnter => { eventMouseEnter.currentTarget.style.borderColor = COLORS.primary; }}
+    onMouseLeave={eventMouseLeave => { eventMouseLeave.currentTarget.style.borderColor = COLORS.borderLight; }}
   >
     <div style={{ width: 46, height: 46, borderRadius: 12, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary, flexShrink: 0 }}>
       <Icon name="calendar" size={20} />
