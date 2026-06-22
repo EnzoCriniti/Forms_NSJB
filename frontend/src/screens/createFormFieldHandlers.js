@@ -31,6 +31,7 @@ export const buildCreateFormFieldHandlers = ({
     nFieldMode,
     nCatalogId,
     nLabel,
+    nScheduleText,
     nRequired,
     nPersonRole,
     nGridRows,
@@ -55,6 +56,7 @@ export const buildCreateFormFieldHandlers = ({
   const setNFieldMode = value => updateFieldDraftValue("nFieldMode", value);
   const setNCatalogId = value => updateFieldDraftValue("nCatalogId", value);
   const setNLabel = value => updateFieldDraftValue("nLabel", value);
+  const setNScheduleText = value => updateFieldDraftValue("nScheduleText", value);
   const setNRequired = value => updateFieldDraftValue("nRequired", value);
   const setNGridRows = value => updateFieldDraftValue("nGridRows", value);
   const setNGridCols = value => updateFieldDraftValue("nGridCols", value);
@@ -105,6 +107,7 @@ export const buildCreateFormFieldHandlers = ({
       nCatalogId,
       nType,
       nLabel,
+      nScheduleText,
       nRequired,
       nPersonRole,
       nValidation,
@@ -148,6 +151,7 @@ export const buildCreateFormFieldHandlers = ({
       nGridRows: transition.nGridRows,
       nGridCols: transition.nGridCols,
       nValidation: transition.nValidation,
+      ...(nextType === "person_select" ? { nScheduleText: "" } : {}),
     });
   };
 
@@ -167,6 +171,7 @@ export const buildCreateFormFieldHandlers = ({
     setFieldMode,
     setFieldType,
     setNLabel,
+    setNScheduleText,
     setNRequired,
     setNValidation,
     startEditField,

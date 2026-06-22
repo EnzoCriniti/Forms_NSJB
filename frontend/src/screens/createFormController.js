@@ -26,6 +26,7 @@ import {
 } from "./createFormState";
 import { buildCreateFormDerivedState } from "./createFormDerivedState";
 import { buildCreateFormFieldHandlers } from "./createFormFieldHandlers";
+import { buildScheduledFieldLabel } from "./createFormFieldSave";
 import { buildCreateFormScaleHandlers } from "./createFormScaleHandlers";
 import { buildCreateFormSetupHandlers } from "./createFormSetupHandlers";
 import { buildCreateFormTemplateHandlers } from "./createFormTemplateHandlers";
@@ -77,6 +78,7 @@ export const useCreateFormController = ({
     nFieldMode,
     nCatalogId,
     nLabel,
+    nScheduleText,
     nRequired,
     nGridRows,
     nGridCols,
@@ -105,7 +107,8 @@ export const useCreateFormController = ({
 
   const inp = { width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", background: COLORS.surface, color: COLORS.text };
   const inpSm = { ...inp, padding: "6px 10px", fontSize: 12 };
-  const fieldLabel = nLabel.trim() || (nType === "person_select" ? "Nome" : "Novo campo");
+  const fieldBaseLabel = nLabel.trim() || (nType === "person_select" ? "Nome" : "Novo campo");
+  const fieldLabel = buildScheduledFieldLabel({ type: nType, label: fieldBaseLabel, scheduleText: nScheduleText });
   const derived = useMemo(() => buildCreateFormDerivedState({
     format,
     formMode,
@@ -119,7 +122,8 @@ export const useCreateFormController = ({
     nType,
     nCatalogId,
     nLabel,
-  }), [format, formMode, fields, fieldCatalog, scaleTaskCatalog, externalBases, resultsConfig, editingFieldId, nFieldMode, nType, nCatalogId, nLabel]);
+    nScheduleText,
+  }), [format, formMode, fields, fieldCatalog, scaleTaskCatalog, externalBases, resultsConfig, editingFieldId, nFieldMode, nType, nCatalogId, nLabel, nScheduleText]);
   const previewTitle = title.trim();
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();
@@ -351,6 +355,7 @@ export const useCreateFormController = ({
         nGridCols,
         nGridRows,
         nLabel,
+        nScheduleText,
         nRequired,
         nType,
         nValidation,
@@ -365,6 +370,7 @@ export const useCreateFormController = ({
         onResetFieldDraft: fieldHandlers.resetFieldDraft,
         onSetFieldMode: fieldHandlers.setFieldMode,
         onSetNLabel: fieldHandlers.setNLabel,
+        onSetNScheduleText: fieldHandlers.setNScheduleText,
         onSetNRequired: fieldHandlers.setNRequired,
         onSetNType: fieldHandlers.setFieldType,
         onSetNValidation: fieldHandlers.setNValidation,

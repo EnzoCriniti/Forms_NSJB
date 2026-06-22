@@ -64,6 +64,7 @@ export const FieldEditorPanel = ({
   nFieldMode,
   nCatalogId,
   nLabel,
+  nScheduleText,
   nRequired,
   nValidation,
   nGridRows,
@@ -81,6 +82,7 @@ export const FieldEditorPanel = ({
   onApplyFieldCatalog,
   onSetNType,
   onSetNLabel,
+  onSetNScheduleText,
   onSetNRequired,
   onSetNValidation,
   onUpdateGridRow,
@@ -122,12 +124,14 @@ export const FieldEditorPanel = ({
             nType={nType}
             nFieldMode={nFieldMode}
             nLabel={nLabel}
+            nScheduleText={nScheduleText}
             filteredFieldTypes={filteredFieldTypes}
             formMode={formMode}
             activeSelectionSource={activeSelectionSource}
             externalBaseMap={externalBaseMap}
             onSetNType={onSetNType}
             onSetNLabel={onSetNLabel}
+            onSetNScheduleText={onSetNScheduleText}
           />
           <FieldEditorExtrasPanel
             inp={inp}
@@ -226,12 +230,14 @@ const FieldEditorDefinitionPanel = ({
   nType,
   nFieldMode,
   nLabel,
+  nScheduleText,
   filteredFieldTypes,
   formMode,
   activeSelectionSource,
   externalBaseMap,
   onSetNType,
   onSetNLabel,
+  onSetNScheduleText,
 }) => (
   <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "grid", gap: 12 }}>
     <div>
@@ -249,6 +255,17 @@ const FieldEditorDefinitionPanel = ({
         </div>
       )}
     </div>
+    {nType !== "person_select" && (
+      <div>
+        <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
+          HorÃ¡rio do campo <span style={{ color: COLORS.danger }}>*</span>
+        </label>
+        <input value={nScheduleText || ""} onChange={event => onSetNScheduleText(event.target.value)} placeholder="Ex: 15h" style={inp} />
+        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
+          Este texto entra antes do rÃ³tulo, por exemplo: 15h - ReuniÃ£o de diretoria.
+        </div>
+      </div>
+    )}
     <div>
       <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
         {nType === "person_select" ? "Rótulo (ex: Nome)" : "Pergunta / Rótulo"}

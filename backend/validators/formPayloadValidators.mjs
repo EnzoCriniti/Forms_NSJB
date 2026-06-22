@@ -29,6 +29,8 @@ const validateFieldDefinition = field => {
   assert(isIdLike(field.id), "Campo de formulario precisa de id numerico.");
   assert(FIELD_TYPES.includes(field.type), "Tipo de campo invalido.");
   assert(isNonEmptyString(field.label), "Campo de formulario precisa de rotulo.");
+  assert(isOptionalString(field.baseLabel), "Rotulo base do campo invalido.");
+  assert(isOptionalString(field.scheduleText), "Horario do campo invalido.");
   assert(typeof field.required === "boolean", "Campo de formulario precisa informar required.");
   assert(typeof field.show === "boolean", "Campo de formulario precisa informar show.");
   assert(typeof field.total === "boolean", "Campo de formulario precisa informar total.");

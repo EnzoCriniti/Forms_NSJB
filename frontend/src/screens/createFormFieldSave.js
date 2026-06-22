@@ -22,6 +22,13 @@ export const buildFieldValidation = ({ nType, nValidation }) => {
   return undefined;
 };
 
+export const buildScheduledFieldLabel = ({ type, label, scheduleText }) => {
+  const trimmedLabel = String(label || "").trim();
+  const trimmedScheduleText = String(scheduleText || "").trim();
+  if (type === "person_select" || !trimmedScheduleText) return trimmedLabel;
+  return `${trimmedScheduleText} - ${trimmedLabel}`;
+};
+
 export const buildFieldSavePayload = ({
   fields,
   editingFieldId,
@@ -29,6 +36,7 @@ export const buildFieldSavePayload = ({
   nCatalogId,
   nType,
   nLabel,
+  nScheduleText,
   nRequired,
   nPersonRole,
   nValidation,
@@ -40,8 +48,10 @@ export const buildFieldSavePayload = ({
     ? filteredFieldCatalog.find(item => String(item.id) === String(nCatalogId))
     : null;
   const resolvedType = catalogItem?.type || nType;
-  const label = nLabel.trim() || (resolvedType === "person_select" ? "Nome" : "");
-  if (!label) return null;
+  const baseLabel = nLabel.trim() || (resolvedType === "person_select" ? "Nome" : "");
+  const scheduleText = resolvedType === "person_select" ? "" : String(nScheduleText || "").trim();
+  if (!baseLabel || (resolvedType !== "person_select" && !scheduleText)) return null;
+  const label = buildScheduledFieldLabel({ type: resolvedType, label: baseLabel, scheduleText });
 
   const catalogProps = catalogItem
     ? { catalogFieldId: catalogItem.id, catalogKey: catalogItem.key, catalogName: catalogItem.name }
@@ -71,6 +81,9 @@ export const buildFieldSavePayload = ({
   return {
     resolvedType,
     label,
+    baseLabel,
+    scheduleText,
+    nRequired,
     catalogProps,
     validation,
     selectionSource,
@@ -80,11 +93,15 @@ export const buildFieldSavePayload = ({
   };
 };
 
-export const mergeSavedField = ({ baseField, resolvedType, label, nRequired, catalogProps, validation, selectionSource, memberBinding, gridProps }) => {
+export const mergeSavedField = ({ baseField, resolvedType, label, baseLabel, scheduleText, nRequired, catalogProps, validation, selectionSource, memberBinding, gridProps }) => {
+  const scheduleProps = resolvedType === "person_select"
+    ? {}
+    : { baseLabel, scheduleText };
   const nextField = {
     ...(baseField || {}),
     type: resolvedType,
     label,
+    ...scheduleProps,
     required: nRequired,
     total: resolvedType === "yes_no" || resolvedType === "number",
     ...catalogProps,
@@ -94,11 +111,15 @@ export const mergeSavedField = ({ baseField, resolvedType, label, nRequired, cat
     ...gridProps,
   };
 
+  const sanitizedField = resolvedType === "person_select"
+    ? (({ baseLabel: _baseLabel, scheduleText: _scheduleText, ...field }) => field)(nextField)
+    : nextField;
+
   if (!baseField) {
     return {
       id: Date.now(),
       show: true,
-      ...nextField,
+      ...sanitizedField,
     };
   }
 
@@ -107,7 +128,7 @@ export const mergeSavedField = ({ baseField, resolvedType, label, nRequired, cat
     catalogKey,
     catalogName,
     ...rest
-  } = nextField;
+  } = sanitizedField;
 
   return rest;
 };

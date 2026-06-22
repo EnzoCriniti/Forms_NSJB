@@ -19,6 +19,7 @@ export const buildFieldDraftDefaults = ({ hasPrimaryLinkedField = false } = {}) 
   nFieldMode: "local",
   nCatalogId: "",
   nLabel: "",
+  nScheduleText: "",
   nRequired: false,
   nPersonRole: hasPrimaryLinkedField ? "secondary" : "primary",
   nGridRows: DEFAULT_GRID_ROWS,
@@ -32,7 +33,8 @@ export const buildFieldDraftFromExistingField = (field, { fields = [] } = {}) =>
   nType: field?.type || "yes_no",
   nFieldMode: field?.catalogFieldId ? "catalog" : "local",
   nCatalogId: field?.catalogFieldId || "",
-  nLabel: field?.label || "",
+  nLabel: field?.baseLabel || field?.label || "",
+  nScheduleText: field?.scheduleText || "",
   nRequired: Boolean(field?.required),
   nPersonRole: field && isMembersSelectionField(field)
     ? (getPeopleBaseFieldRole({ fieldDefinitions: fields }, field) || "primary")
@@ -48,6 +50,7 @@ export const buildFieldDraftFromCatalogItem = (catalogItem, { hasPrimaryLinkedFi
   return {
     nType: catalogItem.type,
     nLabel: catalogItem.defaultLabel,
+    nScheduleText: "",
     nPersonRole: catalogItem.type === "person_select" && hasPrimaryLinkedField && !editingFieldId ? "secondary" : "primary",
     nGridRows: catalogItem.type === "grid" ? getCatalogGridSchema(catalogItem).rows : DEFAULT_GRID_ROWS,
     nGridCols: catalogItem.type === "grid" ? getCatalogGridSchema(catalogItem).cols : DEFAULT_GRID_COLS,

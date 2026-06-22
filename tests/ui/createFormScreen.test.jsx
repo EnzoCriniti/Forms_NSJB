@@ -258,7 +258,8 @@ describe("CreateFormScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
     fireEvent.click(screen.getByRole("button", { name: "Da biblioteca" }));
     fireEvent.change(screen.getByDisplayValue("Selecione um campo base"), { target: { value: "11" } });
-    fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "15h - Sessao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: 15h"), { target: { value: "15h" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Sessao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
@@ -269,6 +270,8 @@ describe("CreateFormScreen", () => {
         catalogKey: "presenca_sessao",
         catalogName: "Presenca em sessao",
         label: "15h - Sessao",
+        baseLabel: "Sessao",
+        scheduleText: "15h",
       }),
     ]));
   });
@@ -352,12 +355,13 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByDisplayValue("Sim / Não"), { target: { value: "text" } });
     fireEvent.change(screen.getByLabelText("Mínimo de caracteres"), { target: { value: "3" } });
     fireEvent.change(screen.getByLabelText("Máximo de caracteres"), { target: { value: "10" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: 15h"), { target: { value: "15h" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Observacao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
-    expect(onSaveForm.mock.calls[0][0].fieldDefinitions.find(field => field.label === "Observacao")?.validation).toEqual({
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions.find(field => field.label === "15h - Observacao")?.validation).toEqual({
       minLength: 3,
       maxLength: 10,
     });
@@ -389,7 +393,8 @@ describe("CreateFormScreen", () => {
     const typeSelect = screen.getByDisplayValue("Sim / Não");
     expect(typeSelect).toBeDisabled();
 
-    fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "15h - Sessao" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: 15h"), { target: { value: "15h" } });
+    fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Sessao" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
@@ -399,6 +404,8 @@ describe("CreateFormScreen", () => {
         catalogFieldId: 11,
         type: "yes_no",
         label: "15h - Sessao",
+        baseLabel: "Sessao",
+        scheduleText: "15h",
       }),
     ]));
   });
@@ -431,6 +438,7 @@ describe("CreateFormScreen", () => {
     fireEvent.change(screen.getByDisplayValue("Observacao antiga"), { target: { value: "Nao deve salvar" } });
     fireEvent.click(screen.getByRole("button", { name: "Cancelar" }));
     fireEvent.click(screen.getByRole("button", { name: /Adicionar Campo/i }));
+    fireEvent.change(screen.getByPlaceholderText("Ex: 15h"), { target: { value: "15h" } });
     fireEvent.change(screen.getByPlaceholderText("Ex: Vai ao Jantar?"), { target: { value: "Novo campo local" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
@@ -438,7 +446,7 @@ describe("CreateFormScreen", () => {
     await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
       expect.objectContaining({ id: 2, label: "Observacao antiga" }),
-      expect.objectContaining({ label: "Novo campo local" }),
+      expect.objectContaining({ label: "15h - Novo campo local" }),
     ]));
     expect(onSaveForm.mock.calls[0][0].fieldDefinitions).not.toEqual(expect.arrayContaining([
       expect.objectContaining({ label: "Nao deve salvar" }),
@@ -470,6 +478,7 @@ describe("CreateFormScreen", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Editar Avaliacao" }));
+    fireEvent.change(screen.getByPlaceholderText("Ex: 15h"), { target: { value: "15h" } });
     fireEvent.change(screen.getByDisplayValue("Audio"), { target: { value: "Audio e video" } });
     fireEvent.change(screen.getByDisplayValue("2"), { target: { value: "Bom" } });
     fireEvent.click(screen.getByRole("button", { name: "Salvar campo" }));
@@ -480,7 +489,9 @@ describe("CreateFormScreen", () => {
       expect.objectContaining({
         id: 9,
         type: "grid",
-        label: "Avaliacao",
+        label: "15h - Avaliacao",
+        baseLabel: "Avaliacao",
+        scheduleText: "15h",
         gridRows: ["Audio e video", "Limpeza"],
         gridCols: ["1", "Bom"],
       }),
@@ -514,6 +525,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText(/A matriz deste campo vem da biblioteca global/)).toBeInTheDocument();
     expect(screen.queryByText("Adicionar linha")).not.toBeInTheDocument();
 
+    fireEvent.change(screen.getByPlaceholderText("Ex: 15h"), { target: { value: "15h" } });
     fireEvent.click(screen.getByRole("button", { name: "Adicionar" }));
     fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
 
@@ -522,6 +534,9 @@ describe("CreateFormScreen", () => {
       expect.objectContaining({
         catalogFieldId: 20,
         type: "grid",
+        label: "15h - Avaliacao",
+        baseLabel: "Avaliacao",
+        scheduleText: "15h",
         gridRows: ["Audio", "Limpeza"],
         gridCols: ["Ruim", "Bom"],
       }),
