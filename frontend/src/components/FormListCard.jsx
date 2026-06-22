@@ -4,11 +4,11 @@
  * @responsibility Encapsular renderizacao e acoes de um formulario na listagem.
  */
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge } from "./ui";
 import { canCreateForms, canViewForm } from "../lib/auth";
 import { formatDate, formatDateTime, getFormMode, getFormModeLabel, hasLinkedPeopleField } from "../lib/forms";
-import { buildPublicFormPath } from "../lib/appPublicRoutes";
+import { buildPublicFormPath, buildPublicFormUrl } from "../lib/appPublicRoutes";
 
 const LIST_ACTION_STYLE = {
   width: 42,
@@ -32,6 +32,8 @@ export const FormListCard = ({
   onArchiveForm,
   onDeleteForm,
 }) => {
+  const [copiedPublicLink, setCopiedPublicLink] = useState(false);
+  const copiedPublicLinkTimerRef = useRef(null);
   const responses = form.metrics?.responses || 0;
   const total = form.metrics?.total || form.totalExpected || 0;
   const canOpenResults = canViewForm(user, form);
@@ -58,6 +60,38 @@ export const FormListCard = ({
     const nextStatus = form.status === "arquivado" ? "rascunho" : "arquivado";
     await onArchiveForm(form, nextStatus);
   };
+
+  useEffect(() => () => {
+    if (copiedPublicLinkTimerRef.current) {
+      clearTimeout(copiedPublicLinkTimerRef.current);
+    }
+  }, []);
+
+  const copyPublicLink = async () => {
+    if (!form?.id || typeof navigator === "undefined" || !navigator.clipboard?.writeText) return;
+    try {
+      await navigator.clipboard.writeText(buildPublicFormUrl(form));
+      setCopiedPublicLink(true);
+      if (copiedPublicLinkTimerRef.current) {
+        clearTimeout(copiedPublicLinkTimerRef.current);
+      }
+      copiedPublicLinkTimerRef.current = setTimeout(() => setCopiedPublicLink(false), 1500);
+    } catch {
+      setCopiedPublicLink(false);
+    }
+  };
+
+  const shareButton = (
+    <Btn
+      v="ghost"
+      icon="share"
+      sz="sm"
+      style={LIST_ACTION_STYLE}
+      title={copiedPublicLink ? "Link copiado" : "Copiar link publico"}
+      aria-label={copiedPublicLink ? "Link copiado" : "Copiar link publico"}
+      onClick={copyPublicLink}
+    />
+  );
 
   return (
     <div
@@ -129,6 +163,7 @@ export const FormListCard = ({
               />
             )}
             {canCreateForms(user) && <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar formulário" aria-label="Editar formulário" onClick={() => onNavigate("create", form)} />}
+            {shareButton}
             {canCreateForms(user) && <Btn v="ghost" icon="clipboard" sz="sm" style={LIST_ACTION_STYLE} title="Duplicar" aria-label="Duplicar" onClick={() => onDuplicateForm?.(form)} />}
             {canCreateForms(user) && (
               <Btn
@@ -174,6 +209,7 @@ export const FormListCard = ({
                 />
               )}
               {canCreateForms(user) && <Btn v="ghost" icon="edit" sz="sm" style={LIST_ACTION_STYLE} title="Editar formulário" aria-label="Editar formulário" onClick={() => onNavigate("create", form)} />}
+              {shareButton}
               {canCreateForms(user) && <Btn v="ghost" icon="clipboard" sz="sm" style={LIST_ACTION_STYLE} title="Duplicar" aria-label="Duplicar" onClick={() => onDuplicateForm?.(form)} />}
               {canCreateForms(user) && (
                 <Btn

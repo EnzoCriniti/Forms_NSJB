@@ -492,6 +492,7 @@ Mapa curto das areas mais mexidas por agentes.
   O topo da listagem ficou compacto, sem contador textual e sem botao de criar exposto ali.
 - `frontend/src/components/FormListCard.jsx`
   Card da listagem com metadados do formulario, incluindo badge do modo estrutural nos formularios de presenca.
+  Tambem expõe a acao de copiar link publico de compartilhamento, montado por `frontend/src/lib/appPublicRoutes.js`.
 - `frontend/src/components/FormListToolbar.jsx`
   Barra de busca, filtros e ordenacao da listagem. No mobile, os filtros ficam em faixa horizontal rolavel.
 

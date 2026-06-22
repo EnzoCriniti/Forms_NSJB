@@ -14,6 +14,15 @@ export const buildPublicFormPath = formOrId => {
   return `#${PUBLIC_FORM_PATH_PREFIX}${encodePublicRouteSegment(id)}`;
 };
 
+export const buildPublicFormUrl = (formOrId, locationRef = null) => {
+  const path = buildPublicFormPath(formOrId);
+  if (!path) return "";
+  const resolvedLocation = locationRef || (typeof window !== "undefined" ? window.location : null);
+  const origin = resolvedLocation?.origin || "";
+  const pathname = resolvedLocation?.pathname || "/";
+  return `${origin}${pathname}${path}`;
+};
+
 export const buildPublicFormResultsPath = formOrId => {
   const id = typeof formOrId === "object" ? formOrId?.id : formOrId;
   if (!id) return "";

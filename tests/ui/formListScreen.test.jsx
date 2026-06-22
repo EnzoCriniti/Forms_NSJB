@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { afterEach, describe, it, expect, vi } from "vitest";
 import { FormListScreen } from "../../frontend/src/screens/FormListScreen.jsx";
 
 const labels = [
@@ -54,6 +54,10 @@ const forms = [
 ];
 
 describe("FormListScreen", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("mostra apenas formularios abertos para visitante sem login", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={null} labels={labels} forms={forms} />);
 
@@ -274,6 +278,31 @@ describe("FormListScreen", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Duplicar" })[0]);
 
     expect(onDuplicateForm).toHaveBeenCalledWith(forms[0]);
+  });
+
+  it("copia o link publico do formulario sem abrir o card", async () => {
+    const writeText = vi.fn().mockResolvedValue();
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    const onNavigate = vi.fn();
+
+    render(
+      <FormListScreen
+        onNavigate={onNavigate}
+        user={{ role: "admin", name: "Admin" }}
+        labels={labels}
+        forms={forms}
+      />,
+    );
+
+    window.location.hash = "";
+    fireEvent.click(screen.getAllByRole("button", { name: "Copiar link publico" })[0]);
+
+    await waitFor(() => expect(writeText).toHaveBeenCalledWith(`${window.location.origin}${window.location.pathname}#/formularios/1`));
+    expect(onNavigate).not.toHaveBeenCalled();
+    expect(window.location.hash).toBe("");
   });
 
   it("prioriza formularios fixados no topo e permite alternar o estado", () => {
