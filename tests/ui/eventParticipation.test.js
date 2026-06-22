@@ -4,7 +4,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { buildParticipationRows, minutesBetween } from "../../shared/eventParticipation.mjs";
+import { buildParticipationRows, minutesBetween, summarizeMemberParticipation } from "../../shared/eventParticipation.mjs";
 import { filterByEligibleGraus, isGrauEligible } from "../../shared/grauEligibility.mjs";
 
 const event = { id: 9, opening: "2026-05-01T08:00:00.000Z", eligibleGraus: ["QM"] };
@@ -57,6 +57,20 @@ describe("buildParticipationRows", () => {
 
     const davi = rows.find(r => r.personName === "Davi");
     expect(davi).toMatchObject({ filled: false, respondedAt: null, timeToFillMinutes: null });
+  });
+
+  it("resume metricas agregadas por socio", () => {
+    expect(summarizeMemberParticipation({
+      personKey: "ana", personName: "Ana", grau: "QM",
+      expectedCount: 4, filledCount: 3, avgTimeToFillMinutes: 64.6, lastFilledAt: "2026-05-01T09:00:00.000Z",
+    })).toEqual({
+      personKey: "ana", personName: "Ana", grau: "QM",
+      expected: 4, filled: 3, missed: 1, fillRate: 75, avgTimeToFillMinutes: 65, lastFilledAt: "2026-05-01T09:00:00.000Z",
+    });
+
+    const empty = summarizeMemberParticipation({ personKey: "x", expectedCount: 0, filledCount: 0 });
+    expect(empty.fillRate).toBe(0);
+    expect(empty.avgTimeToFillMinutes).toBeNull();
   });
 
   it("sem graus elegiveis cobre todos os socios ativos", () => {

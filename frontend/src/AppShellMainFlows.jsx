@@ -10,6 +10,7 @@ import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
+import { ReportsScreen } from "./screens/ReportsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { getShellActions, getShellData, getShellState } from "./lib/appShellObject";
 
@@ -175,6 +176,17 @@ export const CreateFormFlow = ({ app }) => {
       isDuplicateMode={Boolean(draftForm)}
     />
   );
+};
+
+export const ReportsFlow = ({ app }) => {
+  const state = getShellState(app);
+  const actions = getShellActions(app);
+  const { currentUser } = state;
+  const { onNavigate } = actions;
+
+  if (!canCreateForms(currentUser)) return null;
+
+  return <ReportsScreen onNavigate={onNavigate} user={currentUser} />;
 };
 
 export const SettingsFlow = ({ app }) => {

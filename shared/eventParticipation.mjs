@@ -60,3 +60,36 @@ export const buildParticipationRows = ({ event, presencaFormIds = [], people = [
 
   return rows;
 };
+
+/**
+ * Resume agregado de participacao de um socio para o relatorio/BI.
+ * Recebe contagens ja agregadas e devolve as metricas derivadas.
+ */
+export const summarizeMemberParticipation = ({
+  personKey,
+  personName = "",
+  grau = "",
+  expectedCount = 0,
+  filledCount = 0,
+  avgTimeToFillMinutes = null,
+  lastFilledAt = null,
+} = {}) => {
+  const expected = Number(expectedCount) || 0;
+  const filled = Number(filledCount) || 0;
+  const missed = Math.max(expected - filled, 0);
+  const fillRate = expected > 0 ? Math.round((filled / expected) * 1000) / 10 : 0;
+  const avg = avgTimeToFillMinutes === null || avgTimeToFillMinutes === undefined
+    ? null
+    : Math.round(Number(avgTimeToFillMinutes));
+  return {
+    personKey,
+    personName,
+    grau,
+    expected,
+    filled,
+    missed,
+    fillRate,
+    avgTimeToFillMinutes: Number.isFinite(avg) ? avg : null,
+    lastFilledAt: lastFilledAt || null,
+  };
+};

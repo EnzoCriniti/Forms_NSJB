@@ -12,7 +12,7 @@ export const resolveAppNavigation = ({
   canViewForm,
 }) => {
   const canCreate = canCreateForms(currentUser);
-  if (["dashboard", "create", "settings"].includes(nextScreen) && !canCreate) {
+  if (["dashboard", "create", "settings", "reports"].includes(nextScreen) && !canCreate) {
     return { screen: "list", clearDraft: false };
   }
 

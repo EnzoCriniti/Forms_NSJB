@@ -5,7 +5,7 @@
 
 import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
 import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
-import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, SettingsFlow } from "./AppShellMainFlows";
+import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, ReportsFlow, SettingsFlow } from "./AppShellMainFlows";
 import { getShellState } from "./lib/appShellObject";
 
 export const APP_SHELL_ROUTES = [
@@ -33,6 +33,11 @@ export const APP_SHELL_ROUTES = [
       const state = getShellState(app);
       return Boolean(state.currentUser && state.activeEvent && state.activeMessageId);
     },
+  },
+  {
+    screen: "reports",
+    component: ReportsFlow,
+    canRender: app => Boolean(getShellState(app).currentUser),
   },
   {
     screen: "list",

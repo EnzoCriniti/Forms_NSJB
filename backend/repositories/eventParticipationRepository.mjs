@@ -56,6 +56,28 @@ export const listEventParticipationByEvent = async eventId => (await database.qu
   ORDER BY filled ASC, lower(person_name) ASC
 `, [eventId])).map(mapRow);
 
+export const aggregateMemberParticipation = async () => (await database.queryMany(`
+  SELECT
+    person_key,
+    (ARRAY_AGG(person_name ORDER BY captured_at DESC, id DESC))[1] AS person_name,
+    (ARRAY_AGG(grau ORDER BY captured_at DESC, id DESC))[1] AS grau,
+    COUNT(*) AS expected_count,
+    COUNT(*) FILTER (WHERE filled) AS filled_count,
+    AVG(time_to_fill_minutes) FILTER (WHERE filled AND time_to_fill_minutes IS NOT NULL) AS avg_time_to_fill,
+    MAX(responded_at) FILTER (WHERE filled) AS last_filled_at
+  FROM event_participation
+  GROUP BY person_key
+  ORDER BY lower((ARRAY_AGG(person_name ORDER BY captured_at DESC, id DESC))[1]) ASC
+`)).map(row => ({
+  personKey: row.person_key,
+  personName: row.person_name || "",
+  grau: row.grau || "",
+  expectedCount: Number(row.expected_count) || 0,
+  filledCount: Number(row.filled_count) || 0,
+  avgTimeToFillMinutes: row.avg_time_to_fill === null || row.avg_time_to_fill === undefined ? null : Number(row.avg_time_to_fill),
+  lastFilledAt: row.last_filled_at || null,
+}));
+
 export const listEventParticipationByPersonKey = async personKey => (await database.queryMany(`
   SELECT id, event_id, form_id, person_key, person_name, grau, expected, filled, responded_at, time_to_fill_minutes, captured_at
   FROM event_participation

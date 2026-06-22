@@ -8,6 +8,7 @@ import { handleAdminRoutes } from "./adminRoutes.mjs";
 import { handleEventRoutes } from "./eventRoutes.mjs";
 import { handleFormRoutes } from "./formRoutes.mjs";
 import { handleMessageRoutes } from "./messageRoutes.mjs";
+import { handleReportsRoutes } from "./reportsRoutes.mjs";
 import { handleSystemRoutes } from "./systemRoutes.mjs";
 
 export const handleApiRequest = async (req, res, url) => {
@@ -21,6 +22,9 @@ export const handleApiRequest = async (req, res, url) => {
     return true;
   }
   if (await handleEventRoutes(req, res, url)) {
+    return true;
+  }
+  if (await handleReportsRoutes(req, res, url)) {
     return true;
   }
   if (await handleAdminRoutes(req, res, url)) {

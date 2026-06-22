@@ -217,6 +217,7 @@ describe("appShell derived state", () => {
       nav: [
         { key: "dashboard", icon: "chart", label: "Dashboard" },
         { key: "events", icon: "calendar", label: "Eventos" },
+        { key: "reports", icon: "clipboard", label: "Relatórios" },
       ],
       screen: "events",
       theme: "dark",
@@ -475,6 +476,7 @@ describe("app navigation items", () => {
     expect(buildAppNavItems({ currentUser: { role: "admin" }, canCreateForms })).toEqual([
       { key: "dashboard", icon: "chart", label: "Dashboard" },
       { key: "events", icon: "calendar", label: "Eventos" },
+      { key: "reports", icon: "clipboard", label: "Relatórios" },
     ]);
   });
 });

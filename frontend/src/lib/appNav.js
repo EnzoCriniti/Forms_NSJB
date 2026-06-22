@@ -8,6 +8,7 @@ export const buildAppNavItems = ({ currentUser, canCreateForms }) => (
     ? [
         ...(canCreateForms(currentUser) ? [{ key: "dashboard", icon: "chart", label: "Dashboard" }] : []),
         { key: "events", icon: "calendar", label: "Eventos" },
+        ...(canCreateForms(currentUser) ? [{ key: "reports", icon: "clipboard", label: "Relatórios" }] : []),
       ]
     : []
 );
