@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { Btn, FeedbackBanner, ScreenHeader } from "../components/ui";
+import { Btn, ConfirmModal, FeedbackBanner, ScreenHeader } from "../components/ui";
 import {
   EventDeleteConfirmModal,
   EventDetailFormsPanel,
@@ -48,6 +48,12 @@ export const EventDetailView = ({
   onEdit,
   onNextFormsPage,
   onOpenMessage,
+  onEditMessage,
+  onDeleteMessage,
+  pendingMessageDelete,
+  deletingMessage,
+  onCancelMessageDelete,
+  onConfirmMessageDelete,
   onPreviousFormsPage,
   onPublish,
   onTogglePinnedForm,
@@ -87,6 +93,8 @@ export const EventDetailView = ({
         canManage={canManageEvents}
         onCreate={onCreateMessage}
         onOpen={onOpenMessage}
+        onEdit={onEditMessage}
+        onDelete={onDeleteMessage}
       />
     ) : (
       <EventDetailFormsPanel
@@ -105,6 +113,16 @@ export const EventDetailView = ({
         onNextPage={onNextFormsPage}
       />
     )}
+    <ConfirmModal
+      open={Boolean(pendingMessageDelete)}
+      title="Excluir mensagem"
+      message="Esta acao remove a mensagem e o historico de disparos vinculado. Nao pode ser desfeita."
+      confirmLabel="Excluir"
+      tone="danger"
+      busy={deletingMessage}
+      onCancel={onCancelMessageDelete}
+      onConfirm={onConfirmMessageDelete}
+    />
   </div>
 );
 

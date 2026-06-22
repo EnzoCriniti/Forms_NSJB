@@ -27,6 +27,8 @@ export const EventsScreen = ({
   onDeleteForm,
   onCreateEventMessage,
   onOpenEventMessage,
+  onEditEventMessage,
+  onDeleteEventMessage,
   onNavigate,
 }) => {
   const controller = useEventsScreenController({
@@ -39,6 +41,7 @@ export const EventsScreen = ({
     onSaveEvent,
     onPublishEvent,
     onDeleteEvent,
+    onDeleteEventMessage,
   });
 
   const {
@@ -57,6 +60,11 @@ export const EventsScreen = ({
     setFormsPage,
     detailTab,
     setDetailTab,
+    pendingMessageDelete,
+    deletingMessage,
+    requestDeleteMessage,
+    cancelDeleteMessage,
+    confirmDeleteMessage,
     pinnedEventSet,
     pinnedFormSet,
     sortedEvents,
@@ -112,6 +120,12 @@ export const EventsScreen = ({
         onNextFormsPage={() => setFormsPage(current => Math.min(formsPagination.totalPages, current + 1))}
         onNavigate={onNavigate}
         onOpenMessage={message => onOpenEventMessage && onOpenEventMessage(selectedEvent, message)}
+        onEditMessage={onEditEventMessage ? message => onEditEventMessage(selectedEvent, message) : null}
+        onDeleteMessage={requestDeleteMessage}
+        pendingMessageDelete={pendingMessageDelete}
+        deletingMessage={deletingMessage}
+        onCancelMessageDelete={cancelDeleteMessage}
+        onConfirmMessageDelete={confirmDeleteMessage}
         onPreviousFormsPage={() => setFormsPage(current => Math.max(1, current - 1))}
         onPublish={onPublishEvent ? publish : null}
         onTogglePinnedForm={onTogglePinnedForm}

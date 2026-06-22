@@ -6,6 +6,7 @@
 
 import { useMemo, useState } from "react";
 import { resolveActionErrorMessage } from "../components/ui";
+import { deleteEventMessage as apiDeleteEventMessage } from "../lib/api";
 import { buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateItems, selectEventForms, sortEvents } from "./eventsDomain";
 
 export const useEventsScreenController = ({
@@ -18,6 +19,7 @@ export const useEventsScreenController = ({
   onSaveEvent,
   onPublishEvent,
   onDeleteEvent,
+  onDeleteEventMessage,
 }) => {
   const canManageEvents = user?.role === "admin";
   const [mode, setMode] = useState(initialSelectedEventId ? "detail" : "list");
@@ -31,6 +33,8 @@ export const useEventsScreenController = ({
   const [eventsPage, setEventsPage] = useState(1);
   const [formsPage, setFormsPage] = useState(1);
   const [detailTab, setDetailTab] = useState("forms");
+  const [pendingMessageDelete, setPendingMessageDelete] = useState(null);
+  const [deletingMessage, setDeletingMessage] = useState(false);
 
   const pinnedEventSet = useMemo(() => new Set(pinnedEventIds), [pinnedEventIds]);
   const pinnedFormSet = useMemo(() => new Set(pinnedFormIds), [pinnedFormIds]);
@@ -113,6 +117,29 @@ export const useEventsScreenController = ({
     }
   };
 
+  const requestDeleteMessage = message => setPendingMessageDelete(message);
+
+  const cancelDeleteMessage = () => {
+    if (deletingMessage) return;
+    setPendingMessageDelete(null);
+  };
+
+  const confirmDeleteMessage = async () => {
+    if (!pendingMessageDelete || !selectedEvent) return;
+    setDeletingMessage(true);
+    setFeedback(null);
+    try {
+      await apiDeleteEventMessage(selectedEvent.id, pendingMessageDelete.id);
+      if (onDeleteEventMessage) onDeleteEventMessage(pendingMessageDelete.id);
+      setPendingMessageDelete(null);
+      setFeedback({ tone: "success", message: "Mensagem excluida." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setDeletingMessage(false);
+    }
+  };
+
   const confirmDelete = async () => {
     if (!pendingDelete) return;
     setDeleting(true);
@@ -148,6 +175,11 @@ export const useEventsScreenController = ({
     setFormsPage,
     detailTab,
     setDetailTab,
+    pendingMessageDelete,
+    deletingMessage,
+    requestDeleteMessage,
+    cancelDeleteMessage,
+    confirmDeleteMessage,
     pinnedEventSet,
     pinnedFormSet,
     sortedEvents,

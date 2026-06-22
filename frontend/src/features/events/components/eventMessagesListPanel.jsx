@@ -6,8 +6,11 @@
 import React from "react";
 import { Btn, COLORS, Icon } from "../../../components/ui";
 import { MessageStatusBadge, MESSAGE_TYPE_LABELS } from "../../../components/MessageStatusBadge";
+import { isEventMessageEditable } from "../../../screens/eventMessageDomain";
 
-export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, onOpen }) => {
+const MESSAGE_ACTION_STYLE = { width: 38, height: 38, minWidth: 38, padding: 0, justifyContent: "center", borderRadius: 10 };
+
+export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, onOpen, onEdit, onDelete }) => {
   if (!eligible) {
     return (
       <div className="msg-empty" style={{ textAlign: "left" }}>
@@ -63,6 +66,19 @@ export const EventMessagesPanel = ({ messages, eligible, canManage, onCreate, on
               {message.body?.split("\n")[0] || ""}
             </div>
           </div>
+          {canManage && (onEdit || onDelete) && (
+            <div
+              style={{ display: "flex", gap: 6, flexShrink: 0 }}
+              onClick={actionEvent => actionEvent.stopPropagation()}
+            >
+              {onEdit && isEventMessageEditable(message.status) && (
+                <Btn v="ghost" icon="edit" sz="sm" style={MESSAGE_ACTION_STYLE} title="Editar mensagem" aria-label="Editar mensagem" onClick={() => onEdit(message)} />
+              )}
+              {onDelete && (
+                <Btn v="danger" icon="trash" sz="sm" style={MESSAGE_ACTION_STYLE} title="Excluir mensagem" aria-label="Excluir mensagem" onClick={() => onDelete(message)} />
+              )}
+            </div>
+          )}
         </div>
       ))}
     </div>

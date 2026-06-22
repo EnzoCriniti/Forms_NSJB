@@ -8,6 +8,11 @@ import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { EventsScreen } from "../../frontend/src/screens/EventsScreen.jsx";
+import { deleteEventMessage } from "../../frontend/src/lib/api.js";
+
+vi.mock("../../frontend/src/lib/api.js", () => ({
+  deleteEventMessage: vi.fn(async () => ({})),
+}));
 
 const admin = { role: "admin", name: "Admin" };
 
@@ -48,6 +53,16 @@ const events = [
     status: "pronto",
     description: "Organizacao da reuniao",
     formIds: [1],
+  },
+];
+
+const eventsWithMessages = [
+  {
+    ...events[0],
+    messages: [
+      { id: 5, type: "fill_reminder", status: "rascunho", body: "Ola pessoal" },
+      { id: 6, type: "fill_reminder", status: "disparada", body: "Mensagem enviada" },
+    ],
   },
 ];
 
@@ -154,6 +169,64 @@ describe("EventsScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Excluir" }));
 
     await waitFor(() => expect(onDeleteEvent).toHaveBeenCalledWith(10));
+  });
+
+  it("edita mensagem editavel pela listagem do evento", () => {
+    const onEditEventMessage = vi.fn();
+
+    render(
+      <EventsScreen
+        events={eventsWithMessages}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onEditEventMessage={onEditEventMessage}
+        onDeleteEventMessage={vi.fn()}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByRole("button", { name: "Mensagens (2)" }));
+
+    const editButtons = screen.getAllByRole("button", { name: "Editar mensagem" });
+    expect(editButtons).toHaveLength(1);
+
+    fireEvent.click(editButtons[0]);
+    expect(onEditEventMessage).toHaveBeenCalledWith(eventsWithMessages[0], eventsWithMessages[0].messages[0]);
+  });
+
+  it("exclui mensagem pela listagem do evento", async () => {
+    deleteEventMessage.mockClear();
+    const onDeleteEventMessage = vi.fn();
+
+    render(
+      <EventsScreen
+        events={eventsWithMessages}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onEditEventMessage={vi.fn()}
+        onDeleteEventMessage={onDeleteEventMessage}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByRole("button", { name: "Mensagens (2)" }));
+
+    const deleteButtons = screen.getAllByRole("button", { name: "Excluir mensagem" });
+    expect(deleteButtons).toHaveLength(2);
+
+    fireEvent.click(deleteButtons[0]);
+    fireEvent.click(screen.getByRole("button", { name: "Excluir" }));
+
+    await waitFor(() => expect(deleteEventMessage).toHaveBeenCalledWith(10, 5));
+    await waitFor(() => expect(onDeleteEventMessage).toHaveBeenCalledWith(5));
   });
 
   it("viewer acessa eventos e formularios sem acoes administrativas", () => {

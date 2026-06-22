@@ -51,6 +51,7 @@ export const EventsFlow = ({ app }) => {
     labels,
   } = data;
   const {
+    applyMessageDeletion,
     handleArchiveForm,
     handleCreateFormInEvent,
     handleDeleteEvent,
@@ -87,6 +88,8 @@ export const EventsFlow = ({ app }) => {
       onDeleteForm={handleDeleteForm}
       onCreateEventMessage={event => openEventMessageEditor(event, null)}
       onOpenEventMessage={(event, message) => openEventMessageDetail(event, message)}
+      onEditEventMessage={(event, message) => openEventMessageEditor(event, message)}
+      onDeleteEventMessage={applyMessageDeletion}
       onNavigate={onNavigate}
     />
   );
