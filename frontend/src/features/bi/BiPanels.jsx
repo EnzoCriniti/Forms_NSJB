@@ -48,6 +48,38 @@ export const KpiCard = ({ label, percent, caption, accent = COLORS.primary }) =>
   </div>
 );
 
+export const StatCard = ({ label, value, hint, accent = COLORS.text }) => (
+  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: "14px 16px" }}>
+    <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{label}</div>
+    <div style={{ fontSize: 22, fontWeight: 800, color: accent, lineHeight: 1.1 }}>{value}</div>
+    {hint && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>{hint}</div>}
+  </div>
+);
+
+export const BiBarChart = ({ title, hint, data = [], emptyLabel, accent = COLORS.primary }) => (
+  <div className="bi-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 16, padding: 18, display: "grid", gap: 12, alignContent: "start" }}>
+    <div>
+      <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>{title}</div>
+      {hint && <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 2 }}>{hint}</div>}
+    </div>
+    {data.length === 0 ? (
+      <div style={{ fontSize: 13, color: COLORS.textMuted }}>{emptyLabel}</div>
+    ) : (
+      <div style={{ display: "grid", gap: 10 }}>
+        {data.map(item => (
+          <div key={item.label} style={{ display: "grid", gridTemplateColumns: "48px 1fr 52px", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>{item.label}</span>
+            <span style={{ height: 12, borderRadius: 999, background: COLORS.surfaceAlt, overflow: "hidden" }}>
+              <span style={{ display: "block", height: "100%", width: `${Math.min(100, Math.max(0, item.value))}%`, background: accent, borderRadius: 999, transition: "width .3s" }} />
+            </span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.text, textAlign: "right" }}>{item.caption}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+);
+
 const rankBadgeStyle = {
   width: 22, height: 22, borderRadius: 999, flexShrink: 0,
   display: "inline-flex", alignItems: "center", justifyContent: "center",

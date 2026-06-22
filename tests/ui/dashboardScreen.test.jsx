@@ -62,7 +62,7 @@ describe("DashboardScreen", () => {
     fetchBiOverview.mockResolvedValue({ graus: [], members: [], presenca: { expected: 0, filled: 0 }, escala: { totalSlots: 0, filledSlots: 0 } });
     render(<DashboardScreen onNavigate={vi.fn()} forms={[]} user={{ role: "admin", name: "Admin" }} />);
 
-    expect(await screen.findByText("Sem eventos encerrados ainda.")).toBeInTheDocument();
+    expect((await screen.findAllByText("Sem eventos encerrados ainda.")).length).toBeGreaterThan(0);
     expect(screen.getByText("Nenhuma escala registrada ainda.")).toBeInTheDocument();
   });
 });

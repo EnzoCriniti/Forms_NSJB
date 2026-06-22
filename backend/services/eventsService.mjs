@@ -69,7 +69,14 @@ export const saveEvent = async payload => {
 
   const savedEvent = await findEventById(eventId);
   if (status === "encerrado" && existingEvent?.status !== "encerrado") {
-    await onEventClosed(savedEvent);
+    // O fechamento e a fonte de verdade e nao pode depender do BI. A captura
+    // do snapshot e best-effort (idempotente, regeravel), entao uma falha aqui
+    // e logada mas nao derruba o encerramento do evento.
+    try {
+      await onEventClosed(savedEvent);
+    } catch (error) {
+      console.error(`[bi] Falha ao capturar participacao do evento ${savedEvent.id}:`, error);
+    }
   }
   return savedEvent;
 };

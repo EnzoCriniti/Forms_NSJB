@@ -86,7 +86,7 @@ describe("App dashboard flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Dashboard" }));
 
     expect(await screen.findByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
-    expect(screen.getByText("Resumo operacional da aplicação sem entrar nas Configurações.")).toBeInTheDocument();
+    expect(screen.getByText("Panorama do núcleo: presença, escalas e participação por sócio.")).toBeInTheDocument();
   }, 10000);
 
   it("abre configuracoes em tela dedicada para admin", async () => {

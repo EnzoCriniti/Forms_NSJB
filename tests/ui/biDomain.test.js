@@ -7,6 +7,7 @@ import { describe, it, expect } from "vitest";
 import {
   filterByGrau,
   formatDuration,
+  presencaByGrau,
   rate,
   sortGrauOptions,
   topLeastEscala,
@@ -46,5 +47,12 @@ describe("biDomain", () => {
 
   it("top menos escala ordena pelo menor numero de vagas", () => {
     expect(topLeastEscala(members).map(m => m.personName)).toEqual(["Bruno", "Caio", "Ana"]);
+  });
+
+  it("agrupa presenca por grau (canonico) ignorando graus sem esperados", () => {
+    const result = presencaByGrau(members); // QM: (4+0)/(4+0)=100 (Caio expected 0 nao soma), CDC: 1/4=25
+    expect(result.map(g => g.grau)).toEqual(["QM", "CDC"]);
+    expect(result.find(g => g.grau === "QM").rate).toBe(100);
+    expect(result.find(g => g.grau === "CDC").rate).toBe(25);
   });
 });

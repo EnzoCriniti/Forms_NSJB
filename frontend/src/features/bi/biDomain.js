@@ -61,6 +61,25 @@ export const topLeastPresenca = (members = [], limit = 10) => members
 /**
  * Socios que menos fazem escala de trabalho: menor numero de slots assumidos.
  */
+/**
+ * Taxa de presenca agregada por grau, para o grafico. So inclui graus que ja
+ * foram esperados em algum evento, ordenados de forma canonica.
+ */
+export const presencaByGrau = (members = []) => {
+  const byGrau = new Map();
+  for (const member of members) {
+    const grau = member.grau || "—";
+    const current = byGrau.get(grau) || { grau, expected: 0, filled: 0 };
+    current.expected += member.presencaExpected || 0;
+    current.filled += member.presencaFilled || 0;
+    byGrau.set(grau, current);
+  }
+  return [...byGrau.values()]
+    .filter(item => item.expected > 0)
+    .map(item => ({ ...item, rate: rate(item.filled, item.expected) }))
+    .sort((a, b) => compareGrauOptions(a.grau, b.grau));
+};
+
 export const topLeastEscala = (members = [], limit = 10) => [...members]
   .sort((a, b) => ((a.escalaCount || 0) - (b.escalaCount || 0)) || a.personName.localeCompare(b.personName, "pt-BR"))
   .slice(0, limit);

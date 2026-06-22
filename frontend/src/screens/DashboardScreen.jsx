@@ -1,20 +1,21 @@
 /**
  * @file frontend/src/screens/DashboardScreen.jsx
  * @summary Painel inicial: panorama de BI do nucleo.
- * @responsibility Exibir KPIs, filtro por grau e rankings a partir do modulo de BI.
+ * @responsibility Exibir KPIs, totais, grafico por grau e rankings a partir do modulo de BI.
  */
 
 import React, { useEffect, useMemo, useState } from "react";
 import { COLORS, FeedbackBanner, ScreenHeader } from "../components/ui";
 import { formatDateTime } from "../lib/forms";
 import { fetchBiOverview } from "../lib/api";
-import { DashboardHeader, DashboardUpcomingClosings } from "../components/DashboardPanels";
-import { GrauFilterChips, KpiCard, TopMembersPanel } from "../features/bi/BiPanels";
+import { DashboardUpcomingClosings } from "../components/DashboardPanels";
+import { BiBarChart, GrauFilterChips, KpiCard, StatCard, TopMembersPanel } from "../features/bi/BiPanels";
 import {
   ALL_GRAUS,
   computePresencaKpi,
   filterByGrau,
   formatPercent,
+  presencaByGrau,
   rate,
   sortGrauOptions,
   topLeastEscala,
@@ -22,8 +23,9 @@ import {
 } from "../features/bi/biDomain";
 
 const sortByClosing = (a, b) => String(a.closing || "").localeCompare(String(b.closing || ""));
+const countBy = (items, predicate) => items.filter(predicate).length;
 
-export const DashboardScreen = ({ onNavigate, forms = [], user }) => {
+export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) => {
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,32 +47,37 @@ export const DashboardScreen = ({ onNavigate, forms = [], user }) => {
     return () => { active = false; };
   }, []);
 
+  const safeForms = Array.isArray(forms) ? forms : [];
+  const safeEvents = Array.isArray(events) ? events : [];
+  const allMembers = overview?.members || [];
   const graus = useMemo(() => sortGrauOptions(overview?.graus || []), [overview]);
-  const filteredMembers = useMemo(() => filterByGrau(overview?.members || [], grau), [overview, grau]);
+  const filteredMembers = useMemo(() => filterByGrau(allMembers, grau), [allMembers, grau]);
   const presenca = useMemo(() => computePresencaKpi(filteredMembers), [filteredMembers]);
   const escala = overview?.escala || { totalSlots: 0, filledSlots: 0 };
   const escalaRate = rate(escala.filledSlots, escala.totalSlots);
+  const grauChart = useMemo(() => presencaByGrau(allMembers), [allMembers]);
   const leastPresenca = useMemo(() => topLeastPresenca(filteredMembers), [filteredMembers]);
   const leastEscala = useMemo(() => topLeastEscala(filteredMembers), [filteredMembers]);
 
   const grauSuffix = grau === ALL_GRAUS ? "" : ` · ${grau}`;
+  const stats = [
+    { label: "Formulários de presença", value: countBy(safeForms, form => form.type === "presenca"), hint: `${countBy(safeForms, form => form.type === "presenca" && form.status === "aberto")} abertos` },
+    { label: "Escalas da Organ", value: countBy(safeForms, form => form.type === "escala_organ"), hint: `${countBy(safeForms, form => form.type === "escala_organ" && form.status === "aberto")} abertas` },
+    { label: "Eventos encerrados", value: countBy(safeEvents, event => event.status === "encerrado"), hint: `${safeEvents.length} no total` },
+    { label: `Sócios acompanhados${grauSuffix}`, value: filteredMembers.length, hint: "na base ativa" },
+  ];
+
   const upcomingClosings = useMemo(
-    () => (Array.isArray(forms) ? forms : [])
-      .filter(form => form.status === "aberto" && form.closing)
-      .sort(sortByClosing)
-      .slice(0, 5),
-    [forms],
+    () => safeForms.filter(form => form.status === "aberto" && form.closing).sort(sortByClosing).slice(0, 5),
+    [safeForms],
   );
 
   return (
     <div>
-      <DashboardHeader onNavigate={onNavigate} user={user} />
-
       <ScreenHeader
         className="settings-top-card"
-        title="Panorama"
-        titleSize={18}
-        subtitle="Indicadores do núcleo a partir dos eventos encerrados e das escalas."
+        title="Dashboard"
+        subtitle="Panorama do núcleo: presença, escalas e participação por sócio."
       />
 
       {graus.length > 0 && (
@@ -86,17 +93,20 @@ export const DashboardScreen = ({ onNavigate, forms = [], user }) => {
       ) : (
         <>
           <div className="bi-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 14 }}>
-            <KpiCard
-              label={`Preenchimento de presença${grauSuffix}`}
-              percent={formatPercent(presenca.rate)}
-              caption={`${presenca.filled} de ${presenca.expected} esperados`}
-              accent={COLORS.primary}
-            />
-            <KpiCard
-              label="Preenchimento de escalas (geral)"
-              percent={formatPercent(escalaRate)}
-              caption={`${escala.filledSlots} de ${escala.totalSlots} vagas`}
-              accent={COLORS.accent}
+            <KpiCard label={`Preenchimento de presença${grauSuffix}`} percent={formatPercent(presenca.rate)} caption={`${presenca.filled} de ${presenca.expected} esperados`} accent={COLORS.primary} />
+            <KpiCard label="Preenchimento de escalas (geral)" percent={formatPercent(escalaRate)} caption={`${escala.filledSlots} de ${escala.totalSlots} vagas`} accent={COLORS.accent} />
+          </div>
+
+          <div className="bi-stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12, marginBottom: 14 }}>
+            {stats.map(stat => <StatCard key={stat.label} label={stat.label} value={stat.value} hint={stat.hint} />)}
+          </div>
+
+          <div style={{ marginBottom: 14 }}>
+            <BiBarChart
+              title="Presença por grau"
+              hint="Taxa de preenchimento consolidada nos eventos encerrados."
+              data={grauChart.map(item => ({ label: item.grau, value: item.rate, caption: formatPercent(item.rate) }))}
+              emptyLabel="Sem eventos encerrados ainda."
             />
           </div>
 

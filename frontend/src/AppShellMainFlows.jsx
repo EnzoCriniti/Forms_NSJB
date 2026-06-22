@@ -19,18 +19,14 @@ export const DashboardFlow = ({ app }) => {
   const data = getShellData(app);
   const actions = getShellActions(app);
   const { currentUser } = state;
-  const { fieldCatalog, forms, labels, people, presets, scaleTaskCatalog } = data;
+  const { events, forms } = data;
   const { onNavigate } = actions;
 
   return (
     <DashboardScreen
       onNavigate={onNavigate}
       forms={forms}
-      labels={labels}
-      people={people}
-      presets={presets}
-      fieldCatalog={fieldCatalog}
-      scaleTaskCatalog={scaleTaskCatalog}
+      events={events}
       user={currentUser}
     />
   );
