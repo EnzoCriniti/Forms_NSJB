@@ -12,6 +12,10 @@ export const getEscalaByFormId = async formId => {
   return parseJson(row?.sections_json, []);
 };
 
+export const listAllEscalaAssignments = async () => (await database.queryMany(
+  "SELECT form_id, sections_json FROM escala_assignments",
+)).map(row => ({ formId: row.form_id, sections: parseJson(row.sections_json, []) }));
+
 export const upsertEscalaRecord = async (formId, sections) => {
   await database.execute(`
     INSERT INTO escala_assignments (form_id, sections_json, updated_at)

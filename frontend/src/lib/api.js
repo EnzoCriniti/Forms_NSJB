@@ -217,3 +217,5 @@ export const deleteEventMessage = (eventId, messageId) => requestJson(`/api/even
 export const fetchEventMessageLogs = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/logs`);
 
 export const fetchMemberParticipationReport = () => requestJson("/api/reports/members");
+
+export const fetchBiOverview = () => requestJson("/api/reports/overview");

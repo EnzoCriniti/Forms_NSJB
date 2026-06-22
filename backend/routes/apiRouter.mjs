@@ -8,7 +8,7 @@ import { handleAdminRoutes } from "./adminRoutes.mjs";
 import { handleEventRoutes } from "./eventRoutes.mjs";
 import { handleFormRoutes } from "./formRoutes.mjs";
 import { handleMessageRoutes } from "./messageRoutes.mjs";
-import { handleReportsRoutes } from "./reportsRoutes.mjs";
+import { handleBiRoutes } from "../bi/index.mjs";
 import { handleSystemRoutes } from "./systemRoutes.mjs";
 
 export const handleApiRequest = async (req, res, url) => {
@@ -24,7 +24,7 @@ export const handleApiRequest = async (req, res, url) => {
   if (await handleEventRoutes(req, res, url)) {
     return true;
   }
-  if (await handleReportsRoutes(req, res, url)) {
+  if (await handleBiRoutes(req, res, url)) {
     return true;
   }
   if (await handleAdminRoutes(req, res, url)) {

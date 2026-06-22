@@ -1,7 +1,10 @@
 /**
- * @file backend/repositories/eventParticipationRepository.mjs
- * @summary Acesso a dados do snapshot de participacao por evento.
+ * @file backend/bi/biRepository.mjs
+ * @summary Read model do BI: dono da tabela event_participation.
  * @responsibility Persistir e ler o historico imutavel de esperados x preenchidos.
+ *
+ * Este e o unico modulo que faz SQL direto em event_participation. Para dados de
+ * dominio (pessoas, respostas, escala) o BI le pelos repositorios de dominio.
  */
 
 import { database } from "../database/index.mjs";

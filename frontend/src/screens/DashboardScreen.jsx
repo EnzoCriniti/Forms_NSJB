@@ -1,122 +1,123 @@
 /**
  * @file frontend/src/screens/DashboardScreen.jsx
- * @summary Painel inicial da aplicacao.
- * @responsibility Exibir resumo operacional sem depender das configuracoes administrativas.
+ * @summary Painel inicial: panorama de BI do nucleo.
+ * @responsibility Exibir KPIs, filtro por grau e rankings a partir do modulo de BI.
  */
 
-import React, { useMemo } from "react";
-import { COLORS, Btn } from "../components/ui";
+import React, { useEffect, useMemo, useState } from "react";
+import { COLORS, FeedbackBanner, ScreenHeader } from "../components/ui";
 import { formatDateTime } from "../lib/forms";
+import { fetchBiOverview } from "../lib/api";
+import { DashboardHeader, DashboardUpcomingClosings } from "../components/DashboardPanels";
+import { GrauFilterChips, KpiCard, TopMembersPanel } from "../features/bi/BiPanels";
 import {
-  DashboardEmptyState,
-  DashboardHeader,
-  DashboardMiniRow,
-  DashboardStatsGrid,
-  DashboardUpcomingClosings,
-} from "../components/DashboardPanels";
-
-const toNumber = value => Number(value || 0);
-
-const formatPercent = (value, total) => {
-  if (!total) return "0%";
-  return `${Math.round((value / total) * 10) / 10}%`;
-};
+  ALL_GRAUS,
+  computePresencaKpi,
+  filterByGrau,
+  formatPercent,
+  rate,
+  sortGrauOptions,
+  topLeastEscala,
+  topLeastPresenca,
+} from "../features/bi/biDomain";
 
 const sortByClosing = (a, b) => String(a.closing || "").localeCompare(String(b.closing || ""));
 
-export const DashboardScreen = ({ onNavigate, forms = [], labels = [], people = [], presets = [], fieldCatalog = [], scaleTaskCatalog = [], user }) => {
-  const safeForms = Array.isArray(forms) ? forms : [];
-  const presenceForms = useMemo(() => safeForms.filter(form => form.type === "presenca"), [safeForms]);
-  const scaleForms = useMemo(() => safeForms.filter(form => form.type === "escala_organ"), [safeForms]);
-  const openForms = useMemo(() => safeForms.filter(form => form.status === "aberto"), [safeForms]);
-  const archivedForms = useMemo(() => safeForms.filter(form => form.status === "arquivado"), [safeForms]);
-  const draftForms = useMemo(() => safeForms.filter(form => form.status === "rascunho"), [safeForms]);
+export const DashboardScreen = ({ onNavigate, forms = [], user }) => {
+  const [overview, setOverview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [grau, setGrau] = useState(ALL_GRAUS);
 
-  const totalPresenceResponses = useMemo(
-    () => presenceForms.reduce((sum, form) => sum + toNumber(form.metrics?.responses), 0),
-    [presenceForms],
-  );
-  const totalExpectedPresence = useMemo(
-    () => presenceForms.reduce((sum, form) => sum + toNumber(form.metrics?.total || form.totalExpected), 0),
-    [presenceForms],
-  );
-  const totalScaleFilled = useMemo(
-    () => scaleForms.reduce((sum, form) => sum + toNumber(form.metrics?.filled ?? form.metrics?.responses), 0),
-    [scaleForms],
-  );
-  const totalScalePending = useMemo(
-    () => scaleForms.reduce((sum, form) => sum + toNumber(form.metrics?.pending ?? Math.max(toNumber(form.metrics?.total) - toNumber(form.metrics?.responses), 0)), 0),
-    [scaleForms],
-  );
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    (async () => {
+      try {
+        const payload = await fetchBiOverview();
+        if (active) { setOverview(payload); setError(null); }
+      } catch {
+        if (active) setError("Não foi possível carregar o panorama.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => { active = false; };
+  }, []);
 
+  const graus = useMemo(() => sortGrauOptions(overview?.graus || []), [overview]);
+  const filteredMembers = useMemo(() => filterByGrau(overview?.members || [], grau), [overview, grau]);
+  const presenca = useMemo(() => computePresencaKpi(filteredMembers), [filteredMembers]);
+  const escala = overview?.escala || { totalSlots: 0, filledSlots: 0 };
+  const escalaRate = rate(escala.filledSlots, escala.totalSlots);
+  const leastPresenca = useMemo(() => topLeastPresenca(filteredMembers), [filteredMembers]);
+  const leastEscala = useMemo(() => topLeastEscala(filteredMembers), [filteredMembers]);
+
+  const grauSuffix = grau === ALL_GRAUS ? "" : ` · ${grau}`;
   const upcomingClosings = useMemo(
-    () => [...openForms]
-      .filter(form => form.closing)
+    () => (Array.isArray(forms) ? forms : [])
+      .filter(form => form.status === "aberto" && form.closing)
       .sort(sortByClosing)
       .slice(0, 5),
-    [openForms],
+    [forms],
   );
-
-  const quickStats = [
-    { label: "Formulários", value: safeForms.length, note: `${presenceForms.length} presença | ${scaleForms.length} escala`, color: COLORS.primary },
-    { label: "Abertos", value: openForms.length, note: "em operação", color: COLORS.accent },
-    { label: "Rascunhos", value: draftForms.length, note: "não publicados", color: COLORS.warning },
-    { label: "Arquivados", value: archivedForms.length, note: "fora da lista pública", color: COLORS.textSecondary },
-    { label: "Respostas", value: totalPresenceResponses, note: totalExpectedPresence > 0 ? `${formatPercent(totalPresenceResponses, totalExpectedPresence)} do previsto` : "sem meta prevista", color: COLORS.primary },
-    { label: "Vagas escala", value: totalScaleFilled, note: `${totalScalePending} pendentes`, color: COLORS.accent },
-  ];
-
-  const baseCards = [
-    { label: "Classificações", value: labels.length, note: "categorias administrativas" },
-    { label: "Pessoas", value: people.length, note: "base vinculada" },
-    { label: "Presets", value: presets.length, note: "modelos salvos" },
-    { label: "Campos base", value: fieldCatalog.length, note: "campos padrão" },
-    { label: "Tarefas base", value: scaleTaskCatalog.length, note: "funções da escala" },
-  ];
-
-  const emptyState = safeForms.length === 0;
 
   return (
     <div>
       <DashboardHeader onNavigate={onNavigate} user={user} />
-      {emptyState ? (
-        <DashboardEmptyState onNavigate={onNavigate} user={user} />
+
+      <ScreenHeader
+        className="settings-top-card"
+        title="Panorama"
+        titleSize={18}
+        subtitle="Indicadores do núcleo a partir dos eventos encerrados e das escalas."
+      />
+
+      {graus.length > 0 && (
+        <div style={{ marginBottom: 14 }}>
+          <GrauFilterChips graus={graus} value={grau} onChange={setGrau} />
+        </div>
+      )}
+
+      {error && <FeedbackBanner tone="error" message={error} />}
+
+      {loading ? (
+        <div className="msg-empty" style={{ textAlign: "left" }}>Carregando panorama…</div>
       ) : (
         <>
-          <DashboardStatsGrid cards={quickStats} />
-
-          <div className="dashboard-base-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10, marginBottom: 18 }}>
-            {baseCards.map(card => (
-              <div key={card.label} className="dashboard-base-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "16px 18px" }}>
-                <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{card.label}</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: COLORS.text }}>{card.value}</div>
-                <div style={{ fontSize: 11, color: COLORS.textMuted }}>{card.note}</div>
-              </div>
-            ))}
+          <div className="bi-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 14 }}>
+            <KpiCard
+              label={`Preenchimento de presença${grauSuffix}`}
+              percent={formatPercent(presenca.rate)}
+              caption={`${presenca.filled} de ${presenca.expected} esperados`}
+              accent={COLORS.primary}
+            />
+            <KpiCard
+              label="Preenchimento de escalas (geral)"
+              percent={formatPercent(escalaRate)}
+              caption={`${escala.filledSlots} de ${escala.totalSlots} vagas`}
+              accent={COLORS.accent}
+            />
           </div>
 
-          <div className="dashboard-main-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1.4fr) minmax(0, 1fr)", gap: 14, alignItems: "start" }}>
-            <DashboardUpcomingClosings forms={upcomingClosings} onNavigate={onNavigate} formatClosing={formatDateTime} />
-
-            <div style={{ display: "grid", gap: 10 }}>
-              <div className="dashboard-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Distribuição</div>
-                <div style={{ display: "grid", gap: 10 }}>
-                  <DashboardMiniRow label="Presença" value={presenceForms.length} note={`${totalPresenceResponses} respostas`} />
-                  <DashboardMiniRow label="Escala da Organ" value={scaleForms.length} note={`${totalScaleFilled} vagas ocupadas`} />
-                  <DashboardMiniRow label="Arquivados" value={archivedForms.length} note="fora da operação" />
-                </div>
-              </div>
-
-              <div className="dashboard-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
-                <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text, marginBottom: 10 }}>Atalhos</div>
-                <div style={{ display: "grid", gap: 8 }}>
-                  <Btn v="secondary" icon="list" onClick={() => onNavigate("list")}>Ver formulários</Btn>
-                  {user?.role === "admin" && <Btn icon="plus" onClick={() => onNavigate("create")}>Criar novo formulário</Btn>}
-                </div>
-              </div>
-            </div>
+          <div className="bi-lists-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 12, marginBottom: 14 }}>
+            <TopMembersPanel
+              title="Top 10 — menos preenchem presença"
+              hint="Menor taxa de presença nos eventos encerrados."
+              items={leastPresenca.map(member => ({ personKey: member.personKey, personName: member.personName, grau: member.grau, value: formatPercent(member.fillRate) }))}
+              emptyLabel="Sem eventos encerrados ainda."
+              valueTone="#c93c3c"
+            />
+            <TopMembersPanel
+              title="Top 10 — menos fazem escala"
+              hint="Menor número de vagas de escala assumidas."
+              items={leastEscala.map(member => ({ personKey: member.personKey, personName: member.personName, grau: member.grau, value: `${member.escalaCount || 0}` }))}
+              emptyLabel="Nenhuma escala registrada ainda."
+              valueTone={COLORS.accent}
+            />
           </div>
+
+          <DashboardUpcomingClosings forms={upcomingClosings} onNavigate={onNavigate} formatClosing={formatDateTime} />
         </>
       )}
     </div>

@@ -7,7 +7,7 @@
 import { nowIso } from "../database/shared.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
 import { deleteEventRecord, findEventById, listEvents, upsertEventRecord } from "../repositories/eventsRepository.mjs";
-import { captureEventParticipation } from "./eventParticipationService.mjs";
+import { onEventClosed } from "../bi/index.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
@@ -69,7 +69,7 @@ export const saveEvent = async payload => {
 
   const savedEvent = await findEventById(eventId);
   if (status === "encerrado" && existingEvent?.status !== "encerrado") {
-    await captureEventParticipation(savedEvent);
+    await onEventClosed(savedEvent);
   }
   return savedEvent;
 };

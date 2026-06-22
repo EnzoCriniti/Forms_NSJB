@@ -1,7 +1,7 @@
 /**
- * @file backend/services/eventParticipationService.mjs
+ * @file backend/bi/participationService.mjs
  * @summary Captura do snapshot de participacao no fechamento do evento.
- * @responsibility Reunir base, respostas e graus elegiveis e persistir o historico.
+ * @responsibility Reunir base, respostas e graus elegiveis e persistir o read model.
  */
 
 import { nowIso } from "../database/shared.mjs";
@@ -9,7 +9,7 @@ import { buildParticipationRows } from "../../shared/eventParticipation.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
 import { listPeople } from "../repositories/peopleRepository.mjs";
 import { listResponsesByFormId } from "../repositories/responsesRepository.mjs";
-import { listEventParticipationByEvent, replaceEventParticipation } from "../repositories/eventParticipationRepository.mjs";
+import { listEventParticipationByEvent, replaceEventParticipation } from "./biRepository.mjs";
 
 const PRESENCA_TYPE = "presenca";
 

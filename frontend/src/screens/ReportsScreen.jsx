@@ -1,29 +1,16 @@
 /**
  * @file frontend/src/screens/ReportsScreen.jsx
- * @summary Aba de relatorios/BI do nucleo.
- * @responsibility Consolidar indicadores a partir dos snapshots de participacao por evento.
+ * @summary Aba de relatorios/BI do nucleo (detalhe por socio).
+ * @responsibility Tabela de participacao com busca, filtro por grau e paginacao.
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, FeedbackBanner, Icon, ScreenHeader } from "../components/ui";
+import { COLORS, Btn, FeedbackBanner, Icon, ScreenHeader } from "../components/ui";
 import { fetchMemberParticipationReport } from "../lib/api";
+import { GrauFilterChips } from "../features/bi/BiPanels";
+import { ALL_GRAUS, filterByGrau, formatDate, formatDuration, formatPercent, sortGrauOptions } from "../features/bi/biDomain";
 
-const formatDuration = minutes => {
-  if (minutes === null || minutes === undefined) return "—";
-  const total = Math.max(0, Math.round(minutes));
-  if (total < 60) return `${total}min`;
-  const hours = Math.floor(total / 60);
-  const rest = total % 60;
-  return rest === 0 ? `${hours}h` : `${hours}h ${rest}min`;
-};
-
-const formatDate = iso => {
-  if (!iso) return "—";
-  const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? "—" : date.toLocaleDateString("pt-BR");
-};
-
-const formatPercent = value => `${Number(value || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
+const PAGE_SIZE = 12;
 
 const COLUMNS = [
   { key: "personName", label: "Sócio", align: "left", value: row => row.personName.toLowerCase() },
@@ -38,12 +25,17 @@ const COLUMNS = [
 
 const cellStyle = (align, extra = {}) => ({ padding: "10px 12px", textAlign: align, fontSize: 13, ...extra });
 
+const normalize = value => String(value || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
 export const ReportsScreen = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortKey, setSortKey] = useState("missed");
   const [sortDir, setSortDir] = useState("desc");
+  const [search, setSearch] = useState("");
+  const [grau, setGrau] = useState(ALL_GRAUS);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     let active = true;
@@ -61,37 +53,38 @@ export const ReportsScreen = () => {
     return () => { active = false; };
   }, []);
 
-  const sortedMembers = useMemo(() => {
+  const graus = useMemo(() => sortGrauOptions(members.map(member => member.grau)), [members]);
+
+  const filtered = useMemo(() => {
+    const term = normalize(search);
+    return filterByGrau(members, grau).filter(member => !term || normalize(member.personName).includes(term));
+  }, [members, grau, search]);
+
+  const sorted = useMemo(() => {
     const column = COLUMNS.find(col => col.key === sortKey) || COLUMNS[0];
     const factor = sortDir === "asc" ? 1 : -1;
-    return [...members].sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       const left = column.value(a);
       const right = column.value(b);
       if (left < right) return -1 * factor;
       if (left > right) return 1 * factor;
       return a.personName.localeCompare(b.personName, "pt-BR");
     });
-  }, [members, sortKey, sortDir]);
+  }, [filtered, sortKey, sortDir]);
 
-  const totals = useMemo(() => members.reduce((acc, row) => ({
-    expected: acc.expected + row.expected,
-    filled: acc.filled + row.filled,
-    missed: acc.missed + row.missed,
-  }), { expected: 0, filled: 0, missed: 0 }), [members]);
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageRows = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [search, grau, sortKey, sortDir]);
 
   const onSort = key => {
-    if (key === sortKey) {
-      setSortDir(current => current === "asc" ? "desc" : "asc");
-      return;
-    }
+    if (key === sortKey) { setSortDir(current => current === "asc" ? "desc" : "asc"); return; }
     setSortKey(key);
     setSortDir(key === "personName" || key === "grau" ? "asc" : "desc");
   };
 
-  const sortIcon = key => {
-    if (key !== sortKey) return "sortNone";
-    return sortDir === "asc" ? "sortAsc" : "sortDesc";
-  };
+  const sortIcon = key => (key !== sortKey ? "sortNone" : (sortDir === "asc" ? "sortAsc" : "sortDesc"));
 
   return (
     <div>
@@ -99,22 +92,28 @@ export const ReportsScreen = () => {
         className="settings-top-card"
         title="Relatórios"
         titleSize={20}
-        subtitle="Indicadores do núcleo a partir dos eventos encerrados."
+        subtitle="Participação por sócio a partir dos eventos encerrados."
       />
 
       <div className="msg-card" style={{ display: "grid", gap: 14 }}>
         <div className="msg-card__head">
           <div>
             <div className="msg-card__title">Participação por sócio</div>
-            <div className="msg-card__hint">Esperado x preenchido, faltas e tempo médio de resposta, consolidados no fechamento de cada evento.</div>
+            <div className="msg-card__hint">Esperado x preenchido, faltas e tempo médio de resposta. Busque, filtre por grau e ordene pelas colunas.</div>
           </div>
-          {members.length > 0 && (
-            <div style={{ display: "flex", gap: 16, flexShrink: 0 }}>
-              <ReportStat label="Sócios" value={members.length} />
-              <ReportStat label="Preenchimentos" value={totals.filled} color={COLORS.primary} />
-              <ReportStat label="Faltas" value={totals.missed} color="#c93c3c" />
-            </div>
-          )}
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
+          <input
+            className="msg-input"
+            type="search"
+            placeholder="Buscar sócio…"
+            aria-label="Buscar sócio"
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+            style={{ maxWidth: 260, flex: "1 1 200px" }}
+          />
+          {graus.length > 0 && <GrauFilterChips graus={graus} value={grau} onChange={setGrau} />}
         </div>
 
         {error && <FeedbackBanner tone="error" message={error} />}
@@ -125,50 +124,56 @@ export const ReportsScreen = () => {
           <div className="msg-empty" style={{ textAlign: "left" }}>
             Nenhum evento encerrado ainda. Os indicadores aparecem aqui quando um evento com formulário de presença é encerrado.
           </div>
+        ) : sorted.length === 0 ? (
+          <div className="msg-empty" style={{ textAlign: "left" }}>Nenhum sócio encontrado para a busca/filtro.</div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 760 }}>
-              <thead>
-                <tr style={{ borderBottom: `2px solid ${COLORS.borderLight}` }}>
-                  {COLUMNS.map(col => (
-                    <th
-                      key={col.key}
-                      onClick={() => onSort(col.key)}
-                      style={cellStyle(col.align, { cursor: "pointer", color: COLORS.textSecondary, fontSize: 12, whiteSpace: "nowrap", userSelect: "none" })}
-                    >
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 4, flexDirection: col.align === "right" ? "row-reverse" : "row" }}>
-                        {col.label}
-                        <Icon name={sortIcon(col.key)} size={11} />
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {sortedMembers.map(row => (
-                  <tr key={row.personKey} style={{ borderBottom: `1px solid ${COLORS.borderLight}` }}>
-                    <td style={cellStyle("left", { fontWeight: 600 })}>{row.personName}</td>
-                    <td style={cellStyle("left", { color: COLORS.textMuted })}>{row.grau || "—"}</td>
-                    <td style={cellStyle("right")}>{row.expected}</td>
-                    <td style={cellStyle("right", { color: COLORS.primary, fontWeight: 700 })}>{row.filled}</td>
-                    <td style={cellStyle("right", { color: row.missed > 0 ? "#c93c3c" : COLORS.textMuted, fontWeight: row.missed > 0 ? 700 : 400 })}>{row.missed}</td>
-                    <td style={cellStyle("right")}>{formatPercent(row.fillRate)}</td>
-                    <td style={cellStyle("right", { color: COLORS.textMuted })}>{formatDuration(row.avgTimeToFillMinutes)}</td>
-                    <td style={cellStyle("right", { color: COLORS.textMuted })}>{formatDate(row.lastFilledAt)}</td>
+          <>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 760 }}>
+                <thead>
+                  <tr style={{ borderBottom: `2px solid ${COLORS.borderLight}` }}>
+                    {COLUMNS.map(col => (
+                      <th
+                        key={col.key}
+                        onClick={() => onSort(col.key)}
+                        style={cellStyle(col.align, { cursor: "pointer", color: COLORS.textSecondary, fontSize: 12, whiteSpace: "nowrap", userSelect: "none" })}
+                      >
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4, flexDirection: col.align === "right" ? "row-reverse" : "row" }}>
+                          {col.label}
+                          <Icon name={sortIcon(col.key)} size={11} />
+                        </span>
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {pageRows.map(row => (
+                    <tr key={row.personKey} style={{ borderBottom: `1px solid ${COLORS.borderLight}` }}>
+                      <td style={cellStyle("left", { fontWeight: 600 })}>{row.personName}</td>
+                      <td style={cellStyle("left", { color: COLORS.textMuted })}>{row.grau || "—"}</td>
+                      <td style={cellStyle("right")}>{row.expected}</td>
+                      <td style={cellStyle("right", { color: COLORS.primary, fontWeight: 700 })}>{row.filled}</td>
+                      <td style={cellStyle("right", { color: row.missed > 0 ? "#c93c3c" : COLORS.textMuted, fontWeight: row.missed > 0 ? 700 : 400 })}>{row.missed}</td>
+                      <td style={cellStyle("right")}>{formatPercent(row.fillRate)}</td>
+                      <td style={cellStyle("right", { color: COLORS.textMuted })}>{formatDuration(row.avgTimeToFillMinutes)}</td>
+                      <td style={cellStyle("right", { color: COLORS.textMuted })}>{formatDate(row.lastFilledAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 12, color: COLORS.textMuted }}>{sorted.length} sócio{sorted.length !== 1 ? "s" : ""}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <Btn v="secondary" sz="sm" icon="back" aria-label="Página anterior" disabled={safePage <= 1} onClick={() => setPage(current => Math.max(1, current - 1))} />
+                <span style={{ fontSize: 12, color: COLORS.textSecondary }}>{safePage} / {totalPages}</span>
+                <Btn v="secondary" sz="sm" aria-label="Próxima página" disabled={safePage >= totalPages} onClick={() => setPage(current => Math.min(totalPages, current + 1))}>›</Btn>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
   );
 };
-
-const ReportStat = ({ label, value, color }) => (
-  <div style={{ textAlign: "right" }}>
-    <div style={{ fontSize: 18, fontWeight: 800, color: color || COLORS.text }}>{value}</div>
-    <div style={{ fontSize: 11, color: COLORS.textMuted }}>{label}</div>
-  </div>
-);
