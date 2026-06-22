@@ -8,7 +8,7 @@ import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../lib/gridDefaults";
 
 export const emptyUserDraft = { name: "", username: "", password: "", role: "viewer" };
 
-export const emptyLabelDraft = { name: "", color: "#2e7d32" };
+export const emptyLabelDraft = { name: "", color: "#16448c" };
 
 export const emptyFieldCatalogDraft = {
   key: "",

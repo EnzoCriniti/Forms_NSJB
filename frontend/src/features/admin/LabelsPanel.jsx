@@ -31,7 +31,7 @@ export const LabelsPanel = ({
         </label>
         <div className="msg-actions">
           <Btn onClick={submitLabel} loading={busyAction === "label"}>{labelDraft.id ? "Salvar classificação" : "Criar classificação"}</Btn>
-          {labelDraft.id && <Btn v="ghost" onClick={() => setLabelDraft({ name: "", color: "#2e7d32" })}>Cancelar</Btn>}
+          {labelDraft.id && <Btn v="ghost" onClick={() => setLabelDraft({ name: "", color: "#16448c" })}>Cancelar</Btn>}
         </div>
       </div>
       <div>

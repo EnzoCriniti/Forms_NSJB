@@ -19,9 +19,9 @@ export const AdminSettingsHeader = ({ tabs, tab, setTab, activeTab }) => (
           onClick={() => setTab(item.key)}
           style={{
             alignItems: "flex-start",
-            border: tab === item.key ? "1px solid rgba(26, 107, 60, 0.28)" : `1px solid ${COLORS.borderLight}`,
+            border: tab === item.key ? "1px solid rgba(var(--primary-rgb), 0.28)" : `1px solid ${COLORS.borderLight}`,
             borderRadius: 12,
-            boxShadow: tab === item.key ? "0 10px 24px rgba(26, 107, 60, 0.14)" : "none",
+            boxShadow: tab === item.key ? "0 10px 24px rgba(var(--primary-rgb), 0.14)" : "none",
             flexDirection: "column",
             gap: 2,
             minHeight: 54,
