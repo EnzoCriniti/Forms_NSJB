@@ -16,13 +16,13 @@ export const buildPresenceStats = ({
 }) => {
   if (hasExpectedTotal) {
     return [
-      { l: "Respostas", v: filteredResponsesLength, s: `de ${selectedGrau === "todos" ? expectedTotal : filteredRowsLength}`, c: "#0f8b6b" },
+      { l: "Respostas", v: filteredResponsesLength, s: `de ${selectedGrau === "todos" ? expectedTotal : filteredRowsLength}`, c: "var(--primary)" },
       { l: "Faltam", v: Math.max((selectedGrau === "todos" ? expectedTotal : filteredRowsLength) - filteredResponsesLength, 0), s: "pendentes", c: "#c93c3c" },
     ];
   }
 
   return [
-    { l: "Respostas", v: filteredResponsesLength, s: "recebidas", c: "#0f8b6b" },
+    { l: "Respostas", v: filteredResponsesLength, s: "recebidas", c: "var(--primary)" },
   ];
 };
 

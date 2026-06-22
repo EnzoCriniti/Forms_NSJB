@@ -225,7 +225,8 @@ describe("ResultsScreen", () => {
     );
 
     expect(screen.getByRole("button", { name: "Vai?" })).toBeInTheDocument();
-    expect(screen.getByText("Totalização")).toBeInTheDocument();
+    expect(screen.getByText("Resultado do preenchimento")).toBeInTheDocument();
+    expect(screen.queryByText(/indicador/i)).not.toBeInTheDocument();
     expect(screen.getAllByText("1").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Sim").length).toBeGreaterThan(0);
     expect(screen.getByText("Não")).toBeInTheDocument();

@@ -128,20 +128,20 @@ describe("App save flow", () => {
     await screen.findByText(/Presenca Edicao/i);
 
     const actions = container.querySelector(".card-actions");
-    fireEvent.click(within(actions).getByRole("button", { name: "Editar formulário" }));
+    fireEvent.click(actions.querySelector('[aria-label="Editar formulário"]'));
 
     await screen.findByText("Editar Formulário");
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
     fireEvent.click(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes"));
-    fireEvent.click(screen.getByRole("button", { name: "Salvar Formulário" }));
+    fireEvent.click(screen.getByText("Salvar Formulário"));
 
     await waitFor(() => expect(screen.getByText("Formulário alterado com sucesso")).toBeInTheDocument());
 
-    fireEvent.click(screen.getByRole("button", { name: "Voltar para Formulários" }));
+    fireEvent.click(screen.getByText("Voltar para o evento"));
     await openTestEvent();
-    fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
+    fireEvent.click(screen.getByText("Ver resultados"));
 
-    await screen.findByText("Totalização");
+    await screen.findByText("Resultado do preenchimento");
     expect(screen.queryByText("Use a lupinha ao lado do nome de cada coluna para filtrar.")).not.toBeInTheDocument();
     expect(screen.queryByText("Joao")).not.toBeInTheDocument();
   }, 10000);

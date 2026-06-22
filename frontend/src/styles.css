@@ -20,12 +20,12 @@
   --warning: #f57f17;
   --warning-light: #fff8e1;
   --surface: #ffffff;
-  --surface-alt: #f5f7f5;
-  --border: #d4ddd4;
-  --border-light: #e8ede8;
-  --text: #1a2e1a;
-  --text-secondary: #5a6e5a;
-  --text-muted: #8a9a8a;
+  --surface-alt: #f4f6fa;
+  --border: #d4dbe6;
+  --border-light: #e7ebf2;
+  --text: #16203a;
+  --text-secondary: #51607a;
+  --text-muted: #8590a3;
   --shadow-sm: 0 1px 2px rgba(var(--shadow-rgb), 0.06), 0 8px 20px rgba(var(--shadow-rgb), 0.05);
   --shadow-md: 0 10px 30px rgba(var(--shadow-rgb), 0.1);
   --header-bg: #16448c;
@@ -76,17 +76,17 @@
   --danger-light: #3b1d1d;
   --warning: #ffd166;
   --warning-light: #3b3218;
-  --surface: #15211b;
-  --surface-alt: #0d1511;
-  --border: #375044;
-  --border-light: #24382f;
-  --text: #eef7f1;
-  --text-secondary: #bad0c2;
-  --text-muted: #809889;
+  --surface: #141d2b;
+  --surface-alt: #0c1320;
+  --border: #2c3c52;
+  --border-light: #1f2c3d;
+  --text: #eef2f9;
+  --text-secondary: #b9c4d6;
+  --text-muted: #8492a6;
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 12px 28px rgba(0, 0, 0, 0.22);
   --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.32);
   --header-bg: #0a1626;
-  --on-primary: #07140d;
+  --on-primary: #06101e;
   --on-warning: #ffe0a3;
   --focus-ring: rgba(var(--primary-rgb), 0.32);
   --type-scale-bg: #183044;
@@ -615,7 +615,7 @@ input[type="radio"] {
 }
 
 :root[data-theme="dark"] .settings-tabs button.settings-tab[data-variant="primary"] {
-  background: linear-gradient(135deg, #1f6b40, #0c2017) !important;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important;
 }
 
 :root[data-theme="dark"] .settings-tabs button.settings-tab[data-variant="secondary"] {
@@ -636,7 +636,6 @@ input[type="radio"] {
   opacity: 0.68;
   white-space: normal;
 }
-
 
 .settings-grid {
   display: grid;
@@ -933,7 +932,7 @@ textarea.msg-input {
 :root[data-theme="dark"] .settings-top-card {
   background:
     radial-gradient(circle at top right, rgba(var(--primary-rgb), 0.22), transparent 34%),
-    linear-gradient(135deg, var(--primary-dark), #050806) !important;
+    linear-gradient(135deg, var(--primary-dark), #060b16) !important;
 }
 
 .create-form-start-card {
@@ -1590,7 +1589,7 @@ button:not(.ui-btn):focus-visible {
   :root[data-theme="dark"] .create-form-mobile-hero {
     background:
       radial-gradient(circle at top right, rgba(var(--primary-rgb), 0.22), transparent 34%),
-      linear-gradient(135deg, var(--primary-dark), #050806) !important;
+      linear-gradient(135deg, var(--primary-dark), #060b16) !important;
   }
 
   :root[data-theme="dark"] .screen-top-card h2,
@@ -1867,7 +1866,6 @@ button:not(.ui-btn):focus-visible {
   .settings-tab__description {
     display: none;
   }
-
 
   .modal-card-wide > div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;

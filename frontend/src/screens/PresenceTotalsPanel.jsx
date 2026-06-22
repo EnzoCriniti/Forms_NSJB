@@ -6,14 +6,10 @@
 import React from "react";
 import { COLORS } from "../components/ui";
 
-export const PresenceTotalsPanel = ({ filteredResponses, totalsLayout }) => (
+export const PresenceTotalsPanel = ({ totalsLayout }) => (
   <div className="totals-panel" style={{ background: COLORS.surface, borderRadius: 10, padding: 16, marginBottom: 12, border: `1px solid ${COLORS.borderLight}` }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
-      <div>
-        <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Totalização</div>
-        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>{totalsLayout.length} indicador{totalsLayout.length !== 1 ? "es" : ""} configurado{totalsLayout.length !== 1 ? "s" : ""}</div>
-      </div>
-      <div style={{ fontSize: 11, color: COLORS.textMuted }}>{filteredResponses.length} resposta{filteredResponses.length !== 1 ? "s" : ""}</div>
+    <div style={{ marginBottom: 14 }}>
+      <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Resultado do preenchimento</div>
     </div>
     <div className="totals-grid">
       {totalsLayout.map(item => {

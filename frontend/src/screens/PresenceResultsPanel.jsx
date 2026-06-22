@@ -20,7 +20,6 @@ export const PresenceResultsPanel = ({
   stats,
   feedback,
   totalsLayout,
-  filteredResponses,
   tableRows,
   sorted,
   showLinkedRows,
@@ -61,7 +60,7 @@ export const PresenceResultsPanel = ({
       stats={stats}
     />
     {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
-    <PresenceTotalsPanel filteredResponses={filteredResponses} totalsLayout={totalsLayout} />
+    <PresenceTotalsPanel totalsLayout={totalsLayout} />
 
     <PresenceResultsToolbar
       resultsConfig={resultsConfig}

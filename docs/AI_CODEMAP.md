@@ -683,6 +683,7 @@ Mapa curto das areas mais mexidas por agentes.
   Toolbar de filtros, zoom e exportacao da planilha de presenca, extraida de `resultsPanels.jsx`.
 - `frontend/src/screens/PresenceTotalsPanel.jsx`
   Painel visual de totalizacao da planilha de presenca, extraido de `resultsPanels.jsx`.
+  O cabecalho do painel usa o titulo simples `Resultado do preenchimento`, sem contadores de indicadores ou respostas.
 - `frontend/src/screens/PresenceResultsTable.jsx`
   Tabela visual da planilha de presenca, incluindo cabecalho, linhas e area rolavel.
 - `frontend/src/screens/resultsDomain.js`
