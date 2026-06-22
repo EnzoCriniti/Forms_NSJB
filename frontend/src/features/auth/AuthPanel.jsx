@@ -7,6 +7,7 @@
 import React, { useState } from "react";
 import { Btn, FeedbackBanner, resolveActionErrorMessage, ThemeIcon } from "../../components/ui";
 import { ROLES } from "../../lib/auth";
+import { FONT_SCALE_MAX, FONT_SCALE_MIN } from "../../lib/appFontScale";
 
 export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onToggleTheme, onIncreaseTextSize, onDecreaseTextSize, onOpenSettings, variant = "header" }) => {
   const [username, setUsername] = useState("");
@@ -54,7 +55,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         onClick={onDecreaseTextSize}
         title="Diminuir fonte"
         aria-label="Diminuir fonte"
-        disabled={fontScale <= 0.9}
+        disabled={fontScale <= FONT_SCALE_MIN}
         style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
       >
         A-
@@ -65,7 +66,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         onClick={onIncreaseTextSize}
         title="Aumentar fonte"
         aria-label="Aumentar fonte"
-        disabled={fontScale >= 1.3}
+        disabled={fontScale >= FONT_SCALE_MAX}
         style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
       >
         A+

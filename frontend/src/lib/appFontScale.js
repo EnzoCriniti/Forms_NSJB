@@ -3,7 +3,7 @@
  * @summary Limites e normalizacao da escala de fonte do app.
  */
 
-export const FONT_SCALE_MIN = 0.9;
+export const FONT_SCALE_MIN = 1;
 export const FONT_SCALE_MAX = 1.3;
 export const FONT_SCALE_STEP = 0.1;
 

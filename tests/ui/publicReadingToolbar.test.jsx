@@ -46,9 +46,12 @@ describe("PublicReadingToolbar", () => {
   it("aplica preferencias locais quando nao recebe callbacks", () => {
     render(<PublicReadingToolbar theme="light" fontScale={1} />);
 
+    expect(screen.getByRole("button", { name: "Diminuir fonte" })).toBeDisabled();
+
     fireEvent.click(screen.getByRole("button", { name: "Aumentar fonte" }));
     expect(screen.getByText("110%")).toBeInTheDocument();
     expect(document.documentElement.style.getPropertyValue("--app-font-scale")).toBe("1.1");
+    expect(screen.getByRole("button", { name: "Diminuir fonte" })).not.toBeDisabled();
 
     fireEvent.click(screen.getByRole("button", { name: "Mudar para modo escuro" }));
     expect(document.documentElement.dataset.theme).toBe("dark");

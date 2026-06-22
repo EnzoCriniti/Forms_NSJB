@@ -7,6 +7,7 @@
 import React, { useEffect, useState } from "react";
 import appData from "../data/appData.json";
 import { AuthPanel } from "../features/auth/AuthPanel";
+import { FONT_SCALE_MAX, FONT_SCALE_MIN } from "../lib/appFontScale";
 import { Icon } from "./ui";
 
 export const AppHeader = ({
@@ -103,10 +104,10 @@ export const AppHeader = ({
         </nav>
         {currentUser && (
           <div className="app-header__mobile-tools" aria-label="Ajustes de leitura">
-            <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= 0.9} aria-label="Diminuir fonte">
+            <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= FONT_SCALE_MIN} aria-label="Diminuir fonte">
               A-
             </button>
-            <button type="button" className="app-header__mobile-font-button" onClick={onIncreaseFontScale} disabled={fontScale >= 1.3} aria-label="Aumentar fonte">
+            <button type="button" className="app-header__mobile-font-button" onClick={onIncreaseFontScale} disabled={fontScale >= FONT_SCALE_MAX} aria-label="Aumentar fonte">
               A+
             </button>
           </div>

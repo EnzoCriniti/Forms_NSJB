@@ -40,7 +40,7 @@ describe("publicReadingPreferences", () => {
     expect(resolveInitialPublicReadingFontScale(9)).toBe(1.3);
 
     window.localStorage.setItem(STORAGE_KEYS.fontScale, JSON.stringify(0.1));
-    expect(resolveInitialPublicReadingFontScale()).toBe(0.9);
+    expect(resolveInitialPublicReadingFontScale()).toBe(1);
 
     window.localStorage.setItem(STORAGE_KEYS.fontScale, "1.1");
     expect(resolveInitialPublicReadingFontScale()).toBe(1.1);

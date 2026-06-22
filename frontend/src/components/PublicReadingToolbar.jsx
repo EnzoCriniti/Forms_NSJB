@@ -5,6 +5,7 @@ import {
   resolveInitialPublicReadingFontScale,
   resolveInitialPublicReadingTheme,
 } from "../lib/publicReadingPreferences";
+import { FONT_SCALE_MAX, FONT_SCALE_MIN, FONT_SCALE_STEP } from "../lib/appFontScale";
 import { Btn, ThemeIcon } from "./ui";
 
 export const PublicReadingToolbar = ({
@@ -35,7 +36,7 @@ export const PublicReadingToolbar = ({
     if (onDecreaseFontScale) {
       onDecreaseFontScale();
     } else {
-      setLocalFontScale(applyPublicReadingFontScalePreference(localFontScale - 0.1));
+      setLocalFontScale(applyPublicReadingFontScalePreference(localFontScale - FONT_SCALE_STEP));
     }
   };
 
@@ -43,7 +44,7 @@ export const PublicReadingToolbar = ({
     if (onIncreaseFontScale) {
       onIncreaseFontScale();
     } else {
-      setLocalFontScale(applyPublicReadingFontScalePreference(localFontScale + 0.1));
+      setLocalFontScale(applyPublicReadingFontScalePreference(localFontScale + FONT_SCALE_STEP));
     }
   };
 
@@ -96,7 +97,7 @@ export const PublicReadingToolbar = ({
           onClick={handleDecrease}
           title="Diminuir fonte"
           aria-label="Diminuir fonte"
-          disabled={localFontScale <= 0.9}
+          disabled={localFontScale <= FONT_SCALE_MIN}
           style={fontControlStyle}
         >
           A-
@@ -107,7 +108,7 @@ export const PublicReadingToolbar = ({
           onClick={handleIncrease}
           title="Aumentar fonte"
           aria-label="Aumentar fonte"
-          disabled={localFontScale >= 1.3}
+          disabled={localFontScale >= FONT_SCALE_MAX}
           style={fontControlStyle}
         >
           A+
