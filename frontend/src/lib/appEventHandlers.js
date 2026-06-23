@@ -5,9 +5,10 @@
  */
 
 import { startEventFormCreation } from "./appFormEntryActions";
-import { deleteAppEvent, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "./appEventActions";
+import { deleteAppEvent, loadAppEventsPage, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "./appEventActions";
 import {
   deleteEvent as apiDeleteEvent,
+  fetchEvents as apiFetchEvents,
   publishEvent as apiPublishEvent,
   saveEvent as apiSaveEvent,
 } from "./api";
@@ -17,6 +18,7 @@ export const buildAppEventHandlers = ({
   canCreateForms,
   currentUser,
   deleteEvent = apiDeleteEvent,
+  fetchEvents = apiFetchEvents,
   removeBootstrapListItem,
   removePinnedIdForUser,
   replaceBootstrapList,
@@ -60,6 +62,12 @@ export const buildAppEventHandlers = ({
       setPinnedEventsByUser,
     });
   },
+
+  handleLoadEventsPage: filters => loadAppEventsPage({
+    filters,
+    fetchEvents,
+    setBootstrap,
+  }),
 
   handleTogglePinnedEvent: eventId => {
     toggleAppPinnedEvent({

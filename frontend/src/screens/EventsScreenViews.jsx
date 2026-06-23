@@ -131,8 +131,13 @@ export const EventListView = ({
   canManageEvents,
   deleting,
   eventsPagination,
+  eventsTotalItems,
+  eventSearchDraft,
+  eventSearchLoading,
   feedback,
   onCancelDelete,
+  onChangeEventSearch,
+  onClearEventSearch,
   onConfirmDelete,
   onDelete,
   onEdit,
@@ -140,6 +145,7 @@ export const EventListView = ({
   onOpen,
   onPreviousEventsPage,
   onStartNew,
+  onSubmitEventSearch,
   onTogglePinnedEvent,
   pendingDelete,
   pinnedEventSet,
@@ -156,11 +162,17 @@ export const EventListView = ({
     <EventListPanel
       events={sortedEvents}
       pagination={eventsPagination}
+      totalItems={eventsTotalItems}
+      searchValue={eventSearchDraft}
+      searchLoading={eventSearchLoading}
       pinnedEventSet={pinnedEventSet}
       canManageEvents={canManageEvents}
+      onChangeSearch={onChangeEventSearch}
+      onClearSearch={onClearEventSearch}
       onOpen={onOpen}
       onEdit={onEdit}
       onDelete={onDelete}
+      onSubmitSearch={onSubmitEventSearch}
       onTogglePinned={onTogglePinnedEvent}
       onPreviousPage={onPreviousEventsPage}
       onNextPage={onNextEventsPage}

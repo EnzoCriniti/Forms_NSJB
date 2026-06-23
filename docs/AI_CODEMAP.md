@@ -506,6 +506,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/eventsScreenController.js`
   Controller da tela de eventos: estado de modo, selecao, feedback, paginacao e acoes de salvar, publicar, encerrar e excluir.
   Sincroniza `initialSelectedEventId` com o modo detalhe/lista e avisa o shell quando um evento e aberto, salvo ou limpo.
+  A listagem usa busca/paginacao de eventos no backend via `GET /api/events`, substituindo a pagina atual no bootstrap.
 - `frontend/src/screens/eventsDomain.js`
   Helpers puros da tela de eventos: draft inicial, ordenacao por fixados/data, selecao de formularios visiveis, elegibilidade de mensagens e paginacao.
 - `frontend/src/features/events/components/eventsPanels.jsx`
@@ -514,6 +515,7 @@ Mapa curto das areas mais mexidas por agentes.
   Shell visual do editor de evento, compondo cabecalho e campos do formulario.
 - `frontend/src/features/events/components/eventListPanel.jsx`
   Card e listagem visual de eventos, incluindo botoes administrativos e paginacao.
+  Inclui a barra de pesquisa responsiva de eventos; a busca deve chamar o backend, nao filtrar somente a pagina atual.
 - `frontend/src/features/events/components/eventDetailFormsPanel.jsx`
   Lista visual de formularios vinculados ao detalhe de evento, adaptando `FormListCard`.
 - `frontend/src/features/events/components/eventDetailHeader.jsx`
@@ -549,11 +551,11 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/App.jsx`
   Inclui o menu `Eventos` para admin e viewer, guarda `events` no bootstrap e anexa novos formularios ao evento ativo.
 - `backend/routes/eventRoutes.mjs`
-  Rotas administrativas `POST /api/events`, `DELETE /api/events/:id` e `POST /api/events/:id/publish`.
+  Rotas de eventos: `GET /api/events` pesquisa/pagina eventos para usuarios autenticados; admin usa `POST /api/events`, `DELETE /api/events/:id` e `POST /api/events/:id/publish`.
 - `backend/services/eventsService.mjs`
-  Normaliza evento, valida formularios vinculados e remove agrupadores sem apagar formularios.
+  Normaliza evento, valida formularios vinculados, pesquisa eventos paginados e remove agrupadores sem apagar formularios.
 - `backend/repositories/eventsRepository.mjs`
-  Persistencia da tabela `events`.
+  Persistencia da tabela `events`, incluindo busca por texto com `LIMIT/OFFSET`.
 
 ## Vinculo com base personalizada
 

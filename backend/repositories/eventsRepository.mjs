@@ -23,15 +23,47 @@ const mapEventRow = row => ({
   updatedAt: row.updated_at,
 });
 
+const EVENT_SELECT = "id, title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at";
+
+const buildEventSearchWhere = search => {
+  const normalizedSearch = String(search || "").trim().toLowerCase();
+  if (!normalizedSearch) return { where: "", params: [] };
+  const pattern = `%${normalizedSearch}%`;
+  return {
+    where: "WHERE LOWER(COALESCE(title, '') || ' ' || COALESCE(description, '') || ' ' || COALESCE(status, '') || ' ' || COALESCE(CAST(date AS TEXT), '')) LIKE ?",
+    params: [pattern],
+  };
+};
+
 export const listEvents = async () => (await database.queryMany(`
-  SELECT id, title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at
+  SELECT ${EVENT_SELECT}
   FROM events
   ORDER BY date DESC NULLS LAST, id DESC
 `)).map(mapEventRow);
 
+export const listEventsPage = async ({ search = "", limit = 20, offset = 0 } = {}) => {
+  const pageLimit = Math.min(Math.max(Number(limit) || 20, 1), 100);
+  const pageOffset = Math.max(Number(offset) || 0, 0);
+  const { where, params } = buildEventSearchWhere(search);
+  const events = (await database.queryMany(`
+    SELECT ${EVENT_SELECT}
+    FROM events
+    ${where}
+    ORDER BY date DESC NULLS LAST, id DESC
+    LIMIT ? OFFSET ?
+  `, [...params, pageLimit, pageOffset])).map(mapEventRow);
+  const countRow = await database.queryOne(`
+    SELECT COUNT(*) AS count
+    FROM events
+    ${where}
+  `, params);
+  const total = Number(countRow?.count || 0);
+  return { events, total, limit: pageLimit, offset: pageOffset, search: String(search || "").trim() };
+};
+
 export const findEventById = async eventId => {
   const row = await database.queryOne(`
-    SELECT id, title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at
+    SELECT ${EVENT_SELECT}
     FROM events
     WHERE id = ?
   `, [eventId]);

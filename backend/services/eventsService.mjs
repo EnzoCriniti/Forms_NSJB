@@ -6,7 +6,8 @@
 
 import { nowIso } from "../database/shared.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
-import { deleteEventRecord, findEventById, listEvents, upsertEventRecord } from "../repositories/eventsRepository.mjs";
+import { deleteEventRecord, findEventById, listEvents, listEventsPage, upsertEventRecord } from "../repositories/eventsRepository.mjs";
+import { listEventMessages } from "../repositories/eventMessagesRepository.mjs";
 import { onEventClosed } from "../bi/index.mjs";
 
 const makeError = (message, statusCode, code) => {
@@ -41,6 +42,28 @@ const normalizeStatus = (requestedStatus, formIds, existingEvent) => {
 };
 
 export const getEvents = () => listEvents();
+
+const attachMessagesToEvents = async events => {
+  const allEventMessages = await listEventMessages();
+  const messagesByEventId = allEventMessages.reduce((acc, message) => {
+    const list = acc.get(message.eventId) || [];
+    list.push(message);
+    acc.set(message.eventId, list);
+    return acc;
+  }, new Map());
+  return events.map(event => ({
+    ...event,
+    messages: messagesByEventId.get(event.id) || [],
+  }));
+};
+
+export const searchEvents = async ({ search = "", limit = 20, offset = 0 } = {}) => {
+  const page = await listEventsPage({ search, limit, offset });
+  return {
+    ...page,
+    events: await attachMessagesToEvents(page.events),
+  };
+};
 
 export const saveEvent = async payload => {
   const title = String(payload.title || "").trim();

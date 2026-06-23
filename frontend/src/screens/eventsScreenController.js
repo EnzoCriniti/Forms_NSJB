@@ -11,6 +11,7 @@ import { buildEventDraft, emptyEventDraft, isEventEligibleForMessages, paginateI
 
 export const useEventsScreenController = ({
   events,
+  eventsPage: remoteEventsPage,
   forms,
   user,
   pinnedEventIds,
@@ -20,6 +21,7 @@ export const useEventsScreenController = ({
   onPublishEvent,
   onDeleteEvent,
   onDeleteEventMessage,
+  onLoadEventsPage,
   onSelectEvent,
 }) => {
   const canManageEvents = user?.role === "admin";
@@ -32,6 +34,8 @@ export const useEventsScreenController = ({
   const [deleting, setDeleting] = useState(false);
   const [statusAction, setStatusAction] = useState(null);
   const [eventsPage, setEventsPage] = useState(1);
+  const [eventSearchDraft, setEventSearchDraft] = useState(remoteEventsPage?.search || "");
+  const [eventSearchLoading, setEventSearchLoading] = useState(false);
   const [formsPage, setFormsPage] = useState(1);
   const [detailTab, setDetailTab] = useState("forms");
   const [pendingMessageDelete, setPendingMessageDelete] = useState(null);
@@ -44,8 +48,25 @@ export const useEventsScreenController = ({
   const eventForms = useMemo(() => selectEventForms({ forms, selectedEvent, user }), [forms, selectedEvent, user]);
   const eventMessages = selectedEvent?.messages || [];
   const messagesEligible = isEventEligibleForMessages(eventForms);
-  const eventsPagination = paginateItems({ items: sortedEvents, page: eventsPage });
+  const usesRemoteEventsPage = Boolean(onLoadEventsPage);
+  const remoteLimit = Number(remoteEventsPage?.limit || 20);
+  const remoteOffset = Number(remoteEventsPage?.offset || 0);
+  const remoteTotal = Number(remoteEventsPage?.total ?? sortedEvents.length);
+  const eventsPagination = usesRemoteEventsPage
+    ? {
+        totalPages: Math.max(1, Math.ceil(remoteTotal / remoteLimit)),
+        safePage: Math.floor(remoteOffset / remoteLimit) + 1,
+        pageItems: sortedEvents,
+        rangeStart: remoteTotal === 0 ? 0 : remoteOffset + 1,
+        rangeEnd: Math.min(remoteOffset + sortedEvents.length, remoteTotal),
+      }
+    : paginateItems({ items: sortedEvents, page: eventsPage });
+  const eventsTotalItems = usesRemoteEventsPage ? remoteTotal : sortedEvents.length;
   const formsPagination = paginateItems({ items: eventForms, page: formsPage });
+
+  useEffect(() => {
+    setEventSearchDraft(remoteEventsPage?.search || "");
+  }, [remoteEventsPage?.search]);
 
   useEffect(() => {
     if (initialSelectedEventId) {
@@ -66,6 +87,46 @@ export const useEventsScreenController = ({
     setDetailTab("forms");
     setMode("detail");
     setFeedback(null);
+  };
+
+  const loadEventsPage = async ({ search = eventSearchDraft, offset = 0 } = {}) => {
+    if (!onLoadEventsPage) return;
+    setEventSearchLoading(true);
+    setFeedback(null);
+    try {
+      await onLoadEventsPage({ search, limit: remoteLimit, offset });
+      setEventsPage(Math.floor(offset / remoteLimit) + 1);
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setEventSearchLoading(false);
+    }
+  };
+
+  const submitEventSearch = event => {
+    event?.preventDefault?.();
+    loadEventsPage({ search: eventSearchDraft.trim(), offset: 0 });
+  };
+
+  const clearEventSearch = () => {
+    setEventSearchDraft("");
+    loadEventsPage({ search: "", offset: 0 });
+  };
+
+  const previousEventsPage = () => {
+    if (usesRemoteEventsPage) {
+      loadEventsPage({ search: remoteEventsPage?.search || "", offset: Math.max(0, remoteOffset - remoteLimit) });
+      return;
+    }
+    setEventsPage(current => Math.max(1, current - 1));
+  };
+
+  const nextEventsPage = () => {
+    if (usesRemoteEventsPage) {
+      loadEventsPage({ search: remoteEventsPage?.search || "", offset: Math.min((eventsPagination.totalPages - 1) * remoteLimit, remoteOffset + remoteLimit) });
+      return;
+    }
+    setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1));
   };
 
   const startNew = () => {
@@ -185,9 +246,13 @@ export const useEventsScreenController = ({
     deleting,
     statusAction,
     eventsPage,
-    setEventsPage,
     formsPage,
     setFormsPage,
+    eventSearchDraft,
+    setEventSearchDraft,
+    eventSearchLoading,
+    submitEventSearch,
+    clearEventSearch,
     detailTab,
     setDetailTab,
     pendingMessageDelete,
@@ -203,6 +268,7 @@ export const useEventsScreenController = ({
     eventMessages,
     messagesEligible,
     eventsPagination,
+    eventsTotalItems,
     formsPagination,
     openEvent,
     startNew,
@@ -212,5 +278,7 @@ export const useEventsScreenController = ({
     publish,
     close,
     confirmDelete,
+    previousEventsPage,
+    nextEventsPage,
   };
 };

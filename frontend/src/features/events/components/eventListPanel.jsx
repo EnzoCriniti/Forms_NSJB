@@ -53,19 +53,37 @@ export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, on
 export const EventListPanel = ({
   events,
   pagination,
+  totalItems = events.length,
+  searchValue = "",
+  searchLoading = false,
   pinnedEventSet,
   canManageEvents,
+  onChangeSearch,
+  onClearSearch,
   onOpen,
   onEdit,
   onDelete,
+  onSubmitSearch,
   onTogglePinned,
   onPreviousPage,
   onNextPage,
 }) => (
   <div style={{ display: "grid", gap: 18 }}>
+    <form className="events-search-bar" onSubmit={onSubmitSearch} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto auto", gap: 8, alignItems: "center" }}>
+      <label className="sr-only" htmlFor="event-search-input">Pesquisar eventos</label>
+      <input
+        id="event-search-input"
+        value={searchValue}
+        onChange={event => onChangeSearch?.(event.target.value)}
+        placeholder="Pesquisar eventos por nome, data, status ou descricao..."
+        style={{ width: "100%", minWidth: 0, padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", background: COLORS.surface, color: COLORS.text, boxSizing: "border-box" }}
+      />
+      <Btn type="submit" v="secondary" icon="search" disabled={searchLoading}>{searchLoading ? "Pesquisando..." : "Pesquisar"}</Btn>
+      <Btn type="button" v="ghost" onClick={onClearSearch} disabled={searchLoading || !searchValue}>Limpar</Btn>
+    </form>
     {events.length === 0 ? (
       <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
-        Nenhum evento criado.
+        {searchValue ? "Nenhum evento encontrado para a pesquisa." : "Nenhum evento criado."}
       </div>
     ) : pagination.pageItems.map(event => (
       <EventCard
@@ -81,7 +99,7 @@ export const EventListPanel = ({
     ))}
     <EventPaginationControls
       pagination={pagination}
-      totalItems={events.length}
+      totalItems={totalItems}
       onPrevious={onPreviousPage}
       onNext={onNextPage}
     />

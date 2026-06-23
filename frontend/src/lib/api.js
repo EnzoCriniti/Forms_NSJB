@@ -54,6 +54,18 @@ export const fetchAuditLogs = filters => {
   return requestJson(`/api/audit-logs${suffix}`);
 };
 
+export const fetchEvents = filters => {
+  const query = new URLSearchParams();
+  Object.entries(filters || {}).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    const normalized = String(value).trim();
+    if (!normalized) return;
+    query.set(key, normalized);
+  });
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+  return requestJson(`/api/events${suffix}`);
+};
+
 export const fetchFormResponses = formId => requestJson(`/api/forms/${formId}/responses`);
 
 export const fetchFormEscala = formId => requestJson(`/api/forms/${formId}/escala`);

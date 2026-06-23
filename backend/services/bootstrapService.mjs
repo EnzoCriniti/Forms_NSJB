@@ -12,8 +12,6 @@ import { listUsers } from "../repositories/usersRepository.mjs";
 import { listLabels } from "../repositories/labelsRepository.mjs";
 import { listPresets } from "../repositories/presetsRepository.mjs";
 import { listPeople } from "../repositories/peopleRepository.mjs";
-import { listEvents } from "../repositories/eventsRepository.mjs";
-import { listEventMessages } from "../repositories/eventMessagesRepository.mjs";
 import { listMessageTemplates } from "../repositories/messageTemplatesRepository.mjs";
 import { listPersonPresets } from "../repositories/personPresetsRepository.mjs";
 import { getJsonSetting } from "../repositories/settingsRepository.mjs";
@@ -22,6 +20,7 @@ import { refreshFormLifecycle } from "../orchestrator/formLifecycleOrchestrator.
 import { DEFAULT_MEMBERS_CONFIG } from "../data/seedData.mjs";
 import { listExternalBases } from "./externalBasesService.mjs";
 import { getMessagingConfig } from "./messagingConfigService.mjs";
+import { searchEvents } from "./eventsService.mjs";
 
 export const getBootstrap = async () => {
   await refreshFormLifecycle();
@@ -37,22 +36,17 @@ export const getBootstrap = async () => {
     return { ...form, metrics: { responses, total: form.totalExpected || responses || 0 } };
   }));
 
-  const events = await listEvents();
-  const allEventMessages = await listEventMessages();
-  const messagesByEventId = allEventMessages.reduce((acc, message) => {
-    const list = acc.get(message.eventId) || [];
-    list.push(message);
-    acc.set(message.eventId, list);
-    return acc;
-  }, new Map());
-  const eventsWithMessages = events.map(event => ({
-    ...event,
-    messages: messagesByEventId.get(event.id) || [],
-  }));
+  const eventsPage = await searchEvents({ limit: 20, offset: 0 });
 
   return {
     forms: mappedForms,
-    events: eventsWithMessages,
+    events: eventsPage.events,
+    eventsPage: {
+      total: eventsPage.total,
+      limit: eventsPage.limit,
+      offset: eventsPage.offset,
+      search: eventsPage.search,
+    },
     responsesByForm: {},
     escalaByForm: {},
     users: await listUsers(),

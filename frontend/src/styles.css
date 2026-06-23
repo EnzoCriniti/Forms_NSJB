@@ -1496,7 +1496,28 @@ button:not(.ui-btn):focus-visible {
   box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.16);
 }
 
+.sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 @media (max-width: 720px) {
+  .events-search-bar {
+    grid-template-columns: 1fr !important;
+  }
+
+  .events-search-bar .ui-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .events-form-grid {
     grid-template-columns: 1fr !important;
   }

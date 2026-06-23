@@ -24,6 +24,7 @@ export const buildAppControllerViewModelInput = ({
   escalaByForm: derived.escalaByForm,
   eventHandlers: handlers.eventHandlers,
   events: bootstrapData.events,
+  eventsPage: bootstrapData.eventsPage,
   externalBases: bootstrapData.externalBases,
   fieldCatalog: bootstrapData.fieldCatalog,
   formHandlers: handlers.formHandlers,

@@ -10,6 +10,7 @@ import { EventDetailView, EventEditView, EventListView } from "./EventsScreenVie
 
 export const EventsScreen = ({
   events = [],
+  eventsPage = null,
   forms = [],
   labels = [],
   people = [],
@@ -20,6 +21,7 @@ export const EventsScreen = ({
   onSaveEvent,
   onPublishEvent,
   onDeleteEvent,
+  onLoadEventsPage,
   onTogglePinnedEvent,
   onCreateFormInEvent,
   onDuplicateForm,
@@ -35,6 +37,7 @@ export const EventsScreen = ({
 }) => {
   const controller = useEventsScreenController({
     events,
+    eventsPage,
     forms,
     user,
     pinnedEventIds,
@@ -44,6 +47,7 @@ export const EventsScreen = ({
     onPublishEvent,
     onDeleteEvent,
     onDeleteEventMessage,
+    onLoadEventsPage,
     onSelectEvent,
   });
 
@@ -59,8 +63,12 @@ export const EventsScreen = ({
     setPendingDelete,
     deleting,
     statusAction,
-    setEventsPage,
     setFormsPage,
+    eventSearchDraft,
+    setEventSearchDraft,
+    eventSearchLoading,
+    submitEventSearch,
+    clearEventSearch,
     detailTab,
     setDetailTab,
     pendingMessageDelete,
@@ -76,6 +84,7 @@ export const EventsScreen = ({
     eventMessages,
     messagesEligible,
     eventsPagination,
+    eventsTotalItems,
     formsPagination,
     openEvent,
     startNew,
@@ -85,6 +94,8 @@ export const EventsScreen = ({
     publish,
     close,
     confirmDelete,
+    previousEventsPage,
+    nextEventsPage,
   } = controller;
 
   if (mode === "edit") {
@@ -149,6 +160,9 @@ export const EventsScreen = ({
       canManageEvents={canManageEvents}
       deleting={deleting}
       eventsPagination={eventsPagination}
+      eventsTotalItems={eventsTotalItems}
+      eventSearchDraft={eventSearchDraft}
+      eventSearchLoading={eventSearchLoading}
       feedback={feedback}
       onCancelDelete={() => {
         if (deleting) return;
@@ -157,9 +171,12 @@ export const EventsScreen = ({
       onConfirmDelete={confirmDelete}
       onDelete={setPendingDelete}
       onEdit={editEvent}
-      onNextEventsPage={() => setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1))}
+      onChangeEventSearch={setEventSearchDraft}
+      onClearEventSearch={clearEventSearch}
+      onNextEventsPage={nextEventsPage}
       onOpen={openEvent}
-      onPreviousEventsPage={() => setEventsPage(current => Math.max(1, current - 1))}
+      onPreviousEventsPage={previousEventsPage}
+      onSubmitEventSearch={submitEventSearch}
       onStartNew={startNew}
       onTogglePinnedEvent={onTogglePinnedEvent}
       pendingDelete={pendingDelete}

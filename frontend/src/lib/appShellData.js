@@ -1,6 +1,7 @@
 export const buildAppShellData = ({
   escalaByForm,
   events,
+  eventsPage,
   externalBases,
   fieldCatalog,
   forms,
@@ -22,6 +23,7 @@ export const buildAppShellData = ({
   fieldCatalog,
   scaleTaskCatalog,
   events,
+  eventsPage,
   messageTemplates,
   personPresets,
   messagingConfig,

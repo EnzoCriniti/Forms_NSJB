@@ -119,6 +119,53 @@ describe("EventsScreen", () => {
     expect(screen.queryByText("Escala Maio")).not.toBeInTheDocument();
   });
 
+  it("pesquisa eventos usando a pagina do backend", async () => {
+    const onLoadEventsPage = vi.fn(async () => ({ events, total: 1, limit: 20, offset: 0, search: "Maio" }));
+
+    render(
+      <EventsScreen
+        events={events}
+        eventsPage={{ total: 8, limit: 20, offset: 0, search: "" }}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onLoadEventsPage={onLoadEventsPage}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Pesquisar eventos"), { target: { value: "Maio" } });
+    fireEvent.click(screen.getByRole("button", { name: "Pesquisar" }));
+
+    await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({ search: "Maio", limit: 20, offset: 0 }));
+  });
+
+  it("pagina eventos pelo backend sem depender da lista completa no front", async () => {
+    const onLoadEventsPage = vi.fn(async () => ({ events: [], total: 8, limit: 4, offset: 4, search: "" }));
+
+    render(
+      <EventsScreen
+        events={events}
+        eventsPage={{ total: 8, limit: 4, offset: 0, search: "" }}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onLoadEventsPage={onLoadEventsPage}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Exibindo 1 a 1 de 8")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Pr.xima/ }));
+
+    await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({ search: "", limit: 4, offset: 4 }));
+  });
+
   it("destaca a borda do card de evento no hover", () => {
     render(
       <EventsScreen

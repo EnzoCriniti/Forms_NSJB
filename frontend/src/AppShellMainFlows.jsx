@@ -45,6 +45,7 @@ export const EventsFlow = ({ app }) => {
   } = state;
   const {
     events,
+    eventsPage,
     forms,
     labels,
     people,
@@ -56,6 +57,7 @@ export const EventsFlow = ({ app }) => {
     handleDeleteEvent,
     handleDeleteForm,
     handleDuplicateForm,
+    handleLoadEventsPage,
     handlePublishEvent,
     handleSaveEvent,
     handleTogglePinnedEvent,
@@ -71,6 +73,7 @@ export const EventsFlow = ({ app }) => {
   return (
     <EventsScreen
       events={events}
+      eventsPage={eventsPage}
       forms={forms}
       labels={labels}
       people={people}
@@ -81,6 +84,7 @@ export const EventsFlow = ({ app }) => {
       onSaveEvent={handleSaveEvent}
       onPublishEvent={handlePublishEvent}
       onDeleteEvent={handleDeleteEvent}
+      onLoadEventsPage={handleLoadEventsPage}
       onTogglePinnedEvent={handleTogglePinnedEvent}
       onCreateFormInEvent={handleCreateFormInEvent}
       onDuplicateForm={handleDuplicateForm}

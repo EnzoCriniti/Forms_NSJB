@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { deleteAppEvent, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "../../frontend/src/lib/appEventActions";
+import { deleteAppEvent, loadAppEventsPage, publishAppEvent, saveAppEvent, toggleAppPinnedEvent } from "../../frontend/src/lib/appEventActions";
 
 describe("appEventActions", () => {
   it("salva evento e reordena a lista", async () => {
@@ -44,6 +44,23 @@ describe("appEventActions", () => {
     });
 
     expect(result.status).toBe("publicado");
+  });
+
+  it("carrega pagina de eventos pesquisada no bootstrap", async () => {
+    const setBootstrap = vi.fn(updater => {
+      expect(updater({ events: [{ id: 1 }], eventsPage: { total: 9, limit: 20, offset: 0, search: "" } })).toEqual({
+        events: [{ id: 2, title: "Evento Maio" }],
+        eventsPage: { total: 1, limit: 20, offset: 0, search: "Maio" },
+      });
+    });
+
+    const result = await loadAppEventsPage({
+      filters: { search: "Maio", limit: 20, offset: 0 },
+      fetchEvents: vi.fn().mockResolvedValue({ events: [{ id: 2, title: "Evento Maio" }], total: 1, limit: 20, offset: 0, search: "Maio" }),
+      setBootstrap,
+    });
+
+    expect(result.total).toBe(1);
   });
 
   it("exclui evento, remove pin e limpa selecao ativa", async () => {

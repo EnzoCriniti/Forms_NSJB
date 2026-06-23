@@ -6,6 +6,7 @@
 export const createEmptyBootstrap = () => ({
   forms: [],
   events: [],
+  eventsPage: { total: 0, limit: 20, offset: 0, search: "" },
   responsesByForm: {},
   escalaByForm: {},
   users: [],
@@ -35,7 +36,7 @@ const ARRAY_KEYS = [
   "personPresets",
 ];
 
-const OBJECT_KEYS = ["responsesByForm", "escalaByForm", "membersConfig"];
+const OBJECT_KEYS = ["responsesByForm", "escalaByForm", "membersConfig", "eventsPage"];
 
 const isPlainObject = value => Boolean(value && typeof value === "object" && !Array.isArray(value));
 
@@ -53,6 +54,10 @@ export const normalizeBootstrap = bootstrap => {
   normalized.messagingConfig = {
     ...empty.messagingConfig,
     ...(isPlainObject(source.messagingConfig) ? source.messagingConfig : {}),
+  };
+  normalized.eventsPage = {
+    ...empty.eventsPage,
+    ...(isPlainObject(source.eventsPage) ? source.eventsPage : {}),
   };
 
   return normalized;
