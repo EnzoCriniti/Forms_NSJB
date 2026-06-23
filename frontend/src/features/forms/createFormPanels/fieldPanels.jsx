@@ -258,11 +258,11 @@ const FieldEditorDefinitionPanel = ({
     {nType !== "person_select" && (
       <div>
         <label style={{ fontSize: 11, fontWeight: 700, color: COLORS.textSecondary, display: "block", marginBottom: 4 }}>
-          HorÃ¡rio do campo <span style={{ color: COLORS.textMuted }}>(opcional)</span>
+          HorÃ¡rio do campo <span style={{ color: COLORS.danger }}>*</span>
         </label>
         <input value={nScheduleText || ""} onChange={event => onSetNScheduleText(event.target.value)} placeholder="Ex: 15h" style={inp} />
         <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 4 }}>
-          Quando preenchido, este texto entra antes do rÃ³tulo, por exemplo: 15h - ReuniÃ£o de diretoria.
+          Este texto entra antes do rÃ³tulo, por exemplo: 15h - ReuniÃ£o de diretoria.
         </div>
       </div>
     )}

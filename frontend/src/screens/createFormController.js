@@ -123,7 +123,8 @@ export const useCreateFormController = ({
     nType,
     nCatalogId,
     nLabel,
-  }), [format, formMode, fields, fieldCatalog, scaleTaskCatalog, externalBases, resultsConfig, editingFieldId, nFieldMode, nType, nCatalogId, nLabel]);
+    nScheduleText,
+  }), [format, formMode, fields, fieldCatalog, scaleTaskCatalog, externalBases, resultsConfig, editingFieldId, nFieldMode, nType, nCatalogId, nLabel, nScheduleText]);
   const previewTitle = title.trim();
   const previewDescription = desc.trim();
   const previewClosingText = closingText.trim();

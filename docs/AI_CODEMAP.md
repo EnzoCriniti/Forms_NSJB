@@ -616,7 +616,7 @@ Mapa curto das areas mais mexidas por agentes.
   Na box de dados, abertura, fechamento, status e texto de fechamento ficam no mesmo grid de metadados.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
-  Campos de presenca que nao sao seletor de pessoa podem receber `Horario do campo` opcional; quando preenchido, o rótulo salvo fica composto como `horario - rotulo base`.
+  Campos de presenca que nao sao seletor de pessoa exigem `Horario do campo`; o rótulo salvo fica composto como `horario - rotulo base`.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
   Paineis finais da criacao de formulario: pre-visualizacao, escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
   `CreateFormScreen.jsx` importa os paineis diretamente desses modulos, sem barramento intermediario.
