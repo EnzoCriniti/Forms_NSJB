@@ -6,7 +6,7 @@
 export const createEmptyBootstrap = () => ({
   forms: [],
   events: [],
-  eventsPage: { total: 0, limit: 20, offset: 0, search: "" },
+  eventsPage: { total: 0, limit: 20, offset: 0, search: "", status: "", sortBy: "date", sortDir: "desc" },
   responsesByForm: {},
   escalaByForm: {},
   users: [],

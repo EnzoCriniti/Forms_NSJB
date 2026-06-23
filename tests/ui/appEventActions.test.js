@@ -48,15 +48,15 @@ describe("appEventActions", () => {
 
   it("carrega pagina de eventos pesquisada no bootstrap", async () => {
     const setBootstrap = vi.fn(updater => {
-      expect(updater({ events: [{ id: 1 }], eventsPage: { total: 9, limit: 20, offset: 0, search: "" } })).toEqual({
+      expect(updater({ events: [{ id: 1 }], eventsPage: { total: 9, limit: 20, offset: 0, search: "", status: "", sortBy: "date", sortDir: "desc" } })).toEqual({
         events: [{ id: 2, title: "Evento Maio" }],
-        eventsPage: { total: 1, limit: 20, offset: 0, search: "Maio" },
+        eventsPage: { total: 1, limit: 20, offset: 0, search: "Maio", status: "pronto", sortBy: "title", sortDir: "asc" },
       });
     });
 
     const result = await loadAppEventsPage({
-      filters: { search: "Maio", limit: 20, offset: 0 },
-      fetchEvents: vi.fn().mockResolvedValue({ events: [{ id: 2, title: "Evento Maio" }], total: 1, limit: 20, offset: 0, search: "Maio" }),
+      filters: { search: "Maio", status: "pronto", sortBy: "title", sortDir: "asc", limit: 20, offset: 0 },
+      fetchEvents: vi.fn().mockResolvedValue({ events: [{ id: 2, title: "Evento Maio" }], total: 1, limit: 20, offset: 0, search: "Maio", status: "pronto", sortBy: "title", sortDir: "asc" }),
       setBootstrap,
     });
 

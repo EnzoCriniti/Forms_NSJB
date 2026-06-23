@@ -35,6 +35,9 @@ export const useEventsScreenController = ({
   const [statusAction, setStatusAction] = useState(null);
   const [eventsPage, setEventsPage] = useState(1);
   const [eventSearchDraft, setEventSearchDraft] = useState(remoteEventsPage?.search || "");
+  const [eventStatusFilter, setEventStatusFilter] = useState(remoteEventsPage?.status || "");
+  const [eventSortBy, setEventSortBy] = useState(remoteEventsPage?.sortBy || "date");
+  const [eventSortDir, setEventSortDir] = useState(remoteEventsPage?.sortDir || "desc");
   const [eventSearchLoading, setEventSearchLoading] = useState(false);
   const [formsPage, setFormsPage] = useState(1);
   const [detailTab, setDetailTab] = useState("forms");
@@ -69,6 +72,18 @@ export const useEventsScreenController = ({
   }, [remoteEventsPage?.search]);
 
   useEffect(() => {
+    setEventStatusFilter(remoteEventsPage?.status || "");
+  }, [remoteEventsPage?.status]);
+
+  useEffect(() => {
+    setEventSortBy(remoteEventsPage?.sortBy || "date");
+  }, [remoteEventsPage?.sortBy]);
+
+  useEffect(() => {
+    setEventSortDir(remoteEventsPage?.sortDir || "desc");
+  }, [remoteEventsPage?.sortDir]);
+
+  useEffect(() => {
     if (initialSelectedEventId) {
       setSelectedEventId(initialSelectedEventId);
       setFormsPage(1);
@@ -89,12 +104,18 @@ export const useEventsScreenController = ({
     setFeedback(null);
   };
 
-  const loadEventsPage = async ({ search = eventSearchDraft, offset = 0 } = {}) => {
+  const loadEventsPage = async ({
+    search = eventSearchDraft,
+    status = eventStatusFilter,
+    sortBy = eventSortBy,
+    sortDir = eventSortDir,
+    offset = 0,
+  } = {}) => {
     if (!onLoadEventsPage) return;
     setEventSearchLoading(true);
     setFeedback(null);
     try {
-      await onLoadEventsPage({ search, limit: remoteLimit, offset });
+      await onLoadEventsPage({ search, status, sortBy, sortDir, limit: remoteLimit, offset });
       setEventsPage(Math.floor(offset / remoteLimit) + 1);
     } catch (error) {
       setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
@@ -110,12 +131,21 @@ export const useEventsScreenController = ({
 
   const clearEventSearch = () => {
     setEventSearchDraft("");
-    loadEventsPage({ search: "", offset: 0 });
+    setEventStatusFilter("");
+    setEventSortBy("date");
+    setEventSortDir("desc");
+    loadEventsPage({ search: "", status: "", sortBy: "date", sortDir: "desc", offset: 0 });
   };
 
   const previousEventsPage = () => {
     if (usesRemoteEventsPage) {
-      loadEventsPage({ search: remoteEventsPage?.search || "", offset: Math.max(0, remoteOffset - remoteLimit) });
+      loadEventsPage({
+        search: remoteEventsPage?.search || "",
+        status: remoteEventsPage?.status || "",
+        sortBy: remoteEventsPage?.sortBy || "date",
+        sortDir: remoteEventsPage?.sortDir || "desc",
+        offset: Math.max(0, remoteOffset - remoteLimit),
+      });
       return;
     }
     setEventsPage(current => Math.max(1, current - 1));
@@ -123,7 +153,13 @@ export const useEventsScreenController = ({
 
   const nextEventsPage = () => {
     if (usesRemoteEventsPage) {
-      loadEventsPage({ search: remoteEventsPage?.search || "", offset: Math.min((eventsPagination.totalPages - 1) * remoteLimit, remoteOffset + remoteLimit) });
+      loadEventsPage({
+        search: remoteEventsPage?.search || "",
+        status: remoteEventsPage?.status || "",
+        sortBy: remoteEventsPage?.sortBy || "date",
+        sortDir: remoteEventsPage?.sortDir || "desc",
+        offset: Math.min((eventsPagination.totalPages - 1) * remoteLimit, remoteOffset + remoteLimit),
+      });
       return;
     }
     setEventsPage(current => Math.min(eventsPagination.totalPages, current + 1));
@@ -250,6 +286,12 @@ export const useEventsScreenController = ({
     setFormsPage,
     eventSearchDraft,
     setEventSearchDraft,
+    eventStatusFilter,
+    setEventStatusFilter,
+    eventSortBy,
+    setEventSortBy,
+    eventSortDir,
+    setEventSortDir,
     eventSearchLoading,
     submitEventSearch,
     clearEventSearch,

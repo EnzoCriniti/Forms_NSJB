@@ -56,9 +56,15 @@ export const EventListPanel = ({
   totalItems = events.length,
   searchValue = "",
   searchLoading = false,
+  statusFilter = "",
+  sortBy = "date",
+  sortDir = "desc",
   pinnedEventSet,
   canManageEvents,
   onChangeSearch,
+  onChangeStatus,
+  onChangeSortBy,
+  onChangeSortDir,
   onClearSearch,
   onOpen,
   onEdit,
@@ -69,7 +75,7 @@ export const EventListPanel = ({
   onNextPage,
 }) => (
   <div style={{ display: "grid", gap: 18 }}>
-    <form className="events-search-bar" onSubmit={onSubmitSearch} style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto auto", gap: 8, alignItems: "center" }}>
+    <form className="events-search-bar" onSubmit={onSubmitSearch} style={{ display: "grid", gridTemplateColumns: "minmax(220px, 1.6fr) minmax(140px, 0.8fr) minmax(150px, 0.8fr) minmax(140px, 0.7fr) auto auto", gap: 8, alignItems: "center" }}>
       <label className="sr-only" htmlFor="event-search-input">Pesquisar eventos</label>
       <input
         id="event-search-input"
@@ -78,8 +84,44 @@ export const EventListPanel = ({
         placeholder="Pesquisar eventos por nome, data, status ou descricao..."
         style={{ width: "100%", minWidth: 0, padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", background: COLORS.surface, color: COLORS.text, boxSizing: "border-box" }}
       />
+      <label className="sr-only" htmlFor="event-status-filter">Filtrar status</label>
+      <select
+        id="event-status-filter"
+        value={statusFilter}
+        onChange={event => onChangeStatus?.(event.target.value)}
+        style={{ width: "100%", minWidth: 0, padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", background: COLORS.surface, color: COLORS.text, boxSizing: "border-box" }}
+      >
+        <option value="">Todos os status</option>
+        <option value="rascunho">Rascunho</option>
+        <option value="pronto">Pronto</option>
+        <option value="publicado">Publicado</option>
+        <option value="encerrado">Encerrado</option>
+      </select>
+      <label className="sr-only" htmlFor="event-sort-by">Ordenar eventos</label>
+      <select
+        id="event-sort-by"
+        value={sortBy}
+        onChange={event => onChangeSortBy?.(event.target.value)}
+        style={{ width: "100%", minWidth: 0, padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", background: COLORS.surface, color: COLORS.text, boxSizing: "border-box" }}
+      >
+        <option value="date">Data do evento</option>
+        <option value="title">Nome</option>
+        <option value="status">Status</option>
+        <option value="createdAt">Criacao</option>
+        <option value="updatedAt">Atualizacao</option>
+      </select>
+      <label className="sr-only" htmlFor="event-sort-dir">Direcao da ordenacao</label>
+      <select
+        id="event-sort-dir"
+        value={sortDir}
+        onChange={event => onChangeSortDir?.(event.target.value)}
+        style={{ width: "100%", minWidth: 0, padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, fontSize: 13, fontFamily: "inherit", background: COLORS.surface, color: COLORS.text, boxSizing: "border-box" }}
+      >
+        <option value="desc">Mais recentes</option>
+        <option value="asc">Mais antigos</option>
+      </select>
       <Btn type="submit" v="secondary" icon="search" disabled={searchLoading}>{searchLoading ? "Pesquisando..." : "Pesquisar"}</Btn>
-      <Btn type="button" v="ghost" onClick={onClearSearch} disabled={searchLoading || !searchValue}>Limpar</Btn>
+      <Btn type="button" v="ghost" onClick={onClearSearch} disabled={searchLoading || (!searchValue && !statusFilter && sortBy === "date" && sortDir === "desc")}>Limpar</Btn>
     </form>
     {events.length === 0 ? (
       <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>

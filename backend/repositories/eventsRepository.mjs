@@ -25,13 +25,41 @@ const mapEventRow = row => ({
 
 const EVENT_SELECT = "id, title, description, date, opening, closing, status, form_ids_json, eligible_graus_json, message_config_json, published_at, created_at, updated_at";
 
-const buildEventSearchWhere = search => {
+const EVENT_SORT_COLUMNS = {
+  date: "date",
+  title: "LOWER(title)",
+  status: "status",
+  createdAt: "created_at",
+  updatedAt: "updated_at",
+};
+
+const normalizeEventSort = ({ sortBy = "date", sortDir = "desc" } = {}) => ({
+  sortBy: Object.prototype.hasOwnProperty.call(EVENT_SORT_COLUMNS, sortBy) ? sortBy : "date",
+  sortDir: String(sortDir || "").toLowerCase() === "asc" ? "asc" : "desc",
+});
+
+const buildEventOrderBy = sort => {
+  const column = EVENT_SORT_COLUMNS[sort.sortBy] || EVENT_SORT_COLUMNS.date;
+  const direction = sort.sortDir === "asc" ? "ASC" : "DESC";
+  return `${column} ${direction} NULLS LAST, id ${direction}`;
+};
+
+const buildEventSearchWhere = ({ search, status } = {}) => {
   const normalizedSearch = String(search || "").trim().toLowerCase();
-  if (!normalizedSearch) return { where: "", params: [] };
-  const pattern = `%${normalizedSearch}%`;
+  const normalizedStatus = String(status || "").trim();
+  const clauses = [];
+  const params = [];
+  if (normalizedSearch) {
+    clauses.push("LOWER(COALESCE(title, '') || ' ' || COALESCE(description, '') || ' ' || COALESCE(status, '') || ' ' || COALESCE(CAST(date AS TEXT), '')) LIKE ?");
+    params.push(`%${normalizedSearch}%`);
+  }
+  if (normalizedStatus) {
+    clauses.push("status = ?");
+    params.push(normalizedStatus);
+  }
   return {
-    where: "WHERE LOWER(COALESCE(title, '') || ' ' || COALESCE(description, '') || ' ' || COALESCE(status, '') || ' ' || COALESCE(CAST(date AS TEXT), '')) LIKE ?",
-    params: [pattern],
+    where: clauses.length ? `WHERE ${clauses.join(" AND ")}` : "",
+    params,
   };
 };
 
@@ -41,15 +69,16 @@ export const listEvents = async () => (await database.queryMany(`
   ORDER BY date DESC NULLS LAST, id DESC
 `)).map(mapEventRow);
 
-export const listEventsPage = async ({ search = "", limit = 20, offset = 0 } = {}) => {
+export const listEventsPage = async ({ search = "", status = "", sortBy = "date", sortDir = "desc", limit = 20, offset = 0 } = {}) => {
   const pageLimit = Math.min(Math.max(Number(limit) || 20, 1), 100);
   const pageOffset = Math.max(Number(offset) || 0, 0);
-  const { where, params } = buildEventSearchWhere(search);
+  const { where, params } = buildEventSearchWhere({ search, status });
+  const sort = normalizeEventSort({ sortBy, sortDir });
   const events = (await database.queryMany(`
     SELECT ${EVENT_SELECT}
     FROM events
     ${where}
-    ORDER BY date DESC NULLS LAST, id DESC
+    ORDER BY ${buildEventOrderBy(sort)}
     LIMIT ? OFFSET ?
   `, [...params, pageLimit, pageOffset])).map(mapEventRow);
   const countRow = await database.queryOne(`
@@ -58,7 +87,16 @@ export const listEventsPage = async ({ search = "", limit = 20, offset = 0 } = {
     ${where}
   `, params);
   const total = Number(countRow?.count || 0);
-  return { events, total, limit: pageLimit, offset: pageOffset, search: String(search || "").trim() };
+  return {
+    events,
+    total,
+    limit: pageLimit,
+    offset: pageOffset,
+    search: String(search || "").trim(),
+    status: String(status || "").trim(),
+    sortBy: sort.sortBy,
+    sortDir: sort.sortDir,
+  };
 };
 
 export const findEventById = async eventId => {

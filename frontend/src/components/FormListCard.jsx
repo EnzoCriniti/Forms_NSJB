@@ -82,15 +82,22 @@ export const FormListCard = ({
   };
 
   const shareButton = (
-    <Btn
-      v="ghost"
-      icon="share"
-      sz="sm"
-      style={LIST_ACTION_STYLE}
-      title={copiedPublicLink ? "Link copiado" : "Copiar link publico"}
-      aria-label={copiedPublicLink ? "Link copiado" : "Copiar link publico"}
-      onClick={copyPublicLink}
-    />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+      <Btn
+        v="ghost"
+        icon="share"
+        sz="sm"
+        style={LIST_ACTION_STYLE}
+        title={copiedPublicLink ? "Link copiado" : "Copiar link publico"}
+        aria-label="Copiar link publico"
+        onClick={copyPublicLink}
+      />
+      {copiedPublicLink && (
+        <span role="status" style={{ fontSize: 11, fontWeight: 700, color: COLORS.primary, whiteSpace: "nowrap" }}>
+          Link copiado
+        </span>
+      )}
+    </span>
   );
 
   return (

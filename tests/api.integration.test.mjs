@@ -773,12 +773,15 @@ test("events endpoint persists linked forms and publishes manually", async () =>
     assert.equal(savedEvent.closing, "2026-05-18T18:00:00.000Z");
     assert.equal(savedEvent.status, "publicado");
 
-    const searchRes = await authedFetch(ctx.baseUrl, "/api/events?search=Evento%20API&limit=1&offset=0", adminToken);
+    const searchRes = await authedFetch(ctx.baseUrl, "/api/events?search=Evento%20API&status=publicado&sortBy=title&sortDir=asc&limit=1&offset=0", adminToken);
     assert.equal(searchRes.status, 200);
     const searchPayload = await searchRes.json();
     assert.equal(searchPayload.total, 1);
     assert.equal(searchPayload.limit, 1);
     assert.equal(searchPayload.offset, 0);
+    assert.equal(searchPayload.status, "publicado");
+    assert.equal(searchPayload.sortBy, "title");
+    assert.equal(searchPayload.sortDir, "asc");
     assert.equal(searchPayload.events[0].id, created.event.id);
 
     const deleteRes = await authedJson(ctx.baseUrl, `/api/events/${created.event.id}`, {}, adminToken, "DELETE");

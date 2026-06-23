@@ -44,6 +44,9 @@ export const loadAppEventsPage = async ({
       limit: Number(result.limit || filters?.limit || 20),
       offset: Number(result.offset || filters?.offset || 0),
       search: result.search || filters?.search || "",
+      status: result.status || filters?.status || "",
+      sortBy: result.sortBy || filters?.sortBy || "date",
+      sortDir: result.sortDir || filters?.sortDir || "desc",
     },
   }));
   return result;

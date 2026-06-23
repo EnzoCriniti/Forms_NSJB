@@ -66,6 +66,12 @@ export const EventsScreen = ({
     setFormsPage,
     eventSearchDraft,
     setEventSearchDraft,
+    eventStatusFilter,
+    setEventStatusFilter,
+    eventSortBy,
+    setEventSortBy,
+    eventSortDir,
+    setEventSortDir,
     eventSearchLoading,
     submitEventSearch,
     clearEventSearch,
@@ -163,6 +169,9 @@ export const EventsScreen = ({
       eventsTotalItems={eventsTotalItems}
       eventSearchDraft={eventSearchDraft}
       eventSearchLoading={eventSearchLoading}
+      eventSortBy={eventSortBy}
+      eventSortDir={eventSortDir}
+      eventStatusFilter={eventStatusFilter}
       feedback={feedback}
       onCancelDelete={() => {
         if (deleting) return;
@@ -172,6 +181,9 @@ export const EventsScreen = ({
       onDelete={setPendingDelete}
       onEdit={editEvent}
       onChangeEventSearch={setEventSearchDraft}
+      onChangeEventSortBy={setEventSortBy}
+      onChangeEventSortDir={setEventSortDir}
+      onChangeEventStatus={setEventStatusFilter}
       onClearEventSearch={clearEventSearch}
       onNextEventsPage={nextEventsPage}
       onOpen={openEvent}

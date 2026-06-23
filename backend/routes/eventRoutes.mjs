@@ -20,6 +20,9 @@ export const handleEventRoutes = async (req, res, url) => {
     try {
       const result = await searchEvents({
         search: url.searchParams.get("search") || "",
+        status: url.searchParams.get("status") || "",
+        sortBy: url.searchParams.get("sortBy") || "date",
+        sortDir: url.searchParams.get("sortDir") || "desc",
         limit: url.searchParams.get("limit") || 20,
         offset: url.searchParams.get("offset") || 0,
       });

@@ -134,9 +134,15 @@ export const EventListView = ({
   eventsTotalItems,
   eventSearchDraft,
   eventSearchLoading,
+  eventSortBy,
+  eventSortDir,
+  eventStatusFilter,
   feedback,
   onCancelDelete,
   onChangeEventSearch,
+  onChangeEventSortBy,
+  onChangeEventSortDir,
+  onChangeEventStatus,
   onClearEventSearch,
   onConfirmDelete,
   onDelete,
@@ -165,9 +171,15 @@ export const EventListView = ({
       totalItems={eventsTotalItems}
       searchValue={eventSearchDraft}
       searchLoading={eventSearchLoading}
+      sortBy={eventSortBy}
+      sortDir={eventSortDir}
+      statusFilter={eventStatusFilter}
       pinnedEventSet={pinnedEventSet}
       canManageEvents={canManageEvents}
       onChangeSearch={onChangeEventSearch}
+      onChangeSortBy={onChangeEventSortBy}
+      onChangeSortDir={onChangeEventSortDir}
+      onChangeStatus={onChangeEventStatus}
       onClearSearch={onClearEventSearch}
       onOpen={onOpen}
       onEdit={onEdit}

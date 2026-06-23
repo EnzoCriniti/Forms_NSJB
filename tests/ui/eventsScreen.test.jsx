@@ -137,9 +137,19 @@ describe("EventsScreen", () => {
     );
 
     fireEvent.change(screen.getByLabelText("Pesquisar eventos"), { target: { value: "Maio" } });
+    fireEvent.change(screen.getByLabelText("Filtrar status"), { target: { value: "pronto" } });
+    fireEvent.change(screen.getByLabelText("Ordenar eventos"), { target: { value: "title" } });
+    fireEvent.change(screen.getByLabelText("Direcao da ordenacao"), { target: { value: "asc" } });
     fireEvent.click(screen.getByRole("button", { name: "Pesquisar" }));
 
-    await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({ search: "Maio", limit: 20, offset: 0 }));
+    await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({
+      search: "Maio",
+      status: "pronto",
+      sortBy: "title",
+      sortDir: "asc",
+      limit: 20,
+      offset: 0,
+    }));
   });
 
   it("pagina eventos pelo backend sem depender da lista completa no front", async () => {
@@ -148,7 +158,7 @@ describe("EventsScreen", () => {
     render(
       <EventsScreen
         events={events}
-        eventsPage={{ total: 8, limit: 4, offset: 0, search: "" }}
+        eventsPage={{ total: 8, limit: 4, offset: 0, search: "", status: "", sortBy: "date", sortDir: "desc" }}
         forms={forms}
         user={admin}
         labels={[]}
@@ -163,7 +173,7 @@ describe("EventsScreen", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Pr.xima/ }));
 
-    await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({ search: "", limit: 4, offset: 4 }));
+    await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({ search: "", status: "", sortBy: "date", sortDir: "desc", limit: 4, offset: 4 }));
   });
 
   it("destaca a borda do card de evento no hover", () => {

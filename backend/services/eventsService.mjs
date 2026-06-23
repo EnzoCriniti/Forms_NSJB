@@ -57,8 +57,8 @@ const attachMessagesToEvents = async events => {
   }));
 };
 
-export const searchEvents = async ({ search = "", limit = 20, offset = 0 } = {}) => {
-  const page = await listEventsPage({ search, limit, offset });
+export const searchEvents = async ({ search = "", status = "", sortBy = "date", sortDir = "desc", limit = 20, offset = 0 } = {}) => {
+  const page = await listEventsPage({ search, status, sortBy, sortDir, limit, offset });
   return {
     ...page,
     events: await attachMessagesToEvents(page.events),
