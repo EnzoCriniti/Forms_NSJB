@@ -254,7 +254,7 @@ describe("createFormDomain", () => {
     }));
   });
 
-  it("monta campo de presenca com horario obrigatorio e rotulo composto", () => {
+  it("monta campo de presenca com horario opcional e rotulo composto quando preenchido", () => {
     const payload = buildFieldSavePayload({
       fields: [],
       editingFieldId: null,
@@ -282,7 +282,7 @@ describe("createFormDomain", () => {
     }));
   });
 
-  it("bloqueia payload de campo de presenca sem horario", () => {
+  it("monta campo de presenca sem horario mantendo o rotulo base", () => {
     const payload = buildFieldSavePayload({
       fields: [],
       editingFieldId: null,
@@ -299,7 +299,15 @@ describe("createFormDomain", () => {
       filteredFieldCatalog: [],
     });
 
-    expect(payload).toBeNull();
+    const field = mergeSavedField(payload);
+
+    expect(field).toEqual(expect.objectContaining({
+      type: "yes_no",
+      label: "Reuniao de diretoria",
+      baseLabel: "Reuniao de diretoria",
+      scheduleText: "",
+      required: true,
+    }));
   });
 
   it("monta o payload de salvamento e template sem duplicar regra de campos", () => {
@@ -391,7 +399,7 @@ describe("createFormDomain", () => {
     expect(derived.isFieldSaveDisabled).toBe(true);
   });
 
-  it("exige horario para salvar campo de presenca que nao e seletor de pessoa", () => {
+  it("permite salvar campo de presenca sem horario", () => {
     const withoutSchedule = buildCreateFormDerivedState({
       format: "presenca",
       formMode: FORM_MODES.NUCLEO,
@@ -405,22 +413,7 @@ describe("createFormDomain", () => {
       nLabel: "Reuniao de diretoria",
       nScheduleText: "",
     });
-    const withSchedule = buildCreateFormDerivedState({
-      format: "presenca",
-      formMode: FORM_MODES.NUCLEO,
-      fields: [],
-      fieldCatalog: [],
-      resultsConfig: { totalsLayout: [] },
-      editingFieldId: null,
-      nFieldMode: "local",
-      nType: "yes_no",
-      nCatalogId: "",
-      nLabel: "Reuniao de diretoria",
-      nScheduleText: "15h",
-    });
-
-    expect(withoutSchedule.isFieldSaveDisabled).toBe(true);
-    expect(withSchedule.isFieldSaveDisabled).toBe(false);
+    expect(withoutSchedule.isFieldSaveDisabled).toBe(false);
   });
 
   it("aplica template preservando os dados principais do formulario", () => {
