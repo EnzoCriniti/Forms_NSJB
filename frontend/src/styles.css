@@ -1508,12 +1508,127 @@ button:not(.ui-btn):focus-visible {
   width: 1px;
 }
 
+.events-search-bar {
+  display: grid;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.events-search-bar__top {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.events-search-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.events-search-field:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.events-search-field > svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.events-search-field input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  padding: 11px 0;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+}
+
+.events-search-field__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.events-search-field__clear:hover {
+  color: var(--text);
+}
+
+.events-search-bar__filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.events-filter {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.events-filter__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.events-filter__select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
+  box-sizing: border-box;
+}
+
+.events-search-bar__filters .ui-btn {
+  align-self: end;
+  height: 42px;
+}
+
 @media (max-width: 720px) {
-  .events-search-bar {
+  .events-search-bar__top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .events-search-bar__top .ui-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .events-search-bar__filters {
     grid-template-columns: 1fr !important;
   }
 
-  .events-search-bar .ui-btn {
+  .events-search-bar__filters .ui-btn {
     width: 100%;
     justify-content: center;
   }
