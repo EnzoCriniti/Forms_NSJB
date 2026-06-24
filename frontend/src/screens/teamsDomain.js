@@ -17,9 +17,24 @@ export const emptyTeamPeriodDraft = {
   notes: "",
 };
 
+export const getTeamDatePart = value => {
+  const text = String(value || "").trim();
+  const match = text.match(/^(\d{4}-\d{2}-\d{2})/);
+  return match ? match[1] : text;
+};
+
+export const formatTeamDate = value => {
+  const datePart = getTeamDatePart(value);
+  const match = datePart.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return datePart || "Sem data";
+  return `${match[3]}/${match[2]}/${match[1]}`;
+};
+
 export const buildTeamPeriodDraft = period => ({
   ...emptyTeamPeriodDraft,
   ...period,
+  startDate: getTeamDatePart(period?.startDate),
+  endDate: getTeamDatePart(period?.endDate),
   assistantMasterPersonId: period?.assistantMasterPersonId ? String(period.assistantMasterPersonId) : "",
   organPersonId: period?.organPersonId ? String(period.organPersonId) : "",
   directAssistantPersonId: period?.directAssistantPersonId ? String(period.directAssistantPersonId) : "",
@@ -31,8 +46,8 @@ export const buildTeamPeriodDraft = period => ({
 export const buildTeamPeriodPayload = draft => ({
   id: draft.id || null,
   title: String(draft.title || "").trim(),
-  startDate: draft.startDate,
-  endDate: draft.endDate,
+  startDate: getTeamDatePart(draft.startDate),
+  endDate: getTeamDatePart(draft.endDate),
   assistantMasterPersonId: Number(draft.assistantMasterPersonId),
   organPersonId: Number(draft.organPersonId),
   directAssistantPersonId: Number(draft.directAssistantPersonId),
@@ -43,7 +58,7 @@ export const buildTeamPeriodPayload = draft => ({
 });
 
 export const sortTeamPeriods = periods => [...(Array.isArray(periods) ? periods : [])].sort(
-  (left, right) => String(right?.startDate || "").localeCompare(String(left?.startDate || "")) || Number(right?.id || 0) - Number(left?.id || 0),
+  (left, right) => getTeamDatePart(right?.startDate).localeCompare(getTeamDatePart(left?.startDate)) || Number(right?.id || 0) - Number(left?.id || 0),
 );
 
 export const findPersonName = (people, id) => {

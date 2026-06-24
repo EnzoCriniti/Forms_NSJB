@@ -5,6 +5,7 @@
 
 import React from "react";
 import { COLORS, Icon, TypeBadge } from "../../../components/ui";
+import { formatTeamDate } from "../../../screens/teamsDomain";
 
 const FormLink = ({ form, onOpenResults }) => (
   <button
@@ -28,7 +29,7 @@ const FormLink = ({ form, onOpenResults }) => (
       <strong>{form.title}</strong>
     </span>
     <span style={{ color: COLORS.textMuted, fontSize: 12 }}>
-      {form.date || "Sem data"} · {form.status}
+      {formatTeamDate(form.date)} - {form.status}
     </span>
   </button>
 );
@@ -80,7 +81,7 @@ export const TeamPeriodSummaryPanel = ({ summary, loading, onOpenResults }) => {
           <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
             <div>
               <strong style={{ color: COLORS.text }}>{event.title}</strong>
-              <div style={{ color: COLORS.textMuted, fontSize: 12, marginTop: 3 }}>{event.date || "Sem data"} · {event.status}</div>
+              <div style={{ color: COLORS.textMuted, fontSize: 12, marginTop: 3 }}>{formatTeamDate(event.date)} - {event.status}</div>
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {event.hasPresence && <SummaryBadge>Presenca</SummaryBadge>}

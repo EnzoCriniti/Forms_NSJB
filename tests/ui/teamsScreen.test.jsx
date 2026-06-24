@@ -22,8 +22,8 @@ const teamPeriods = [
   {
     id: 10,
     title: "Equipes Maio/Junho",
-    startDate: "2026-05-01",
-    endDate: "2026-06-30",
+    startDate: "2026-05-01T00:00:00.000Z",
+    endDate: "2026-06-30T00:00:00.000Z",
     assistantMasterPersonId: 1,
     organPersonId: 3,
     directAssistantPersonId: 2,
@@ -49,12 +49,12 @@ describe("TeamsScreen", () => {
               {
                 id: 20,
                 title: "Sessao de Escala",
-                date: "2026-05-10",
+                date: "2026-05-10T00:00:00.000Z",
                 status: "pronto",
                 hasPresence: true,
                 hasOrganScale: true,
                 forms: [
-                  { id: 30, title: "Presenca Maio", type: "presenca", status: "aberto", date: "2026-05-10" },
+                  { id: 30, title: "Presenca Maio", type: "presenca", status: "aberto", date: "2026-05-10T00:00:00.000Z" },
                 ],
               },
             ],
@@ -77,7 +77,10 @@ describe("TeamsScreen", () => {
     );
 
     expect(screen.getByText("Equipes Maio/Junho")).toBeInTheDocument();
+    expect(screen.getByText("01/05/2026 ate 30/06/2026")).toBeInTheDocument();
+    expect(screen.queryByText(/2026-05-01T00:00:00.000Z/)).not.toBeInTheDocument();
     const formButton = await screen.findByRole("button", { name: /Presenca Maio/i });
+    expect(screen.getAllByText(/10\/05\/2026/).length).toBeGreaterThan(0);
     fireEvent.click(formButton);
 
     expect(onOpenFormResults).toHaveBeenCalledWith(30);

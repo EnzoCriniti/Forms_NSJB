@@ -5,7 +5,7 @@
 
 import React from "react";
 import { Btn, COLORS, Icon } from "../../../components/ui";
-import { findPersonName } from "../../../screens/teamsDomain";
+import { findPersonName, formatTeamDate } from "../../../screens/teamsDomain";
 
 export const TeamPeriodListPanel = ({
   periods = [],
@@ -52,7 +52,7 @@ export const TeamPeriodListPanel = ({
               >
                 <strong style={{ display: "block", fontSize: 15 }}>{period.title || "Periodo de equipes"}</strong>
                 <span style={{ display: "block", color: COLORS.textMuted, fontSize: 12, marginTop: 3 }}>
-                  {period.startDate} ate {period.endDate}
+                  {formatTeamDate(period.startDate)} ate {formatTeamDate(period.endDate)}
                 </span>
                 <span style={{ display: "block", color: COLORS.textSecondary, fontSize: 12, marginTop: 6 }}>
                   Mestre Assistente: {findPersonName(people, period.assistantMasterPersonId)}
