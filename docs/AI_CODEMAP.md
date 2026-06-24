@@ -257,6 +257,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 ## App shell
 
+- `frontend/index.html` e `frontend/public/star.svg`
+  Definem o favicon da aba do navegador; o SVG publico reaproveita o mesmo desenho da `StarMark`, sem fundo.
 - `frontend/src/App.jsx`
   Entrada principal do frontend. A navegacao, sessao, preferencias, bootstrap, handlers e montagem de viewport ficam em `frontend/src/lib/appController.js`.
 - `frontend/src/lib/appController.js`
