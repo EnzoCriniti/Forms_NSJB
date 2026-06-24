@@ -130,7 +130,7 @@ export const EventMessageDetailScreen = ({
       <div>
         <ScreenHeader
           className="settings-top-card"
-          leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
+          onBack={onBack}
           title="Mensagem não encontrada"
           titleSize={20}
         />

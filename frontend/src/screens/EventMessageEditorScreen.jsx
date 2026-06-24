@@ -80,7 +80,7 @@ export const EventMessageEditorScreen = ({
       <div>
         <ScreenHeader
           className="settings-top-card"
-          leading={<Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />}
+          onBack={() => onCancel && onCancel(null)}
           title="Nova mensagem"
         />
         <FeedbackBanner tone="info" message="Este evento não possui formulário de presença ou escala vinculado. Vincule um formulário antes de criar mensagens." />
@@ -92,7 +92,7 @@ export const EventMessageEditorScreen = ({
     <div>
       <ScreenHeader
         className="settings-top-card"
-        leading={<Btn v="ghost" icon="back" onClick={() => onCancel && onCancel(null)} aria-label="Voltar" />}
+        onBack={() => onCancel && onCancel(null)}
         title={draft.id ? "Editar mensagem" : "Nova mensagem"}
         subtitle={event?.title}
         titleSize={20}

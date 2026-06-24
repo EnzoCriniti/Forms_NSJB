@@ -36,7 +36,10 @@ const emptyMember = personKey => ({
   grau: "",
   presencaExpected: 0,
   presencaFilled: 0,
+  presencaExempted: 0,
   escalaCount: 0,
+  avgTimeToFillMinutes: null,
+  lastFilledAt: null,
 });
 
 /**
@@ -56,6 +59,9 @@ export const buildOverview = ({ memberReport = [], escalaAssignments = [], peopl
       grau: member.grau,
       presencaExpected: member.expected,
       presencaFilled: member.filled,
+      presencaExempted: member.exempted || 0,
+      avgTimeToFillMinutes: member.avgTimeToFillMinutes ?? null,
+      lastFilledAt: member.lastFilledAt ?? null,
     });
   }
 
@@ -79,8 +85,12 @@ export const buildOverview = ({ memberReport = [], escalaAssignments = [], peopl
 
   const members = [...byKey.values()];
   const presenca = members.reduce(
-    (acc, member) => ({ expected: acc.expected + member.presencaExpected, filled: acc.filled + member.presencaFilled }),
-    { expected: 0, filled: 0 },
+    (acc, member) => ({
+      expected: acc.expected + member.presencaExpected,
+      filled: acc.filled + member.presencaFilled,
+      exempted: acc.exempted + (member.presencaExempted || 0),
+    }),
+    { expected: 0, filled: 0, exempted: 0 },
   );
   const graus = [...new Set(members.map(member => member.grau).filter(Boolean))];
 

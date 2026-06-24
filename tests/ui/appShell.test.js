@@ -57,7 +57,7 @@ describe("appShell session storage", () => {
     })).toEqual({
       token: "abc",
       expiresAt: null,
-      user: { id: 1, name: "Admin", username: "admin", role: "admin" },
+      user: { id: 1, name: "Admin", username: "admin", role: "admin", layerId: null, layerName: null, permissions: [] },
     });
   });
 });
@@ -217,7 +217,7 @@ describe("appShell derived state", () => {
       nav: [
         { key: "dashboard", icon: "chart", label: "Dashboard" },
         { key: "events", icon: "calendar", label: "Eventos" },
-        { key: "reports", icon: "clipboard", label: "Relatórios" },
+        { key: "teams", icon: "users", label: "Equipes" },
       ],
       screen: "events",
       theme: "dark",
@@ -476,7 +476,7 @@ describe("app navigation items", () => {
     expect(buildAppNavItems({ currentUser: { role: "admin" }, canCreateForms })).toEqual([
       { key: "dashboard", icon: "chart", label: "Dashboard" },
       { key: "events", icon: "calendar", label: "Eventos" },
-      { key: "reports", icon: "clipboard", label: "Relatórios" },
+      { key: "teams", icon: "users", label: "Equipes" },
     ]);
   });
 });

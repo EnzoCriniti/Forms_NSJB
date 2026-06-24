@@ -5,7 +5,8 @@
 
 import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
 import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
-import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, ReportsFlow, SettingsFlow } from "./AppShellMainFlows";
+import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, SettingsFlow, TeamsFlow } from "./AppShellMainFlows";
+import { can } from "./lib/auth";
 import { getShellState } from "./lib/appShellObject";
 
 export const APP_SHELL_ROUTES = [
@@ -17,6 +18,11 @@ export const APP_SHELL_ROUTES = [
     screen: "events",
     component: EventsFlow,
     canRender: app => Boolean(getShellState(app).currentUser),
+  },
+  {
+    screen: "teams",
+    component: TeamsFlow,
+    canRender: app => can(getShellState(app).currentUser, "teams.view"),
   },
   {
     screen: "eventMessageEditor",
@@ -33,11 +39,6 @@ export const APP_SHELL_ROUTES = [
       const state = getShellState(app);
       return Boolean(state.currentUser && state.activeEvent && state.activeMessageId);
     },
-  },
-  {
-    screen: "reports",
-    component: ReportsFlow,
-    canRender: app => Boolean(getShellState(app).currentUser),
   },
   {
     screen: "list",

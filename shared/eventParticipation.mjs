@@ -30,9 +30,12 @@ const isActivePerson = person => person?.active !== false;
  * @param {Record<number, object[]>} responsesByForm respostas por formulario.
  * @param {string} capturedAt timestamp da captura.
  */
-export const buildParticipationRows = ({ event, presencaFormIds = [], people = [], responsesByForm = {}, capturedAt }) => {
+export const buildParticipationRows = ({ event, presencaFormIds = [], people = [], responsesByForm = {}, capturedAt, exemptionsByPersonKey = {} }) => {
   const expectedPeople = filterByEligibleGraus(people.filter(isActivePerson), event?.eligibleGraus);
   const rows = [];
+  const exemptions = exemptionsByPersonKey instanceof Map
+    ? exemptionsByPersonKey
+    : new Map(Object.entries(exemptionsByPersonKey || {}));
 
   for (const formId of presencaFormIds) {
     const responses = responsesByForm[formId] || [];
@@ -43,16 +46,18 @@ export const buildParticipationRows = ({ event, presencaFormIds = [], people = [
       const response = responseByKey.get(personKey) || null;
       const filled = Boolean(response);
       const respondedAt = filled ? (response.createdAt || null) : null;
+      const exemptionReason = exemptions.get(personKey) || "";
       rows.push({
         eventId: event?.id ?? null,
         formId,
         personKey,
         personName: person?.name || "",
         grau: person?.grau || "",
-        expected: true,
+        expected: !exemptionReason,
         filled,
         respondedAt,
         timeToFillMinutes: filled ? minutesBetween(event?.opening, respondedAt) : null,
+        exemptionReason,
         capturedAt,
       });
     }
@@ -71,6 +76,7 @@ export const summarizeMemberParticipation = ({
   grau = "",
   expectedCount = 0,
   filledCount = 0,
+  exemptedCount = 0,
   avgTimeToFillMinutes = null,
   lastFilledAt = null,
 } = {}) => {
@@ -87,6 +93,7 @@ export const summarizeMemberParticipation = ({
     grau,
     expected,
     filled,
+    exempted: Number(exemptedCount) || 0,
     missed,
     fillRate,
     avgTimeToFillMinutes: Number.isFinite(avg) ? avg : null,

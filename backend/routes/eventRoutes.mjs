@@ -7,16 +7,13 @@
 import { sendJson } from "../core/http.mjs";
 import { deleteEvent, saveEvent, publishEvent, searchEvents } from "../services/eventsService.mjs";
 import { validateDeleteId, validateEventPayload } from "../validators/payloadValidators.mjs";
-import { readBody, requireAdmin, requireAuth, sendKnownError } from "./requestHelpers.mjs";
+import { readBody, requireCapability, sendKnownError } from "./requestHelpers.mjs";
 import { writeEventDeleteAudit, writeEventPublishAudit, writeEventSaveAudit } from "./eventRouteAudit.mjs";
 
 export const handleEventRoutes = async (req, res, url) => {
   if (req.method === "GET" && url.pathname === "/api/events") {
-    const auth = await requireAuth(req);
-    if (!auth) {
-      sendJson(res, 401, { error: "Nao autenticado." });
-      return true;
-    }
+    const auth = await requireCapability(req, res, "events.view");
+    if (!auth) return true;
     try {
       const result = await searchEvents({
         search: url.searchParams.get("search") || "",
@@ -36,9 +33,9 @@ export const handleEventRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/events") {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
     const body = await readBody(req);
+    const auth = await requireCapability(req, res, body?.id ? "events.edit" : "events.create");
+    if (!auth) return true;
     try {
       validateEventPayload(body);
       const event = await saveEvent(body);
@@ -54,7 +51,7 @@ export const handleEventRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname.startsWith("/api/events/") && url.pathname.endsWith("/publish")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "events.publish");
     if (!auth) return true;
     const eventId = validateDeleteId(url.pathname.split("/")[3], "Id do evento");
     try {
@@ -71,7 +68,7 @@ export const handleEventRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/events/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "events.delete");
     if (!auth) return true;
     const eventId = validateDeleteId(url.pathname.split("/").pop(), "Id do evento");
     try {

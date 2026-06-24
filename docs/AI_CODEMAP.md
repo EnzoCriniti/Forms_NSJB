@@ -559,6 +559,31 @@ Mapa curto das areas mais mexidas por agentes.
 - `backend/repositories/eventsRepository.mjs`
   Persistencia da tabela `events`, incluindo busca por texto, filtro de status, ordenacao e `LIMIT/OFFSET`.
 
+## Equipes
+
+- `frontend/src/screens/TeamsScreen.jsx`
+  Tela principal do menu `Equipes`, com lista de periodos, editor e resumo de formularios/eventos do intervalo.
+- `frontend/src/screens/teamsScreenController.js`
+  Controller da tela de equipes: selecao, edicao, exclusao, feedback e carregamento do resumo do periodo.
+- `frontend/src/screens/teamsDomain.js`
+  Helpers puros de rascunho, payload, ordenacao e selecao de pessoas para periodos de equipes.
+- `frontend/src/features/teams/components/`
+  Componentes visuais do dominio de equipes: editor, lista e resumo de formularios/eventos clicaveis para resultados.
+- `backend/routes/teamPeriodsRoutes.mjs`
+  Rotas `GET /api/team-periods`, `GET /api/team-periods/:id/summary`, `POST /api/team-periods` e `DELETE /api/team-periods/:id`.
+- `backend/services/teamPeriodsService.mjs`
+  Regras de periodo de equipes: valida pessoas da base de socios, bloqueia sobreposicao e monta resumo do intervalo.
+- `backend/bi/participationService.mjs`
+  Ao capturar participacao de evento encerrado, consulta periodos de equipes aplicaveis pela data do evento e marca dispensados como `expected=false`.
+- `backend/bi/biRepository.mjs`
+  Agregacoes de BI contam apenas linhas `expected=true`; linhas dispensadas mantem `exemption_reason` para detalhe do socio.
+- `backend/repositories/teamPeriodsRepository.mjs`
+  Persistencia da tabela `team_periods` e consultas de formularios/eventos usados no resumo do periodo.
+- `backend/validators/teamPeriodsPayloadValidators.mjs`
+  Validacao estrutural do payload de periodos de equipes.
+- `shared/permissions.mjs`
+  Inclui as capacidades `teams.view` e `teams.manage` para controlar acesso ao menu e CRUD.
+
 ## Vinculo com base personalizada
 
 - `frontend/src/screens/CreateFormScreen.jsx`

@@ -20,11 +20,11 @@ import {
   sendAdminMutationError,
   writeAdminMutationAudit,
 } from "./adminRouteHelpers.mjs";
-import { readBody, requireAdmin } from "./requestHelpers.mjs";
+import { readBody, requireCapability } from "./requestHelpers.mjs";
 
 export const handleAdminCatalogRoutes = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/field-catalog") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -70,7 +70,7 @@ export const handleAdminCatalogRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/field-catalog/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const fieldId = validateDeleteId(url.pathname.split("/").pop(), "Id do campo base");
     try {
@@ -103,7 +103,7 @@ export const handleAdminCatalogRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/scale-task-catalog") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -147,7 +147,7 @@ export const handleAdminCatalogRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/scale-task-catalog/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const taskId = validateDeleteId(url.pathname.split("/").pop(), "Id da tarefa base");
     try {

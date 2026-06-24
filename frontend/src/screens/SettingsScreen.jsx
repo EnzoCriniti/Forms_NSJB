@@ -12,7 +12,7 @@ export const SettingsScreen = ({ onNavigate, ...props }) => (
   <div>
     <ScreenHeader
       className="settings-top-card"
-      leading={<Btn v="ghost" icon="back" onClick={() => onNavigate("list")} aria-label="Voltar" />}
+      onBack={() => onNavigate("list")}
       title="Configurações"
       subtitle="Gerencie usuários, segurança, bases e catálogos do sistema"
     />

@@ -33,12 +33,9 @@ export const AppLoginGate = ({
 }) => (
   <AppStatusScreen width={480} tone="info">
     <div className="login-screen">
-      <div className="login-screen__header" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 10, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary, fontWeight: 800 }}>NF</div>
-        <div>
-          <h2 style={{ margin: 0, fontSize: 20 }}>Acesso restrito</h2>
-          <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 13 }}>Entre com sua conta para acessar a pagina inicial e os formularios internos.</p>
-        </div>
+      <div className="login-screen__header" style={{ marginBottom: 18 }}>
+        <h2 style={{ margin: 0, fontSize: 20 }}>Acesso restrito</h2>
+        <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 13 }}>Entre com sua conta para acessar a pagina inicial e os formularios internos.</p>
       </div>
       <AuthPanel
         user={null}

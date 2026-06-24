@@ -13,7 +13,7 @@ import { validateAuthLoginPayload, validateFormDeleteKeyUpdatePayload } from "..
 import {
   readAuditFilters,
   readBody,
-  requireAdmin,
+  requireCapability,
   requireAuth,
   sendKnownError,
 } from "./requestHelpers.mjs";
@@ -76,7 +76,7 @@ export const handleSystemRoutes = async (req, res, url) => {
   }
 
   if (req.method === "PUT" && url.pathname === "/api/security/form-delete-key") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.security");
     if (!auth) return true;
     const body = await readBody(req);
     if (!body) {
@@ -101,7 +101,7 @@ export const handleSystemRoutes = async (req, res, url) => {
   }
 
   if (req.method === "GET" && url.pathname === "/api/audit-logs") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.security");
     if (!auth) return true;
     sendJson(res, 200, await listAuditLogs(readAuditFilters(url)));
     return true;

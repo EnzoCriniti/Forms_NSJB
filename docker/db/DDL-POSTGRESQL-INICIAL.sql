@@ -72,6 +72,7 @@ CREATE TABLE event_participation (
   filled BOOLEAN NOT NULL DEFAULT FALSE,
   responded_at TIMESTAMPTZ,
   time_to_fill_minutes INTEGER,
+  exemption_reason TEXT NOT NULL DEFAULT '',
   captured_at TIMESTAMPTZ NOT NULL
 );
 

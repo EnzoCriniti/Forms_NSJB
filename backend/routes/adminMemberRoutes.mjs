@@ -18,11 +18,11 @@ import {
   sendAdminMutationError,
   writeAdminMutationAudit,
 } from "./adminRouteHelpers.mjs";
-import { readBody, requireAdmin } from "./requestHelpers.mjs";
+import { readBody, requireCapability } from "./requestHelpers.mjs";
 
 export const handleAdminMemberRoutes = async (req, res, url) => {
   if (req.method === "PUT" && url.pathname === "/api/people") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "members.manage");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -60,7 +60,7 @@ export const handleAdminMemberRoutes = async (req, res, url) => {
   }
 
   if (req.method === "PUT" && url.pathname === "/api/members-config") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "members.manage");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -100,7 +100,7 @@ export const handleAdminMemberRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/members-config/sync") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "members.manage");
     if (!auth) return true;
     try {
       const result = await syncMembersFromSource();

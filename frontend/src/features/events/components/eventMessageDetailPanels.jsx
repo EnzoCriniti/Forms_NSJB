@@ -21,7 +21,7 @@ export const EventMessageDetailHeader = ({
 }) => (
   <ScreenHeader
     className="settings-top-card"
-    leading={<Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />}
+    onBack={onBack}
     titleContent={(
       <div style={{ minWidth: 0, flex: 1, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <h2 style={{ margin: 0, fontSize: 20 }}>{MESSAGE_TYPE_LABELS[message.type] || message.type}</h2>

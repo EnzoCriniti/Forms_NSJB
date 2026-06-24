@@ -34,7 +34,7 @@ describe("appPreferences", () => {
     expect(loadInitialSession()).toEqual({
       token: "abc",
       expiresAt: null,
-      user: { id: 1, name: "Admin", username: "admin", role: "admin" },
+      user: { id: 1, name: "Admin", username: "admin", role: "admin", layerId: null, layerName: null, permissions: [] },
     });
   });
 

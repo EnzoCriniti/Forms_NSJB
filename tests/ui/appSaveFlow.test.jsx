@@ -137,7 +137,7 @@ describe("App save flow", () => {
 
     await waitFor(() => expect(screen.getByText("Formulário alterado com sucesso")).toBeInTheDocument());
 
-    fireEvent.click(screen.getByText("Voltar para o evento"));
+    fireEvent.click(screen.getByRole("button", { name: "Voltar" }));
     await openTestEvent();
     fireEvent.click(screen.getByText("Ver resultados"));
 

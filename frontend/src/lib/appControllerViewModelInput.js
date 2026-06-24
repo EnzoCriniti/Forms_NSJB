@@ -25,6 +25,7 @@ export const buildAppControllerViewModelInput = ({
   eventHandlers: handlers.eventHandlers,
   events: bootstrapData.events,
   eventsPage: bootstrapData.eventsPage,
+  teamPeriods: bootstrapData.teamPeriods,
   externalBases: bootstrapData.externalBases,
   fieldCatalog: bootstrapData.fieldCatalog,
   formHandlers: handlers.formHandlers,

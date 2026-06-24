@@ -10,6 +10,7 @@ import { handleFormRoutes } from "./formRoutes.mjs";
 import { handleMessageRoutes } from "./messageRoutes.mjs";
 import { handleBiRoutes } from "../bi/index.mjs";
 import { handleSystemRoutes } from "./systemRoutes.mjs";
+import { handleTeamPeriodsRoutes } from "./teamPeriodsRoutes.mjs";
 
 export const handleApiRequest = async (req, res, url) => {
   if (await handleSystemRoutes(req, res, url)) {
@@ -22,6 +23,9 @@ export const handleApiRequest = async (req, res, url) => {
     return true;
   }
   if (await handleEventRoutes(req, res, url)) {
+    return true;
+  }
+  if (await handleTeamPeriodsRoutes(req, res, url)) {
     return true;
   }
   if (await handleBiRoutes(req, res, url)) {

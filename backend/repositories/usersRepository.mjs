@@ -9,31 +9,35 @@ import { database } from "../database/index.mjs";
 import { createPasswordRecord } from "../core/auth.mjs";
 
 export const listUsers = async () => (await database.queryMany(`
-  SELECT id, name, username, role
+  SELECT id, name, username, role, layer_id
   FROM users
   ORDER BY lower(name) ASC, id ASC
 `));
 
-export const findUserByUsername = async username => database.queryOne(`
-  SELECT id, name, username, password, password_hash, password_salt, password_algorithm, password_iterations, password_migrated_at, role
-  FROM users
-  WHERE lower(username) = lower(?)
-  LIMIT 1
-`, [username]);
+const USER_WITH_LAYER = `
+  SELECT u.id, u.name, u.username, u.password, u.password_hash, u.password_salt, u.password_algorithm,
+         u.password_iterations, u.password_migrated_at, u.role, u.layer_id,
+         al.name AS layer_name, al.permissions_json AS layer_permissions
+  FROM users u
+  LEFT JOIN access_layers al ON al.id = u.layer_id
+`;
 
-export const findUserById = async id => database.queryOne(`
-  SELECT id, name, username, password, password_hash, password_salt, password_algorithm, password_iterations, password_migrated_at, role
-  FROM users
-  WHERE id = ?
-  LIMIT 1
-`, [id]);
+export const findUserByUsername = async username => database.queryOne(
+  `${USER_WITH_LAYER} WHERE lower(u.username) = lower(?) LIMIT 1`,
+  [username],
+);
+
+export const findUserById = async id => database.queryOne(
+  `${USER_WITH_LAYER} WHERE u.id = ? LIMIT 1`,
+  [id],
+);
 
 export const findConflictingUserByUsername = async (username, id) => {
   if (id) return database.queryOne("SELECT id FROM users WHERE lower(username) = lower(?) AND id != ?", [username, id]);
   return database.queryOne("SELECT id FROM users WHERE lower(username) = lower(?)", [username]);
 };
 
-export const upsertUserRecord = async ({ id, name, username, password, role, passwordHash, passwordSalt, passwordAlgorithm, passwordIterations, passwordMigratedAt }) => {
+export const upsertUserRecord = async ({ id, name, username, password, role, layerId, passwordHash, passwordSalt, passwordAlgorithm, passwordIterations, passwordMigratedAt }) => {
   const now = nowIso();
   const secret = password ? createPasswordRecord(password) : null;
   const nextPasswordHash = passwordHash || secret?.hash || null;
@@ -46,21 +50,21 @@ export const upsertUserRecord = async ({ id, name, username, password, role, pas
     if (password || passwordHash) {
       await database.execute(`
         UPDATE users
-        SET name = ?, username = ?, password = ?, password_hash = ?, password_salt = ?, password_algorithm = ?, password_iterations = ?, password_migrated_at = ?, role = ?, updated_at = ?
+        SET name = ?, username = ?, password = ?, password_hash = ?, password_salt = ?, password_algorithm = ?, password_iterations = ?, password_migrated_at = ?, role = ?, layer_id = ?, updated_at = ?
         WHERE id = ?
-      `, [name, username, password || "", nextPasswordHash, nextPasswordSalt, nextPasswordAlgorithm, nextPasswordIterations, nextPasswordMigratedAt, role, now, id]);
+      `, [name, username, password || "", nextPasswordHash, nextPasswordSalt, nextPasswordAlgorithm, nextPasswordIterations, nextPasswordMigratedAt, role, layerId ?? null, now, id]);
     } else {
-      await database.execute("UPDATE users SET name = ?, username = ?, role = ?, updated_at = ? WHERE id = ?", [name, username, role, now, id]);
+      await database.execute("UPDATE users SET name = ?, username = ?, role = ?, layer_id = ?, updated_at = ? WHERE id = ?", [name, username, role, layerId ?? null, now, id]);
     }
     return;
   }
 
   await database.execute(`
     INSERT INTO users (
-      name, username, password, password_hash, password_salt, password_algorithm, password_iterations, password_migrated_at, role, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      name, username, password, password_hash, password_salt, password_algorithm, password_iterations, password_migrated_at, role, layer_id, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING id
-  `, [name, username, password || "", nextPasswordHash, nextPasswordSalt, nextPasswordAlgorithm, nextPasswordIterations, nextPasswordMigratedAt, role, now, now]);
+  `, [name, username, password || "", nextPasswordHash, nextPasswordSalt, nextPasswordAlgorithm, nextPasswordIterations, nextPasswordMigratedAt, role, layerId ?? null, now, now]);
 };
 
 export const setUserPasswordSecret = async (id, { passwordHash, passwordSalt, passwordAlgorithm, passwordIterations, passwordMigratedAt }) => {

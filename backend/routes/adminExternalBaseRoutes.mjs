@@ -18,11 +18,11 @@ import {
   sendAdminMutationError,
   writeAdminMutationAudit,
 } from "./adminRouteHelpers.mjs";
-import { readBody, requireAdmin } from "./requestHelpers.mjs";
+import { readBody, requireCapability } from "./requestHelpers.mjs";
 
 export const handleAdminExternalBaseRoutes = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/external-bases") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.bases");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -64,7 +64,7 @@ export const handleAdminExternalBaseRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/external-bases/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.bases");
     if (!auth) return true;
     const baseId = validateDeleteId(url.pathname.split("/").pop(), "Id da base externa");
     try {
@@ -97,7 +97,7 @@ export const handleAdminExternalBaseRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && /\/api\/external-bases\/\d+\/sync$/.test(url.pathname)) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.bases");
     if (!auth) return true;
     const baseId = validateDeleteId(url.pathname.split("/")[3], "Id da base externa");
     try {

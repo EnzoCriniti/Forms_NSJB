@@ -64,9 +64,13 @@ export const findAuthSessionByTokenHash = async tokenHash => database.queryOne(`
     u.password_salt,
     u.password_algorithm,
     u.password_migrated_at,
-    u.role
+    u.role,
+    u.layer_id,
+    al.name AS layer_name,
+    al.permissions_json AS layer_permissions
   FROM auth_sessions s
   INNER JOIN users u ON u.id = s.user_id
+  LEFT JOIN access_layers al ON al.id = u.layer_id
   WHERE s.token_hash = ?
   LIMIT 1
 `, [tokenHash]);

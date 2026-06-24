@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { Pool, types } from "pg";
 import { PGDATABASE, PGHOST, PGPASSWORD, PGPORT, PGSSLMODE, PGUSER } from "../../config.mjs";
+import { SYSTEM_LAYERS } from "../../../shared/permissions.mjs";
 
 const SCHEMA_PATH = path.resolve(process.cwd(), "docker/db/DDL-POSTGRESQL-INICIAL.sql");
 
@@ -162,6 +163,62 @@ const ensureSchema = async pool => {
     `);
     await client.query("CREATE INDEX IF NOT EXISTS idx_event_participation_event ON event_participation(event_id)");
     await client.query("CREATE INDEX IF NOT EXISTS idx_event_participation_person ON event_participation(person_key)");
+    await client.query("ALTER TABLE event_participation ADD COLUMN IF NOT EXISTS exemption_reason TEXT NOT NULL DEFAULT ''");
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS team_periods (
+        id BIGSERIAL PRIMARY KEY,
+        title TEXT NOT NULL DEFAULT '',
+        start_date DATE NOT NULL,
+        end_date DATE NOT NULL,
+        assistant_master_person_id BIGINT NOT NULL REFERENCES people(id),
+        direct_assistant_person_id BIGINT NOT NULL REFERENCES people(id),
+        assistant_member_ids_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+        organ_member_ids_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+        notes TEXT NOT NULL DEFAULT '',
+        created_at TIMESTAMPTZ NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL
+      )
+    `);
+    await client.query("CREATE INDEX IF NOT EXISTS idx_team_periods_dates ON team_periods(start_date, end_date)");
+
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS access_layers (
+        id BIGSERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        permissions_json JSONB NOT NULL DEFAULT '[]'::jsonb,
+        is_system BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )
+    `);
+    await client.query("CREATE UNIQUE INDEX IF NOT EXISTS idx_access_layers_name ON access_layers(lower(name))");
+    await client.query("ALTER TABLE users ADD COLUMN IF NOT EXISTS layer_id BIGINT REFERENCES access_layers(id)");
+
+    for (const layer of Object.values(SYSTEM_LAYERS)) {
+      const perms = JSON.stringify(layer.permissions);
+      await client.query(
+        `INSERT INTO access_layers (name, description, permissions_json, is_system, created_at, updated_at)
+         SELECT $1, $2, $3::jsonb, TRUE, now(), now()
+         WHERE NOT EXISTS (SELECT 1 FROM access_layers WHERE lower(name) = lower($1))`,
+        [layer.name, layer.description, perms],
+      );
+      // mantém as camadas de sistema sincronizadas com o registro de capacidades
+      await client.query(
+        "UPDATE access_layers SET permissions_json = $2::jsonb, is_system = TRUE, updated_at = now() WHERE lower(name) = lower($1)",
+        [layer.name, perms],
+      );
+    }
+    // backfill: usuários sem camada herdam a do papel legado
+    await client.query(
+      "UPDATE users SET layer_id = (SELECT id FROM access_layers WHERE is_system AND lower(name) = lower($1) LIMIT 1) WHERE layer_id IS NULL AND role = 'admin'",
+      [SYSTEM_LAYERS.admin.name],
+    );
+    await client.query(
+      "UPDATE users SET layer_id = (SELECT id FROM access_layers WHERE is_system AND lower(name) = lower($1) LIMIT 1) WHERE layer_id IS NULL",
+      [SYSTEM_LAYERS.viewer.name],
+    );
   } finally {
     client.release();
   }

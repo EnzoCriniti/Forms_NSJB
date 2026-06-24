@@ -3,6 +3,11 @@
  * @summary Decisao pura de navegacao interna do shell autenticado.
  */
 
+import { can } from "./auth";
+
+const canAccessSettings = user => can(user, "settings.security") || can(user, "settings.catalogs")
+  || can(user, "settings.bases") || can(user, "users.manage") || can(user, "layers.manage") || can(user, "members.manage");
+
 export const resolveAppNavigation = ({
   nextScreen,
   form = null,
@@ -11,8 +16,14 @@ export const resolveAppNavigation = ({
   canCreateForms,
   canViewForm,
 }) => {
-  const canCreate = canCreateForms(currentUser);
-  if (["dashboard", "create", "settings", "reports"].includes(nextScreen) && !canCreate) {
+  const screenGuards = {
+    dashboard: () => can(currentUser, "reports.view"),
+    teams: () => can(currentUser, "teams.view"),
+    create: () => canCreateForms(currentUser),
+    settings: () => canAccessSettings(currentUser),
+  };
+  const guard = screenGuards[nextScreen];
+  if (guard && !guard()) {
     return { screen: "list", clearDraft: false };
   }
 

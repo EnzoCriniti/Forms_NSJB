@@ -20,6 +20,7 @@ import {
   validateScaleTaskCatalogPayload,
   validatePeoplePayload,
   validateMembersConfigPayload,
+  validateTeamPeriodPayload,
 } from "../backend/validators/payloadValidators.mjs";
 import {
   validateExternalBasePayload,
@@ -139,7 +140,7 @@ test("validateResponsePayload rejects payloads without formId or respondent", ()
 });
 
 test("admin payload validators accept valid payloads", () => {
-  assert.doesNotThrow(() => validateUserPayload({ username: "admin2", password: "123", role: "admin" }));
+  assert.doesNotThrow(() => validateUserPayload({ username: "admin2", password: "123", role: "admin", layerId: 1 }));
   assert.doesNotThrow(() => validateLabelPayload({ name: "Evento", color: "#fff000" }));
   assert.doesNotThrow(() => validatePresetPayload({
     type: "presenca",
@@ -254,6 +255,45 @@ test("event payload validator accepts valid payloads from the event module", () 
   }));
 });
 
+test("team period payload validator accepts valid payloads", () => {
+  assert.doesNotThrow(() => validateTeamPeriodPayload({
+    title: "Equipes Maio/Junho",
+    startDate: "2026-05-01",
+    endDate: "2026-06-30",
+    assistantMasterPersonId: 1,
+    directAssistantPersonId: "2",
+    assistantMemberIds: [3, "4"],
+    organMemberIds: [],
+    notes: "",
+  }));
+});
+
+test("team period payload validator rejects malformed periods", () => {
+  assert.throws(() => validateTeamPeriodPayload({
+    startDate: "2026-07-01",
+    endDate: "2026-06-30",
+    assistantMasterPersonId: 1,
+    directAssistantPersonId: 2,
+  }), /Conclusao nao pode ser anterior ao inicio/);
+  assert.throws(() => validateTeamPeriodPayload({
+    startDate: "2026-05-01",
+    endDate: "2026-06-30",
+    directAssistantPersonId: 2,
+  }), /Mestre Assistente e obrigatorio/);
+  assert.throws(() => validateTeamPeriodPayload({
+    startDate: "2026-05-01",
+    endDate: "2026-06-30",
+    assistantMasterPersonId: 1,
+  }), /Auxiliar Direto e obrigatorio/);
+  assert.throws(() => validateTeamPeriodPayload({
+    startDate: "2026-05-01",
+    endDate: "2026-06-30",
+    assistantMasterPersonId: 1,
+    directAssistantPersonId: 2,
+    organMemberIds: [0],
+  }), /Equipe da Organ contem pessoa invalida/);
+});
+
 test("event payload validator rejects invalid status and linked forms", () => {
   assert.throws(() => validateEventPayload({
     title: "Evento",
@@ -304,7 +344,7 @@ test("escala payload validators reject malformed payloads from the escala module
 });
 
 test("admin payload validators accept valid payloads from the admin module", () => {
-  assert.doesNotThrow(() => validateUserPayloadFromAdminModule({ username: "viewer", password: null, role: "viewer" }));
+  assert.doesNotThrow(() => validateUserPayloadFromAdminModule({ username: "viewer", password: null, role: "viewer", layerId: 2 }));
   assert.doesNotThrow(() => validateLabelPayloadFromAdminModule({ name: "Evento", color: "#fff000" }));
   assert.doesNotThrow(() => validatePeoplePayloadFromAdminModule({ people: [{ name: "Maria", active: true, metadata: { rowNumber: 4 } }] }));
   assert.doesNotThrow(() => validateMembersConfigPayloadFromAdminModule({ sheetUrl: "", syncEnabled: false, syncFrequencyHours: 24 }));
@@ -318,7 +358,7 @@ test("admin payload validators accept valid payloads from the admin module", () 
 });
 
 test("admin payload validators reject malformed payloads from the admin module", () => {
-  assert.throws(() => validateUserPayloadFromAdminModule({ username: "viewer", role: "owner" }), /Papel do usuario invalido/);
+  assert.throws(() => validateUserPayloadFromAdminModule({ username: "viewer", role: "viewer" }), /Camada de acesso do usuario e obrigatoria/);
   assert.throws(() => validatePeoplePayloadFromAdminModule({ people: [{ name: "Maria", active: "sim" }] }), /Status do socio invalido/);
   assert.throws(() => validateMembersConfigPayloadFromAdminModule({ syncFrequencyHours: 0 }), /syncFrequencyHours invalido/);
   assert.throws(() => validateExternalBasePayload({ name: "Base", items: [{ active: "sim" }] }), /Status do item da base externa invalido/);

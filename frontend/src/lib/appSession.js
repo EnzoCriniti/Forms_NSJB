@@ -8,6 +8,9 @@ export const sanitizeUser = user => user ? {
   name: user.name,
   username: user.username,
   role: user.role,
+  layerId: user.layerId ?? null,
+  layerName: user.layerName ?? null,
+  permissions: Array.isArray(user.permissions) ? user.permissions : [],
 } : null;
 
 export const normalizeStoredSession = stored => {

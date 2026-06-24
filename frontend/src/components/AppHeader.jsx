@@ -9,6 +9,7 @@ import appData from "../data/appData.json";
 import { AuthPanel } from "../features/auth/AuthPanel";
 import { FONT_SCALE_MAX, FONT_SCALE_MIN } from "../lib/appFontScale";
 import { Icon } from "./ui";
+import { StarMark } from "./StarMark";
 
 export const AppHeader = ({
   nav,
@@ -83,6 +84,7 @@ export const AppHeader = ({
               <Icon name="menu" size={18} />
             </button>
           )}
+          <StarMark size={22} color="#ffffff" />
           <span title={`Dados base JSON v${appData.version}`} style={{ fontWeight: 700, fontSize: 16, color: "var(--header-fg)", letterSpacing: 0, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>NSJB Forms</span>
         </div>
         <nav className="app-nav" style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>

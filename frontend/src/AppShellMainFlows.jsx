@@ -10,8 +10,8 @@ import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
-import { ReportsScreen } from "./screens/ReportsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
+import { TeamsScreen } from "./screens/TeamsScreen";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
 
 export const DashboardFlow = ({ app }) => {
@@ -138,6 +138,34 @@ export const FormListFlow = ({ app }) => {
   );
 };
 
+export const TeamsFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
+  const setters = getShellSetters(app);
+  const { currentUser } = state;
+  const { people, teamPeriods } = data;
+  const {
+    handleDeleteTeamPeriod,
+    handleSaveTeamPeriod,
+  } = actions;
+  const { setActiveFormId, setScreen } = setters;
+
+  return (
+    <TeamsScreen
+      user={currentUser}
+      people={people}
+      teamPeriods={teamPeriods}
+      onSaveTeamPeriod={handleSaveTeamPeriod}
+      onDeleteTeamPeriod={handleDeleteTeamPeriod}
+      onOpenFormResults={formId => {
+        setActiveFormId(formId);
+        setScreen("results");
+      }}
+    />
+  );
+};
+
 export const CreateFormFlow = ({ app }) => {
   const state = getShellState(app);
   const data = getShellData(app);
@@ -200,17 +228,6 @@ export const CreateFormFlow = ({ app }) => {
       isDuplicateMode={Boolean(draftForm)}
     />
   );
-};
-
-export const ReportsFlow = ({ app }) => {
-  const state = getShellState(app);
-  const actions = getShellActions(app);
-  const { currentUser } = state;
-  const { onNavigate } = actions;
-
-  if (!canCreateForms(currentUser)) return null;
-
-  return <ReportsScreen onNavigate={onNavigate} user={currentUser} />;
 };
 
 export const SettingsFlow = ({ app }) => {

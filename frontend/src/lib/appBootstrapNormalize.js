@@ -7,6 +7,7 @@ export const createEmptyBootstrap = () => ({
   forms: [],
   events: [],
   eventsPage: { total: 0, limit: 20, offset: 0, search: "", status: "", sortBy: "date", sortDir: "desc" },
+  teamPeriods: [],
   responsesByForm: {},
   escalaByForm: {},
   users: [],
@@ -25,6 +26,7 @@ export const createEmptyBootstrap = () => ({
 const ARRAY_KEYS = [
   "forms",
   "events",
+  "teamPeriods",
   "users",
   "labels",
   "presets",

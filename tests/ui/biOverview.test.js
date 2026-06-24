@@ -37,7 +37,7 @@ describe("buildOverview", () => {
       ],
     });
 
-    expect(overview.presenca).toEqual({ expected: 4, filled: 2 });
+    expect(overview.presenca).toEqual({ expected: 4, filled: 2, exempted: 0 });
     expect(overview.escala).toEqual({ totalSlots: 2, filledSlots: 2 });
 
     const carla = overview.members.find(m => m.personKey === "carla");

@@ -6,12 +6,41 @@
 
 import { nowIso } from "../database/shared.mjs";
 import { buildParticipationRows } from "../../shared/eventParticipation.mjs";
+import { getPersonKey } from "../../shared/personIdentity.mjs";
 import { findFormById } from "../repositories/formsRepository.mjs";
 import { listPeople } from "../repositories/peopleRepository.mjs";
 import { listResponsesByFormId } from "../repositories/responsesRepository.mjs";
+import { listTeamPeriods } from "../repositories/teamPeriodsRepository.mjs";
 import { listEventParticipationByEvent, replaceEventParticipation } from "./biRepository.mjs";
 
 const PRESENCA_TYPE = "presenca";
+
+const isDateWithinPeriod = (date, period) => {
+  const value = String(date || "").slice(0, 10);
+  return Boolean(value && value >= period.startDate && value <= period.endDate);
+};
+
+const buildTeamExemptions = ({ event, people, teamPeriods }) => {
+  const matchingPeriods = (teamPeriods || []).filter(period => isDateWithinPeriod(event?.date, period));
+  if (!matchingPeriods.length) return new Map();
+  const peopleById = new Map((people || []).map(person => [Number(person.id), person]));
+  const exemptions = new Map();
+  for (const period of matchingPeriods) {
+    const personIds = [
+      period.assistantMasterPersonId,
+      period.directAssistantPersonId,
+      ...(period.assistantMemberIds || []),
+      ...(period.organMemberIds || []),
+    ];
+    for (const id of personIds) {
+      const person = peopleById.get(Number(id));
+      if (!person) continue;
+      const key = getPersonKey(person);
+      if (key) exemptions.set(key, `Dispensado por equipe no periodo: ${period.title || `${period.startDate} a ${period.endDate}`}`);
+    }
+  }
+  return exemptions;
+};
 
 /**
  * Gera e grava o snapshot imutavel de participacao do evento. Considera apenas
@@ -26,7 +55,11 @@ export const captureEventParticipation = async event => {
     return 0;
   }
 
-  const people = await listPeople();
+  const [people, teamPeriods] = await Promise.all([
+    listPeople(),
+    listTeamPeriods(),
+  ]);
+  const exemptionsByPersonKey = buildTeamExemptions({ event, people, teamPeriods });
   const responsesByForm = {};
   for (const formId of presencaFormIds) {
     responsesByForm[formId] = await listResponsesByFormId(formId);
@@ -37,6 +70,7 @@ export const captureEventParticipation = async event => {
     presencaFormIds,
     people,
     responsesByForm,
+    exemptionsByPersonKey,
     capturedAt: nowIso(),
   });
 

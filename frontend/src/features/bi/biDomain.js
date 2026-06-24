@@ -80,6 +80,45 @@ export const presencaByGrau = (members = []) => {
     .sort((a, b) => compareGrauOptions(a.grau, b.grau));
 };
 
-export const topLeastEscala = (members = [], limit = 10) => [...members]
+export const topLeastEscala = (members = [], limit = 10, minCount = 0) => [...members]
+  .filter(member => (member.escalaCount || 0) >= minCount)
   .sort((a, b) => ((a.escalaCount || 0) - (b.escalaCount || 0)) || a.personName.localeCompare(b.personName, "pt-BR"))
+  .slice(0, limit);
+
+/**
+ * Vagas de escala assumidas por socios de um grau (a escala nao guarda grau por
+ * vaga, entao "%" nao existe; usamos a contagem real por grau filtrado).
+ */
+export const escalaAssumedByGrau = (members = [], grau) => filterByGrau(members, grau)
+  .reduce((total, member) => total + (member.escalaCount || 0), 0);
+
+/**
+ * Histograma do tempo de resposta (minutos) dos socios que ja preencheram.
+ */
+export const TIME_BUCKETS = [
+  { label: "< 1h", max: 60 },
+  { label: "1–6h", max: 360 },
+  { label: "6–24h", max: 1440 },
+  { label: "1–3d", max: 4320 },
+  { label: "3d+", max: Infinity },
+];
+
+export const timeToFillHistogram = (members = []) => {
+  const counts = TIME_BUCKETS.map(bucket => ({ label: bucket.label, value: 0 }));
+  for (const member of members) {
+    const minutes = member.avgTimeToFillMinutes;
+    if (minutes === null || minutes === undefined) continue;
+    const index = TIME_BUCKETS.findIndex(bucket => minutes < bucket.max);
+    counts[index === -1 ? TIME_BUCKETS.length - 1 : index].value += 1;
+  }
+  return counts;
+};
+
+/**
+ * Socios que mais demoram a responder (maior tempo medio), entre os que ja
+ * preencheram ao menos um evento esperado.
+ */
+export const topSlowestResponders = (members = [], limit = 10) => members
+  .filter(member => member.avgTimeToFillMinutes !== null && member.avgTimeToFillMinutes !== undefined && (member.presencaFilled || 0) > 0)
+  .sort((a, b) => (b.avgTimeToFillMinutes - a.avgTimeToFillMinutes) || a.personName.localeCompare(b.personName, "pt-BR"))
   .slice(0, limit);

@@ -6,6 +6,7 @@
 
 import React from "react";
 import { COLORS, Btn, Icon } from "../../../components/ui";
+import { PageBack } from "../../../components/PageBack";
 
 export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, options, onSelectMode }) => (
   <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, marginBottom: 14 }}>
@@ -95,14 +96,16 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
 );
 
 export const FormHeaderPanel = ({ onBack, title, subtitle }) => (
-  <div className="create-form-header create-form-mobile-hero" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
-    <Btn v="ghost" icon="back" onClick={onBack} aria-label="Voltar" />
-    <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
-    <div>
-      <h2 style={{ margin: 0, fontSize: 22 }}>{title}</h2>
-      <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>{subtitle}</p>
+  <>
+    <PageBack onBack={onBack} />
+    <div className="create-form-header create-form-mobile-hero" style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
+      <div className="create-form-mobile-hero__swatch" aria-hidden="true" />
+      <div>
+        <h2 style={{ margin: 0, fontSize: 22 }}>{title}</h2>
+        <p style={{ margin: "2px 0 0", fontSize: 13, color: COLORS.textMuted }}>{subtitle}</p>
+      </div>
     </div>
-  </div>
+  </>
 );
 
 export const FormContextPanel = ({ title, body, footer }) => (

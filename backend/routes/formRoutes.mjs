@@ -24,7 +24,7 @@ import {
   getSystemActor,
   getVisitorActor,
   readBody,
-  requireAdmin,
+  requireCapability,
   sendEscalaError,
   sendKnownError,
   writeAudit,
@@ -38,9 +38,10 @@ import {
 
 export const handleFormRoutes = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/forms") {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
     const body = await readBody(req);
+    const typeKey = body?.type === "escala_organ" ? "escala" : "presenca";
+    const auth = await requireCapability(req, res, `forms.${typeKey}.${body?.id ? "edit" : "create"}`);
+    if (!auth) return true;
     try {
       validateFormPayload(body);
       const form = await saveForm(body);
@@ -58,9 +59,11 @@ export const handleFormRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/forms/")) {
-    const auth = await requireAdmin(req, res);
-    if (!auth) return true;
     const formId = validateDeleteId(url.pathname.split("/").pop(), "Id do formulario");
+    const existingForm = await findFormById(formId);
+    const typeKey = existingForm?.type === "escala_organ" ? "escala" : "presenca";
+    const auth = await requireCapability(req, res, `forms.${typeKey}.delete`);
+    if (!auth) return true;
     const body = await readBody(req);
     if (!body) {
       sendJson(res, 400, { error: "Payload JSON invalido." });
@@ -153,7 +156,7 @@ export const handleFormRoutes = async (req, res, url) => {
   }
 
   if (req.method === "PUT" && url.pathname.startsWith("/api/escala/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "forms.escala.edit");
     if (!auth) return true;
     const body = await readBody(req);
     const formId = validateDeleteId(url.pathname.split("/").pop(), "formId da escala");

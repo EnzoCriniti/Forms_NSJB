@@ -14,15 +14,24 @@ import {
   isOptionalString,
 } from "./payloadValidatorPrimitives.mjs";
 
-const USER_ROLES = ["admin", "viewer"];
-
 export const validateUserPayload = payload => {
   assert(isObject(payload), "Payload de usuario invalido.");
   assert(isIdLike(payload.id), "Id do usuario invalido.");
   assert(isOptionalString(payload.name), "Nome do usuario invalido.");
   assert(isNonEmptyString(payload.username), "Username do usuario e obrigatorio.");
   assert(isOptionalString(payload.password), "Senha do usuario invalida.");
-  assert(USER_ROLES.includes(payload.role), "Papel do usuario invalido.");
+  assert(payload.layerId != null && isIdLike(payload.layerId), "Camada de acesso do usuario e obrigatoria.");
+};
+
+export const validateAccessLayerPayload = payload => {
+  assert(isObject(payload), "Payload de camada invalido.");
+  assert(isIdLike(payload.id), "Id da camada invalido.");
+  assert(isNonEmptyString(payload.name), "Nome da camada e obrigatorio.");
+  assert(isOptionalString(payload.description), "Descricao da camada invalida.");
+  assert(Array.isArray(payload.permissions), "Permissoes da camada invalidas.");
+  for (const permission of payload.permissions) {
+    assert(typeof permission === "string", "Permissao da camada invalida.");
+  }
 };
 
 export const validateLabelPayload = payload => {

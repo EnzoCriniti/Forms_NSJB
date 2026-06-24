@@ -15,6 +15,9 @@ const { fetchAuditLogsMock } = vi.hoisted(() => ({
 
 vi.mock("../../frontend/src/lib/api.js", () => ({
   fetchAuditLogs: (...args) => fetchAuditLogsMock(...args),
+  fetchAccessLayers: () => Promise.resolve({ layers: [] }),
+  saveAccessLayer: () => Promise.resolve({ layers: [] }),
+  deleteAccessLayer: () => Promise.resolve({ layers: [] }),
 }));
 
 beforeEach(() => {

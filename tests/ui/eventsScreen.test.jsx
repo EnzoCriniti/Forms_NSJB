@@ -139,7 +139,7 @@ describe("EventsScreen", () => {
     fireEvent.change(screen.getByLabelText("Pesquisar eventos"), { target: { value: "Maio" } });
     fireEvent.change(screen.getByLabelText("Filtrar status"), { target: { value: "pronto" } });
     fireEvent.change(screen.getByLabelText("Ordenar eventos"), { target: { value: "title" } });
-    fireEvent.change(screen.getByLabelText("Direcao da ordenacao"), { target: { value: "asc" } });
+    fireEvent.change(screen.getByLabelText("Direção da ordenação"), { target: { value: "asc" } });
     fireEvent.click(screen.getByRole("button", { name: "Pesquisar" }));
 
     await waitFor(() => expect(onLoadEventsPage).toHaveBeenCalledWith({

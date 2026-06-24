@@ -121,6 +121,26 @@ export const saveUser = user => requestJson("/api/users", {
 
 export const deleteUser = id => requestJson(`/api/users/${id}`, { method: "DELETE" });
 
+export const fetchAccessLayers = () => requestJson("/api/access-layers");
+
+export const saveAccessLayer = layer => requestJson("/api/access-layers", {
+  method: "POST",
+  body: JSON.stringify(layer),
+});
+
+export const deleteAccessLayer = id => requestJson(`/api/access-layers/${id}`, { method: "DELETE" });
+
+export const fetchTeamPeriods = () => requestJson("/api/team-periods");
+
+export const fetchTeamPeriodSummary = id => requestJson(`/api/team-periods/${id}/summary`);
+
+export const saveTeamPeriod = period => requestJson("/api/team-periods", {
+  method: "POST",
+  body: JSON.stringify(period),
+});
+
+export const deleteTeamPeriod = id => requestJson(`/api/team-periods/${id}`, { method: "DELETE" });
+
 export const saveLabel = label => requestJson("/api/labels", {
   method: "POST",
   body: JSON.stringify(label),
@@ -228,6 +248,14 @@ export const deleteEventMessage = (eventId, messageId) => requestJson(`/api/even
 
 export const fetchEventMessageLogs = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/logs`);
 
-export const fetchMemberParticipationReport = () => requestJson("/api/reports/members");
+export const fetchBiDashboard = () => requestJson("/api/reports/dashboard");
 
 export const fetchBiOverview = () => requestJson("/api/reports/overview");
+
+export const fetchBiTimeline = () => requestJson("/api/reports/timeline");
+
+export const fetchEscalaAnalytics = () => requestJson("/api/reports/escala");
+
+export const fetchParticipationMatrix = () => requestJson("/api/reports/matrix");
+
+export const fetchMemberDetail = personKey => requestJson(`/api/reports/members/${encodeURIComponent(personKey)}`);

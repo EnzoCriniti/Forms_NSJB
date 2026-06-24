@@ -5,6 +5,8 @@
  */
 
 import { listUsers, findConflictingUserByUsername, upsertUserRecord, deleteUserRecord } from "../repositories/usersRepository.mjs";
+import { findAccessLayerById } from "../repositories/accessLayersRepository.mjs";
+import { deriveLegacyRole } from "../../shared/permissions.mjs";
 import { listLabels, upsertLabelRecord, deleteLabelRecord } from "../repositories/labelsRepository.mjs";
 import { listPresets, upsertPresetRecord, deletePresetRecord } from "../repositories/presetsRepository.mjs";
 import { listPeople, replacePeopleRecords } from "../repositories/peopleRepository.mjs";
@@ -15,10 +17,12 @@ export const saveUser = async payload => {
   const username = String(payload.username || "").trim();
   const name = String(payload.name || username).trim();
   const password = String(payload.password || "").trim();
-  if (!username || !payload.role) throw new Error("Usuario e papel sao obrigatorios.");
+  if (!username) throw new Error("Usuario e obrigatorio.");
   if (!payload.id && !password) throw new Error("Senha e obrigatoria para novo usuario.");
+  const layer = await findAccessLayerById(Number(payload.layerId));
+  if (!layer) throw new Error("Camada de acesso invalida.");
   if (await findConflictingUserByUsername(username, payload.id)) throw new Error("Usuario ja existe.");
-  await upsertUserRecord({ id: payload.id, name, username, password, role: payload.role });
+  await upsertUserRecord({ id: payload.id, name, username, password, role: deriveLegacyRole(layer.permissions), layerId: layer.id });
   return listUsers();
 };
 

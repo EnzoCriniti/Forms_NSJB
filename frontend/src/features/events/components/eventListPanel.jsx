@@ -96,33 +96,24 @@ export const EventListPanel = ({
       </div>
 
       <div className="events-search-bar__filters">
-        <div className="events-filter">
-          <span className="events-filter__label" aria-hidden="true">Status</span>
-          <select className="events-filter__select" aria-label="Filtrar status" value={statusFilter} onChange={event => onChangeStatus?.(event.target.value)}>
-            <option value="">Todos os status</option>
-            <option value="rascunho">Rascunho</option>
-            <option value="pronto">Pronto</option>
-            <option value="publicado">Publicado</option>
-            <option value="encerrado">Encerrado</option>
-          </select>
-        </div>
-        <div className="events-filter">
-          <span className="events-filter__label" aria-hidden="true">Ordenar por</span>
-          <select className="events-filter__select" aria-label="Ordenar eventos" value={sortBy} onChange={event => onChangeSortBy?.(event.target.value)}>
-            <option value="date">Data do evento</option>
-            <option value="title">Nome</option>
-            <option value="status">Status</option>
-            <option value="createdAt">Criação</option>
-            <option value="updatedAt">Atualização</option>
-          </select>
-        </div>
-        <div className="events-filter">
-          <span className="events-filter__label" aria-hidden="true">Direção</span>
-          <select className="events-filter__select" aria-label="Direcao da ordenacao" value={sortDir} onChange={event => onChangeSortDir?.(event.target.value)}>
-            <option value="desc">Mais recentes</option>
-            <option value="asc">Mais antigos</option>
-          </select>
-        </div>
+        <select className="events-filter__select" aria-label="Filtrar status" value={statusFilter} onChange={event => onChangeStatus?.(event.target.value)}>
+          <option value="">Todos os status</option>
+          <option value="rascunho">Rascunho</option>
+          <option value="pronto">Pronto</option>
+          <option value="publicado">Publicado</option>
+          <option value="encerrado">Encerrado</option>
+        </select>
+        <select className="events-filter__select" aria-label="Ordenar eventos" value={sortBy} onChange={event => onChangeSortBy?.(event.target.value)}>
+          <option value="date">Ordenar: data</option>
+          <option value="title">Ordenar: nome</option>
+          <option value="status">Ordenar: status</option>
+          <option value="createdAt">Ordenar: criação</option>
+          <option value="updatedAt">Ordenar: atualização</option>
+        </select>
+        <select className="events-filter__select" aria-label="Direção da ordenação" value={sortDir} onChange={event => onChangeSortDir?.(event.target.value)}>
+          <option value="desc">↓ Decrescente</option>
+          <option value="asc">↑ Crescente</option>
+        </select>
         <Btn type="button" v="ghost" icon="close" onClick={onClearSearch} disabled={searchLoading || (!searchValue && !statusFilter && sortBy === "date" && sortDir === "desc")}>Limpar</Btn>
       </div>
     </form>

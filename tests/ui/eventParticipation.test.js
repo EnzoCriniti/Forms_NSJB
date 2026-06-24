@@ -59,17 +59,36 @@ describe("buildParticipationRows", () => {
     expect(davi).toMatchObject({ filled: false, respondedAt: null, timeToFillMinutes: null });
   });
 
+  it("marca dispensados por equipe como nao esperados no snapshot", () => {
+    const rows = buildParticipationRows({
+      event,
+      presencaFormIds: [1],
+      people,
+      responsesByForm,
+      exemptionsByPersonKey: new Map([["davi", "Dispensado por equipe no periodo"]]),
+      capturedAt: "2026-05-02T00:00:00.000Z",
+    });
+
+    const davi = rows.find(r => r.personName === "Davi");
+    expect(davi).toMatchObject({
+      expected: false,
+      filled: false,
+      exemptionReason: "Dispensado por equipe no periodo",
+    });
+  });
+
   it("resume metricas agregadas por socio", () => {
     expect(summarizeMemberParticipation({
       personKey: "ana", personName: "Ana", grau: "QM",
       expectedCount: 4, filledCount: 3, avgTimeToFillMinutes: 64.6, lastFilledAt: "2026-05-01T09:00:00.000Z",
     })).toEqual({
       personKey: "ana", personName: "Ana", grau: "QM",
-      expected: 4, filled: 3, missed: 1, fillRate: 75, avgTimeToFillMinutes: 65, lastFilledAt: "2026-05-01T09:00:00.000Z",
+      expected: 4, filled: 3, exempted: 0, missed: 1, fillRate: 75, avgTimeToFillMinutes: 65, lastFilledAt: "2026-05-01T09:00:00.000Z",
     });
 
     const empty = summarizeMemberParticipation({ personKey: "x", expectedCount: 0, filledCount: 0 });
     expect(empty.fillRate).toBe(0);
+    expect(empty.exempted).toBe(0);
     expect(empty.avgTimeToFillMinutes).toBeNull();
   });
 

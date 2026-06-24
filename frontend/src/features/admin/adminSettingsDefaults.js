@@ -6,7 +6,7 @@
 
 import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../lib/gridDefaults";
 
-export const emptyUserDraft = { name: "", username: "", password: "", role: "viewer" };
+export const emptyUserDraft = { name: "", username: "", password: "", layerId: null };
 
 export const emptyLabelDraft = { name: "", color: "#16448c" };
 

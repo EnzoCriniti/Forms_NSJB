@@ -36,7 +36,7 @@ import {
   validateMessagingConfigPayload,
   validatePersonPresetPayload,
 } from "../validators/payloadValidators.mjs";
-import { readBody, requireAdmin } from "./requestHelpers.mjs";
+import { readBody, requireCapability } from "./requestHelpers.mjs";
 import {
   matchEventMessagePath,
   respondMessageRouteError,
@@ -50,7 +50,7 @@ import {
 
 export const handleMessageRoutes = async (req, res, url) => {
   if (url.pathname === "/api/messaging-config" && (req.method === "GET" || req.method === "PUT")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "messages.edit");
     if (!auth) return true;
     if (req.method === "GET") {
       sendJson(res, 200, { config: await getMessagingConfig() });
@@ -68,7 +68,7 @@ export const handleMessageRoutes = async (req, res, url) => {
   }
 
   if (url.pathname === "/api/message-templates") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "messages.edit");
     if (!auth) return true;
     if (req.method === "GET") {
       sendJson(res, 200, { templates: await getMessageTemplates() });
@@ -88,7 +88,7 @@ export const handleMessageRoutes = async (req, res, url) => {
   }
 
   if (url.pathname.startsWith("/api/message-templates/") && req.method === "DELETE") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "messages.edit");
     if (!auth) return true;
     try {
       const id = validateDeleteId(url.pathname.split("/").pop(), "Id do modelo");
@@ -101,7 +101,7 @@ export const handleMessageRoutes = async (req, res, url) => {
   }
 
   if (url.pathname === "/api/person-presets") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "messages.edit");
     if (!auth) return true;
     if (req.method === "GET") {
       sendJson(res, 200, { presets: await getPersonPresets() });
@@ -121,7 +121,7 @@ export const handleMessageRoutes = async (req, res, url) => {
   }
 
   if (url.pathname.startsWith("/api/person-presets/") && req.method === "DELETE") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "messages.edit");
     if (!auth) return true;
     try {
       const id = validateDeleteId(url.pathname.split("/").pop(), "Id do preset");
@@ -135,7 +135,14 @@ export const handleMessageRoutes = async (req, res, url) => {
 
   const match = matchEventMessagePath(url.pathname);
   if (match) {
-    const auth = await requireAdmin(req, res);
+    const messageCap = req.method === "DELETE"
+      ? "messages.delete"
+      : (match.action === "dispatch" || match.action === "cancel")
+        ? "messages.dispatch"
+        : req.method === "POST"
+          ? "messages.create"
+          : "messages.view";
+    const auth = await requireCapability(req, res, messageCap);
     if (!auth) return true;
 
     if (!match.messageId && req.method === "GET") {

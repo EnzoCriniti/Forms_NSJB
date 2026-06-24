@@ -1,35 +1,51 @@
 /**
  * @file frontend/src/features/bi/BiPanels.jsx
  * @summary Componentes visuais reutilizaveis do BI.
- * @responsibility Filtro de grau, cartoes de KPI e listas de ranking (responsivos).
+ * @responsibility Filtro de grau, cartoes de KPI (ring), grafico por grau e
+ * listas de ranking (responsivos, com avatar e mini-barras).
  */
 
 import React from "react";
-import { COLORS } from "../../components/ui";
+import { COLORS, Icon } from "../../components/ui";
 import { ALL_GRAUS } from "./biDomain";
 
+// Cores categoricas por grau (mid-tones que funcionam em claro/escuro).
+const GRAU_COLORS = { QM: "#2e6fd0", QS: "#16448c", CDC: "#1f9d6b", CI: "#e08a1e" };
+export const grauColor = grau => GRAU_COLORS[String(grau || "").toUpperCase()] || "#7a8aa3";
+
+const toNumber = value => parseFloat(String(value).replace(",", ".")) || 0;
+
+const initials = name => String(name || "")
+  .trim()
+  .split(/\s+/)
+  .filter(Boolean)
+  .map(part => part[0])
+  .filter((_, index, arr) => index === 0 || index === arr.length - 1)
+  .join("")
+  .toUpperCase() || "?";
+
 export const GrauFilterChips = ({ graus = [], value = ALL_GRAUS, onChange }) => (
-  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }} role="group" aria-label="Filtro por grau">
+  <div className="bi-grau-chips" role="group" aria-label="Filtro por grau">
     {[ALL_GRAUS, ...graus].map(option => {
       const selected = option === value;
       const label = option === ALL_GRAUS ? "Todos" : option;
+      const tone = option === ALL_GRAUS ? COLORS.primary : grauColor(option);
       return (
         <button
           key={option}
           type="button"
+          className="bi-grau-chip"
           onClick={() => onChange(option)}
           aria-pressed={selected}
           style={{
-            padding: "6px 14px",
-            borderRadius: 999,
-            cursor: "pointer",
-            fontSize: 12,
-            fontWeight: 700,
-            border: `1px solid ${selected ? COLORS.primary : COLORS.border}`,
-            background: selected ? COLORS.primary : COLORS.surface,
+            border: `1px solid ${selected ? tone : COLORS.border}`,
+            background: selected ? tone : COLORS.surface,
             color: selected ? "#fff" : COLORS.textSecondary,
           }}
         >
+          {option !== ALL_GRAUS && (
+            <span className="bi-grau-dot" style={{ background: selected ? "#fff" : tone }} />
+          )}
           {label}
         </button>
       );
@@ -37,42 +53,68 @@ export const GrauFilterChips = ({ graus = [], value = ALL_GRAUS, onChange }) => 
   </div>
 );
 
-export const KpiCard = ({ label, percent, caption, accent = COLORS.primary }) => (
-  <div className="bi-kpi-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 16, padding: 18, display: "grid", gap: 10 }}>
-    <div style={{ fontSize: 12, color: COLORS.textMuted, fontWeight: 600 }}>{label}</div>
-    <div style={{ fontSize: 34, fontWeight: 800, color: accent, lineHeight: 1 }}>{percent}</div>
-    <div style={{ height: 8, borderRadius: 999, background: COLORS.surfaceAlt, overflow: "hidden" }}>
-      <div style={{ width: `${Math.min(100, Math.max(0, parseFloat(percent) || 0))}%`, height: "100%", background: accent, borderRadius: 999, transition: "width .3s" }} />
-    </div>
-    <div style={{ fontSize: 12, color: COLORS.textMuted }}>{caption}</div>
+const Ring = ({ percent, accent, size = 84, stroke = 9 }) => {
+  const pct = Math.max(0, Math.min(100, toNumber(percent)));
+  const radius = (size - stroke) / 2;
+  const circ = 2 * Math.PI * radius;
+  const center = size / 2;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ flexShrink: 0 }} role="img" aria-label={`${percent}`}>
+      <circle cx={center} cy={center} r={radius} fill="none" stroke={COLORS.surfaceAlt} strokeWidth={stroke} />
+      <circle
+        cx={center}
+        cy={center}
+        r={radius}
+        fill="none"
+        stroke={accent}
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={circ * (1 - pct / 100)}
+        transform={`rotate(-90 ${center} ${center})`}
+        style={{ transition: "stroke-dashoffset .5s ease" }}
+      />
+      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" style={{ fontSize: 17, fontWeight: 800, fill: COLORS.text }}>
+        {percent}
+      </text>
+    </svg>
+  );
+};
+
+export const BiTabs = ({ tabs = [], value, onChange }) => (
+  <div className="bi-tabs" role="tablist" aria-label="Seções do dashboard">
+    {tabs.map(tab => (
+      <button
+        key={tab.id}
+        type="button"
+        role="tab"
+        aria-selected={tab.id === value}
+        className={`bi-tab${tab.id === value ? " is-active" : ""}`}
+        onClick={() => onChange(tab.id)}
+      >
+        {tab.icon && <Icon name={tab.icon} size={15} />}
+        {tab.label}
+      </button>
+    ))}
   </div>
 );
 
-export const StatCard = ({ label, value, hint, accent = COLORS.text }) => (
-  <div style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: "14px 16px" }}>
-    <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{label}</div>
-    <div style={{ fontSize: 22, fontWeight: 800, color: accent, lineHeight: 1.1 }}>{value}</div>
-    {hint && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>{hint}</div>}
-  </div>
-);
-
-export const BiBarChart = ({ title, hint, data = [], emptyLabel, accent = COLORS.primary }) => (
-  <div className="bi-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 16, padding: 18, display: "grid", gap: 12, alignContent: "start" }}>
-    <div>
-      <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>{title}</div>
-      {hint && <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 2 }}>{hint}</div>}
+export const KpiCard = ({ label, percent, caption, accent = COLORS.primary, icon, details = [] }) => (
+  <div className="bi-kpi-card">
+    <Ring percent={percent} accent={accent} />
+    <div style={{ minWidth: 0 }}>
+      <div className="bi-kpi-label">
+        {icon && <span className="bi-kpi-icon" style={{ color: accent }}><Icon name={icon} size={15} /></span>}
+        {label}
+      </div>
+      <div className="bi-kpi-caption">{caption}</div>
     </div>
-    {data.length === 0 ? (
-      <div style={{ fontSize: 13, color: COLORS.textMuted }}>{emptyLabel}</div>
-    ) : (
-      <div style={{ display: "grid", gap: 10 }}>
-        {data.map(item => (
-          <div key={item.label} style={{ display: "grid", gridTemplateColumns: "48px 1fr 52px", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>{item.label}</span>
-            <span style={{ height: 12, borderRadius: 999, background: COLORS.surfaceAlt, overflow: "hidden" }}>
-              <span style={{ display: "block", height: "100%", width: `${Math.min(100, Math.max(0, item.value))}%`, background: accent, borderRadius: 999, transition: "width .3s" }} />
-            </span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.text, textAlign: "right" }}>{item.caption}</span>
+    {details.length > 0 && (
+      <div className="bi-kpi-hover" role="tooltip">
+        {details.map(detail => (
+          <div key={detail.label} className="bi-kpi-hover-row">
+            <span>{detail.label}</span>
+            <strong style={detail.tone ? { color: detail.tone } : undefined}>{detail.value}</strong>
           </div>
         ))}
       </div>
@@ -80,33 +122,146 @@ export const BiBarChart = ({ title, hint, data = [], emptyLabel, accent = COLORS
   </div>
 );
 
-const rankBadgeStyle = {
-  width: 22, height: 22, borderRadius: 999, flexShrink: 0,
-  display: "inline-flex", alignItems: "center", justifyContent: "center",
-  fontSize: 11, fontWeight: 800, background: COLORS.surfaceAlt, color: COLORS.textSecondary,
-};
+export const StatCard = ({ label, value, hint, accent = COLORS.primary, icon }) => (
+  <div className="bi-stat-card">
+    {icon && <span className="bi-stat-icon" style={{ color: accent, background: COLORS.surfaceAlt }}><Icon name={icon} size={18} /></span>}
+    <div style={{ minWidth: 0 }}>
+      <div className="bi-stat-value">{value}</div>
+      <div className="bi-stat-label">{label}</div>
+      {hint && <div className="bi-stat-hint">{hint}</div>}
+    </div>
+  </div>
+);
 
-export const TopMembersPanel = ({ title, hint, items = [], emptyLabel, valueTone = COLORS.text }) => (
-  <div className="bi-panel" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 16, padding: 18, display: "grid", gap: 12, alignContent: "start" }}>
-    <div>
-      <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>{title}</div>
-      {hint && <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 2 }}>{hint}</div>}
+export const BiBarChart = ({ title, hint, data = [], emptyLabel, colorFor = grauColor }) => (
+  <div className="bi-panel">
+    <div className="bi-panel-head">
+      <div className="bi-panel-title">{title}</div>
+      {hint && <div className="bi-panel-hint">{hint}</div>}
+    </div>
+    {data.length === 0 ? (
+      <div className="bi-empty">{emptyLabel}</div>
+    ) : (
+      <div className="bi-bars">
+        {data.map(item => {
+          const tone = colorFor(item.label);
+          return (
+            <div key={item.label} className="bi-bar-row">
+              <span className="bi-bar-label">
+                <span className="bi-grau-dot" style={{ background: tone }} />
+                {item.label}
+              </span>
+              <span className="bi-bar-track">
+                <span className="bi-bar-fill" style={{ width: `${Math.min(100, Math.max(0, item.value))}%`, background: tone }} />
+              </span>
+              <span className="bi-bar-value">
+                {item.caption}
+                {item.sub && <span className="bi-bar-sub">{item.sub}</span>}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+);
+
+export const TopMembersPanel = ({ title, hint, items = [], emptyLabel, valueTone = COLORS.text, showBar = false, onSelect, headerControl }) => (
+  <div className="bi-panel">
+    <div className="bi-panel-head bi-panel-head--row">
+      <div>
+        <div className="bi-panel-title">{title}</div>
+        {hint && <div className="bi-panel-hint">{hint}</div>}
+      </div>
+      {headerControl}
     </div>
     {items.length === 0 ? (
-      <div style={{ fontSize: 13, color: COLORS.textMuted }}>{emptyLabel}</div>
+      <div className="bi-empty">{emptyLabel}</div>
     ) : (
-      <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
-        {items.map((item, index) => (
-          <li key={item.personKey} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={rankBadgeStyle}>{index + 1}</span>
-            <span style={{ minWidth: 0, flex: 1 }}>
-              <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: COLORS.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{item.personName}</span>
-              {item.grau && <span style={{ fontSize: 11, color: COLORS.textMuted }}>{item.grau}</span>}
-            </span>
-            <span style={{ fontSize: 13, fontWeight: 800, color: valueTone, flexShrink: 0 }}>{item.value}</span>
-          </li>
-        ))}
+      <ol className="bi-rank-list">
+        {items.map((item, index) => {
+          const Row = onSelect ? "button" : "div";
+          return (
+            <li key={item.personKey}>
+              <Row
+                type={onSelect ? "button" : undefined}
+                className={`bi-rank-row${onSelect ? " is-clickable" : ""}`}
+                onClick={onSelect ? () => onSelect(item.personKey) : undefined}
+              >
+                <span className="bi-rank-pos">{index + 1}</span>
+                <span className="bi-avatar" style={{ background: `${grauColor(item.grau)}22`, color: grauColor(item.grau) }}>
+                  {initials(item.personName)}
+                </span>
+                <span className="bi-rank-info">
+                  <span className="bi-rank-name">{item.personName}</span>
+                  <span className="bi-rank-meta">
+                    {item.grau && (
+                      <span className="bi-grau-tag" style={{ color: grauColor(item.grau) }}>
+                        <span className="bi-grau-dot" style={{ background: grauColor(item.grau) }} />
+                        {item.grau}
+                      </span>
+                    )}
+                    {showBar && (
+                      <span className="bi-rank-bar">
+                        <span className="bi-rank-bar-fill" style={{ width: `${Math.min(100, Math.max(0, item.barPct || 0))}%`, background: valueTone }} />
+                      </span>
+                    )}
+                  </span>
+                </span>
+                <span className="bi-rank-value" style={{ color: valueTone }}>{item.value}</span>
+              </Row>
+            </li>
+          );
+        })}
       </ol>
+    )}
+  </div>
+);
+
+/**
+ * Heatmap genérico em grid CSS. `rows` = [{key,label,grau,cells:{colKey:value}}];
+ * `cols` = [{key,label}]; `intensity(value)` → 0..1; `format(value)` p/ título.
+ */
+export const BiHeatmap = ({ title, hint, cols = [], rows = [], intensity, format, accent = COLORS.primary, onSelect, emptyLabel }) => (
+  <div className="bi-panel">
+    <div className="bi-panel-head">
+      <div className="bi-panel-title">{title}</div>
+      {hint && <div className="bi-panel-hint">{hint}</div>}
+    </div>
+    {rows.length === 0 ? (
+      <div className="bi-empty">{emptyLabel}</div>
+    ) : (
+      <div className="bi-heatmap-scroll">
+        <div className="bi-heatmap" style={{ gridTemplateColumns: `minmax(150px, 1.4fr) repeat(${cols.length}, minmax(34px, 1fr))` }}>
+          <div className="bi-heatmap-corner" />
+          {cols.map(col => <div key={col.key} className="bi-heatmap-colhead" title={col.label}>{col.label}</div>)}
+          {rows.map(row => (
+            <React.Fragment key={row.key}>
+              <button
+                type="button"
+                className={`bi-heatmap-rowhead${onSelect ? " is-clickable" : ""}`}
+                onClick={onSelect ? () => onSelect(row.key) : undefined}
+                disabled={!onSelect}
+              >
+                {row.grau && <span className="bi-grau-dot" style={{ background: grauColor(row.grau) }} />}
+                <span className="bi-heatmap-rowlabel">{row.label}</span>
+              </button>
+              {cols.map(col => {
+                const value = row.cells?.[col.key];
+                const alpha = intensity ? intensity(value) : (value ? 1 : 0);
+                return (
+                  <div
+                    key={col.key}
+                    className="bi-heatmap-cell"
+                    title={`${row.label} · ${col.label}: ${format ? format(value) : value}`}
+                    style={{ background: alpha > 0 ? `color-mix(in srgb, ${accent} ${Math.round(alpha * 100)}%, transparent)` : "var(--surface-alt)" }}
+                  />
+                );
+              })}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
     )}
   </div>
 );

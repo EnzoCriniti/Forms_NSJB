@@ -12,6 +12,7 @@ import {
   deletePersonPreset as apiDeletePersonPreset,
   deletePreset as apiDeletePreset,
   deleteScaleTaskCatalogItem as apiDeleteScaleTaskCatalogItem,
+  deleteTeamPeriod as apiDeleteTeamPeriod,
   deleteUser as apiDeleteUser,
   saveEventMessage as apiSaveEventMessage,
   saveExternalBase as apiSaveExternalBase,
@@ -25,6 +26,7 @@ import {
   savePersonPreset as apiSavePersonPreset,
   savePreset as apiSavePreset,
   saveScaleTaskCatalogItem as apiSaveScaleTaskCatalogItem,
+  saveTeamPeriod as apiSaveTeamPeriod,
   saveUser as apiSaveUser,
   syncExternalBase as apiSyncExternalBase,
   syncMembersConfig as apiSyncMembersConfig,
@@ -35,6 +37,7 @@ import { buildAppAdminMembersHandlers } from "./appAdminMembersHandlers";
 import { buildAppAdminMessagingHandlers } from "./appAdminMessagingHandlers";
 import { buildAppAdminSecurityHandlers } from "./appAdminSecurityHandlers";
 import { buildAppAdminUserHandlers } from "./appAdminUserHandlers";
+import { deleteAppTeamPeriod, saveAppTeamPeriod } from "./appTeamPeriodActions";
 
 export const buildAppAdminHandlers = ({
   currentUser,
@@ -45,6 +48,7 @@ export const buildAppAdminHandlers = ({
   deletePersonPreset = apiDeletePersonPreset,
   deletePreset = apiDeletePreset,
   deleteScaleTaskCatalogItem = apiDeleteScaleTaskCatalogItem,
+  deleteTeamPeriod = apiDeleteTeamPeriod,
   deleteUser = apiDeleteUser,
   logout,
   removeBootstrapListItem,
@@ -64,6 +68,7 @@ export const buildAppAdminHandlers = ({
   savePersonPreset = apiSavePersonPreset,
   savePreset = apiSavePreset,
   saveScaleTaskCatalogItem = apiSaveScaleTaskCatalogItem,
+  saveTeamPeriod = apiSaveTeamPeriod,
   saveUser = apiSaveUser,
   setActiveEventId,
   setActiveMessageId,
@@ -146,5 +151,17 @@ export const buildAppAdminHandlers = ({
     ...messagingHandlers,
     ...eventMessageHandlers,
     ...securityHandlers,
+    handleSaveTeamPeriod: payload => saveAppTeamPeriod({
+      payload,
+      saveTeamPeriod,
+      setBootstrap,
+      upsertBootstrapListItem,
+    }),
+    handleDeleteTeamPeriod: id => deleteAppTeamPeriod({
+      id,
+      deleteTeamPeriod,
+      removeBootstrapListItem,
+      setBootstrap,
+    }),
   };
 };

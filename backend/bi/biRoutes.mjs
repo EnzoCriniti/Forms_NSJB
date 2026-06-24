@@ -5,8 +5,17 @@
  */
 
 import { sendJson } from "../core/http.mjs";
-import { requireAdmin, sendKnownError } from "../routes/requestHelpers.mjs";
-import { getMemberParticipationReport, getOverviewReport } from "./reportsService.mjs";
+import { requireCapability, sendKnownError } from "../routes/requestHelpers.mjs";
+import {
+  getDashboardReport,
+  getEscalaAnalytics,
+  getMemberDetail,
+  getOverviewReport,
+  getParticipationMatrix,
+  getTimelineReport,
+} from "./reportsService.mjs";
+
+const MEMBER_DETAIL_PREFIX = "/api/reports/members/";
 
 const handle = async (res, loader) => {
   try {
@@ -19,17 +28,46 @@ const handle = async (res, loader) => {
 };
 
 export const handleBiRoutes = async (req, res, url) => {
-  if (req.method === "GET" && url.pathname === "/api/reports/members") {
-    const auth = await requireAdmin(req, res);
+  if (req.method === "GET" && url.pathname === "/api/reports/overview") {
+    const auth = await requireCapability(req, res, "reports.view");
     if (!auth) return true;
-    await handle(res, async () => ({ members: await getMemberParticipationReport() }));
+    await handle(res, () => getOverviewReport());
     return true;
   }
 
-  if (req.method === "GET" && url.pathname === "/api/reports/overview") {
-    const auth = await requireAdmin(req, res);
+  if (req.method === "GET" && url.pathname === "/api/reports/dashboard") {
+    const auth = await requireCapability(req, res, "reports.view");
     if (!auth) return true;
-    await handle(res, () => getOverviewReport());
+    await handle(res, () => getDashboardReport());
+    return true;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/reports/timeline") {
+    const auth = await requireCapability(req, res, "reports.view");
+    if (!auth) return true;
+    await handle(res, () => getTimelineReport());
+    return true;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/reports/escala") {
+    const auth = await requireCapability(req, res, "reports.view");
+    if (!auth) return true;
+    await handle(res, () => getEscalaAnalytics());
+    return true;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/reports/matrix") {
+    const auth = await requireCapability(req, res, "reports.view");
+    if (!auth) return true;
+    await handle(res, () => getParticipationMatrix());
+    return true;
+  }
+
+  if (req.method === "GET" && url.pathname.startsWith(MEMBER_DETAIL_PREFIX)) {
+    const auth = await requireCapability(req, res, "reports.view");
+    if (!auth) return true;
+    const personKey = decodeURIComponent(url.pathname.slice(MEMBER_DETAIL_PREFIX.length));
+    await handle(res, () => getMemberDetail(personKey));
     return true;
   }
 

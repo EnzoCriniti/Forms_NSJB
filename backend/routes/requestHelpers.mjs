@@ -7,6 +7,7 @@
 import { parseBody, sendJson } from "../core/http.mjs";
 import { extractBearerToken, getAuthenticatedUserFromToken } from "../services/authService.mjs";
 import { buildAuditActorFromAuth, getSystemAuditActor, recordAuditLog } from "../services/auditLogService.mjs";
+import { hasCapability } from "../../shared/permissions.mjs";
 
 const VISITOR_ACTOR = { id: null, name: "Visitante", role: "visitor" };
 
@@ -45,18 +46,27 @@ export const requireAuth = async req => {
   return getAuthenticatedUserFromToken(token);
 };
 
-export const requireAdmin = async (req, res) => {
+/**
+ * Exige uma capacidade específica da camada de acesso do usuário.
+ */
+export const requireCapability = async (req, res, capability) => {
   const auth = await requireAuth(req);
   if (!auth) {
     sendJson(res, 401, { error: "Nao autenticado." });
     return null;
   }
-  if (auth.user?.role !== "admin") {
-    sendJson(res, 403, { error: "Permissao insuficiente." });
+  if (!hasCapability(auth.user?.permissions, capability)) {
+    sendJson(res, 403, { error: "Permissao insuficiente.", code: "FORBIDDEN" });
     return null;
   }
   return auth;
 };
+
+/**
+ * Compat: rotas administrativas exigem a capacidade de gerenciar usuários.
+ * Use requireCapability com a capacidade específica para gates mais finos.
+ */
+export const requireAdmin = (req, res) => requireCapability(req, res, "users.manage");
 
 export const auditMeta = req => ({
   requestId: req.auditContext?.requestId || null,

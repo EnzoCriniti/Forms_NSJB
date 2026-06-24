@@ -9,6 +9,7 @@ import { listForms } from "../repositories/formsRepository.mjs";
 import { countResponsesByFormId } from "../repositories/responsesRepository.mjs";
 import { getEscalaByFormId } from "../repositories/escalaRepository.mjs";
 import { listUsers } from "../repositories/usersRepository.mjs";
+import { listAccessLayers } from "../repositories/accessLayersRepository.mjs";
 import { listLabels } from "../repositories/labelsRepository.mjs";
 import { listPresets } from "../repositories/presetsRepository.mjs";
 import { listPeople } from "../repositories/peopleRepository.mjs";
@@ -21,6 +22,7 @@ import { DEFAULT_MEMBERS_CONFIG } from "../data/seedData.mjs";
 import { listExternalBases } from "./externalBasesService.mjs";
 import { getMessagingConfig } from "./messagingConfigService.mjs";
 import { searchEvents } from "./eventsService.mjs";
+import { getTeamPeriods } from "./teamPeriodsService.mjs";
 
 export const getBootstrap = async () => {
   await refreshFormLifecycle();
@@ -53,11 +55,13 @@ export const getBootstrap = async () => {
     responsesByForm: {},
     escalaByForm: {},
     users: await listUsers(),
+    accessLayers: await listAccessLayers(),
     labels: await listLabels(),
     presets: await listPresets(),
     fieldCatalog: await listFieldCatalog(),
     scaleTaskCatalog: await listScaleTaskCatalog(),
     people: await listPeople(),
+    teamPeriods: await getTeamPeriods(),
     membersConfig: await getJsonSetting("membersConfig", DEFAULT_MEMBERS_CONFIG),
     externalBases: await listExternalBases(),
     messageTemplates: await listMessageTemplates(),

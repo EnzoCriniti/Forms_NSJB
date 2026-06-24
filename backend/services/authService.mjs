@@ -4,7 +4,8 @@
  * @responsibility Validar login, emitir token opaco e resolver sessao autenticada.
  */
 
-import { nowIso } from "../database/shared.mjs";
+import { nowIso, parseJson } from "../database/shared.mjs";
+import { SYSTEM_LAYERS, normalizePermissions } from "../../shared/permissions.mjs";
 import { findUserByUsername, setUserPasswordSecret } from "../repositories/usersRepository.mjs";
 import {
   createAuthSessionRecord,
@@ -33,11 +34,23 @@ const makeError = (message, statusCode, code) => {
   return error;
 };
 
+const resolvePermissions = source => {
+  if (source.layer_permissions !== undefined && source.layer_permissions !== null) {
+    const raw = typeof source.layer_permissions === "string" ? parseJson(source.layer_permissions, []) : source.layer_permissions;
+    return normalizePermissions(raw);
+  }
+  // fallback p/ usuários sem camada (legado): deriva do papel
+  return source.role === "admin" ? [...SYSTEM_LAYERS.admin.permissions] : [...SYSTEM_LAYERS.viewer.permissions];
+};
+
 const safeUser = user => user ? {
   id: user.id,
   name: user.name,
   username: user.username,
   role: user.role,
+  layerId: user.layer_id ?? null,
+  layerName: user.layer_name ?? null,
+  permissions: resolvePermissions(user),
 } : null;
 
 const isSessionExpired = session => {

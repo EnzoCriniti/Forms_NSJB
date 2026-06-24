@@ -4,6 +4,11 @@
 
 Criar um menu principal chamado **Equipes** para cadastrar os periodos em que pessoas estao atuando na equipe do Mestre Assistente e na equipe da Organ. Esses periodos serao usados depois para ajustar os calculos de BI/percentuais, evitando cobrar escala da Organ de quem ja esta cumprindo funcao no periodo.
 
+## Status Atual
+
+- Primeira entrega iniciada: CRUD de periodos, menu principal, resumo de eventos/formularios do periodo e atalhos para resultados.
+- BI/percentuais integrado ao snapshot de participacao: dispensados por equipe nao entram no denominador e aparecem no detalhe do socio.
+
 ## Regras De Negocio
 
 - Um periodo deve ter data de inicio e data de conclusao.
@@ -39,16 +44,18 @@ Entidade: `team_periods`
 2. Adicionar tabela `team_periods` no schema/migracao defensiva do PostgreSQL.
 3. Criar `backend/repositories/teamPeriodsRepository.mjs`.
 4. Criar `backend/services/teamPeriodsService.mjs`.
-5. Criar validador estrutural para payloads de equipes.
-6. Criar `backend/routes/teamPeriodsRoutes.mjs`.
-7. Registrar a rota em `backend/routes/apiRouter.mjs`.
-8. Incluir auditoria simples de criar/editar/excluir, seguindo o padrao das rotas existentes quando fizer sentido.
+5. Criar resumo de contexto do periodo no service, incluindo formularios e eventos dentro do intervalo.
+6. Criar validador estrutural para payloads de equipes.
+7. Criar `backend/routes/teamPeriodsRoutes.mjs`.
+8. Registrar a rota em `backend/routes/apiRouter.mjs`.
+9. Incluir auditoria simples de criar/editar/excluir, seguindo o padrao das rotas existentes quando fizer sentido.
 
 ## API
 
 Endpoints previstos:
 
 - `GET /api/team-periods`
+- `GET /api/team-periods/:id/summary`
 - `POST /api/team-periods`
 - `DELETE /api/team-periods/:id`
 
@@ -83,11 +90,16 @@ Arquivos previstos:
 - `frontend/src/screens/teamsDomain.js`
 - `frontend/src/features/teams/components/TeamPeriodEditorPanel.jsx`
 - `frontend/src/features/teams/components/TeamPeriodListPanel.jsx`
+- `frontend/src/features/teams/components/TeamPeriodSummaryPanel.jsx`
 
 Comportamento:
 
 - Menu principal chamado **Equipes**.
 - Lista de periodos cadastrados, ordenada do mais recente para o mais antigo.
+- Ao selecionar um periodo, mostrar formularios criados dentro do intervalo.
+- Ao selecionar um periodo, mostrar eventos dentro do intervalo, incluindo eventos que tenham formularios de presenca, escala da Organ ou ambos.
+- Incluir formularios sem vinculo com evento quando foram criados dentro do periodo.
+- Cada formulario exibido no resumo deve permitir clique para abrir o resultado do formulario.
 - Botao para novo periodo.
 - Acao para editar periodo existente.
 - Acao para excluir periodo com confirmacao.
@@ -96,13 +108,13 @@ Comportamento:
 
 ## Integracao Com BI
 
-Depois que o CRUD de equipes estiver pronto e validado:
+Implementado na entrega atual:
 
-1. Criar helper de dominio para encontrar o periodo aplicavel por data.
-2. Criar helper para verificar se uma pessoa esta dispensada da obrigacao de escala da Organ por estar em equipe no periodo.
-3. Ajustar o calculo de BI/percentuais para considerar essas dispensas.
-4. Registrar no detalhe do BI quando uma pessoa foi excluida da cobranca por estar em equipe.
-5. Adicionar testes de BI cobrindo pessoas em equipe do Mestre Assistente e equipe da Organ.
+1. O snapshot de participacao consulta os periodos de equipes aplicaveis pela data do evento.
+2. Pessoas nas equipes do periodo sao gravadas como `expected=false` no read model de participacao.
+3. O denominador dos percentuais considera apenas `expected=true`.
+4. O detalhe do socio exibe a dispensa e o motivo.
+5. Testes cobrem a dispensa no calculo puro de participacao.
 
 ## Testes
 

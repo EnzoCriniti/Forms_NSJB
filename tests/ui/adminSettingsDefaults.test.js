@@ -16,7 +16,7 @@ import { DEFAULT_GRID_COLS, DEFAULT_GRID_ROWS } from "../../frontend/src/lib/gri
 
 describe("adminSettingsDefaults", () => {
   it("define drafts iniciais usados pelo modal administrativo", () => {
-    expect(emptyUserDraft).toEqual({ name: "", username: "", password: "", role: "viewer" });
+    expect(emptyUserDraft).toEqual({ name: "", username: "", password: "", layerId: null });
     expect(emptySecurityDraft).toEqual({ currentMasterKey: "", newMasterKey: "" });
     expect(emptyExternalBaseDraft).toMatchObject({
       sourceType: "google_sheets",

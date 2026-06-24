@@ -50,6 +50,20 @@ const postJsonWithHeaders = (baseUrl, pathname, body, method = "POST", headers =
 
 const authHeaders = token => ({ Authorization: `Bearer ${token}` });
 
+const fetchAccessLayersForTest = async (baseUrl, adminToken) => {
+  const res = await authedFetch(baseUrl, "/api/access-layers", adminToken);
+  assert.equal(res.status, 200);
+  const payload = await res.json();
+  return payload.layers || [];
+};
+
+const findLayerForTest = async (baseUrl, adminToken, name) => {
+  const layers = await fetchAccessLayersForTest(baseUrl, adminToken);
+  const layer = layers.find(item => String(item.name || "").toLowerCase() === String(name || "").toLowerCase());
+  assert.ok(layer, `Camada ${name} nao encontrada`);
+  return layer;
+};
+
 const loginAsAdmin = async baseUrl => {
   const res = await postJson(baseUrl, "/api/auth/login", {
     username: "admin",
@@ -62,12 +76,14 @@ const loginAsAdmin = async baseUrl => {
 };
 
 const createViewerUser = async (baseUrl, adminToken) => {
+  const viewerLayer = await findLayerForTest(baseUrl, adminToken, "Visualizador");
   const username = `viewer_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
   const createRes = await authedJson(baseUrl, "/api/users", {
     name: "Visualizador",
     username,
     password: "viewer123",
     role: "viewer",
+    layerId: viewerLayer.id,
   }, adminToken);
   assert.equal(createRes.status, 200);
   return { username, password: "viewer123" };
@@ -214,6 +230,7 @@ test("bootstrap returns seeded data and storage metadata", async () => {
     assert.ok(Array.isArray(payload.events));
     assert.ok(payload.events.length >= 1);
     assert.ok(payload.events.some(event => event.formIds.length >= 1));
+    assert.ok(Array.isArray(payload.teamPeriods));
     assert.ok(Array.isArray(payload.users));
     assert.ok(payload.users.some(user => user.username === "viewer" && user.role === "viewer"));
     assert.equal(Object.prototype.hasOwnProperty.call(payload.users[0] || {}, "password"), false);
@@ -221,6 +238,58 @@ test("bootstrap returns seeded data and storage metadata", async () => {
     assert.deepEqual(payload.escalaByForm, {});
     assert.equal(payload.storage.driver, "postgres");
     assert.equal(payload.storage.location, `127.0.0.1:5432/${ctx.dbName}`);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
+test("team periods API creates periods, blocks overlaps and returns period summary", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+    const peopleRes = await authedJson(ctx.baseUrl, "/api/people", {
+      people: [
+        { name: "Mestre Assistente Teste", grau: "QM", active: true },
+        { name: "Auxiliar Direto Teste", grau: "CM", active: true },
+        { name: "Membro Organ Teste", grau: "CI", active: true },
+      ],
+    }, adminToken, "PUT");
+    assert.equal(peopleRes.status, 200);
+    const peoplePayload = await peopleRes.json();
+    const [master, direct, organMember] = peoplePayload.people;
+
+    const createRes = await authedJson(ctx.baseUrl, "/api/team-periods", {
+      title: "Equipes Maio/Junho",
+      startDate: "2026-05-01",
+      endDate: "2026-06-30",
+      assistantMasterPersonId: master.id,
+      directAssistantPersonId: direct.id,
+      assistantMemberIds: [],
+      organMemberIds: [organMember.id],
+      notes: "Periodo de teste",
+    }, adminToken);
+    const createPayload = await createRes.json();
+    assert.equal(createRes.status, 200, JSON.stringify(createPayload));
+    assert.equal(createPayload.teamPeriod.title, "Equipes Maio/Junho");
+
+    const overlapRes = await authedJson(ctx.baseUrl, "/api/team-periods", {
+      title: "Sobreposto",
+      startDate: "2026-06-01",
+      endDate: "2026-07-31",
+      assistantMasterPersonId: master.id,
+      directAssistantPersonId: direct.id,
+      assistantMemberIds: [],
+      organMemberIds: [],
+    }, adminToken);
+    assert.equal(overlapRes.status, 409);
+    const overlapPayload = await overlapRes.json();
+    assert.equal(overlapPayload.code, "TEAM_PERIOD_OVERLAP");
+
+    const summaryRes = await authedFetch(ctx.baseUrl, `/api/team-periods/${createPayload.teamPeriod.id}/summary`, adminToken);
+    assert.equal(summaryRes.status, 200);
+    const summaryPayload = await summaryRes.json();
+    assert.ok(summaryPayload.summary.events.some(event => event.hasPresence && event.hasOrganScale));
+    assert.ok(summaryPayload.summary.events.some(event => event.forms.some(form => form.type === "presenca")));
   } finally {
     await ctx.cleanup();
   }
@@ -299,12 +368,12 @@ test("auth endpoints log in and resolve the current user", async () => {
     assert.equal(loginRes.status, 200);
     const loginPayload = await loginRes.json();
     assert.ok(loginPayload.token);
-    assert.deepEqual(loginPayload.user, {
-      id: 1,
-      name: "Administrador",
-      username: "admin",
-      role: "admin",
-    });
+    assert.equal(loginPayload.user.id, 1);
+    assert.equal(loginPayload.user.name, "Administrador");
+    assert.equal(loginPayload.user.username, "admin");
+    assert.equal(loginPayload.user.role, "admin");
+    assert.ok(Array.isArray(loginPayload.user.permissions));
+    assert.ok(loginPayload.user.permissions.includes("teams.manage"));
 
     const meRes = await fetch(`${ctx.baseUrl}/api/auth/me`, {
       headers: { Authorization: `Bearer ${loginPayload.token}` },
@@ -376,11 +445,13 @@ test("nova sessao admin revoga sessoes de outros administradores", async () => {
   const ctx = await startServer();
   try {
     const firstAdminToken = await loginAsAdmin(ctx.baseUrl);
+    const adminLayer = await findLayerForTest(ctx.baseUrl, firstAdminToken, "Administrativo");
     const createAdminRes = await authedJson(ctx.baseUrl, "/api/users", {
       name: "Admin Secundario",
       username: "admin2",
       password: "admin234",
       role: "admin",
+      layerId: adminLayer.id,
     }, firstAdminToken);
     assert.equal(createAdminRes.status, 200);
 

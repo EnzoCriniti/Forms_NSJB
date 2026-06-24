@@ -36,6 +36,10 @@ export {
 } from "./eventPayloadValidators.mjs";
 
 export {
+  validateTeamPeriodPayload,
+} from "./teamPeriodsPayloadValidators.mjs";
+
+export {
   validateEscalaClaimPayload,
   validateEscalaPayload,
 } from "./escalaPayloadValidators.mjs";

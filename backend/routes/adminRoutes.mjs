@@ -20,15 +20,17 @@ import {
   savePreset,
   deletePreset,
 } from "../services/adminService.mjs";
+import { getAccessLayers, saveAccessLayer, deleteAccessLayer } from "../services/accessLayersService.mjs";
 import {
   validateDeleteId,
   validateLabelPayload,
   validatePresetPayload,
   validateUserPayload,
 } from "../validators/payloadValidators.mjs";
+import { validateAccessLayerPayload } from "../validators/adminPayloadValidators.mjs";
 import {
   readBody,
-  requireAdmin,
+  requireCapability,
 } from "./requestHelpers.mjs";
 
 export const handleAdminRoutes = async (req, res, url) => {
@@ -43,7 +45,7 @@ export const handleAdminRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/users") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "users.manage");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -85,7 +87,7 @@ export const handleAdminRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/users/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "users.manage");
     if (!auth) return true;
     const userId = validateDeleteId(url.pathname.split("/").pop(), "Id do usuario");
     try {
@@ -118,7 +120,7 @@ export const handleAdminRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/labels") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -160,7 +162,7 @@ export const handleAdminRoutes = async (req, res, url) => {
   }
 
   if (req.method === "DELETE" && url.pathname.startsWith("/api/labels/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const labelId = validateDeleteId(url.pathname.split("/").pop(), "Id da classificacao");
     try {
@@ -193,7 +195,7 @@ export const handleAdminRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/presets") {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const body = await readBody(req);
     try {
@@ -234,8 +236,62 @@ export const handleAdminRoutes = async (req, res, url) => {
     return true;
   }
 
+  if (req.method === "GET" && url.pathname === "/api/access-layers") {
+    const auth = await requireCapability(req, res, "layers.manage");
+    if (!auth) return true;
+    sendJson(res, 200, { layers: await getAccessLayers() });
+    return true;
+  }
+
+  if (req.method === "POST" && url.pathname === "/api/access-layers") {
+    const auth = await requireCapability(req, res, "layers.manage");
+    if (!auth) return true;
+    const body = await readBody(req);
+    try {
+      validateAccessLayerPayload(body);
+      const layer = await saveAccessLayer(body);
+      sendJson(res, 200, { layer, layers: await getAccessLayers() });
+      writeAdminMutationAudit(req, auth, {
+        category: "admin",
+        action: "admin_save_access_layer",
+        screen: "configuracoes",
+        entityType: "access_layer",
+        entityId: layer.id,
+        entityLabel: layer.name,
+        message: "Camada de acesso gravada.",
+        metadata: { layerId: layer.id, name: layer.name },
+      });
+    } catch (error) {
+      sendAdminMutationError(res, error);
+    }
+    return true;
+  }
+
+  if (req.method === "DELETE" && url.pathname.startsWith("/api/access-layers/")) {
+    const auth = await requireCapability(req, res, "layers.manage");
+    if (!auth) return true;
+    const layerId = validateDeleteId(url.pathname.split("/").pop(), "Id da camada");
+    try {
+      const result = await deleteAccessLayer(layerId);
+      sendJson(res, 200, { ok: true, layers: await getAccessLayers() });
+      writeAdminMutationAudit(req, auth, {
+        category: "admin",
+        action: "admin_delete_access_layer",
+        screen: "configuracoes",
+        entityType: "access_layer",
+        entityId: layerId,
+        entityLabel: result.layer?.name || null,
+        message: "Camada de acesso excluída.",
+        metadata: { layerId },
+      });
+    } catch (error) {
+      sendAdminMutationError(res, error);
+    }
+    return true;
+  }
+
   if (req.method === "DELETE" && url.pathname.startsWith("/api/presets/")) {
-    const auth = await requireAdmin(req, res);
+    const auth = await requireCapability(req, res, "settings.catalogs");
     if (!auth) return true;
     const presetId = validateDeleteId(url.pathname.split("/").pop(), "Id do preset");
     try {

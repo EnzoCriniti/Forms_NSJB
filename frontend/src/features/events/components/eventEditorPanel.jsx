@@ -6,7 +6,7 @@ export const EventEditorPanel = ({ draft, onChangeDraft, onCancel, onSave, savin
   <div>
     <ScreenHeader
       className="settings-top-card"
-      leading={<Btn v="ghost" icon="back" onClick={onCancel} aria-label="Voltar" />}
+      onBack={onCancel}
       title={title}
       titleSize={20}
     />
