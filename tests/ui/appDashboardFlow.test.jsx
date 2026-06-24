@@ -179,6 +179,34 @@ describe("App dashboard flow", () => {
     expect(screen.getByText("Presenca Dashboard")).toBeInTheDocument();
   });
 
+  it("volta dos resultados para os formularios do evento vinculado", async () => {
+    window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({
+      user: admin,
+      token: "token-admin",
+      expiresAt: null,
+    }));
+
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") return jsonResponse(bootstrap);
+      if (url === "/api/auth/me") return jsonResponse({ user: admin, expiresAt: null });
+      if (url === "/api/security/form-delete-key/status") return jsonResponse({ configured: false });
+      if (url === "/api/forms/1/responses") return jsonResponse({ responses: [] });
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    fireEvent.click(await screen.findByText("Evento Dashboard - 10/05/2026"));
+    fireEvent.click(await screen.findByRole("button", { name: "Ver resultados" }));
+
+    expect(await screen.findByText("Resultado do preenchimento")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Voltar para listagem" }));
+
+    expect(await screen.findByRole("button", { name: "Voltar" })).toBeInTheDocument();
+    expect(screen.getByText("Presenca Dashboard")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Eventos" })).not.toBeInTheDocument();
+  });
+
   it("abre a listagem quando clica na aba Eventos depois do dashboard", async () => {
     window.localStorage.setItem(STORAGE_KEYS.session, JSON.stringify({
       user: admin,

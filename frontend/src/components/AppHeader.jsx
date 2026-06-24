@@ -24,6 +24,7 @@ export const AppHeader = ({
   onOpenSettings,
   onLogin,
   onLogout,
+  onBackFromDetail,
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const canOpenDrawer = Boolean(currentUser);
@@ -65,7 +66,13 @@ export const AppHeader = ({
             <button
               type="button"
               className="app-header__back-button"
-              onClick={() => onNavigate("list")}
+              onClick={() => {
+                if (onBackFromDetail) {
+                  onBackFromDetail();
+                  return;
+                }
+                onNavigate("list");
+              }}
               aria-label="Voltar para listagem"
               title="Voltar para listagem"
               style={{ width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "var(--header-control-bg)", color: "var(--header-fg)", cursor: "pointer", flex: "0 0 auto" }}
