@@ -28,7 +28,9 @@ const buildTeamExemptions = ({ event, people, teamPeriods }) => {
   for (const period of matchingPeriods) {
     const personIds = [
       period.assistantMasterPersonId,
+      period.organPersonId,
       period.directAssistantPersonId,
+      period.organDirectAssistantPersonId,
       ...(period.assistantMemberIds || []),
       ...(period.organMemberIds || []),
     ];

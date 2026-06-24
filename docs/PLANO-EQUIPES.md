@@ -15,7 +15,11 @@ Criar um menu principal chamado **Equipes** para cadastrar os periodos em que pe
 - A data de conclusao nao pode ser anterior a data de inicio.
 - Nao pode existir sobreposicao entre periodos de equipes.
 - O Mestre Assistente e obrigatorio.
-- O Auxiliar Direto e obrigatorio.
+- O Mestre Assistente deve ter grau QM na base de socios, representando o quadro de mestres.
+- A Organ e obrigatoria.
+- A pessoa selecionada como Organ deve ter grau CDC na base de socios.
+- O Auxiliar direto do Mestre Assistente e obrigatorio.
+- O Auxiliar direto da Organ e obrigatorio.
 - Os membros da equipe do Mestre Assistente sao opcionais.
 - Os membros da equipe da Organ sao opcionais.
 - Todas as pessoas selecionadas devem existir na base de socios.
@@ -31,7 +35,9 @@ Entidade: `team_periods`
 - `start_date`
 - `end_date`
 - `assistant_master_person_id`
+- `organ_person_id`
 - `direct_assistant_person_id`
+- `organ_direct_assistant_person_id`
 - `assistant_member_ids_json`
 - `organ_member_ids_json`
 - `notes`
@@ -103,7 +109,9 @@ Comportamento:
 - Botao para novo periodo.
 - Acao para editar periodo existente.
 - Acao para excluir periodo com confirmacao.
-- Editor com seletores da base de socios para Mestre Assistente, Auxiliar Direto e membros.
+- Editor com seletores da base de socios agrupados em Equipe do Mestre Assistente e Equipe da Organ.
+- O seletor de Mestre Assistente mostra apenas pessoas com grau QM.
+- O seletor de Organ mostra apenas pessoas com grau CDC.
 - Layout responsivo para mobile, com campos empilhados e acoes acessiveis.
 
 ## Integracao Com BI
@@ -124,7 +132,11 @@ Testes backend:
 - edita periodo valido;
 - exclui periodo;
 - rejeita periodo sem Mestre Assistente;
-- rejeita periodo sem Auxiliar Direto;
+- rejeita Mestre Assistente sem grau QM;
+- rejeita periodo sem Organ;
+- rejeita Organ sem grau CDC;
+- rejeita periodo sem Auxiliar direto do Mestre Assistente;
+- rejeita periodo sem Auxiliar direto da Organ;
 - rejeita conclusao anterior ao inicio;
 - rejeita pessoas inexistentes;
 - rejeita periodos sobrepostos;

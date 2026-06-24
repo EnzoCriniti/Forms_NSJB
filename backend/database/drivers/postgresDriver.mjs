@@ -172,7 +172,9 @@ const ensureSchema = async pool => {
         start_date DATE NOT NULL,
         end_date DATE NOT NULL,
         assistant_master_person_id BIGINT NOT NULL REFERENCES people(id),
+        organ_person_id BIGINT NOT NULL REFERENCES people(id),
         direct_assistant_person_id BIGINT NOT NULL REFERENCES people(id),
+        organ_direct_assistant_person_id BIGINT REFERENCES people(id),
         assistant_member_ids_json JSONB NOT NULL DEFAULT '[]'::jsonb,
         organ_member_ids_json JSONB NOT NULL DEFAULT '[]'::jsonb,
         notes TEXT NOT NULL DEFAULT '',
@@ -180,6 +182,8 @@ const ensureSchema = async pool => {
         updated_at TIMESTAMPTZ NOT NULL
       )
     `);
+    await client.query("ALTER TABLE team_periods ADD COLUMN IF NOT EXISTS organ_person_id BIGINT REFERENCES people(id)");
+    await client.query("ALTER TABLE team_periods ADD COLUMN IF NOT EXISTS organ_direct_assistant_person_id BIGINT REFERENCES people(id)");
     await client.query("CREATE INDEX IF NOT EXISTS idx_team_periods_dates ON team_periods(start_date, end_date)");
 
     await client.query(`

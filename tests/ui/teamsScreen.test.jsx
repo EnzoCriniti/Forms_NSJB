@@ -11,9 +11,11 @@ import { TeamsScreen } from "../../frontend/src/screens/TeamsScreen.jsx";
 const admin = { id: 1, name: "Admin", role: "admin" };
 
 const people = [
-  { id: 1, name: "Mestre Assistente" },
-  { id: 2, name: "Auxiliar Direto" },
-  { id: 3, name: "Membro Organ" },
+  { id: 1, name: "Mestre Assistente", grau: "QM" },
+  { id: 2, name: "Auxiliar Direto Mestre", grau: "CM" },
+  { id: 3, name: "Organ", grau: "CDC" },
+  { id: 4, name: "Auxiliar Direto Organ", grau: "CI" },
+  { id: 5, name: "Membro Organ", grau: "CI" },
 ];
 
 const teamPeriods = [
@@ -23,9 +25,11 @@ const teamPeriods = [
     startDate: "2026-05-01",
     endDate: "2026-06-30",
     assistantMasterPersonId: 1,
+    organPersonId: 3,
     directAssistantPersonId: 2,
+    organDirectAssistantPersonId: 4,
     assistantMemberIds: [],
-    organMemberIds: [3],
+    organMemberIds: [5],
   },
 ];
 
@@ -77,5 +81,33 @@ describe("TeamsScreen", () => {
     fireEvent.click(formButton);
 
     expect(onOpenFormResults).toHaveBeenCalledWith(30);
+  });
+
+  it("organiza campos por equipe e filtra Mestre Assistente por QM e Organ por CDC", () => {
+    render(
+      <TeamsScreen
+        user={admin}
+        people={people}
+        teamPeriods={[]}
+        onSaveTeamPeriod={vi.fn()}
+        onDeleteTeamPeriod={vi.fn()}
+        onOpenFormResults={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Novo periodo/i }));
+
+    expect(screen.getByText("Equipe do Mestre Assistente")).toBeInTheDocument();
+    expect(screen.getByText("Equipe da Organ")).toBeInTheDocument();
+    expect(screen.getByLabelText(/Auxiliar direto do Mestre Assistente/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Auxiliar direto da Organ/i)).toBeInTheDocument();
+
+    const masterSelect = screen.getByLabelText(/^Mestre Assistente$/i);
+    expect(masterSelect).toHaveTextContent("Mestre Assistente");
+    expect(masterSelect).not.toHaveTextContent("Auxiliar Direto Mestre");
+
+    const organSelect = screen.getByLabelText(/^Organ$/i);
+    expect(organSelect).toHaveTextContent("Organ");
+    expect(organSelect).not.toHaveTextContent("Membro Organ");
   });
 });

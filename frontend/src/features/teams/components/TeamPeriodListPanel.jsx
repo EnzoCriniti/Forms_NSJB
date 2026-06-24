@@ -57,6 +57,17 @@ export const TeamPeriodListPanel = ({
                 <span style={{ display: "block", color: COLORS.textSecondary, fontSize: 12, marginTop: 6 }}>
                   Mestre Assistente: {findPersonName(people, period.assistantMasterPersonId)}
                 </span>
+                <span style={{ display: "block", color: COLORS.textSecondary, fontSize: 12, marginTop: 3 }}>
+                  Auxiliar do Mestre: {findPersonName(people, period.directAssistantPersonId)}
+                </span>
+                <span style={{ display: "block", color: COLORS.textSecondary, fontSize: 12, marginTop: 3 }}>
+                  Organ: {findPersonName(people, period.organPersonId)}
+                </span>
+                {period.organDirectAssistantPersonId && (
+                  <span style={{ display: "block", color: COLORS.textSecondary, fontSize: 12, marginTop: 3 }}>
+                    Auxiliar da Organ: {findPersonName(people, period.organDirectAssistantPersonId)}
+                  </span>
+                )}
               </button>
               {canManage && (
                 <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>

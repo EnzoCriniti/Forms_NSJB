@@ -261,7 +261,9 @@ test("team period payload validator accepts valid payloads", () => {
     startDate: "2026-05-01",
     endDate: "2026-06-30",
     assistantMasterPersonId: 1,
+    organPersonId: 3,
     directAssistantPersonId: "2",
+    organDirectAssistantPersonId: 4,
     assistantMemberIds: [3, "4"],
     organMemberIds: [],
     notes: "",
@@ -273,23 +275,45 @@ test("team period payload validator rejects malformed periods", () => {
     startDate: "2026-07-01",
     endDate: "2026-06-30",
     assistantMasterPersonId: 1,
+    organPersonId: 3,
     directAssistantPersonId: 2,
+    organDirectAssistantPersonId: 4,
   }), /Conclusao nao pode ser anterior ao inicio/);
   assert.throws(() => validateTeamPeriodPayload({
     startDate: "2026-05-01",
     endDate: "2026-06-30",
+    organPersonId: 3,
     directAssistantPersonId: 2,
+    organDirectAssistantPersonId: 4,
   }), /Mestre Assistente e obrigatorio/);
   assert.throws(() => validateTeamPeriodPayload({
     startDate: "2026-05-01",
     endDate: "2026-06-30",
     assistantMasterPersonId: 1,
-  }), /Auxiliar Direto e obrigatorio/);
+    organPersonId: 3,
+    organDirectAssistantPersonId: 4,
+  }), /Auxiliar direto do Mestre Assistente e obrigatorio/);
+  assert.throws(() => validateTeamPeriodPayload({
+    startDate: "2026-05-01",
+    endDate: "2026-06-30",
+    assistantMasterPersonId: 1,
+    organPersonId: 3,
+    directAssistantPersonId: 2,
+  }), /Auxiliar direto da Organ e obrigatorio/);
   assert.throws(() => validateTeamPeriodPayload({
     startDate: "2026-05-01",
     endDate: "2026-06-30",
     assistantMasterPersonId: 1,
     directAssistantPersonId: 2,
+    organDirectAssistantPersonId: 4,
+  }), /Organ e obrigatoria/);
+  assert.throws(() => validateTeamPeriodPayload({
+    startDate: "2026-05-01",
+    endDate: "2026-06-30",
+    assistantMasterPersonId: 1,
+    organPersonId: 3,
+    directAssistantPersonId: 2,
+    organDirectAssistantPersonId: 4,
     organMemberIds: [0],
   }), /Equipe da Organ contem pessoa invalida/);
 });

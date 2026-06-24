@@ -250,20 +250,33 @@ test("team periods API creates periods, blocks overlaps and returns period summa
     const peopleRes = await authedJson(ctx.baseUrl, "/api/people", {
       people: [
         { name: "Mestre Assistente Teste", grau: "QM", active: true },
-        { name: "Auxiliar Direto Teste", grau: "CM", active: true },
+        { name: "Auxiliar Direto Mestre Teste", grau: "CM", active: true },
+        { name: "Organ Teste", grau: "CDC", active: true },
+        { name: "Auxiliar Direto Organ Teste", grau: "CI", active: true },
         { name: "Membro Organ Teste", grau: "CI", active: true },
       ],
     }, adminToken, "PUT");
     assert.equal(peopleRes.status, 200);
     const peoplePayload = await peopleRes.json();
-    const [master, direct, organMember] = peoplePayload.people;
+    const master = peoplePayload.people.find(person => person.name === "Mestre Assistente Teste");
+    const direct = peoplePayload.people.find(person => person.name === "Auxiliar Direto Mestre Teste");
+    const organ = peoplePayload.people.find(person => person.name === "Organ Teste");
+    const organDirect = peoplePayload.people.find(person => person.name === "Auxiliar Direto Organ Teste");
+    const organMember = peoplePayload.people.find(person => person.name === "Membro Organ Teste");
+    assert.ok(master);
+    assert.ok(direct);
+    assert.ok(organ);
+    assert.ok(organDirect);
+    assert.ok(organMember);
 
     const createRes = await authedJson(ctx.baseUrl, "/api/team-periods", {
       title: "Equipes Maio/Junho",
       startDate: "2026-05-01",
       endDate: "2026-06-30",
       assistantMasterPersonId: master.id,
+      organPersonId: organ.id,
       directAssistantPersonId: direct.id,
+      organDirectAssistantPersonId: organDirect.id,
       assistantMemberIds: [],
       organMemberIds: [organMember.id],
       notes: "Periodo de teste",
@@ -277,13 +290,43 @@ test("team periods API creates periods, blocks overlaps and returns period summa
       startDate: "2026-06-01",
       endDate: "2026-07-31",
       assistantMasterPersonId: master.id,
+      organPersonId: organ.id,
       directAssistantPersonId: direct.id,
+      organDirectAssistantPersonId: organDirect.id,
       assistantMemberIds: [],
       organMemberIds: [],
     }, adminToken);
     assert.equal(overlapRes.status, 409);
     const overlapPayload = await overlapRes.json();
     assert.equal(overlapPayload.code, "TEAM_PERIOD_OVERLAP");
+
+    const invalidMasterRes = await authedJson(ctx.baseUrl, "/api/team-periods", {
+      title: "Mestre invalido",
+      startDate: "2026-08-01",
+      endDate: "2026-09-30",
+      assistantMasterPersonId: direct.id,
+      organPersonId: organ.id,
+      directAssistantPersonId: direct.id,
+      organDirectAssistantPersonId: organDirect.id,
+      assistantMemberIds: [],
+      organMemberIds: [],
+    }, adminToken);
+    assert.equal(invalidMasterRes.status, 400);
+    assert.equal((await invalidMasterRes.json()).code, "TEAM_MASTER_GRAU_REQUIRED");
+
+    const invalidOrganRes = await authedJson(ctx.baseUrl, "/api/team-periods", {
+      title: "Organ invalida",
+      startDate: "2026-08-01",
+      endDate: "2026-09-30",
+      assistantMasterPersonId: master.id,
+      organPersonId: direct.id,
+      directAssistantPersonId: direct.id,
+      organDirectAssistantPersonId: organDirect.id,
+      assistantMemberIds: [],
+      organMemberIds: [],
+    }, adminToken);
+    assert.equal(invalidOrganRes.status, 400);
+    assert.equal((await invalidOrganRes.json()).code, "TEAM_ORGAN_GRAU_REQUIRED");
 
     const summaryRes = await authedFetch(ctx.baseUrl, `/api/team-periods/${createPayload.teamPeriod.id}/summary`, adminToken);
     assert.equal(summaryRes.status, 200);

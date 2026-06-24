@@ -12,7 +12,9 @@ const mapTeamPeriodRow = row => ({
   startDate: row.start_date,
   endDate: row.end_date,
   assistantMasterPersonId: row.assistant_master_person_id,
+  organPersonId: row.organ_person_id,
   directAssistantPersonId: row.direct_assistant_person_id,
+  organDirectAssistantPersonId: row.organ_direct_assistant_person_id || null,
   assistantMemberIds: parseJson(row.assistant_member_ids_json, []),
   organMemberIds: parseJson(row.organ_member_ids_json, []),
   notes: row.notes || "",
@@ -21,7 +23,8 @@ const mapTeamPeriodRow = row => ({
 });
 
 const TEAM_PERIOD_SELECT = `
-  id, title, start_date, end_date, assistant_master_person_id, direct_assistant_person_id,
+  id, title, start_date, end_date, assistant_master_person_id, organ_person_id, direct_assistant_person_id,
+  organ_direct_assistant_person_id,
   assistant_member_ids_json, organ_member_ids_json, notes, created_at, updated_at
 `;
 
@@ -69,7 +72,8 @@ export const upsertTeamPeriodRecord = async payload => {
   if (payload.id) {
     await database.execute(`
       UPDATE team_periods
-      SET title = ?, start_date = ?, end_date = ?, assistant_master_person_id = ?, direct_assistant_person_id = ?,
+      SET title = ?, start_date = ?, end_date = ?, assistant_master_person_id = ?, organ_person_id = ?, direct_assistant_person_id = ?,
+          organ_direct_assistant_person_id = ?,
           assistant_member_ids_json = ?, organ_member_ids_json = ?, notes = ?, updated_at = ?
       WHERE id = ?
     `, [
@@ -77,7 +81,9 @@ export const upsertTeamPeriodRecord = async payload => {
       payload.startDate,
       payload.endDate,
       payload.assistantMasterPersonId,
+      payload.organPersonId,
       payload.directAssistantPersonId,
+      payload.organDirectAssistantPersonId,
       stringifyJson(payload.assistantMemberIds),
       stringifyJson(payload.organMemberIds),
       payload.notes,
@@ -89,16 +95,19 @@ export const upsertTeamPeriodRecord = async payload => {
 
   const result = await database.execute(`
     INSERT INTO team_periods (
-      title, start_date, end_date, assistant_master_person_id, direct_assistant_person_id,
+      title, start_date, end_date, assistant_master_person_id, organ_person_id, direct_assistant_person_id,
+      organ_direct_assistant_person_id,
       assistant_member_ids_json, organ_member_ids_json, notes, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING id
   `, [
     payload.title,
     payload.startDate,
     payload.endDate,
     payload.assistantMasterPersonId,
+    payload.organPersonId,
     payload.directAssistantPersonId,
+    payload.organDirectAssistantPersonId,
     stringifyJson(payload.assistantMemberIds),
     stringifyJson(payload.organMemberIds),
     payload.notes,

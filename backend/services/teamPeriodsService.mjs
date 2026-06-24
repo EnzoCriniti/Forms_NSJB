@@ -32,23 +32,46 @@ const normalizeTeamPeriodPayload = payload => ({
   startDate: String(payload.startDate || "").trim(),
   endDate: String(payload.endDate || "").trim(),
   assistantMasterPersonId: Number(payload.assistantMasterPersonId),
+  organPersonId: Number(payload.organPersonId),
   directAssistantPersonId: Number(payload.directAssistantPersonId),
+  organDirectAssistantPersonId: Number(payload.organDirectAssistantPersonId),
   assistantMemberIds: normalizeIdList(payload.assistantMemberIds),
   organMemberIds: normalizeIdList(payload.organMemberIds),
   notes: String(payload.notes || "").trim(),
 });
 
-const ensurePeopleExist = async period => {
+const normalizeGrau = value => String(value || "")
+  .trim()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toUpperCase();
+
+const isMasterGrau = person => {
+  const grau = normalizeGrau(person?.grau);
+  return grau === "QM";
+};
+
+const isOrganGrau = person => normalizeGrau(person?.grau).includes("CDC");
+
+const ensurePeopleRules = async period => {
   const people = await listPeople();
-  const existingIds = new Set(people.map(person => Number(person.id)));
+  const peopleById = new Map(people.map(person => [Number(person.id), person]));
   const referencedIds = [
     period.assistantMasterPersonId,
+    period.organPersonId,
     period.directAssistantPersonId,
+    period.organDirectAssistantPersonId,
     ...period.assistantMemberIds,
     ...period.organMemberIds,
   ];
-  const missing = referencedIds.find(id => !existingIds.has(Number(id)));
+  const missing = referencedIds.find(id => !peopleById.has(Number(id)));
   if (missing) throw makeError("Pessoa selecionada nao encontrada na base de socios.", 404, "TEAM_PERSON_NOT_FOUND");
+  if (!isMasterGrau(peopleById.get(period.assistantMasterPersonId))) {
+    throw makeError("Mestre Assistente precisa estar no quadro de mestres (QM).", 400, "TEAM_MASTER_GRAU_REQUIRED");
+  }
+  if (!isOrganGrau(peopleById.get(period.organPersonId))) {
+    throw makeError("Organ precisa ter grau CDC.", 400, "TEAM_ORGAN_GRAU_REQUIRED");
+  }
 };
 
 const buildDefaultTitle = period => `Equipes ${period.startDate} a ${period.endDate}`;
@@ -60,7 +83,7 @@ export const saveTeamPeriod = async payload => {
   const existing = period.id ? await findTeamPeriodById(period.id) : null;
   if (period.id && !existing) throw makeError("Periodo de equipes nao encontrado.", 404, "TEAM_PERIOD_NOT_FOUND");
 
-  await ensurePeopleExist(period);
+  await ensurePeopleRules(period);
 
   const overlap = await findOverlappingTeamPeriod({
     id: period.id,

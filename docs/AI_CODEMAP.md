@@ -572,7 +572,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `backend/routes/teamPeriodsRoutes.mjs`
   Rotas `GET /api/team-periods`, `GET /api/team-periods/:id/summary`, `POST /api/team-periods` e `DELETE /api/team-periods/:id`.
 - `backend/services/teamPeriodsService.mjs`
-  Regras de periodo de equipes: valida pessoas da base de socios, bloqueia sobreposicao e monta resumo do intervalo.
+  Regras de periodo de equipes: valida pessoas da base de socios, exige Mestre Assistente com grau QM, Organ com grau CDC e auxiliares diretos separados para Mestre Assistente e Organ; bloqueia sobreposicao e monta resumo do intervalo.
 - `backend/bi/participationService.mjs`
   Ao capturar participacao de evento encerrado, consulta periodos de equipes aplicaveis pela data do evento e marca dispensados como `expected=false`.
 - `backend/bi/biRepository.mjs`

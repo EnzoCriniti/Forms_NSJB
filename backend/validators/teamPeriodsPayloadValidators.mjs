@@ -27,7 +27,9 @@ export const validateTeamPeriodPayload = payload => {
   assert(isDateString(payload.endDate), "Conclusao do periodo e obrigatoria.");
   assert(String(payload.endDate) >= String(payload.startDate), "Conclusao nao pode ser anterior ao inicio.");
   assert(Number.isInteger(Number(payload.assistantMasterPersonId)) && Number(payload.assistantMasterPersonId) > 0, "Mestre Assistente e obrigatorio.");
-  assert(Number.isInteger(Number(payload.directAssistantPersonId)) && Number(payload.directAssistantPersonId) > 0, "Auxiliar Direto e obrigatorio.");
+  assert(Number.isInteger(Number(payload.organPersonId)) && Number(payload.organPersonId) > 0, "Organ e obrigatoria.");
+  assert(Number.isInteger(Number(payload.directAssistantPersonId)) && Number(payload.directAssistantPersonId) > 0, "Auxiliar direto do Mestre Assistente e obrigatorio.");
+  assert(Number.isInteger(Number(payload.organDirectAssistantPersonId)) && Number(payload.organDirectAssistantPersonId) > 0, "Auxiliar direto da Organ e obrigatorio.");
   assertIdList(payload.assistantMemberIds, "Equipe do Mestre Assistente");
   assertIdList(payload.organMemberIds, "Equipe da Organ");
   assert(isOptionalString(payload.notes), "Observacoes do periodo invalidas.");
