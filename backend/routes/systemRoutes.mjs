@@ -11,16 +11,22 @@ import { getFormDeleteKeyStatus, saveFormDeleteKey } from "../services/formDelet
 import { listAuditLogs } from "../services/auditLogService.mjs";
 import { validateAuthLoginPayload, validateFormDeleteKeyUpdatePayload } from "../validators/payloadValidators.mjs";
 import {
+  enforceRateLimit,
   readAuditFilters,
   readBody,
   requireCapability,
   requireAuth,
   sendKnownError,
 } from "./requestHelpers.mjs";
+import { createRateLimiter } from "../core/rateLimiter.mjs";
 import { writeAuthLoginAudit, writeAuthLogoutAudit, writeSecurityKeyAudit } from "./systemRouteAudit.mjs";
+
+// Anti brute-force: limita tentativas de login por IP.
+const loginLimiter = createRateLimiter({ name: "auth-login", windowMs: 60_000, max: 10 });
 
 export const handleSystemRoutes = async (req, res, url) => {
   if (req.method === "POST" && url.pathname === "/api/auth/login") {
+    if (enforceRateLimit(req, res, loginLimiter)) return true;
     const body = await readBody(req);
     if (!body) {
       sendJson(res, 400, { error: "Payload JSON invalido." });
