@@ -56,8 +56,6 @@ Mapa curto das areas mais mexidas por agentes.
   Helper do fluxo assíncrono dos submits e exclusoes confirmadas da central administrativa: busy, feedback, sucesso e erro.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
   Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets.
-- `frontend/src/features/admin/messagingSettingsPanels.jsx`
-  Agregador historico dos blocos de mensagens administrativas. Mantem reexports de compatibilidade.
 - `frontend/src/features/admin/MessagingConfigBlock.jsx`
   Configuracao global do painel administrativo de mensagens.
 - `frontend/src/features/admin/MessagingTemplatesBlock.jsx`
@@ -128,12 +126,6 @@ Mapa curto das areas mais mexidas por agentes.
   Painel de administracao de classificacoes.
 - `frontend/src/features/admin/TemplatesPanel.jsx`
   Painel de administracao de templates.
-- `frontend/src/features/admin/CatalogManagementModal.jsx`
-  Modal legado de catalogos administrativos, com listas separadas de classificacoes e presets.
-- `frontend/src/features/admin/CatalogManagementLabelsList.jsx`
-  Lista visual de classificacoes do modal legado de catalogos.
-- `frontend/src/features/admin/CatalogManagementPresetsList.jsx`
-  Lista visual de presets do modal legado de catalogos.
 - `frontend/src/features/admin/adminSecurityPanels.jsx`
   Painel compartilhado da chave mestra e status da seguranca, agora dividido em form e status.
 - `frontend/src/features/admin/SecurityKeyFormPanel.jsx`
@@ -142,8 +134,6 @@ Mapa curto das areas mais mexidas por agentes.
   Painel de status da seguranca administrativa.
 - `frontend/src/features/admin/adminShellPanels.jsx`
   Chrome compartilhado da central administrativa, com a barra de abas; o resumo duplicado da aba ativa foi removido.
-- `frontend/src/features/admin/adminSettingsShared.jsx`
-  Agregador historico dos helpers compartilhados do admin. Mantem reexports de compatibilidade; os paineis administrativos ja consomem os modulos menores diretamente.
 - `frontend/src/features/admin/adminSettingsConstants.js`
   Constantes, labels e normalizadores compartilhados da area administrativa.
 - `frontend/src/features/admin/adminPaginatedList.jsx`
@@ -195,8 +185,6 @@ Mapa curto das areas mais mexidas por agentes.
   Entrada principal do frontend. Renderiza `AppViewport` com as props montadas por `frontend/src/lib/appController.js`.
 - `frontend/src/screens/createFormDomain.js`
   Agregador historico da criacao de formulario. Mantem reexports de compatibilidade; novas alteracoes devem usar os modulos `createForm*.js` especificos.
-- `frontend/src/features/admin/adminSettingsShared.jsx`
-  Hub auxiliar historico da central administrativa. Hoje fica como camada de compatibilidade para constantes, preview, paginacao, grade, auditoria e wrapper de campo ja extraidos.
 - `backend/routes/adminRoutes.mjs`
   Agregador das rotas administrativas ainda nao extraidas por dominio.
 - `backend/routes/adminCatalogRoutes.mjs`
@@ -377,8 +365,6 @@ Mapa curto das areas mais mexidas por agentes.
   Topo publico canonico com titulo, metadata, acoes e barra de leitura, reexportado por `publicUi.jsx` para compatibilidade.
 - `frontend/src/lib/publicReadingPreferences.js`
   Preferencias locais dos controles publicos de leitura, incluindo tema/fonte, storage legado e evento de sincronizacao com o shell.
-- `frontend/src/lib/appShell.js`
-  Agregador historico dos helpers do shell principal. Mantem reexports de compatibilidade para modulos especificos.
 - `frontend/src/lib/appPublicRoutes.js`
   Fonte de verdade para builders e parser das rotas publicas canonicas `#/formularios/<id>` e `#/eventos/<evento>/<formulario>`.
 - `frontend/src/lib/appSession.js`
@@ -451,8 +437,6 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appShellPermissions.js`
   Montagem do bloco `permissions` do `shellApp`.
   O runtime state reaproveita o bloco `state` montado antes, evitando remontagem campo a campo.
-- `frontend/src/lib/appLifecycleEffects.js`
-  Agregador historico dos efeitos de ciclo de vida do shell principal. Mantem reexports para bootstrap, detalhes, navegacao, preferencias e validacao de sessao.
 - `frontend/src/lib/appLifecycleBootstrapEffects.js`
   Efeitos de bootstrap inicial e persistencia de sessao do shell principal.
 - `frontend/src/lib/appLifecyclePreferenceEffects.js`
@@ -703,19 +687,17 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/EscalaResultsPanel.jsx`
   Painel visual da tela de escala, compondo overview, lista de secoes, modal de inscricao e confirmacao de remocao.
 - `frontend/src/screens/EscalaSectionsPanel.jsx`
-  Lista visual de secoes e vagas da escala de resultados, extraida de `resultsPanels.jsx`.
+  Lista visual de secoes e vagas da escala de resultados.
 - `frontend/src/screens/EscalaSignupModal.jsx`
-  Modal visual de inscricao em vaga da escala de resultados, extraido de `resultsPanels.jsx`.
+  Modal visual de inscricao em vaga da escala de resultados.
 - `frontend/src/screens/EscalaResultsOverview.jsx`
-  Barra superior, feedback, aviso de permissao e metricas da escala de resultados, extraidos de `resultsPanels.jsx`.
+  Barra superior, feedback, aviso de permissao e metricas da escala de resultados.
 - `frontend/src/screens/publicScreenFrame.jsx`
   Layout compartilhado para os fluxos publicos e internos: container, topo e cards principais.
-- `frontend/src/screens/resultsPanels.jsx`
-  Agregador historico dos paineis visuais de resultados. Mantem reexports de `PresenceResultsPanel.jsx` e `EscalaResultsPanel.jsx`.
 - `frontend/src/screens/PresenceResultsToolbar.jsx`
-  Toolbar de filtros, zoom e exportacao da planilha de presenca, extraida de `resultsPanels.jsx`.
+  Toolbar de filtros, zoom e exportacao da planilha de presenca.
 - `frontend/src/screens/PresenceTotalsPanel.jsx`
-  Painel visual de totalizacao da planilha de presenca, extraido de `resultsPanels.jsx`.
+  Painel visual de totalizacao da planilha de presenca.
   O cabecalho do painel usa o titulo simples `Resultado do preenchimento`, sem contadores de indicadores ou respostas.
 - `frontend/src/screens/PresenceResultsTable.jsx`
   Tabela visual da planilha de presenca, incluindo cabecalho, linhas e area rolavel.

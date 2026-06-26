@@ -28,9 +28,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Gate de alto nivel do app para login, publicos, loading e shell autenticado.
 - `frontend/src/lib/appBootstrap.js`
   Normalizacao do bootstrap, selecao do formulario ativo, operacoes reutilizaveis de lista e respostas de API, listas aninhadas no estado, ordenacao de eventos, metricas de formularios/escala e alternancia de itens fixados por usuario.
-- `frontend/src/features/admin/adminSettingsShared.jsx`
-  Blocos do admin para listas paginadas, preview de campo, editor de matriz e auditoria.
-  Tambem exporta `ADMIN_INPUT_STYLE`, estilo padrao de inputs para paineis administrativos.
+- `frontend/src/features/admin/adminSettingsConstants.js`
+  Constantes, labels e `ADMIN_INPUT_STYLE` compartilhados dos paineis administrativos.
 - `frontend/src/features/admin/adminAccessPanels.jsx`
   Painel reutilizavel da administracao de usuarios e bases externas.
 - `frontend/src/features/admin/adminCatalogPanels.jsx`
@@ -47,9 +46,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
 - `frontend/src/features/forms/createFormPanels/finalPanels.jsx`
   Paineis finais da criacao de formulario: pre-visualizacao, escala, configuracao dos resultados, rodape e linha reutilizavel de totalizacao.
-- `frontend/src/screens/resultsPanels.jsx`
-  Painel compartilhado da planilha de presenca com totalizacao, filtros, toolbar e tabela.
-  Tambem inclui o painel reutilizavel da escala em `EscalaResultsPanel`.
+- `frontend/src/screens/PresenceResultsPanel.jsx` e `frontend/src/screens/EscalaResultsPanel.jsx`
+  Paineis compartilhados das planilhas de presenca e escala (totalizacao, filtros, toolbar e tabela).
   A toolbar da planilha de presenca tambem pode ser reutilizada por `PresenceResultsToolbar`.
 - `frontend/src/screens/resultsDomain.js`
   Regras puras de ordenacao, filtros, formatacao e geracao de CSV da planilha de resultados.
@@ -147,8 +145,6 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Configuracao da base de socios sincronizada.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
   Composicao das configuracoes ligadas a mensagens e envio.
-- `frontend/src/features/admin/messagingSettingsPanels.jsx`
-  Agregador de compatibilidade dos blocos de mensagens.
 - `frontend/src/features/admin/MessagingConfigBlock.jsx`, `frontend/src/features/admin/MessagingTemplatesBlock.jsx`, `frontend/src/features/admin/MessagingPresetsBlock.jsx`
   Blocos reutilizaveis de configuracao global, modelos e presets de mensagens.
 - `backend/services/adminService.mjs`
@@ -172,8 +168,8 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
   Helpers puros da escala publica, incluindo limite por pessoa e montagem da proxima versao das secoes.
 - `frontend/src/screens/publicScalePanels.jsx`
   Modal reutilizavel de inscricao na escala publica.
-- `frontend/src/lib/appShell.js`
-  Caminhos publicos canonicos, helpers de navegacao publica, decisao pura de navegacao interna e seletores derivados do shell.
+- `frontend/src/lib/appPublicRoutes.js`, `appNavigation.js`, `appShellDerivedState.js`, `appDetailTarget.js`
+  Caminhos publicos canonicos, navegacao publica/interna e seletores derivados do shell.
 - `frontend/src/lib/appEventHandlers.js`, `appFormHandlers.js`, `appAdminHandlers.js`
   Builders dos handlers entregues pelo `App.jsx` ao shell; use antes de adicionar wrappers finos diretamente no componente principal.
 - `frontend/src/lib/appDataHandlers.js`, `appSessionHandlers.js`

@@ -49,7 +49,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/lib/auth.js` - regras de permissao do frontend; `can(user, capKey)` le `user.permissions` (RBAC).
 - `frontend/src/lib/forms.js` - funcoes de apoio para formularios.
 - `frontend/src/lib/gridDefaults.js` - defaults compartilhados de campos de grade.
-- `frontend/src/lib/appShell.js` - funcoes puras do shell principal.
+- `frontend/src/lib/appShellDerivedState.js` - seletores derivados do shell principal.
 - `frontend/src/lib/storage.js` - persistencia local.
 - `frontend/src/data/` - dados estaticos da UI.
 - `frontend/src/styles.css` - tema e estilos globais.
@@ -136,7 +136,7 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 
 - Para navegar a interface: `frontend/src/App.jsx`.
 - Para mexer em tela especifica: `frontend/src/screens/`.
-- Para ajustar o shell principal do frontend: `frontend/src/lib/appShell.js`.
+- Para ajustar o shell principal do frontend: `frontend/src/lib/appShellBuilder.js` e `appShellDerivedState.js`.
 - Para ajustar regras de negocio: `backend/services/`.
 - Para mexer em persistencia: `backend/repositories/`.
 - Para requisicao, auth e auditoria do backend: `backend/routes/requestHelpers.mjs`.

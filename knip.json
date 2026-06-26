@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "backend/index.mjs",
+    "frontend/src/main.jsx",
+    "frontend/vite.config.js",
+    "eslint.config.js",
+    "scripts/*.mjs",
+    "tests/**/*.test.{js,jsx,mjs}",
+    "tests/**/*.helper.{js,jsx,mjs}"
+  ],
+  "project": [
+    "backend/**/*.mjs",
+    "frontend/src/**/*.{js,jsx}",
+    "shared/**/*.mjs",
+    "scripts/**/*.mjs",
+    "tests/**/*.{js,jsx,mjs}"
+  ],
+  "ignore": [".claude/**", "tools/**", "frontend/dist/**"],
+  "ignoreBinaries": ["docker", "docker compose"]
+}
