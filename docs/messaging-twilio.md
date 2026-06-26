@@ -54,7 +54,23 @@ Os números vêm da base de sócios (coluna de telefone, mapeada no Sheets em
 - SMS para o Brasil é possível, mas exige registro de remetente e é mais caro —
   por isso recomendamos WhatsApp.
 
+## Segurança do token
+- O **Auth Token** é write-only na interface: nunca volta para o frontend (só a flag
+  `twilioConfigured`). Para trocar, basta digitar um novo; em branco, mantém o atual.
+- Em repouso, o token é **cifrado** (AES‑256‑GCM) antes de ir para o banco. A chave vem
+  de `NSJB_SECRET_KEY` (env). Defina uma chave forte em produção:
+  `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`.
+- O `NSJB_SECRET_KEY` **não** entra nos backups do banco — guarde-o à parte. Sem ele, o
+  token cifrado não é recuperável (basta reconfigurar o token).
+
+## Robustez do envio
+- Destinatários duplicados (mesmo número) são deduplicados por envio.
+- Cada requisição ao Twilio tem timeout e **retry** com backoff em falha transitória (429/5xx/rede).
+- Múltiplas janelas usam `dispatchedWindows` para não reenviar a mesma janela.
+
 ## Indo para produção (depois)
 1. Registrar um **WhatsApp Sender** (número próprio) via Twilio + Meta.
 2. Criar e aprovar os **templates** de lembrete.
 3. Trocar o "From" do sandbox pelo número aprovado.
+4. Definir `NSJB_SECRET_KEY` e configurar backups automáticos (ver
+   [docker/db/BACKUP-RESTORE.md](../docker/db/BACKUP-RESTORE.md)).
