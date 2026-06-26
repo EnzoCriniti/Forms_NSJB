@@ -38,8 +38,9 @@ describe("eventMessageDomain", () => {
       recipientsMode: "auto",
       recipientsPresetId: "",
       recipientsPersonKeys: [],
+      recipientsGraus: [],
       scheduledFor: "",
-      windowOption: "",
+      windowOptions: [],
       autoDispatchEnabled: true,
     });
   });
@@ -62,8 +63,9 @@ describe("eventMessageDomain", () => {
       recipientsMode: "manual",
       recipientsPresetId: "",
       recipientsPersonKeys: ["7"],
+      recipientsGraus: [],
       scheduledFor: "2026-05-20T10:00:00.000Z",
-      windowOption: "",
+      windowOptions: [],
       autoDispatchEnabled: false,
     });
   });
@@ -71,25 +73,25 @@ describe("eventMessageDomain", () => {
   it("monta patch de troca de tipo preservando apenas campos compativeis", () => {
     expect(buildEventMessageTypePatch({
       nextType: "fill_reminder",
-      currentDraft: { windowOption: "12h_before", recipientsMode: "manual" },
+      currentDraft: { windowOptions: ["12h_before"], recipientsMode: "manual" },
       eventForms: [presenca],
     })).toEqual({
       type: "fill_reminder",
       templateId: "",
       formId: 1,
-      windowOption: "12h_before",
+      windowOptions: ["12h_before"],
       recipientsMode: "auto",
     });
 
     expect(buildEventMessageTypePatch({
       nextType: "new_scale",
-      currentDraft: { windowOption: "12h_before", recipientsMode: "manual" },
+      currentDraft: { windowOptions: ["12h_before"], recipientsMode: "manual" },
       eventForms: [presenca],
     })).toEqual({
       type: "new_scale",
       templateId: "",
       formId: "",
-      windowOption: "",
+      windowOptions: [],
       recipientsMode: "manual",
     });
   });
@@ -105,16 +107,15 @@ describe("eventMessageDomain", () => {
       recipientsPresetId: "7",
       recipientsPersonKeys: [],
       scheduledFor: "",
-      windowOption: "morning_of_closing",
+      windowOptions: ["morning_of_closing"],
       autoDispatchEnabled: true,
     })).toEqual({
       id: undefined,
       type: "fill_reminder",
       templateId: 3,
       body: "Lembrete",
-      config: { formId: 1, recipients: { mode: "preset", presetId: 7 } },
+      config: { formId: 1, recipients: { mode: "preset", presetId: 7, graus: [] }, windowOptions: ["morning_of_closing"] },
       autoDispatchEnabled: true,
-      windowOption: "morning_of_closing",
     });
 
     expect(buildEventMessageSavePayload({

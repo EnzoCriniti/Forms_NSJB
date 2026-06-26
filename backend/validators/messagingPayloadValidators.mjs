@@ -24,6 +24,7 @@ export const validateMessageTemplatePayload = payload => {
   assert(isNonEmptyString(payload.name), "Nome do modelo e obrigatorio.");
   assert(MESSAGE_TEMPLATE_TYPES.includes(payload.type), "Tipo do modelo invalido.");
   assert(isNonEmptyString(payload.body), "Corpo do modelo e obrigatorio.");
+  assert(payload.config === undefined || payload.config === null || isObject(payload.config), "Configuracao do modelo invalida.");
 };
 
 export const validatePersonPresetPayload = payload => {
@@ -38,6 +39,11 @@ export const validateMessagingConfigPayload = payload => {
   assert(isOptionalString(payload.whatsappGroupName), "Nome do grupo invalido.");
   assert(isOptionalBoolean(payload.autoDispatchEnabled), "Flag autoDispatchEnabled invalida.");
   assert(isOptionalString(payload.publicBaseUrl), "URL publica invalida.");
+  assert(payload.provider === undefined || ["log", "twilio"].includes(payload.provider), "Provider de mensagens invalido.");
+  assert(payload.channel === undefined || ["whatsapp", "sms"].includes(payload.channel), "Canal de mensagens invalido.");
+  assert(isOptionalString(payload.twilioAccountSid), "Account SID invalido.");
+  assert(isOptionalString(payload.twilioFrom), "Numero remetente invalido.");
+  assert(isOptionalString(payload.twilioAuthToken), "Auth token invalido.");
 };
 
 export const validateEventMessagePayload = payload => {
@@ -58,6 +64,12 @@ export const validateEventMessagePayload = payload => {
     if (payload.config.recipients.mode === "manual") {
       assert(Array.isArray(payload.config.recipients.personKeys), "Lista de pessoas invalida.");
     }
+    if (payload.config.recipients.graus !== undefined) {
+      assert(Array.isArray(payload.config.recipients.graus), "Filtro de grau invalido.");
+    }
+  }
+  if (payload.config?.windowOptions !== undefined) {
+    assert(Array.isArray(payload.config.windowOptions), "Janelas de agendamento invalidas.");
   }
   assert(payload.scheduledFor === undefined || payload.scheduledFor === null || typeof payload.scheduledFor === "string", "scheduledFor invalido.");
   assert(payload.windowOption === undefined || payload.windowOption === null || MESSAGE_WINDOW_OPTIONS.includes(payload.windowOption), "Janela de agendamento invalida.");

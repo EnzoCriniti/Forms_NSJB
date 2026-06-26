@@ -14,24 +14,44 @@ const panelStyle = {
   gap: 10,
 };
 
+const WINDOW_CHOICES = [
+  { value: "morning_of_closing", label: "Manhã do fechamento (07h)" },
+  { value: "12h_before", label: "12h antes do fechamento" },
+  { value: "1h_before", label: "1h antes do fechamento" },
+];
+
 export const MessageSchedulePanel = ({ draft, selectedForm, inputStyle, onChange }) => (
   <fieldset style={panelStyle}>
     <legend style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, padding: "0 6px" }}>Agendamento</legend>
     {draft.type === "fill_reminder" ? (
-      <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
-        Janela
-        <select value={draft.windowOption || ""} onChange={event => onChange({ windowOption: event.target.value, scheduledFor: "" })} style={inputStyle}>
-          <option value="">Sem agendamento (rascunho)</option>
-          <option value="morning_of_closing">Manhã do fechamento (07h)</option>
-          <option value="12h_before">12h antes do fechamento</option>
-          <option value="1h_before">1h antes do fechamento</option>
-        </select>
-        {selectedForm?.closing && draft.windowOption && (
-          <span style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 400 }}>
+      <div style={{ display: "grid", gap: 6 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>Quando disparar (pode marcar mais de uma)</span>
+        {WINDOW_CHOICES.map(choice => {
+          const selected = (draft.windowOptions || []).includes(choice.value);
+          return (
+            <label key={choice.value} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+              <input
+                type="checkbox"
+                checked={selected}
+                onChange={() => onChange({
+                  windowOptions: selected
+                    ? (draft.windowOptions || []).filter(option => option !== choice.value)
+                    : [...(draft.windowOptions || []), choice.value],
+                })}
+              />
+              {choice.label}
+            </label>
+          );
+        })}
+        {(draft.windowOptions || []).length === 0 && (
+          <span style={{ fontSize: 11, color: COLORS.textMuted }}>Sem janela marcada = rascunho (não dispara sozinho).</span>
+        )}
+        {selectedForm?.closing && (draft.windowOptions || []).length > 0 && (
+          <span style={{ fontSize: 11, color: COLORS.textMuted }}>
             Fechamento do form: {new Date(selectedForm.closing).toLocaleString("pt-BR")}
           </span>
         )}
-      </label>
+      </div>
     ) : (
       <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700, color: COLORS.textSecondary }}>
         Data e hora (opcional)

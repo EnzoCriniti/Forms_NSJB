@@ -36,8 +36,9 @@ export const buildInitialEventMessageDraft = (message, eligibleTypes, eventForms
       recipientsMode: message.config?.recipients?.mode || "auto",
       recipientsPresetId: message.config?.recipients?.presetId || "",
       recipientsPersonKeys: message.config?.recipients?.personKeys || [],
+      recipientsGraus: message.config?.recipients?.graus || [],
       scheduledFor: message.scheduledFor || "",
-      windowOption: message.windowOption || "",
+      windowOptions: message.config?.windowOptions || (message.windowOption ? [message.windowOption] : []),
       autoDispatchEnabled: message.autoDispatchEnabled !== false,
     };
   }
@@ -53,8 +54,9 @@ export const buildInitialEventMessageDraft = (message, eligibleTypes, eventForms
     recipientsMode: "auto",
     recipientsPresetId: "",
     recipientsPersonKeys: [],
+    recipientsGraus: [],
     scheduledFor: "",
-    windowOption: "",
+    windowOptions: [],
     autoDispatchEnabled: true,
   };
 };
@@ -65,7 +67,7 @@ export const buildEventMessageTypePatch = ({ nextType, currentDraft, eventForms 
     type: nextType,
     templateId: "",
     formId: nextType !== "new_scale" ? (candidate?.id || "") : "",
-    windowOption: nextType === "fill_reminder" ? currentDraft.windowOption : "",
+    windowOptions: nextType === "fill_reminder" ? (currentDraft.windowOptions || []) : [],
     recipientsMode: nextType === "fill_reminder" ? "auto" : currentDraft.recipientsMode,
   };
 };
@@ -76,13 +78,16 @@ export const buildEventMessageSavePayload = draft => {
     config.formId = Number(draft.formId);
   }
   if (draft.type === "fill_reminder") {
+    const graus = Array.isArray(draft.recipientsGraus) ? draft.recipientsGraus : [];
     if (draft.recipientsMode === "preset") {
-      config.recipients = { mode: "preset", presetId: Number(draft.recipientsPresetId) };
+      config.recipients = { mode: "preset", presetId: Number(draft.recipientsPresetId), graus };
     } else if (draft.recipientsMode === "manual") {
-      config.recipients = { mode: "manual", personKeys: draft.recipientsPersonKeys };
+      config.recipients = { mode: "manual", personKeys: draft.recipientsPersonKeys, graus };
     } else {
-      config.recipients = { mode: "auto" };
+      config.recipients = { mode: "auto", graus };
     }
+    const windowOptions = Array.isArray(draft.windowOptions) ? draft.windowOptions : [];
+    if (windowOptions.length) config.windowOptions = windowOptions;
   }
 
   const payload = {
@@ -94,13 +99,40 @@ export const buildEventMessageSavePayload = draft => {
     autoDispatchEnabled: draft.autoDispatchEnabled,
   };
 
-  if (draft.type === "fill_reminder" && draft.windowOption) {
-    payload.windowOption = draft.windowOption;
-  } else if (draft.scheduledFor) {
+  if (draft.type !== "fill_reminder" && draft.scheduledFor) {
     payload.scheduledFor = new Date(draft.scheduledFor).toISOString();
   }
 
   return payload;
+};
+
+/** Patch para o draft ao aplicar um modelo (corpo + destinatários + janelas). */
+export const applyTemplateDraftPatch = template => {
+  const patch = { templateId: template.id, body: template.body || "" };
+  const recipients = template.config?.recipients;
+  if (recipients) {
+    patch.recipientsMode = recipients.mode || "auto";
+    patch.recipientsGraus = Array.isArray(recipients.graus) ? recipients.graus : [];
+    if (recipients.presetId) patch.recipientsPresetId = recipients.presetId;
+  }
+  if (Array.isArray(template.config?.windowOptions)) patch.windowOptions = template.config.windowOptions;
+  return patch;
+};
+
+/** Monta o payload de um modelo a partir do preenchimento atual da tela. */
+export const buildMessageTemplateFromDraft = (draft, name) => {
+  const config = {};
+  if (draft.type === "fill_reminder") {
+    const graus = Array.isArray(draft.recipientsGraus) ? draft.recipientsGraus : [];
+    config.recipients = draft.recipientsMode === "preset"
+      ? { mode: "preset", presetId: Number(draft.recipientsPresetId), graus }
+      : draft.recipientsMode === "manual"
+        ? { mode: "manual", graus }
+        : { mode: "auto", graus };
+    const windowOptions = Array.isArray(draft.windowOptions) ? draft.windowOptions : [];
+    if (windowOptions.length) config.windowOptions = windowOptions;
+  }
+  return { name: String(name || "").trim(), type: draft.type, body: draft.body, config };
 };
 
 export const splitPreviewRecipients = preview => {

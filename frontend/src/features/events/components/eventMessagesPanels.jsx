@@ -52,6 +52,31 @@ export const MessageRecipientsPanel = ({
     {draft.recipientsMode === "manual" && (
       <ManualPersonPicker people={people} selected={draft.recipientsPersonKeys} onChange={keys => onChange({ recipientsPersonKeys: keys })} inputStyle={inputStyle} />
     )}
+    {(() => {
+      const graus = [...new Set((people || []).map(person => person.grau).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+      if (graus.length === 0) return null;
+      const selected = draft.recipientsGraus || [];
+      const toggle = grau => onChange({ recipientsGraus: selected.includes(grau) ? selected.filter(item => item !== grau) : [...selected, grau] });
+      return (
+        <div style={{ display: "grid", gap: 6 }}>
+          <span style={{ fontSize: 12, color: COLORS.textSecondary }}>Filtrar por grau {selected.length === 0 ? "(todos)" : `(${selected.length})`}</span>
+          <div className="msg-var-chips">
+            {graus.map(grau => (
+              <button
+                type="button"
+                key={grau}
+                className="msg-var-chip"
+                aria-pressed={selected.includes(grau)}
+                style={selected.includes(grau) ? { background: COLORS.primary, color: "#fff", borderColor: COLORS.primary } : undefined}
+                onClick={() => toggle(grau)}
+              >
+                {grau}
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    })()}
     {draft.type === "fill_reminder" && (
       <div style={{ fontSize: 11, color: COLORS.textMuted }}>
         Base pública: {messagingConfig?.publicBaseUrl ? "configurada" : "ausente"}{selectedForm?.closing ? ` - fechamento: ${new Date(selectedForm.closing).toLocaleString("pt-BR")}` : ""}

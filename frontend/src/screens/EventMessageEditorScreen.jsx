@@ -7,7 +7,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Btn, FeedbackBanner, ScreenHeader, resolveActionErrorMessage } from "../components/ui";
 import { EventMessageEditorFields } from "./EventMessageEditorFields";
-import { DM_TYPES, TYPE_TO_FORM_TYPE, buildEventMessageSavePayload, buildEventMessageTypePatch, buildInitialEventMessageDraft, eligibleTypesForEvent } from "./eventMessageDomain";
+import { saveMessageTemplate } from "../lib/api";
+import { DM_TYPES, TYPE_TO_FORM_TYPE, applyTemplateDraftPatch, buildEventMessageSavePayload, buildEventMessageTypePatch, buildInitialEventMessageDraft, buildMessageTemplateFromDraft, eligibleTypesForEvent } from "./eventMessageDomain";
 
 export const EventMessageEditorScreen = ({
   event,
@@ -46,7 +47,22 @@ export const EventMessageEditorScreen = ({
     }
     const template = compatibleTemplates.find(item => item.id === numericId);
     if (!template) return;
-    updateDraft({ templateId: numericId, body: template.body });
+    updateDraft(applyTemplateDraftPatch(template));
+  };
+
+  const saveAsTemplate = async () => {
+    if (!draft.body.trim()) {
+      setFeedback({ tone: "error", message: "Escreva o corpo antes de salvar o modelo." });
+      return;
+    }
+    const name = typeof window !== "undefined" ? window.prompt("Nome do modelo:") : "";
+    if (!name || !name.trim()) return;
+    try {
+      await saveMessageTemplate(buildMessageTemplateFromDraft(draft, name));
+      setFeedback({ tone: "success", message: "Modelo salvo — já aparece na lista de modelos no próximo carregamento." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    }
   };
 
   const switchType = nextType => {
@@ -117,9 +133,12 @@ export const EventMessageEditorScreen = ({
 
         {feedback && <FeedbackBanner tone={feedback.tone} message={feedback.message} />}
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-          <Btn v="secondary" onClick={() => onCancel && onCancel(null)}>Cancelar</Btn>
-          <Btn icon="save" onClick={submit} loading={saving} disabled={saving || !draft.body.trim()}>{draft.id ? "Salvar" : "Criar mensagem"}</Btn>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+          <Btn v="ghost" icon="save" onClick={saveAsTemplate} disabled={saving || !draft.body.trim()}>Salvar como modelo</Btn>
+          <div style={{ display: "flex", gap: 8 }}>
+            <Btn v="secondary" onClick={() => onCancel && onCancel(null)}>Cancelar</Btn>
+            <Btn icon="save" onClick={submit} loading={saving} disabled={saving || !draft.body.trim()}>{draft.id ? "Salvar" : "Criar mensagem"}</Btn>
+          </div>
         </div>
       </section>
     </div>

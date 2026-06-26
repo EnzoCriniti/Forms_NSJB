@@ -69,6 +69,11 @@ export const calculateRecipients = async ({ message, type, form, group }) => {
     } else {
       candidates = await getMissingPresenceRecipients(allPeople, form.id);
     }
+    const graus = Array.isArray(config.recipients?.graus) ? config.recipients.graus : [];
+    if (graus.length > 0) {
+      const grauSet = new Set(graus.map(lower));
+      candidates = candidates.filter(person => grauSet.has(lower(person.grau)));
+    }
     return { kind: "dm", group: null, recipients: withSkipFlag(candidates) };
   }
 

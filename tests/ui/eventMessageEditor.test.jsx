@@ -85,25 +85,27 @@ describe("EventMessageEditorScreen", () => {
     }));
   });
 
-  it("oferece janelas fixas no tipo 2 e envia windowOption ao salvar", async () => {
+  it("oferece janelas fixas no tipo 2 e envia as janelas ao salvar", async () => {
     const onSave = vi.fn(async () => ({ id: 1 }));
     render(<EventMessageEditorScreen {...baseProps} eventForms={[presenca]} onSave={onSave} onCancel={vi.fn()} />);
 
     fireEvent.change(screen.getByLabelText("Tipo da mensagem"), { target: { value: "fill_reminder" } });
     fireEvent.change(screen.getByRole("textbox", { name: /Corpo/ }), { target: { value: "Lembrete" } });
 
-    const windowSelect = screen.getByLabelText("Janela");
-    const options = Array.from(windowSelect.querySelectorAll("option")).map(opt => opt.value);
-    expect(options).toEqual(["", "morning_of_closing", "12h_before", "1h_before"]);
-    fireEvent.change(windowSelect, { target: { value: "morning_of_closing" } });
+    expect(screen.getByRole("checkbox", { name: /Manhã do fechamento/ })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("checkbox", { name: /Manhã do fechamento/ }));
+    fireEvent.click(screen.getByRole("checkbox", { name: /12h antes/ }));
 
     fireEvent.click(screen.getByRole("button", { name: /Criar mensagem/ }));
 
     await waitFor(() => expect(onSave).toHaveBeenCalled());
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
       type: "fill_reminder",
-      windowOption: "morning_of_closing",
-      config: expect.objectContaining({ formId: 1, recipients: { mode: "auto" } }),
+      config: expect.objectContaining({
+        formId: 1,
+        recipients: { mode: "auto", graus: [] },
+        windowOptions: ["morning_of_closing", "12h_before"],
+      }),
     }));
   });
 
@@ -143,7 +145,7 @@ describe("EventMessageEditorScreen", () => {
 
     await waitFor(() => expect(onSave).toHaveBeenCalled());
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
-      config: expect.objectContaining({ recipients: { mode: "preset", presetId: 7 } }),
+      config: expect.objectContaining({ recipients: { mode: "preset", presetId: 7, graus: [] } }),
     }));
   });
 });

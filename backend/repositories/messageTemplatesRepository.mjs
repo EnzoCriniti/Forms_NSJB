@@ -4,7 +4,7 @@
  * @responsibility Persistir templates reutilizaveis para o disparo de mensagens em eventos.
  */
 
-import { nowIso } from "../database/shared.mjs";
+import { nowIso, parseJson, stringifyJson } from "../database/shared.mjs";
 import { database } from "../database/index.mjs";
 
 const mapRow = row => ({
@@ -12,19 +12,20 @@ const mapRow = row => ({
   name: row.name,
   type: row.type,
   body: row.body,
+  config: parseJson(row.config_json, {}),
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
 
 export const listMessageTemplates = async () => (await database.queryMany(`
-  SELECT id, name, type, body, created_at, updated_at
+  SELECT id, name, type, body, config_json, created_at, updated_at
   FROM message_templates
   ORDER BY type ASC, name ASC, id ASC
 `)).map(mapRow);
 
 export const findMessageTemplateById = async templateId => {
   const row = await database.queryOne(`
-    SELECT id, name, type, body, created_at, updated_at
+    SELECT id, name, type, body, config_json, created_at, updated_at
     FROM message_templates
     WHERE id = ?
   `, [templateId]);
@@ -33,19 +34,20 @@ export const findMessageTemplateById = async templateId => {
 
 export const upsertMessageTemplateRecord = async payload => {
   const now = nowIso();
+  const config = stringifyJson(payload.config || {});
   if (payload.id) {
     await database.execute(`
       UPDATE message_templates
-      SET name = ?, type = ?, body = ?, updated_at = ?
+      SET name = ?, type = ?, body = ?, config_json = ?, updated_at = ?
       WHERE id = ?
-    `, [payload.name, payload.type, payload.body, now, payload.id]);
+    `, [payload.name, payload.type, payload.body, config, now, payload.id]);
     return payload.id;
   }
   const result = await database.execute(`
-    INSERT INTO message_templates (name, type, body, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO message_templates (name, type, body, config_json, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?)
     RETURNING id
-  `, [payload.name, payload.type, payload.body, now, now]);
+  `, [payload.name, payload.type, payload.body, config, now, now]);
   return Number(result.lastInsertId);
 };
 

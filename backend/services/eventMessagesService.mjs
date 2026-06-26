@@ -28,9 +28,10 @@ import {
   listScheduledEventMessagesDue,
   upsertEventMessageRecord,
 } from "../repositories/eventMessagesRepository.mjs";
-import { getMessagingConfig } from "./messagingConfigService.mjs";
+import { getMessagingConfig, getMessagingSecrets } from "./messagingConfigService.mjs";
 import { calculateRecipients } from "./messageRecipientsService.mjs";
 import { logOnlyDispatcher } from "../dispatchers/logOnlyDispatcher.mjs";
+import { buildTwilioDispatcher } from "../dispatchers/twilioDispatcher.mjs";
 
 const makeError = (message, statusCode, code) => {
   const error = new Error(message);
@@ -39,7 +40,14 @@ const makeError = (message, statusCode, code) => {
   return error;
 };
 
-const dispatcher = logOnlyDispatcher;
+/** Escolhe o dispatcher conforme a config: Twilio quando vinculado, senão log-only. */
+const resolveDispatcher = async () => {
+  const secrets = await getMessagingSecrets();
+  if (secrets.provider === "twilio" && secrets.accountSid && secrets.authToken && secrets.from) {
+    return buildTwilioDispatcher(secrets);
+  }
+  return logOnlyDispatcher;
+};
 
 const eligibleFormTypesForEvent = forms => new Set(
   forms.filter(form => ELIGIBLE_FORM_TYPES.includes(form.type)).map(form => form.type),
@@ -84,25 +92,43 @@ const sanitizePayload = payload => {
   if (!body) throw makeError("Corpo da mensagem e obrigatorio.", 400, "MESSAGE_BODY_REQUIRED");
   const status = String(payload?.status || "rascunho");
   if (!MESSAGE_STATUSES.includes(status)) throw makeError("Status da mensagem invalido.", 400, "MESSAGE_STATUS_INVALID");
-  const windowOption = payload?.windowOption ? String(payload.windowOption) : null;
-  if (windowOption && !WINDOW_OPTIONS.includes(windowOption)) {
-    throw makeError("Janela de agendamento invalida.", 400, "MESSAGE_WINDOW_INVALID");
+  const baseConfig = typeof payload?.config === "object" && payload.config !== null ? payload.config : {};
+  const windowOptions = Array.isArray(baseConfig.windowOptions) && baseConfig.windowOptions.length
+    ? baseConfig.windowOptions.map(String)
+    : (payload?.windowOption ? [String(payload.windowOption)] : []);
+  for (const option of windowOptions) {
+    if (!WINDOW_OPTIONS.includes(option)) throw makeError("Janela de agendamento invalida.", 400, "MESSAGE_WINDOW_INVALID");
   }
+  // dispatchedWindows é controlado pelo orquestrador; nunca vem do payload
+  const { dispatchedWindows, ...restConfig } = baseConfig;
+  const config = windowOptions.length ? { ...restConfig, windowOptions } : restConfig;
   return {
     type,
     body,
     status,
     templateId: payload?.templateId ? Number(payload.templateId) : null,
-    config: typeof payload?.config === "object" && payload.config !== null ? payload.config : {},
+    config,
     scheduledFor: payload?.scheduledFor || null,
-    windowOption,
+    windowOption: windowOptions[0] || null,
     autoDispatchEnabled: payload?.autoDispatchEnabled !== false,
   };
 };
 
+/** Próximo horário a disparar = janela ainda não disparada mais cedo. */
+const nextScheduledForWindows = (windowOptions, dispatchedWindows, closingIso) => {
+  const dispatched = new Set(dispatchedWindows || []);
+  const times = (windowOptions || [])
+    .filter(option => !dispatched.has(option))
+    .map(option => computeScheduledFor(option, closingIso))
+    .filter(Boolean)
+    .sort();
+  return times[0] || null;
+};
+
 const computeScheduledForFromConfig = (sanitized, formForMessage) => {
-  if (sanitized.type === "fill_reminder" && sanitized.windowOption && formForMessage?.closing) {
-    return computeScheduledFor(sanitized.windowOption, formForMessage.closing);
+  const windows = Array.isArray(sanitized.config?.windowOptions) ? sanitized.config.windowOptions : [];
+  if (sanitized.type === "fill_reminder" && windows.length && formForMessage?.closing) {
+    return nextScheduledForWindows(windows, sanitized.config?.dispatchedWindows, formForMessage.closing);
   }
   return sanitized.scheduledFor;
 };
@@ -232,17 +258,16 @@ export const cancelEventMessage = async messageId => {
   return findEventMessageById(message.id);
 };
 
-export const dispatchEventMessage = async (messageId, mode = "manual") => {
-  const message = await getEventMessage(messageId);
-  if (!["rascunho", "agendada", "pronta"].includes(message.status)) {
-    throw makeError("Mensagem nao pode ser disparada neste estado.", 400, "MESSAGE_NOT_DISPATCHABLE");
-  }
+/** Executa o envio (preview + dispatcher), sem mexer no status da mensagem. */
+const runDispatch = async (message, mode) => {
   const event = await findEventById(message.eventId);
   if (!event) throw makeError("Evento nao encontrado.", 404, "EVENT_NOT_FOUND");
   const eventForms = await loadEventForms(event);
   const messagingConfig = await getMessagingConfig();
   const preview = await buildPreview(message, event, eventForms, messagingConfig);
+  const form = await loadFormForMessage(message.type, message.config?.formId, eventForms);
 
+  const dispatcher = await resolveDispatcher();
   const dispatchResult = await dispatcher.dispatch({
     messageId: message.id,
     mode,
@@ -250,14 +275,45 @@ export const dispatchEventMessage = async (messageId, mode = "manual") => {
     recipients: preview.recipients,
     groupName: preview.groupName,
   });
+  return { dispatch: dispatchResult, preview, form };
+};
 
-  const sentAt = new Date().toISOString();
-  await upsertEventMessageRecord({ ...message, status: "disparada", sentAt });
-  return {
-    message: await findEventMessageById(message.id),
-    dispatch: dispatchResult,
-    preview,
-  };
+export const dispatchEventMessage = async (messageId, mode = "manual") => {
+  const message = await getEventMessage(messageId);
+  if (!["rascunho", "agendada", "pronta"].includes(message.status)) {
+    throw makeError("Mensagem nao pode ser disparada neste estado.", 400, "MESSAGE_NOT_DISPATCHABLE");
+  }
+  const { dispatch, preview } = await runDispatch(message, mode);
+  await upsertEventMessageRecord({ ...message, status: "disparada", sentAt: new Date().toISOString() });
+  return { message: await findEventMessageById(message.id), dispatch, preview };
+};
+
+/**
+ * Disparo agendado: envia e re-arma para a próxima janela ainda pendente.
+ * Só finaliza (status "disparada") quando não há mais janelas a disparar.
+ */
+const dispatchScheduledMessage = async (message, nowIso) => {
+  const { dispatch, form } = await runDispatch(message, "scheduled");
+  const windows = Array.isArray(message.config?.windowOptions) ? message.config.windowOptions : [];
+
+  if (message.type === "fill_reminder" && windows.length && form?.closing) {
+    const dispatchedBefore = new Set(message.config?.dispatchedWindows || []);
+    const dueNow = windows.filter(option => !dispatchedBefore.has(option)
+      && computeScheduledFor(option, form.closing)
+      && computeScheduledFor(option, form.closing) <= nowIso);
+    const dispatchedWindows = [...new Set([...dispatchedBefore, ...dueNow])];
+    const nextFor = nextScheduledForWindows(windows, dispatchedWindows, form.closing);
+    const config = { ...message.config, dispatchedWindows };
+    if (nextFor) {
+      await upsertEventMessageRecord({ ...message, config, status: "agendada", scheduledFor: nextFor });
+    } else {
+      await upsertEventMessageRecord({ ...message, config, status: "disparada", sentAt: new Date().toISOString() });
+    }
+    return { dispatch };
+  }
+
+  await upsertEventMessageRecord({ ...message, status: "disparada", sentAt: new Date().toISOString() });
+  return { dispatch };
 };
 
 export const processScheduledMessages = async (cutoffIso = new Date().toISOString()) => {
@@ -271,7 +327,7 @@ export const processScheduledMessages = async (cutoffIso = new Date().toISOStrin
       continue;
     }
     try {
-      const outcome = await dispatchEventMessage(message.id, "scheduled");
+      const outcome = await dispatchScheduledMessage(message, cutoffIso);
       results.push({ messageId: message.id, action: "dispatched", logId: outcome.dispatch?.logId });
     } catch (error) {
       results.push({ messageId: message.id, action: "failed", error: error.message });

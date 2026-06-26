@@ -19,6 +19,20 @@ const makeError = (message, statusCode, code) => {
   return error;
 };
 
+const sanitizeConfig = config => {
+  if (typeof config !== "object" || config === null) return {};
+  const out = {};
+  if (config.recipients && typeof config.recipients === "object") {
+    out.recipients = {
+      mode: config.recipients.mode || "auto",
+      graus: Array.isArray(config.recipients.graus) ? config.recipients.graus : [],
+      ...(config.recipients.presetId ? { presetId: Number(config.recipients.presetId) } : {}),
+    };
+  }
+  if (Array.isArray(config.windowOptions)) out.windowOptions = config.windowOptions.map(String);
+  return out;
+};
+
 const sanitize = payload => {
   const name = String(payload?.name || "").trim();
   const type = String(payload?.type || "").trim();
@@ -26,7 +40,7 @@ const sanitize = payload => {
   if (!name) throw makeError("Nome do modelo e obrigatorio.", 400, "TEMPLATE_NAME_REQUIRED");
   if (!MESSAGE_TYPES.includes(type)) throw makeError("Tipo do modelo invalido.", 400, "TEMPLATE_TYPE_INVALID");
   if (!body) throw makeError("Corpo do modelo e obrigatorio.", 400, "TEMPLATE_BODY_REQUIRED");
-  return { name, type, body };
+  return { name, type, body, config: sanitizeConfig(payload.config) };
 };
 
 export const getMessageTemplates = () => listMessageTemplates();

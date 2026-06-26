@@ -7,6 +7,7 @@ import React from "react";
 import { COLORS, FeedbackBanner } from "../components/ui";
 import { MESSAGE_TYPE_LABELS } from "../components/MessageStatusBadge";
 import { MessageRecipientsPanel, MessageSchedulePanel } from "../features/events/components/eventMessagesPanels";
+import { MessageBodyEditor } from "../features/events/components/MessageBodyEditor";
 
 const inputStyle = {
   width: "100%",
@@ -79,13 +80,7 @@ export const EventMessageEditorFields = ({
       </label>
     )}
 
-    <label className="msg-field">
-      <span className="msg-label">Corpo</span>
-      <textarea className="msg-input" value={draft.body} onChange={event => onChange({ body: event.target.value })} rows={8} placeholder="Ola {{person.name}}..." />
-      <span className="msg-hint">
-        Placeholders: <code>{"{{event.title}}"}</code>, <code>{"{{event.date}}"}</code>, <code>{"{{event.closing}}"}</code>, <code>{"{{form.title}}"}</code>, <code>{"{{form.publicLink}}"}</code>, <code>{"{{forms.list}}"}</code>, <code>{"{{person.name}}"}</code>, <code>{"{{group.name}}"}</code>.
-      </span>
-    </label>
+    <MessageBodyEditor type={draft.type} body={draft.body} onChange={value => onChange({ body: value })} />
 
     {draft.type === "fill_reminder" && (
       <MessageRecipientsPanel

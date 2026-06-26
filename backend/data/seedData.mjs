@@ -452,6 +452,11 @@ export const DEFAULT_MESSAGING_CONFIG = {
   whatsappGroupName: "",
   autoDispatchEnabled: true,
   publicBaseUrl: "",
+  provider: "log",
+  channel: "whatsapp",
+  twilioAccountSid: "",
+  twilioFrom: "",
+  twilioAuthToken: "",
 };
 
 export const MESSAGE_TEMPLATES = [

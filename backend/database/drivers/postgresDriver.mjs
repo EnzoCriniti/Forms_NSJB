@@ -103,6 +103,7 @@ const ensureSchema = async pool => {
       )
     `);
     await client.query("CREATE INDEX IF NOT EXISTS idx_message_templates_type ON message_templates(type)");
+    await client.query("ALTER TABLE message_templates ADD COLUMN IF NOT EXISTS config_json JSONB NOT NULL DEFAULT '{}'::jsonb");
     await client.query(`
       CREATE TABLE IF NOT EXISTS person_selection_presets (
         id BIGSERIAL PRIMARY KEY,
