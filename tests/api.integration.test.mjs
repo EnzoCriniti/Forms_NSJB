@@ -237,7 +237,9 @@ test("bootstrap returns seeded data and storage metadata", async () => {
     assert.deepEqual(payload.responsesByForm, {});
     assert.deepEqual(payload.escalaByForm, {});
     assert.equal(payload.storage.driver, "postgres");
-    assert.equal(payload.storage.location, `127.0.0.1:5432/${ctx.dbName}`);
+    // host/porta derivam do mesmo helper que configura o servidor (evita acoplar a 127.0.0.1).
+    const dbEnv = buildTestDatabaseEnv(ctx.dbName);
+    assert.equal(payload.storage.location, `${dbEnv.NSJB_PGHOST}:${dbEnv.NSJB_PGPORT}/${ctx.dbName}`);
   } finally {
     await ctx.cleanup();
   }
