@@ -9,6 +9,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { CreateFormFlow } from "../../frontend/src/AppShellMainFlows.jsx";
 import { CreateFormScreen } from "../../frontend/src/screens/CreateFormScreen.jsx";
+import { renderWithHeaderBack, HeaderBackHarness } from "./helpers/headerBackHarness.jsx";
 
 const baseProps = {
   onNavigate: vi.fn(),
@@ -22,7 +23,7 @@ const baseProps = {
 };
 
 const renderNewForm = ({ setupType = "presenca", ...props } = {}) => {
-  const result = render(<CreateFormScreen {...baseProps} {...props} />);
+  const result = renderWithHeaderBack(<CreateFormScreen {...baseProps} {...props} />);
   if (setupType === "escala_organ") {
     fireEvent.click(screen.getByRole("button", { name: /Escala da Organ/ }));
   }
@@ -128,6 +129,7 @@ describe("CreateFormScreen", () => {
     const onNavigate = vi.fn();
 
     render(
+      <HeaderBackHarness>
       <CreateFormScreen
         {...baseProps}
         onBack={onBack}
@@ -149,7 +151,8 @@ describe("CreateFormScreen", () => {
           resultsConfig: {},
           scaleSections: [],
         }}
-      />,
+      />
+      </HeaderBackHarness>,
     );
 
     fireEvent.click(screen.getByLabelText("Voltar"));
@@ -168,6 +171,7 @@ describe("CreateFormScreen", () => {
     };
 
     render(
+      <HeaderBackHarness>
       <CreateFormFlow
         app={{
           state: {
@@ -202,7 +206,8 @@ describe("CreateFormScreen", () => {
           },
           setters,
         }}
-      />,
+      />
+      </HeaderBackHarness>,
     );
 
     fireEvent.click(screen.getByLabelText("Voltar"));

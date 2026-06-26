@@ -2982,32 +2982,6 @@ button:not(.ui-btn):focus-visible {
   }
 }
 
-/* Botão "Voltar" padronizado no topo da tela */
-.page-back-row {
-  margin-bottom: 12px;
-}
-
-.page-back {
-  align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: inline-flex;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  gap: 6px;
-  padding: 8px 12px;
-  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
-}
-
-.page-back:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
 /* Matriz de permissões das camadas de acesso */
 .access-matrix {
   display: grid;

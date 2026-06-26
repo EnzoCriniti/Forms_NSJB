@@ -10,6 +10,7 @@ import { describe, it, expect, vi } from "vitest";
 import { EventsScreen } from "../../frontend/src/screens/EventsScreen.jsx";
 import { COLORS } from "../../frontend/src/components/ui.jsx";
 import { deleteEventMessage } from "../../frontend/src/lib/api.js";
+import { renderWithHeaderBack } from "./helpers/headerBackHarness.jsx";
 
 vi.mock("../../frontend/src/lib/api.js", () => ({
   deleteEventMessage: vi.fn(async () => ({})),
@@ -224,7 +225,7 @@ describe("EventsScreen", () => {
     const onTogglePinnedEvent = vi.fn();
     const onDeleteEvent = vi.fn(async () => {});
 
-    render(
+    renderWithHeaderBack(
       <EventsScreen
         events={events}
         forms={forms}

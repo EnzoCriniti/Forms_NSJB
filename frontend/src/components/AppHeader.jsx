@@ -25,6 +25,7 @@ export const AppHeader = ({
   onLogin,
   onLogout,
   onBackFromDetail,
+  headerBack,
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const canOpenDrawer = Boolean(currentUser);
@@ -62,19 +63,23 @@ export const AppHeader = ({
     <>
       <header className="app-header" data-screen={screen} style={{ background: "var(--header-bg)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          {currentUser && ["respond", "results"].includes(screen) && (
+          {currentUser && (headerBack || ["respond", "results"].includes(screen)) && (
             <button
               type="button"
               className="app-header__back-button"
               onClick={() => {
+                if (headerBack) {
+                  headerBack.run();
+                  return;
+                }
                 if (onBackFromDetail) {
                   onBackFromDetail();
                   return;
                 }
                 onNavigate("list");
               }}
-              aria-label="Voltar para listagem"
-              title="Voltar para listagem"
+              aria-label={headerBack ? headerBack.label : "Voltar para listagem"}
+              title={headerBack ? headerBack.label : "Voltar para listagem"}
               style={{ width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "var(--header-control-bg)", color: "var(--header-fg)", cursor: "pointer", flex: "0 0 auto" }}
             >
               <Icon name="back" size={18} />

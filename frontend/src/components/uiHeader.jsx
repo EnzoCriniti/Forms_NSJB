@@ -1,6 +1,6 @@
 import React from "react";
 import { COLORS } from "./uiTheme";
-import { PageBack } from "./PageBack";
+import { useHeaderBack } from "../lib/headerBack";
 
 export const ScreenHeader = ({
   className = "",
@@ -19,7 +19,10 @@ export const ScreenHeader = ({
   onBack,
   backLabel = "Voltar",
 }) => {
-  const card = (
+  // O "voltar" é renderizado no header global (ao lado da marca), não acima do título.
+  useHeaderBack(onBack, backLabel);
+
+  return (
     <div
       className={`screen-top-card${className ? ` ${className}` : ""}`}
       style={{
@@ -42,13 +45,5 @@ export const ScreenHeader = ({
       </div>
       {actions}
     </div>
-  );
-
-  if (!onBack) return card;
-  return (
-    <>
-      <PageBack onBack={onBack} label={backLabel} />
-      {card}
-    </>
   );
 };
