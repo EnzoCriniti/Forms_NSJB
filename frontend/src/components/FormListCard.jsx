@@ -152,7 +152,11 @@ export const FormListCard = ({
           onClick={event => event.stopPropagation()}
         >
           <Btn icon="link" onClick={openPublicForm}>Responder</Btn>
-          {canOpenResults && <Btn v="secondary" icon="eye" onClick={openResults}>Ver resultados</Btn>}
+          {canOpenResults && (
+            form.type === "escala_organ"
+              ? <Btn v="secondary" icon="edit" onClick={openResults}>Editar escala</Btn>
+              : <Btn v="secondary" icon="eye" onClick={openResults}>Ver resultados</Btn>
+          )}
           {!showFillSummary && (
           <div
             className="card-secondary-actions card-secondary-actions--bottom"
