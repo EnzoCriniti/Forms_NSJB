@@ -145,11 +145,12 @@ const ensureUsersSeed = async () => {
   await database.withTransaction(async tx => {
     for (const user of DEFAULT_USERS) {
       const secret = createPasswordRecord(user.password);
+      // Nunca persiste a senha em texto puro: guarda so o hash (coluna `password` legada fica vazia).
       await tx.execute(`
         INSERT INTO users (
           name, username, password, password_hash, password_salt, password_algorithm, password_iterations, password_migrated_at, role, created_at, updated_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [user.name, user.username, user.password, secret.hash, secret.salt, secret.algorithm, secret.iterations, now, user.role, now, now]);
+      `, [user.name, user.username, "", secret.hash, secret.salt, secret.algorithm, secret.iterations, now, user.role, now, now]);
     }
   });
 };

@@ -224,6 +224,8 @@ const ensureSchema = async pool => {
       "UPDATE users SET layer_id = (SELECT id FROM access_layers WHERE is_system AND lower(name) = lower($1) LIMIT 1) WHERE layer_id IS NULL",
       [SYSTEM_LAYERS.viewer.name],
     );
+    // higiene de segurança: zera senhas em texto puro de usuários que já têm hash
+    await client.query("UPDATE users SET password = '' WHERE password <> '' AND password_hash IS NOT NULL AND password_salt IS NOT NULL");
   } finally {
     client.release();
   }

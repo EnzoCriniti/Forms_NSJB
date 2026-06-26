@@ -21,6 +21,8 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
   const [editing, setEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  // Honeypot: campo oculto que humanos nao preenchem; se vier preenchido, e bot.
+  const [hp, setHp] = useState("");
 
   const selectedPerson = useMemo(() => {
     const raw = personField ? values[String(personField.id)] : "";
@@ -100,6 +102,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
         respondentName: selectedPerson?.name || "Respondente",
         respondentGrau: selectedPerson?.grau || "",
         values,
+        hp,
       });
       setSubmitted(true);
     } catch (error) {
@@ -119,6 +122,16 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
       <PublicResponseErrorPopup submitError={submitError} onClose={() => setSubmitError("")} />
       <PublicResponseEditingBanner editing={editing} />
       <PublicScreenFrame isInternal={isInternal} cardStyle={{ padding: "0 0 24px" }}>
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={hp}
+          onChange={event => setHp(event.target.value)}
+          style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+        />
         {fields.map(field => {
           const key = String(field.id);
           const value = values[key] ?? "";

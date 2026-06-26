@@ -14,3 +14,5 @@ export const PGDATABASE = process.env.NSJB_PGDATABASE || "nsjb_forms";
 export const PGUSER = process.env.NSJB_PGUSER || "nsjb";
 export const PGPASSWORD = process.env.NSJB_PGPASSWORD || "nsjb";
 export const PGSSLMODE = process.env.NSJB_PGSSLMODE || "disable";
+// Chave para cifrar segredos em repouso (ex.: token do Twilio). Defina em producao.
+export const SECRET_KEY = process.env.NSJB_SECRET_KEY || "";

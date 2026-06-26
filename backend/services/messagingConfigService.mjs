@@ -8,6 +8,7 @@
 
 import { DEFAULT_MESSAGING_CONFIG } from "../data/seedData.mjs";
 import { getJsonSetting, saveJsonSetting } from "../repositories/settingsRepository.mjs";
+import { decryptSecret, encryptSecret } from "../core/secretBox.mjs";
 
 const SETTING_KEY = "messagingConfig";
 
@@ -42,13 +43,16 @@ export const getMessagingSecrets = async () => {
     channel: pick(config.channel, CHANNELS, "whatsapp"),
     accountSid: String(config.twilioAccountSid ?? "").trim(),
     from: String(config.twilioFrom ?? "").trim(),
-    authToken: String(config.twilioAuthToken ?? "").trim(),
+    authToken: String(decryptSecret(config.twilioAuthToken) ?? "").trim(),
   };
 };
 
 export const updateMessagingConfig = async payload => {
   const stored = await getJsonSetting(SETTING_KEY, DEFAULT_MESSAGING_CONFIG);
   const incomingToken = String(payload?.twilioAuthToken ?? "").trim();
+  // token e write-only e cifrado em repouso: cifra o novo, ou re-cifra/preserva o atual.
+  const storedToken = String(stored?.twilioAuthToken ?? "");
+  const nextToken = incomingToken ? encryptSecret(incomingToken) : encryptSecret(decryptSecret(storedToken));
   const next = {
     whatsappGroupName: String(payload?.whatsappGroupName ?? "").trim(),
     autoDispatchEnabled: payload?.autoDispatchEnabled !== false,
@@ -57,8 +61,7 @@ export const updateMessagingConfig = async payload => {
     channel: pick(payload?.channel, CHANNELS, "whatsapp"),
     twilioAccountSid: String(payload?.twilioAccountSid ?? "").trim(),
     twilioFrom: String(payload?.twilioFrom ?? "").trim(),
-    // token e write-only: mantem o atual se nao vier um novo
-    twilioAuthToken: incomingToken || String(stored?.twilioAuthToken ?? ""),
+    twilioAuthToken: nextToken,
   };
   await saveJsonSetting(SETTING_KEY, next);
   return toPublicConfig(next);

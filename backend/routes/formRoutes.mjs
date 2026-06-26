@@ -21,6 +21,7 @@ import {
 import {
   auditLevelFromError,
   auditStatusFromError,
+  enforceRateLimit,
   getSystemActor,
   getVisitorActor,
   readBody,
@@ -29,6 +30,14 @@ import {
   sendKnownError,
   writeAudit,
 } from "./requestHelpers.mjs";
+import { createRateLimiter } from "../core/rateLimiter.mjs";
+
+// Rotas publicas sem autenticacao: protege contra flood/abuso por IP.
+const publicResponseLimiter = createRateLimiter({ name: "public-response", windowMs: 60_000, max: 20 });
+const publicClaimLimiter = createRateLimiter({ name: "public-escala-claim", windowMs: 60_000, max: 30 });
+
+/** Honeypot: bots costumam preencher campos ocultos; humanos deixam vazio. */
+const isHoneypotTripped = body => Boolean(String(body?.hp ?? body?.website ?? "").trim());
 import {
   writeEscalaClaimAudit,
   writeEscalaUpdateAudit,
@@ -94,7 +103,13 @@ export const handleFormRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/responses") {
+    if (enforceRateLimit(req, res, publicResponseLimiter)) return true;
     const body = await readBody(req);
+    // Bot detectado pelo honeypot: responde sucesso silencioso sem gravar nada.
+    if (isHoneypotTripped(body)) {
+      sendJson(res, 200, { ok: true, ignored: true });
+      return true;
+    }
     try {
       validateResponsePayload(body);
       const result = await saveResponse(body);
@@ -174,6 +189,7 @@ export const handleFormRoutes = async (req, res, url) => {
   }
 
   if (req.method === "POST" && url.pathname.startsWith("/api/forms/") && url.pathname.endsWith("/escala/claim")) {
+    if (enforceRateLimit(req, res, publicClaimLimiter)) return true;
     const body = await readBody(req);
     const formId = validateDeleteId(url.pathname.split("/")[3], "Id do formulario");
     try {

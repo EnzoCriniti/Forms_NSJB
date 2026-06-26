@@ -40,6 +40,19 @@ export const sendEscalaError = (res, error) => {
   return false;
 };
 
+/**
+ * Aplica um limitador de taxa por IP. Retorna true quando bloqueou (e já
+ * respondeu 429); o handler deve então encerrar. Use nas rotas públicas.
+ */
+export const enforceRateLimit = (req, res, limiter) => {
+  const key = req.auditContext?.ipAddress || "anon";
+  const result = limiter.take(key);
+  if (result.allowed) return false;
+  res.setHeader("Retry-After", String(result.retryAfterSeconds || 1));
+  sendJson(res, 429, { error: "Muitas requisicoes. Tente novamente em instantes.", code: "RATE_LIMITED" });
+  return true;
+};
+
 export const requireAuth = async req => {
   const token = extractBearerToken(req.headers);
   if (!token) return null;
