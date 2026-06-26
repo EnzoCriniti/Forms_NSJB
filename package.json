@@ -22,7 +22,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "npm run test:api && npm run test:ui",
-    "test:api": "node --test tests/**/*.test.mjs",
+    "test:api": "node --test \"tests/**/*.test.mjs\"",
     "test:ui": "vitest run --config frontend/vite.config.js",
     "test:load:local": "node scripts/load-local.mjs",
     "screenshot:local": "node tools/visual/screenshot-local.mjs",
