@@ -38,12 +38,14 @@ Isso significa que a forma correta de evoluir o projeto nao e reescrever tudo de
 - `frontend/src/features/`: blocos de dominio e UI mais especifica.
 - `frontend/src/components/`: primitives e componentes realmente compartilhados.
 - `frontend/src/lib/`: helpers puros, cliente HTTP e funcoes de apoio.
-- `backend/routes/`: entrada HTTP e resposta.
+- `backend/routes/`: entrada HTTP e resposta; `requireCapability` impoe o RBAC.
 - `backend/services/`: regra de negocio e orquestracao de dominio.
 - `backend/repositories/`: consultas e persistencia.
 - `backend/validators/`: validacao estrutural de entrada.
 - `backend/core/`: utilitarios de dominio reutilizaveis.
-- `shared/`: regra pura compartilhada entre frontend e backend.
+- `backend/bi/`: agregacoes e endpoints do dashboard de relatorios.
+- `backend/dispatchers/`: envio de mensagens (log-only e Twilio).
+- `shared/`: regra pura compartilhada entre frontend e backend (inclui `permissions.mjs`, o registro de capacidades).
 
 ## Leitura rapida
 
@@ -82,6 +84,8 @@ Isso significa que a forma correta de evoluir o projeto nao e reescrever tudo de
 - `backend/repositories/` guarda acesso ao banco.
 - `backend/validators/` valida payloads.
 - `backend/core/` guarda utilitarios de dominio.
+- `backend/bi/` guarda as agregacoes e rotas do dashboard de relatorios.
+- `backend/dispatchers/` guarda o envio de mensagens (log-only e Twilio).
 - `backend/database/` guarda a camada minima de acesso ao banco.
 - `backend/database/drivers/` guarda o driver Postgres oficial.
 - `backend/data/seedData.mjs` guarda os dados iniciais da aplicacao.

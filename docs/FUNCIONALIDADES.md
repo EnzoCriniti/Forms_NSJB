@@ -18,18 +18,32 @@ O NSJB Forms centraliza a operacao de:
 
 - formularios de presenca
 - formularios de escala
-- eventos e mensagens operacionais em modo log-only
+- eventos e mensagens operacionais (abertura assistida no grupo + lembretes por DM via Twilio)
 - resultados e acompanhamento
-- administracao da base e configuracoes
+- relatorios e BI de presenca, escala e socios
+- equipes da Organ com periodos e dispensas
+- administracao da base, camadas de acesso e configuracoes
 
 A aplicacao foi desenhada para rodar oficialmente em Docker com PostgreSQL.
 O fluxo oficial assume uma maquina ou ambiente unico com os tres containers da stack.
 
 ## Perfis de uso
 
+O acesso interno e controlado por **camadas de acesso** (RBAC): cada camada guarda um
+conjunto de capacidades por area (eventos, formularios por tipo, operacao, mensagens,
+relatorios, equipes, socios, usuarios/acessos e configuracoes). Cada usuario pertence a
+uma camada e as telas e rotas checam capacidades especificas (ex.: `forms.escala.edit`),
+nao mais um papel fixo. Detalhes em [docs/AI_CODEMAP.md](AI_CODEMAP.md) e em
+`shared/permissions.mjs`.
+
 - `visitante` - acessa somente links publicos de formularios abertos.
-- `viewer` - visualiza resultados e area interna de leitura.
-- `admin` - cria, edita e administra formularios, usuarios, socios e catalogos.
+- Camada **Visualizador** (sistema) - acesso somente leitura a resultados, relatorios e base.
+- Camada **Administrativo** (sistema) - todas as capacidades.
+- Camadas customizadas - o admin compoe capacidades sob medida (ex.: "Coordenador de escala":
+  so escala, operacao de escala e resultados).
+
+As camadas de sistema preservam a mecanica legada de `role` (`admin`/`viewer`) derivada das
+capacidades, para compatibilidade de sessao.
 
 ## Funcionalidades por area
 
@@ -116,13 +130,14 @@ Como essa area funciona:
 
 ### 6. Administracao
 
-- gerencia usuarios
+- gerencia usuarios e atribui a camada de acesso de cada um
+- gerencia camadas de acesso (matriz de capacidades; camadas de sistema travadas)
 - gerencia socios
 - gerencia classificacoes
 - gerencia presets
 - gerencia catalogo de campos base
 - gerencia catalogo de tarefas base de escala
-- configura modelos, presets e base publica de mensagens
+- configura modelos, presets e provedor de mensagens (Twilio, com token write-only)
 - configura a chave mestra de exclusao de formularios
 - consulta logs de auditoria
 
@@ -137,10 +152,13 @@ Como essa area funciona:
 
 - agrupa formularios vinculados a um evento
 - permite publicar eventos e abrir formularios associados
-- permite criar mensagens de anuncio, lembrete de presenca e lembrete de vagas em aberto
-- usa modelos reutilizaveis, presets de pessoas e configuracao global de grupo/base publica
+- permite criar mensagens de anuncio (abertura), lembrete de presenca e lembrete de vagas em aberto
+- usa modelos reutilizaveis que carregam configuracao (destinatarios + janelas), presets de pessoas e configuracao global
+- editor com chips de variaveis (insercao no cursor), preview ao vivo e filtro por grau nos lembretes
 - calcula destinatarios a partir da base central de socios, respostas e escala
-- registra disparos em log-only, sem envio real por WhatsApp nesta etapa
+- abertura: texto pronto para o organizador postar no grupo do WhatsApp (Twilio nao posta em grupo)
+- lembretes: envio individual por DM via Twilio quando o provedor esta configurado; senao, dispatch `log-only` que registra o que seria enviado
+- lembretes podem disparar em multiplas janelas (ex.: manha do fechamento, 12h antes, 1h antes)
 - processa mensagens agendadas pelo orquestrador quando a stack esta ativa
 
 Como essa area funciona:
@@ -149,9 +167,42 @@ Como essa area funciona:
 2. a aba de mensagens aparece apenas quando existe formulario elegivel
 3. o editor valida tipo, formulario alvo, telefone configurado e agendamento
 4. o preview renderiza placeholders e mostra destinatarios calculados
-5. o disparo registra o texto e os destinatarios no historico da mensagem
+5. o disparo (Twilio ou log-only) registra o texto e os destinatarios no historico da mensagem
+6. lembretes com varias janelas re-armam para a proxima janela pendente ate a ultima
 
-### 8. Bootstrap e inicio
+Guia do provedor: [docs/messaging-twilio.md](messaging-twilio.md). Estado atual: [docs/messaging-feature.md](messaging-feature.md).
+
+### 8. Relatorios e BI
+
+- dashboard de indicadores dentro da area de Socios, gated por `reports.view`
+- presenca: tendencia, distribuicao, heatmap e rankings de comparecimento
+- escala: vacancia, tempo de preenchimento, matriz e carga por pessoa
+- socios: visao agregada e perfil individual de participacao
+- a base do BI sao snapshots de participacao congelados no encerramento do evento
+
+Como essa area funciona:
+
+1. ao encerrar um evento, o backend captura a participacao esperada/realizada em `event_participation`
+2. periodos de equipes aplicaveis marcam dispensados como `expected=false`
+3. as agregacoes de BI contam apenas linhas `expected=true`
+4. o frontend consome um endpoint consolidado e monta as abas e graficos
+
+### 9. Equipes
+
+- menu `Equipes` com periodos da Organ (intervalo de datas)
+- cada periodo define Mestre Assistente (grau QM), Organ (grau CDC), auxiliares diretos e equipes auxiliares
+- valida pessoas contra a base de socios e bloqueia sobreposicao de periodos
+- resumo do periodo lista formularios e eventos do intervalo, clicaveis para resultados
+- dispensas do periodo isentam pessoas do BI sem zerar a base
+
+Como essa area funciona:
+
+1. o admin cria o periodo escolhendo pessoas da base de socios
+2. o backend valida graus, auxiliares e ausencia de sobreposicao
+3. ao capturar participacao, dispensados do periodo entram como `expected=false`
+4. o BI passa a refletir apenas quem era esperado de fato
+
+### 10. Bootstrap e inicio
 
 - carrega dados iniciais ao abrir a aplicacao
 - restaura sessao salva localmente
@@ -166,7 +217,7 @@ Como essa area funciona:
 3. o usuario cai na ultima tela ativa ou no fluxo publico correto
 4. o sistema usa isso para evitar telas vazias ou estados inconsistentes
 
-### 9. Persistencia
+### 11. Persistencia
 
 - o banco oficial e PostgreSQL no Docker
 - o backend continua com uma camada de acesso separada por repository
@@ -198,6 +249,9 @@ Se voce so precisa de uma visao rapida, pense assim:
 
 - Interface e tela ficam em `frontend/src/`
 - Regras de negocio ficam em `backend/services/`
+- Regras de BI ficam em `backend/bi/`
+- Envio de mensagens fica em `backend/dispatchers/`
+- Capacidades de acesso (RBAC) ficam em `shared/permissions.mjs`
 - Persistencia fica em `backend/repositories/`
 - Rotas HTTP ficam em `backend/routes/`
 - Infraestrutura oficial fica em `docker/`

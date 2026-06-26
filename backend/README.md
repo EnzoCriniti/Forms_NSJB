@@ -7,13 +7,15 @@ Codigo da API do NSJB Forms.
 - `index.mjs` - inicializa o servidor HTTP e o bootstrap.
 - `app.mjs` - cria a aplicacao HTTP.
 - `config.mjs` - portas, driver e intervalos.
-- `routes/` - roteamento HTTP por dominio.
+- `routes/` - roteamento HTTP por dominio (com `requireCapability` para o RBAC).
 - `services/` - regra de negocio.
 - `repositories/` - acesso a persistencia.
 - `validators/` - validacao de payload.
 - `core/` - utilitarios de dominio e HTTP.
+- `bi/` - agregacoes e endpoints do dashboard de relatorios.
+- `dispatchers/` - envio de mensagens (log-only e Twilio).
 - `database/` - facade de banco e drivers oficiais.
-- `orchestrator/` - automacoes de ciclo de vida.
+- `orchestrator/` - automacoes de ciclo de vida (inclui mensagens agendadas).
 - `seed.mjs` - seed inicial.
 
 ## Como o backend funciona

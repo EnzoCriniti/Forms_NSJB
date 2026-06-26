@@ -88,7 +88,42 @@ Guia curto para localizar blocos e funcoes ja existentes antes de criar algo nov
 - `backend/services/eventsService.mjs`
   Normalizacao e validacao dos eventos.
 - `backend/services/eventMessagesService.mjs`
-  Persistencia e regras das mensagens de evento.
+  Regras das mensagens de evento, selecao do dispatcher e agendamento com multiplas janelas.
+- `frontend/src/features/events/components/MessageBodyEditor.jsx`
+  Editor de corpo com chips de variaveis (insercao no cursor) e preview ao vivo; reutilize antes de recriar o campo de texto.
+- `frontend/src/lib/messageVariables.js`
+  Variaveis por tipo e render do preview client-side das mensagens.
+- `backend/dispatchers/logOnlyDispatcher.mjs`, `backend/dispatchers/twilioDispatcher.mjs`
+  Dispatchers de mensagem; estenda esta abstracao em vez de chamar provedor direto no service.
+
+## Equipes
+
+- `frontend/src/screens/TeamsScreen.jsx`
+  Tela do menu Equipes: periodos da Organ, editor e resumo do intervalo.
+- `frontend/src/screens/teamsDomain.js`
+  Helpers puros de rascunho, payload, ordenacao e selecao de pessoas dos periodos.
+- `frontend/src/features/teams/components/`
+  Componentes visuais do dominio de equipes (editor, lista, resumo).
+- `backend/services/teamPeriodsService.mjs`
+  Regras dos periodos: graus, auxiliares, sobreposicao e resumo do intervalo.
+
+## Relatorios e BI
+
+- `frontend/src/features/bi/`
+  Abas e graficos do dashboard de relatorios (presenca, escala, socios), dentro da area de Socios.
+- `backend/bi/reportsService.mjs`, `backend/bi/biRepository.mjs`
+  Agregacoes do dashboard; contam apenas participacao `expected=true`.
+- `backend/bi/participationService.mjs`
+  Captura de participacao no encerramento do evento, aplicando dispensas de equipes.
+
+## Acesso e permissoes (RBAC)
+
+- `shared/permissions.mjs`
+  Registro canonico de capacidades, presets de sistema e engine pura (`hasCapability`, `normalizePermissions`); use antes de recriar listas de permissao.
+- `frontend/src/lib/auth.js`
+  `can(user, capKey)` para gating de telas e botoes.
+- `backend/routes/requestHelpers.mjs`
+  `requireCapability` para impor a capacidade nas rotas (401/403).
 
 ## Administracao
 

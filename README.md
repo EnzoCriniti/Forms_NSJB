@@ -8,6 +8,10 @@ Sistema do NSJB para formularios de presenca, escala e acompanhamento operaciona
 - Formulario publico de presenca com resposta persistida.
 - Formulario publico de escala com reserva de vagas por nome.
 - Painel de resultados para acompanhamento operacional.
+- Eventos agrupando formularios, com mensagens de abertura e lembretes individuais via Twilio.
+- Dashboard de relatorios (BI) de presenca, escala e socios.
+- Equipes da Organ com periodos e dispensas que ajustam o BI.
+- Camadas de acesso configuraveis (RBAC) por capacidade, impostas no backend.
 - Area administrativa para usuarios, socios, classificacoes, presets e catalogos.
 - Execucao oficial via Docker Compose com PostgreSQL.
 
@@ -99,6 +103,8 @@ Se voce estiver no Windows, tambem pode usar:
 
 - [docs/FUNCIONALIDADES.md](docs/FUNCIONALIDADES.md) - guia funcional completo.
 - [docs/DIAGRAMAS.md](docs/DIAGRAMAS.md) - mapas visuais e fontes declarativas.
+- [docs/messaging-feature.md](docs/messaging-feature.md) - estado atual das mensagens de evento.
+- [docs/messaging-twilio.md](docs/messaging-twilio.md) - guia de configuracao do Twilio.
 
 ## Regra de manutencao
 

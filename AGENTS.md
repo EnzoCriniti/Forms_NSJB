@@ -10,7 +10,7 @@ Guia curto para agentes de IA neste repositorio.
 - Faça alteracoes pequenas e localizadas sempre que possivel.
 - Nao renomeie arquivos, componentes, rotas, funcoes ou variaveis publicas sem necessidade explicita.
 - Nao altere arquitetura, dependencias ou padroes globais sem pedido direto.
-- Preserve a compatibilidade com o padrao atual do projeto em React, API local e persistencia em SQLite.
+- Preserve a compatibilidade com o padrao atual do projeto em React, API Node e persistencia em PostgreSQL (Docker).
 - Todo bug encontrado deve vir acompanhado de teste novo ou ajuste de teste existente que cubra a regressao.
 - Toda correcao ou alteracao relevante deve ficar registrada no git com commit objetivo e mensagem clara.
 - Se a mudanca afetar comportamento, documente o impacto nos arquivos de documentacao do repositorio que estiverem ligados a area alterada.
@@ -20,7 +20,7 @@ Guia curto para agentes de IA neste repositorio.
 - Paginas e rotas:
   - `frontend/src/App.jsx` concentra a navegacao principal, o menu superior e o estado de tela.
   - As telas ficam em `frontend/src/screens/*`.
-  - A navegacao publica por link usa hash em `#/f/<slug>` e tambem e resolvida em `frontend/src/App.jsx`.
+  - A navegacao publica por link usa hash canonico em `#/formularios/<id>` (e `#/eventos/<evento>/<formulario>`), resolvido em `frontend/src/lib/appPublicRoutes.js`.
 - Componentes:
   - Componentes visuais compartilhados ficam em `frontend/src/components/ui.jsx`.
   - Modais e blocos de funcionalidade ficam em `frontend/src/features/*`.

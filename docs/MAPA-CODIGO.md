@@ -39,12 +39,14 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `frontend/src/components/DashboardPanels.jsx` - blocos reutilizaveis da dashboard.
 - `frontend/src/screens/EventsScreen.jsx` - tela de eventos, formularios vinculados e aba de mensagens.
 - `frontend/src/screens/EventMessageEditorScreen.jsx` - editor de mensagens vinculadas a eventos.
-- `frontend/src/screens/EventMessageDetailScreen.jsx` - preview, disparo log-only, cancelamento e historico de mensagens.
+- `frontend/src/screens/EventMessageDetailScreen.jsx` - preview, disparo (Twilio ou log-only), cancelamento e historico de mensagens.
+- `frontend/src/screens/TeamsScreen.jsx` - menu Equipes: periodos da Organ, editor e resumo do intervalo.
+- `frontend/src/features/bi/` - dashboard de relatorios (abas de presenca, escala e socios) dentro da area de Socios.
 - `frontend/src/features/events/components/eventsPanels.jsx` - blocos visuais compartilhados de eventos.
 - `frontend/src/features/events/components/eventMessagesPanels.jsx` - blocos de destinatarios, agendamento, preview e logs de mensagens.
 - `frontend/src/features/members/MemberListConfigModal.jsx` - configuracao da base central de socios e origem externa sincronizada.
 - `frontend/src/lib/api.js` - cliente HTTP.
-- `frontend/src/lib/auth.js` - regras de permissao.
+- `frontend/src/lib/auth.js` - regras de permissao do frontend; `can(user, capKey)` le `user.permissions` (RBAC).
 - `frontend/src/lib/forms.js` - funcoes de apoio para formularios.
 - `frontend/src/lib/gridDefaults.js` - defaults compartilhados de campos de grade.
 - `frontend/src/lib/appShell.js` - funcoes puras do shell principal.
@@ -70,21 +72,33 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - `backend/routes/systemRoutes.mjs` - autenticacao, health, bootstrap e auditoria.
 - `backend/routes/formRoutes.mjs` - formularios, respostas e escala.
 - `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, presets e catalogos.
-- `backend/routes/eventRoutes.mjs` - CRUD, publicacao e rotas de mensagens de eventos.
+- `backend/routes/eventRoutes.mjs` - CRUD, publicacao e encerramento de eventos.
+- `backend/routes/messageRoutes.mjs` - rotas de mensagens de evento (criar, editar, disparar, cancelar).
+- `backend/routes/teamPeriodsRoutes.mjs` - CRUD e resumo dos periodos de equipes.
+- `backend/routes/adminRoutes.mjs` - usuarios, classificacoes, catalogos e camadas de acesso (`/api/access-layers`).
+- `backend/bi/biRoutes.mjs` - endpoint consolidado do dashboard de relatorios.
 - `backend/routes/systemRouteAudit.mjs`, `formRouteAudit.mjs`, `eventRouteAudit.mjs` - helpers de auditoria das rotas.
 - `backend/routes/messageRouteHelpers.mjs` - helpers de erro, auditoria e parse das rotas de mensagens.
-- `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth e auditoria.
+- `backend/routes/requestHelpers.mjs` - funcoes compartilhadas de requisicao, auth, auditoria e `requireCapability` (RBAC).
 - `backend/services/` - regras de negocio.
-- `backend/services/eventMessagesService.mjs` - regras de mensagens por evento, preview, dispatch log-only e agendamento.
-- `backend/services/messageRecipientsService.mjs` - calculo de destinatarios de mensagens por respostas, presets e vagas da escala.
-- `backend/services/messagingConfigService.mjs` - configuracao global de mensagens.
+- `backend/services/eventMessagesService.mjs` - regras de mensagens por evento, preview, selecao do dispatcher (`resolveDispatcher`) e agendamento com multiplas janelas.
+- `backend/services/messageRecipientsService.mjs` - calculo de destinatarios de mensagens por respostas, presets, grau e vagas da escala.
+- `backend/services/messagingConfigService.mjs` - configuracao global de mensagens; `twilioAuthToken` write-only.
+- `backend/services/teamPeriodsService.mjs` - regras dos periodos de equipes (graus, auxiliares, sobreposicao, resumo).
+- `backend/services/accessLayersService.mjs` - CRUD das camadas de acesso (camadas de sistema travadas).
 - `backend/services/membersSyncService.mjs` - sincronizacao da base central de socios com a origem externa.
+- `backend/dispatchers/logOnlyDispatcher.mjs`, `twilioDispatcher.mjs` - envio de mensagens (registro vs Twilio real).
+- `backend/bi/participationService.mjs` - captura de participacao no encerramento do evento, aplicando dispensas de equipes.
+- `backend/bi/reportsService.mjs`, `biRepository.mjs` - agregacoes do dashboard (contam apenas `expected=true`).
 - `backend/repositories/` - acesso ao banco.
 - `backend/repositories/eventMessagesRepository.mjs` - persistencia das mensagens por evento.
-- `backend/repositories/messageDispatchLogRepository.mjs` - historico append-only dos disparos log-only.
-- `backend/repositories/messageTemplatesRepository.mjs` - modelos reutilizaveis de mensagens.
+- `backend/repositories/messageDispatchLogRepository.mjs` - historico append-only dos disparos.
+- `backend/repositories/messageTemplatesRepository.mjs` - modelos reutilizaveis de mensagens (com `config_json`).
+- `backend/repositories/teamPeriodsRepository.mjs` - persistencia dos periodos de equipes.
+- `backend/repositories/accessLayersRepository.mjs` - persistencia das camadas de acesso.
 - `backend/repositories/personPresetsRepository.mjs` - presets de destinatarios.
 - `backend/repositories/peopleRepository.mjs` - base central de socios e metadados de sincronizacao.
+- `shared/permissions.mjs` - registro canonico de capacidades (RBAC), presets de sistema e engine pura.
 - `backend/validators/` - validacao estrutural.
 - `backend/core/` - utilitarios compartilhados.
 - `backend/database/` - camada minima de acesso ao banco.
@@ -105,6 +119,9 @@ Mapa operacional do repositorio para evitar buscas desnecessarias.
 - Criacao e edicao: `frontend/src/screens/CreateFormScreen.jsx` - vinculo de campos a base central ou bases externas.
 - Configuracoes: `frontend/src/screens/SettingsScreen.jsx`.
 - Eventos e mensagens: `frontend/src/screens/EventsScreen.jsx`, `EventMessageEditorScreen.jsx` e `EventMessageDetailScreen.jsx`.
+- Equipes: `frontend/src/screens/TeamsScreen.jsx`.
+- Relatorios e BI: `frontend/src/features/bi/` (dentro da area de Socios) e `backend/bi/`.
+- Camadas de acesso (RBAC): `shared/permissions.mjs`, `backend/routes/requestHelpers.mjs` e `frontend/src/lib/auth.js`.
 - Resultados: `frontend/src/screens/ResultsScreen.jsx`.
 - Admin: `frontend/src/features/admin/AdminSettingsModal.jsx`.
 - API: `backend/routes/apiRouter.mjs`.

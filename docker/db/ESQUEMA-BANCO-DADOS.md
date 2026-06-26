@@ -22,7 +22,8 @@ Banco atual:
 
 Origem do schema:
 
-- [backend/database/index.mjs](C:/Users/enzof/Desktop/projetos/escalas/backend/database/index.mjs)
+- DDL inicial: [docker/db/DDL-POSTGRESQL-INICIAL.sql](C:/Users/enzof/Desktop/projetos/escalas/docker/db/DDL-POSTGRESQL-INICIAL.sql) (aplicado na primeira subida).
+- Evolucao idempotente no init do driver: `ensureSchema` em [backend/database/drivers/postgresDriver.mjs](C:/Users/enzof/Desktop/projetos/escalas/backend/database/drivers/postgresDriver.mjs), com `CREATE TABLE IF NOT EXISTS` / `ALTER TABLE ADD COLUMN IF NOT EXISTS`.
 
 ## Visao Geral das Tabelas
 
@@ -31,15 +32,22 @@ Origem do schema:
 - `responses`
 - `response_values`
 - `escala_assignments`
+- `event_participation`
 - `users`
+- `access_layers`
 - `labels`
 - `presets`
 - `people`
+- `team_periods`
 - `settings`
 - `auth_sessions`
 - `field_catalog`
 - `scale_task_catalog`
 - `audit_logs`
+- `message_templates`
+- `person_selection_presets`
+- `event_messages`
+- `message_dispatch_log`
 - `schema_migrations`
 
 ## Relacoes Principais
@@ -49,6 +57,12 @@ Origem do schema:
 - `response_values.form_id -> forms.id`
 - `escala_assignments.form_id -> forms.id`
 - `auth_sessions.user_id -> users.id`
+- `users.layer_id -> access_layers.id`
+- `event_messages.event_id -> events.id` (ON DELETE CASCADE)
+- `event_messages.template_id -> message_templates.id` (ON DELETE SET NULL)
+- `message_dispatch_log.message_id -> event_messages.id` (ON DELETE CASCADE)
+- `event_participation.event_id -> events.id`, `event_participation.form_id -> forms.id`
+- `team_periods.*_person_id -> people.id`
 
 Observacao: `events.form_ids_json` guarda os formularios vinculados em JSON para manter o evento como agrupador simples nesta fase.
 
@@ -114,6 +128,7 @@ Agrupador operacional de formularios. A configuracao de mensagens fica reservada
 | `closing` | TIMESTAMPTZ | nao | fechamento operacional |
 | `status` | TEXT | sim | `rascunho`, `pronto`, `publicado`, `encerrado` |
 | `form_ids_json` | JSONB | sim | ids dos formularios vinculados |
+| `eligible_graus_json` | JSONB | sim | graus marcados como elegiveis para o evento |
 | `message_config_json` | JSONB | sim | reservado para templates e disparos futuros |
 | `published_at` | TIMESTAMPTZ | nao | data da publicacao |
 | `created_at` | TIMESTAMPTZ | sim | criacao |
@@ -139,6 +154,7 @@ Resposta principal por formulario e pessoa.
 | `respondent_name` | TEXT | sim | nome exibido |
 | `respondent_grau` | TEXT | nao | grau |
 | `respondent_key` | TEXT | sim | chave normalizada |
+| `person_key` | TEXT | nao | chave da pessoa na base de socios |
 | `values_json` | TEXT | sim | JSON serializado |
 | `created_at` | TEXT | sim | ISO string |
 | `updated_at` | TEXT | sim | ISO string |
@@ -146,6 +162,10 @@ Resposta principal por formulario e pessoa.
 ### Constraints
 
 - `UNIQUE(form_id, respondent_key)`
+
+### Indices
+
+- `idx_responses_person_key`
 
 ### Alvo recomendado em Postgres
 
@@ -225,13 +245,15 @@ Usuarios internos do sistema.
 | `password_algorithm` | TEXT | nao | algoritmo |
 | `password_iterations` | INTEGER | nao | iteracoes |
 | `password_migrated_at` | TEXT | nao | data |
-| `role` | TEXT | sim | `admin` ou `viewer` |
+| `role` | TEXT | sim | `admin` ou `viewer`, derivado da camada (compatibilidade) |
+| `layer_id` | BIGINT FK | nao | camada de acesso (`access_layers.id`) |
 | `created_at` | TEXT | sim | ISO string |
 | `updated_at` | TEXT | sim | ISO string |
 
 ### Alvo recomendado em Postgres
 
 - manter colunas atuais
+- `role` permanece derivado da camada de acesso para preservar a mecanica de sessao legada
 - futuramente remover `password` legado quando a migracao de credenciais estiver completa
 
 ## Tabela `labels`
@@ -291,12 +313,24 @@ Base vinculada de nomes e grau.
 | `id` | INTEGER PK AUTOINCREMENT | sim |
 | `name` | TEXT | sim |
 | `grau` | TEXT | nao |
+| `phone` | TEXT | nao |
+| `active` | BOOLEAN | sim |
+| `source` | TEXT | sim |
+| `external_key` | TEXT | nao |
+| `metadata_json` | JSONB | sim |
+| `synced_at` | TIMESTAMPTZ | nao |
 | `created_at` | TEXT | sim |
 | `updated_at` | TEXT | sim |
 
 ### Indices
 
 - `idx_people_name_lower`
+- `idx_people_external_key`
+
+### Observacao
+
+- `phone` alimenta os lembretes por DM via Twilio; vem da base sincronizada (Sheets).
+- `source`/`external_key`/`synced_at` rastreiam a origem sincronizada do socio.
 
 ## Tabela `settings`
 
@@ -439,6 +473,185 @@ Auditoria administrativa e de fluxos sensiveis.
 
 - `metadata_json JSONB`
 
+## Tabela `access_layers`
+
+### Papel
+
+Camadas de acesso configuraveis (RBAC). Cada camada guarda um array de chaves de capacidade.
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `name` | TEXT | sim | nome da camada |
+| `description` | TEXT | sim | descricao |
+| `permissions_json` | JSONB | sim | array de chaves de capacidade |
+| `is_system` | BOOLEAN | sim | camadas de sistema nao deletaveis |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+| `updated_at` | TIMESTAMPTZ | sim | atualizacao |
+
+### Indices
+
+- `idx_access_layers_name` (UNIQUE em `lower(name)`)
+
+### Observacao
+
+- Seed inicial cria as camadas de sistema `Administrativo` (todas as capacidades) e `Visualizador` (somente leitura), definidas em `shared/permissions.mjs`.
+- `users.layer_id` referencia esta tabela; `users.role` e derivado da camada.
+
+## Tabela `team_periods`
+
+### Papel
+
+Periodos das equipes da Organ (intervalo de datas) e seus integrantes.
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `title` | TEXT | sim | titulo do periodo |
+| `start_date` | DATE | sim | inicio |
+| `end_date` | DATE | sim | fim |
+| `assistant_master_person_id` | BIGINT FK | sim | Mestre Assistente (grau QM) |
+| `organ_person_id` | BIGINT FK | sim | Organ (grau CDC) |
+| `direct_assistant_person_id` | BIGINT FK | sim | auxiliar direto do Mestre Assistente |
+| `organ_direct_assistant_person_id` | BIGINT FK | nao | auxiliar direto da Organ |
+| `assistant_member_ids_json` | JSONB | sim | equipe auxiliar do Mestre Assistente |
+| `organ_member_ids_json` | JSONB | sim | equipe auxiliar da Organ |
+| `notes` | TEXT | sim | observacoes |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+| `updated_at` | TIMESTAMPTZ | sim | atualizacao |
+
+### Indices
+
+- `idx_team_periods_dates` (`start_date`, `end_date`)
+
+## Tabela `event_participation`
+
+### Papel
+
+Snapshot de participacao por evento/pessoa, congelado no encerramento. Base do BI.
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `event_id` | BIGINT FK | sim | evento |
+| `form_id` | BIGINT FK | nao | formulario |
+| `person_key` | TEXT | sim | chave da pessoa |
+| `person_name` | TEXT | sim | nome |
+| `grau` | TEXT | nao | grau |
+| `expected` | BOOLEAN | sim | esperado; dispensas viram `false` |
+| `filled` | BOOLEAN | sim | compareceu/preencheu |
+| `responded_at` | TIMESTAMPTZ | nao | momento da resposta |
+| `time_to_fill_minutes` | INTEGER | nao | tempo ate preencher |
+| `exemption_reason` | TEXT | sim | motivo da dispensa (quando `expected=false`) |
+| `captured_at` | TIMESTAMPTZ | sim | momento da captura |
+
+### Indices
+
+- `idx_event_participation_event`
+- `idx_event_participation_person`
+
+### Observacao
+
+- As agregacoes de BI contam apenas linhas `expected=true`; dispensados preservam `exemption_reason` para o detalhe do socio.
+
+## Tabela `message_templates`
+
+### Papel
+
+Modelos reutilizaveis de mensagens, com configuracao embutida.
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `name` | TEXT | sim | nome |
+| `type` | TEXT | sim | `new_scale`, `fill_reminder` ou `open_slots` |
+| `body` | TEXT | sim | corpo com placeholders |
+| `config_json` | JSONB | sim | `{recipients, windowOptions}` aplicados ao importar |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+| `updated_at` | TIMESTAMPTZ | sim | atualizacao |
+
+### Indices
+
+- `idx_message_templates_type`
+
+## Tabela `person_selection_presets`
+
+### Papel
+
+Presets de pessoas reutilizaveis como destinatarios de mensagens.
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `name` | TEXT | sim | nome |
+| `person_keys_json` | JSONB | sim | chaves das pessoas |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+| `updated_at` | TIMESTAMPTZ | sim | atualizacao |
+
+## Tabela `event_messages`
+
+### Papel
+
+Mensagens vinculadas a um evento (abertura e lembretes).
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `event_id` | BIGINT FK | sim | evento (ON DELETE CASCADE) |
+| `type` | TEXT | sim | `new_scale`, `fill_reminder`, `open_slots` |
+| `template_id` | BIGINT FK | nao | modelo de origem (ON DELETE SET NULL) |
+| `body` | TEXT | sim | corpo (snapshot do texto) |
+| `config_json` | JSONB | sim | destinatarios, `windowOptions` e `dispatchedWindows` |
+| `scheduled_for` | TIMESTAMPTZ | nao | proxima janela pendente |
+| `window_option` | TEXT | nao | primeira janela (compatibilidade) |
+| `auto_dispatch_enabled` | BOOLEAN | sim | disparo automatico |
+| `status` | TEXT | sim | `rascunho`, `pronta`, `agendada`, `disparada`, `cancelada` |
+| `sent_at` | TIMESTAMPTZ | nao | ultimo disparo |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+| `updated_at` | TIMESTAMPTZ | sim | atualizacao |
+
+### Indices
+
+- `idx_event_messages_event_id`
+- `idx_event_messages_status_scheduled` (`status`, `scheduled_for`)
+
+## Tabela `message_dispatch_log`
+
+### Papel
+
+Historico append-only dos disparos (log-only ou Twilio).
+
+### Colunas atuais
+
+| Coluna | Tipo atual | Obrigatorio | Observacao |
+|---|---|---:|---|
+| `id` | BIGSERIAL PK | sim | identificador |
+| `message_id` | BIGINT FK | sim | mensagem (ON DELETE CASCADE) |
+| `dispatched_at` | TIMESTAMPTZ | sim | momento do disparo |
+| `mode` | TEXT | sim | manual ou agendado |
+| `rendered_body` | TEXT | sim | texto renderizado |
+| `recipients_json` | JSONB | sim | destinatarios (com `skipped`) |
+| `group_name` | TEXT | nao | grupo da abertura |
+| `status` | TEXT | sim | `logged_only` ou status do provedor |
+| `dispatcher_version` | TEXT | sim | versao/identificacao do dispatcher |
+| `created_at` | TIMESTAMPTZ | sim | criacao |
+
+### Indices
+
+- `idx_message_dispatch_log_message_id`
+
 ## Tabela `schema_migrations`
 
 ### Papel
@@ -462,6 +675,13 @@ Controle de migrations aplicadas.
 5. `add_auth_session_and_user_secret_columns`
 6. `add_audit_logs_table`
 
+A evolucao mais recente (eventos, mensagens, equipes, BI e camadas de acesso) e aplicada de
+forma idempotente em `ensureSchema` (driver Postgres), nao por entradas em `schema_migrations`.
+Isso inclui as tabelas `events`, `message_templates`, `person_selection_presets`,
+`event_messages`, `message_dispatch_log`, `event_participation`, `team_periods` e
+`access_layers`, alem das colunas novas em `people`, `users` (`layer_id`), `events`
+(`eligible_graus_json`) e `responses` (`person_key`).
+
 ## Mapa de Campos JSON
 
 Campos que hoje sao `TEXT` serializado e tendem a virar `JSONB`:
@@ -480,6 +700,11 @@ Campos que hoje sao `TEXT` serializado e tendem a virar `JSONB`:
 - `field_catalog.grid_schema_json`
 - `audit_logs.metadata_json`
 - `escala_assignments.sections_json`
+
+Ja em `JSONB` (tabelas novas): `events.form_ids_json`, `events.eligible_graus_json`,
+`events.message_config_json`, `message_templates.config_json`, `event_messages.config_json`,
+`message_dispatch_log.recipients_json`, `person_selection_presets.person_keys_json`,
+`team_periods.*_member_ids_json`, `access_layers.permissions_json`, `people.metadata_json`.
 
 ## Regras de Manutencao
 
