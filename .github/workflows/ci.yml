@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: nsjb
+          POSTGRES_PASSWORD: nsjb
+          POSTGRES_DB: nsjb_forms
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nsjb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      NSJB_TEST_PGHOST: localhost
+      NSJB_TEST_PGPORT: "5432"
+      NSJB_TEST_PGUSER: nsjb
+      NSJB_TEST_PGPASSWORD: nsjb
+      NSJB_TEST_PGSSLMODE: disable
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Backend/pure tests
+        run: npm run test:api
+
+      - name: UI tests
+        run: npm run test:ui
