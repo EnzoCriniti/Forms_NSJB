@@ -5,18 +5,7 @@
  */
 
 import { nowIso } from "../database/shared.mjs";
-
-const colIndex = letter => {
-  const normalized = String(letter || "").trim().toUpperCase();
-  if (!normalized) return -1;
-  let result = 0;
-  for (const char of normalized) {
-    const code = char.charCodeAt(0);
-    if (code < 65 || code > 90) return -1;
-    result = (result * 26) + (code - 64);
-  }
-  return result - 1;
-};
+import { colIndex } from "./googleSheetsSource.mjs";
 
 export const parseCsvRows = text => {
   const rows = [];

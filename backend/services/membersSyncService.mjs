@@ -9,21 +9,9 @@ import { nowIso } from "../database/shared.mjs";
 import { listPeople, replacePeopleRecords } from "../repositories/peopleRepository.mjs";
 import { getJsonSetting, saveJsonSetting } from "../repositories/settingsRepository.mjs";
 import { mapPeopleFromRows, parseCsvRows } from "./membersSyncHelpers.mjs";
+import { buildGoogleSheetsCsvUrl } from "./googleSheetsSource.mjs";
 
 const MEMBERS_CONFIG_KEY = "membersConfig";
-
-const buildGoogleSheetsCsvUrl = config => {
-  const match = String(config.sheetUrl || "").match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if (!match) throw new Error("URL do Google Sheets invalida.");
-  const id = match[1];
-  const [sheetPart, rangePart] = String(config.range || "").includes("!")
-    ? String(config.range).split("!")
-    : ["", String(config.range || "")];
-  const params = new URLSearchParams({ tqx: "out:csv" });
-  if (sheetPart) params.set("sheet", sheetPart);
-  if (rangePart) params.set("range", rangePart);
-  return `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?${params.toString()}`;
-};
 
 export const getMembersConfig = async () => getJsonSetting(MEMBERS_CONFIG_KEY, DEFAULT_MEMBERS_CONFIG);
 

@@ -7,20 +7,9 @@
 import { nowIso } from "../database/shared.mjs";
 import { getJsonSetting, saveJsonSetting } from "../repositories/settingsRepository.mjs";
 import { parseCsvRows } from "./membersSyncHelpers.mjs";
+import { buildGoogleSheetsCsvUrl, colIndex } from "./googleSheetsSource.mjs";
 
 const EXTERNAL_BASES_KEY = "externalBases";
-
-const colIndex = letter => {
-  const normalized = String(letter || "").trim().toUpperCase();
-  if (!normalized) return -1;
-  let result = 0;
-  for (const char of normalized) {
-    const code = char.charCodeAt(0);
-    if (code < 65 || code > 90) return -1;
-    result = (result * 26) + (code - 64);
-  }
-  return result - 1;
-};
 
 const normalizeBaseItem = item => ({
   value: String(item?.value || "").trim(),
@@ -46,19 +35,6 @@ const normalizeExternalBase = payload => ({
   active: payload?.active !== false,
   items: Array.isArray(payload?.items) ? payload.items.map(normalizeBaseItem).filter(item => item.value || item.label) : [],
 });
-
-const buildGoogleSheetsCsvUrl = config => {
-  const match = String(config.sheetUrl || "").match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-  if (!match) throw new Error("URL do Google Sheets invalida.");
-  const id = match[1];
-  const [sheetPart, rangePart] = String(config.range || "").includes("!")
-    ? String(config.range).split("!")
-    : ["", String(config.range || "")];
-  const params = new URLSearchParams({ tqx: "out:csv" });
-  if (sheetPart) params.set("sheet", sheetPart);
-  if (rangePart) params.set("range", rangePart);
-  return `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?${params.toString()}`;
-};
 
 const mapExternalBaseItems = (rows, config) => {
   const valueCol = colIndex(config.valueColumn || "A");
