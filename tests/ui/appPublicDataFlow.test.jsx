@@ -9,8 +9,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import App from "../../frontend/src/App.jsx";
 
-const bootstrap = forms => ({
+const bootstrap = (forms, events = []) => ({
   forms,
+  events,
   responsesByForm: {},
   escalaByForm: {},
   users: [],
@@ -261,6 +262,43 @@ describe("App public data flow", () => {
     expect(screen.queryByRole("button", { name: "Eventos" })).not.toBeInTheDocument();
   });
 
+  it("bloqueia preenchimento publico de presenca quando o evento esta encerrado", async () => {
+    window.location.hash = "#/eventos/99/1";
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap([
+          {
+            id: 1,
+            slug: "presenca-evento",
+            type: "presenca",
+            status: "aberto",
+            title: "Presenca Evento",
+            sessionName: "Sessao Publica",
+            description: "",
+            closingText: "Preenchimento encerrado pelo evento.",
+            fieldDefinitions: [
+              { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+            ],
+            resultsConfig: {},
+            labels: [],
+          },
+        ], [
+          { id: 99, status: "encerrado", formIds: [1] },
+        ]));
+      }
+      if (url === "/api/forms/1/responses") {
+        return jsonResponse({ responses: [] });
+      }
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    expect(await screen.findByRole("heading", { name: /fechado/i })).toBeInTheDocument();
+    expect(screen.getByText("Preenchimento encerrado pelo evento.")).toBeInTheDocument();
+    expect(screen.queryByText("Nome *")).not.toBeInTheDocument();
+  });
+
   it("carrega a escala publica sob demanda", async () => {
     window.location.hash = "#/formularios/escala-teste";
     vi.stubGlobal("fetch", vi.fn(async url => {
@@ -302,6 +340,54 @@ describe("App public data flow", () => {
 
     await screen.findByText("Cozinha");
     expect(screen.getByText("Maria")).toBeInTheDocument();
+  });
+
+  it("mantem escala da organ visivel e bloqueada quando o evento esta encerrado", async () => {
+    window.location.hash = "#/eventos/99/2";
+    vi.stubGlobal("fetch", vi.fn(async url => {
+      if (url === "/api/bootstrap") {
+        return jsonResponse(bootstrap([
+          {
+            id: 2,
+            slug: "escala-evento",
+            type: "escala_organ",
+            status: "aberto",
+            title: "Escala Evento",
+            sessionName: "Sessao Escala",
+            description: "",
+            fieldDefinitions: [],
+            resultsConfig: {},
+            labels: [],
+          },
+        ], [
+          { id: 99, status: "encerrado", formIds: [2] },
+        ]));
+      }
+      if (url === "/api/forms/2/escala") {
+        return jsonResponse({
+          sections: [
+            {
+              title: "Cozinha",
+              color: "#ffcdd2",
+              slots: [
+                { role: "Responsavel", person: "Maria" },
+                { role: "Auxiliar", person: "" },
+              ],
+            },
+          ],
+        });
+      }
+      return jsonResponse({}, false);
+    }));
+
+    render(<App />);
+
+    await screen.findByText("Cozinha");
+    expect(screen.getByText("Maria")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(/consulta/i);
+
+    const pendingSlot = screen.getAllByRole("button").find(button => button.textContent.includes("Pendente"));
+    expect(pendingSlot).toBeDisabled();
   });
 
   it("mostra erro de inicio quando o bootstrap falha", async () => {

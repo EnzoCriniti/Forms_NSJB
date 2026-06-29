@@ -10,6 +10,7 @@ export const buildAppShellState = ({
   fontScale,
   pinnedEventIds,
   pinnedFormIds,
+  publicEvent,
   publicForm,
   publicResultsEnabled,
   publicResultsView,
@@ -18,6 +19,7 @@ export const buildAppShellState = ({
 }) => ({
   screen,
   fontScale,
+  publicEvent,
   publicForm,
   publicRoute,
   publicResultsEnabled,

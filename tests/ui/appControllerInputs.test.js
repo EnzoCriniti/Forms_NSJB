@@ -78,6 +78,7 @@ const derived = {
   forms: [{ id: 2 }],
   pinnedEventIds: [9],
   pinnedFormIds: [2],
+  publicEvent: null,
   publicForm: null,
   publicResultsEnabled: false,
   publicResultsView: false,

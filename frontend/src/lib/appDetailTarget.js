@@ -14,7 +14,7 @@ export const resolveAppViewportTargetState = ({
   escalaByForm = {},
 }) => {
   const targetForm = publicForm || (["respond", "results"].includes(screen) ? activeForm : null);
-  const skipClosedPublicFormLoad = publicForm && isFormClosedForPublic(publicForm) && !publicResultsView;
+  const skipClosedPublicFormLoad = publicForm?.type !== "escala_organ" && isFormClosedForPublic(publicForm) && !publicResultsView;
   const hasTargetData = targetForm?.type === "escala_organ"
     ? Object.prototype.hasOwnProperty.call(escalaByForm, targetForm.id)
     : Object.prototype.hasOwnProperty.call(responsesByForm, targetForm?.id);

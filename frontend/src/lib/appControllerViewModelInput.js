@@ -40,6 +40,7 @@ export const buildAppControllerViewModelInput = ({
   pinnedEventIds: derived.pinnedEventIds,
   pinnedFormIds: derived.pinnedFormIds,
   presets: bootstrapData.presets,
+  publicEvent: derived.publicEvent,
   publicForm: derived.publicForm,
   publicResultsEnabled: derived.publicResultsEnabled,
   publicResultsView: derived.publicResultsView,

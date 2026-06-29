@@ -38,6 +38,7 @@ export const buildAppControllerViewModel = ({
   pinnedEventIds,
   pinnedFormIds,
   presets,
+  publicEvent,
   publicForm,
   publicResultsEnabled,
   publicResultsView,
@@ -97,6 +98,7 @@ export const buildAppControllerViewModel = ({
     state: buildAppShellState({
       screen,
       fontScale,
+      publicEvent,
       publicForm,
       publicRoute,
       publicResultsEnabled,

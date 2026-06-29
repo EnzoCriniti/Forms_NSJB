@@ -124,10 +124,6 @@ export const FormBasicsPanel = ({
   onTitleChange,
   previewDescription,
   onDescriptionChange,
-  eventDate,
-  onEventDateChange,
-  closingDate,
-  onClosingDateChange,
   status,
   onStatusChange,
   linkedPeopleField,
@@ -141,7 +137,11 @@ export const FormBasicsPanel = ({
   selectedLabels,
   onToggleLabel,
   peopleConfigLabel,
-}) => (
+}) => {
+  const showClosingText = format === "presenca";
+  const metaColumns = showClosingText ? "minmax(130px, 0.7fr) minmax(220px, 1.3fr)" : "minmax(130px, 0.7fr)";
+
+  return (
   <section className="msg-card" style={{ marginBottom: 20 }}>
     <header className="msg-card__head">
       <h3 className="msg-card__title">Dados do formulário</h3>
@@ -169,17 +169,7 @@ export const FormBasicsPanel = ({
         <span className="msg-label">Descrição / Instruções</span>
         <textarea className="msg-input" value={previewDescription} onChange={onDescriptionChange} rows={3} placeholder="Prezada Irmandade..." />
       </label>
-      <div className="create-form-meta-grid-4" style={{ display: "grid", gridTemplateColumns: "1fr 1fr minmax(130px, 0.7fr) minmax(220px, 1.3fr)", gap: 14, alignItems: "start" }}>
-        <label className="msg-field">
-          <span className="msg-label">Abertura programada</span>
-          <input className="msg-input" type="date" value={eventDate} onChange={onEventDateChange} />
-          <span className="msg-hint">O formulário vai para aberto automaticamente nesta data.</span>
-        </label>
-        <label className="msg-field">
-          <span className="msg-label">Fechamento automático</span>
-          <input className="msg-input" type="datetime-local" value={closingDate} onChange={onClosingDateChange} />
-          <span className="msg-hint">Quando chegar este horário, o formulário fecha sozinho.</span>
-        </label>
+      <div className="create-form-meta-grid" style={{ display: "grid", gridTemplateColumns: metaColumns, gap: 14, alignItems: "start" }}>
         <label className="msg-field">
           <span className="msg-label">Status</span>
           <select className="msg-input" value={status} onChange={onStatusChange}>
@@ -189,10 +179,12 @@ export const FormBasicsPanel = ({
             <option value="arquivado">Arquivado</option>
           </select>
         </label>
+        {showClosingText && (
         <label className="msg-field">
           <span className="msg-label">Texto de fechamento</span>
           <input className="msg-input" value={closingText} onChange={onClosingTextChange} />
         </label>
+        )}
       </div>
       {format !== "escala_organ" && (
       <div className="create-form-meta-grid-1" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
@@ -232,4 +224,5 @@ export const FormBasicsPanel = ({
       </div>
     </div>
   </section>
-);
+  );
+};

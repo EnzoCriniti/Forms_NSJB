@@ -626,7 +626,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/forms/createFormPanels/setupPanels.jsx`
   Paineis iniciais da criacao de formulario: topo, contexto, modo estrutural, tipo inicial e dados basicos.
   Em escala da organ, o painel de dados basicos nao exibe `Total esperado`; esse controle pertence apenas a formularios de presenca.
-  Na box de dados, abertura, fechamento, status e texto de fechamento ficam no mesmo grid de metadados.
+  Na box de dados, a planilha nao configura agenda de abertura/fechamento; presenca mantem status e texto de fechamento, enquanto escala da Organ mantem apenas status.
 - `frontend/src/features/forms/createFormPanels/fieldPanels.jsx`
   Paineis da lista e do editor de campos da criacao de formulario: origem, definicao, ajustes extras, acoes e linha reutilizavel de campo.
   Campos de presenca que nao sao seletor de pessoa podem receber `Horario do campo` opcional; quando preenchido, o rótulo salvo fica composto como `horario - rotulo base`.
@@ -745,6 +745,7 @@ Mapa curto das areas mais mexidas por agentes.
   Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 - `frontend/src/AppPublicViewport.jsx`
   No fluxo publico, formularios fechados continuam exibindo o atalho externo para resultados quando `resultsConfig.publicResultsEnabled` esta habilitado, sem abrir o shell autenticado.
+  Quando a rota publica pertence a um evento encerrado, presenca bloqueia preenchimento e escala da Organ permanece visivel em modo consulta, com vagas pendentes desabilitadas.
 
 ## Backend da base sincronizada
 

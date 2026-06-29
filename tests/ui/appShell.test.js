@@ -157,6 +157,7 @@ describe("appShell derived state", () => {
       pinnedEventIds: [9],
       pinnedFormIds: [1],
       publicForm: null,
+      publicEvent: null,
       publicResultsEnabled: false,
       publicResultsView: false,
       publicRoute: null,
@@ -165,6 +166,7 @@ describe("appShell derived state", () => {
       screen: "events",
       fontScale: 1,
       publicForm: null,
+      publicEvent: null,
       publicRoute: null,
       publicResultsEnabled: false,
       publicResultsView: false,
@@ -201,6 +203,7 @@ describe("appShell derived state", () => {
       pinnedEventIds: [9],
       pinnedFormIds: [1],
       publicForm: null,
+      publicEvent: null,
       publicResultsEnabled: false,
       publicResultsView: false,
       publicRoute: null,
@@ -265,7 +268,7 @@ describe("appShell derived state", () => {
           { id: 1, slug: "form-um", type: "presenca", resultsConfig: { publicResultsEnabled: true } },
           { id: 2, slug: "form-dois", type: "escala_organ" },
         ],
-        events: [{ id: 9, title: "Evento" }],
+        events: [{ id: 9, title: "Evento", formIds: [1] }],
         responsesByForm: { 1: [{ id: 1 }] },
         escalaByForm: {},
       },
@@ -286,6 +289,7 @@ describe("appShell derived state", () => {
     expect(state.activeEvent.id).toBe(9);
     expect(state.editingForm.id).toBe(1);
     expect(state.publicForm.id).toBe(1);
+    expect(state.publicEvent.id).toBe(9);
     expect(state.publicResultsEnabled).toBe(true);
     expect(state.publicResultsView).toBe(true);
     expect(state.responsesByForm[2]).toEqual([{ id: 2 }]);
@@ -357,6 +361,15 @@ describe("appShell viewport target state", () => {
       responsesByForm: {},
       escalaByForm: {},
     }).waitingForTarget).toBe(false);
+  });
+
+  it("continua esperando dados de escala publica fechada para modo consulta", () => {
+    expect(resolveAppViewportTargetState({
+      publicForm: { id: 10, type: "escala_organ", status: "fechado" },
+      publicResultsView: false,
+      responsesByForm: {},
+      escalaByForm: {},
+    }).waitingForTarget).toBe(true);
   });
 });
 

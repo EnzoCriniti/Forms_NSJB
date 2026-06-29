@@ -53,13 +53,15 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
   });
 
-  it("mantem status e texto de fechamento alinhados no mesmo bloco de dados", () => {
+  it("mantem apenas status e texto de fechamento na box de presenca", () => {
     const { container } = renderNewForm();
 
-    const metaGrid = container.querySelector(".create-form-meta-grid-4");
+    const metaGrid = container.querySelector(".create-form-meta-grid");
     expect(metaGrid).toBeInTheDocument();
     expect(metaGrid).toContainElement(screen.getByText("Status"));
     expect(metaGrid).toContainElement(screen.getByText("Texto de fechamento"));
+    expect(screen.queryByText("Abertura programada")).not.toBeInTheDocument();
+    expect(screen.queryByText("Fechamento automÃ¡tico")).not.toBeInTheDocument();
   });
 
   it("preset o nome do formulario quando e criado dentro de um evento", async () => {
@@ -99,6 +101,9 @@ describe("CreateFormScreen", () => {
     const titleInput = screen.getByDisplayValue("Escala da Organ - 20/05/2026");
     expect(titleInput).toHaveAttribute("readonly");
     expect(screen.queryByText("Total esperado")).not.toBeInTheDocument();
+    expect(screen.queryByText("Texto de fechamento")).not.toBeInTheDocument();
+    expect(screen.queryByText("Abertura programada")).not.toBeInTheDocument();
+    expect(screen.queryByText("Fechamento automÃ¡tico")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Publicar Escala" }));
 

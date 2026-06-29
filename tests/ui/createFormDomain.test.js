@@ -351,6 +351,8 @@ describe("createFormDomain", () => {
 
     expect(payload.fieldDefinitions).toHaveLength(2);
     expect(payload.totalExpected).toBe(2);
+    expect(payload.closing).toBe("");
+    expect(payload.closingText).toBe("Fecha");
     expect(template.name).toBe("Base");
     expect(template.fieldDefinitions).toHaveLength(2);
   });

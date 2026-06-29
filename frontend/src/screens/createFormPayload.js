@@ -38,8 +38,8 @@ export const buildCreateFormPayload = ({
     description: desc,
     labels: selLabels,
     date: eventDate,
-    closing: closingDate,
-    closingText,
+    closing: "",
+    closingText: format === "presenca" ? closingText : "",
     totalExpected: format === "presenca" && linkedPeopleField ? Number(totalExpected || 0) : 0,
     fieldDefinitions: format === "presenca" ? normalizedFields : [],
     resultsConfig: format === "presenca"

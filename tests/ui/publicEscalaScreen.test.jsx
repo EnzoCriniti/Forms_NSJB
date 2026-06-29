@@ -91,4 +91,29 @@ describe("PublicEscalaScreen", () => {
     await waitFor(() => expect(onClaimSlot).not.toHaveBeenCalled());
     expect(screen.getByRole("alert")).toHaveTextContent(/limite de vagas/i);
   });
+
+  it("deixa vagas pendentes bloqueadas quando esta em modo consulta", () => {
+    const onClaimSlot = vi.fn();
+
+    render(
+      <PublicEscalaScreen
+        onBack={vi.fn()}
+        form={form}
+        people={[{ name: "Maria" }]}
+        sections={sections}
+        onClaimSlot={onClaimSlot}
+        readOnly
+        readOnlyMessage="Evento encerrado. A escala esta disponivel apenas para consulta."
+      />,
+    );
+
+    expect(screen.getByRole("status")).toHaveTextContent(/consulta/i);
+    const slotButton = screen.getAllByRole("button").find(button => button.textContent.includes("Pendente"));
+    expect(slotButton).toBeDisabled();
+
+    fireEvent.click(slotButton);
+
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(onClaimSlot).not.toHaveBeenCalled();
+  });
 });

@@ -27,7 +27,7 @@ export const PublicScaleSignupModal = ({
   </div>
 );
 
-export const PublicScaleMetricsPanel = ({ filled, pending, total, scaleLimit }) => (
+export const PublicScaleMetricsPanel = ({ filled, pending, total, scaleLimit, readOnly = false }) => (
   <>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>
       <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}>
@@ -43,13 +43,19 @@ export const PublicScaleMetricsPanel = ({ filled, pending, total, scaleLimit }) 
         <strong style={{ fontSize: 24, color: COLORS.textSecondary }}>{total}</strong>
       </div>
     </div>
+    {readOnly ? (
+    <p style={{ margin: "0 0 14px", color: COLORS.textSecondary, fontSize: 13 }}>
+      Esta escala esta disponivel apenas para consulta. Vagas pendentes nao aceitam inscricao.
+    </p>
+    ) : (
     <p style={{ margin: "0 0 14px", color: COLORS.textSecondary, fontSize: 13 }}>
       Escolha uma vaga pendente para preencher seu nome. Cada nome pode ocupar até {scaleLimit} vaga{scaleLimit !== 1 ? "s" : ""} nesta escala.
     </p>
+    )}
   </>
 );
 
-export const PublicScaleSectionsPanel = ({ sections, onPickSlot }) => (
+export const PublicScaleSectionsPanel = ({ sections, onPickSlot, readOnly = false }) => (
   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
     {sections.map((section, sectionIndex) => (
       <div key={sectionIndex} className="public-scale-section" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden" }}>
@@ -57,12 +63,12 @@ export const PublicScaleSectionsPanel = ({ sections, onPickSlot }) => (
         {section.slots.map((slot, slotIndex) => (
           <button
             key={slotIndex}
-            disabled={!!slot.person}
+            disabled={readOnly || !!slot.person}
             onClick={() => onPickSlot(sectionIndex, slotIndex)}
-            style={{ width: "100%", border: "none", borderBottom: `1px solid ${COLORS.borderLight}`, background: slot.person ? COLORS.surfaceAlt : COLORS.surface, padding: "10px 14px", display: "flex", justifyContent: "space-between", gap: 10, cursor: slot.person ? "not-allowed" : "pointer", color: COLORS.text, textAlign: "left" }}
+            style={{ width: "100%", border: "none", borderBottom: `1px solid ${COLORS.borderLight}`, background: slot.person || readOnly ? COLORS.surfaceAlt : COLORS.surface, padding: "10px 14px", display: "flex", justifyContent: "space-between", gap: 10, cursor: slot.person || readOnly ? "not-allowed" : "pointer", color: COLORS.text, textAlign: "left" }}
           >
             <strong style={{ minWidth: 100 }}>{slot.role}</strong>
-            <span style={{ color: slot.person ? COLORS.textSecondary : COLORS.primary, fontWeight: slot.person ? 500 : 800 }}>{slot.person || "Pendente"}</span>
+            <span style={{ color: slot.person || readOnly ? COLORS.textSecondary : COLORS.primary, fontWeight: slot.person || readOnly ? 500 : 800 }}>{slot.person || "Pendente"}</span>
           </button>
         ))}
       </div>

@@ -10,8 +10,9 @@ import { PublicScaleMetricsPanel, PublicScaleSectionsPanel, PublicScaleSignupMod
 import { PublicScreenFrame, PublicScreenHeader, PublicScreenLayout } from "./publicScreenFrame";
 import { buildPublicScaleLimitMessage, buildPublicScaleNextSections, countPublicScaleAssignments, resolvePublicScaleLimit } from "./publicScaleDomain";
 
-export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public" }) => {
+export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSaveSections, onClaimSlot, readingControls, variant = "public", readOnly = false, readOnlyMessage = "" }) => {
   const isInternal = variant === "internal";
+  const isReadOnly = readOnly && !isInternal;
   const [selSlot, setSelSlot] = useState(null);
   const [signName, setSignName] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +24,7 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
 
   const signup = async () => {
     setError("");
-    if (!selSlot || !signName) return;
+    if (isReadOnly || !selSlot || !signName) return;
 
     const assignedCount = countPublicScaleAssignments(sections, signName);
     if (assignedCount >= scaleLimit) {
@@ -59,17 +60,18 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
         form={form}
         onBack={onBack}
         titleFallback="Escala"
-        internalSubtitle="Escolha uma vaga pendente para preencher seu nome."
+        internalSubtitle={isReadOnly ? "Escala disponivel apenas para consulta." : "Escolha uma vaga pendente para preencher seu nome."}
         readingControls={readingControls}
       />
       <PublicScreenFrame isInternal={isInternal} cardClassName="public-scale-card">
         <div className="public-scale-card__content">
-          <PublicScaleMetricsPanel filled={filled} pending={total - filled} total={total} scaleLimit={scaleLimit} />
+          <PublicScaleMetricsPanel filled={filled} pending={total - filled} total={total} scaleLimit={scaleLimit} readOnly={isReadOnly} />
+          {isReadOnly && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="info" message={readOnlyMessage || "A escala segue disponivel apenas para consulta."} /></div>}
           {error && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="error" message={error} /></div>}
-          <PublicScaleSectionsPanel sections={sections} onPickSlot={(sectionIndex, slotIndex) => setSelSlot({ si: sectionIndex, sli: slotIndex })} />
+          <PublicScaleSectionsPanel sections={sections} onPickSlot={(sectionIndex, slotIndex) => setSelSlot({ si: sectionIndex, sli: slotIndex })} readOnly={isReadOnly} />
         </div>
       </PublicScreenFrame>
-      {selSlot && (
+      {selSlot && !isReadOnly && (
         <PublicScaleSignupModal
           sectionTitle={sections[selSlot.si].title}
           slotRole={sections[selSlot.si].slots[selSlot.sli].role}

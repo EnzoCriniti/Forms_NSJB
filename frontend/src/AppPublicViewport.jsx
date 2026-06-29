@@ -26,6 +26,7 @@ export const AppPublicViewport = ({ app, onBack }) => {
   const actions = getShellActions(app);
   const {
     currentUser,
+    publicEvent,
     publicForm,
     publicResultsEnabled,
     publicResultsView,
@@ -38,6 +39,9 @@ export const AppPublicViewport = ({ app, onBack }) => {
     externalBases,
   } = data;
   const publicOnBack = currentUser ? onBack : null;
+  const publicEventClosed = publicEvent?.status === "encerrado";
+  const publicScaleReadOnly = publicForm?.type === "escala_organ" && (publicEventClosed || isFormClosedForPublic(publicForm));
+  const publicPresenceClosed = publicForm?.type !== "escala_organ" && (publicEventClosed || isFormClosedForPublic(publicForm));
 
   if (publicResultsView) {
     if (!publicResultsEnabled) {
@@ -71,10 +75,10 @@ export const AppPublicViewport = ({ app, onBack }) => {
 
   return (
     <PublicRoot>
-      {isFormClosedForPublic(publicForm)
+      {publicPresenceClosed
         ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} actionLabel={publicResultsEnabled ? "Ver resultados" : ""} actionHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} title="Formulário fechado" message={publicResultsEnabled ? "Este formulário não está mais aceitando respostas, mas os resultados continuam disponíveis para consulta." : "Este formulário não está mais aceitando respostas."} />
         : publicForm.type === "escala_organ"
-          ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => actions.handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => actions.handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
+          ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => actions.handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => actions.handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} readOnly={publicScaleReadOnly} readOnlyMessage={publicEventClosed ? "Evento encerrado. A escala esta disponivel apenas para consulta." : "Esta escala esta disponivel apenas para consulta."} />
           : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={actions.handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} resultsHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} />}
     </PublicRoot>
   );
