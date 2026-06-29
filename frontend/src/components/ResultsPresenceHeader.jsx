@@ -17,7 +17,7 @@ export const ResultsPresenceHeader = ({
   stats = [],
 }) => (
   <div>
-    {publicActionHref && <PublicReadingToolbar {...readingControls} backHref={publicActionHref} />}
+    {publicActionHref && <PublicReadingToolbar {...readingControls} backHref={publicActionHref} backLabel="Voltar ao formulário" />}
 
     {grauOptions.length > 0 && (
       <div style={{ display: "flex", flexDirection: "column", gap: 8, margin: "0 0 14px" }}>

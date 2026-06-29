@@ -16,6 +16,7 @@ export const PublicReadingToolbar = ({
   onDecreaseFontScale,
   onBack,
   backHref,
+  backLabel = "",
 }) => {
   const [localTheme, setLocalTheme] = useState(() => resolveInitialPublicReadingTheme(theme));
   const [localFontScale, setLocalFontScale] = useState(() => resolveInitialPublicReadingFontScale(fontScale));
@@ -85,8 +86,10 @@ export const PublicReadingToolbar = ({
             }}
             title="Voltar"
             aria-label="Voltar"
-            style={{ ...fontControlStyle, width: 34, justifyContent: "center", padding: 0 }}
-          />
+            style={{ ...fontControlStyle, width: backLabel ? "auto" : 34, justifyContent: "center", padding: backLabel ? "6px 10px" : 0 }}
+          >
+            {backLabel}
+          </Btn>
         )}
         <span className="public-reading-toolbar__zoom" title="Zoom do texto">{Math.round(localFontScale * 100)}%</span>
       </div>

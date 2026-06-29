@@ -69,5 +69,6 @@ describe("ResultsPresenceHeader", () => {
     fireEvent.click(screen.getByRole("button", { name: "Mudar para modo escuro" }));
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
+    expect(screen.getByText("Voltar ao formulário")).toBeInTheDocument();
   });
 });

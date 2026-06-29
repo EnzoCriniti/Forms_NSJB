@@ -743,6 +743,8 @@ Mapa curto das areas mais mexidas por agentes.
   Blocos mortos antigos de totalizacao, badges e topo de resultados foram removidos apos varredura de classes.
 - `frontend/src/App.jsx`
   Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
+- `frontend/src/AppPublicViewport.jsx`
+  No fluxo publico, formularios fechados continuam exibindo o atalho externo para resultados quando `resultsConfig.publicResultsEnabled` esta habilitado, sem abrir o shell autenticado.
 
 ## Backend da base sincronizada
 

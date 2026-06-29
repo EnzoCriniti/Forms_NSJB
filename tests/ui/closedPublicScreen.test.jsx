@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ClosedPublicScreen } from "../../frontend/src/components/ClosedPublicScreen.jsx";
 
@@ -39,5 +39,21 @@ describe("ClosedPublicScreen", () => {
     expect(screen.getByRole("heading", { name: "Inscrições encerradas" })).toBeInTheDocument();
     expect(screen.getByText("Procure a organização.")).toBeInTheDocument();
     expect(screen.queryByText("Encerrado pela secretaria.")).not.toBeInTheDocument();
+  });
+
+  it("mostra acao externa de resultados quando informada", () => {
+    window.location.hash = "";
+
+    render(
+      <ClosedPublicScreen
+        form={form}
+        actionLabel="Ver resultados"
+        actionHref="#/formularios/1/resultados"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /Ver resultados/i }));
+
+    expect(window.location.hash).toBe("#/formularios/1/resultados");
   });
 });

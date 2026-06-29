@@ -72,7 +72,7 @@ export const AppPublicViewport = ({ app, onBack }) => {
   return (
     <PublicRoot>
       {isFormClosedForPublic(publicForm)
-        ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} actionLabel={publicResultsEnabled ? "Resultados" : ""} actionHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} title="Formulário fechado" message={publicResultsEnabled ? undefined : "Este formulário não está mais aceitando respostas."} />
+        ? <ClosedPublicScreen form={publicForm} onBack={publicOnBack} actionLabel={publicResultsEnabled ? "Ver resultados" : ""} actionHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} title="Formulário fechado" message={publicResultsEnabled ? "Este formulário não está mais aceitando respostas, mas os resultados continuam disponíveis para consulta." : "Este formulário não está mais aceitando respostas."} />
         : publicForm.type === "escala_organ"
           ? <PublicEscalaScreen form={publicForm} onBack={publicOnBack} people={people} sections={escalaByForm[publicForm.id] || []} onSaveSections={sections => actions.handleSaveEscala(publicForm.id, sections)} onClaimSlot={(sectionIndex, slotIndex, person) => actions.handleClaimEscalaSlot(publicForm.id, sectionIndex, slotIndex, person)} />
           : <PublicFormScreen form={publicForm} responses={responsesByForm[publicForm.id] || []} onSaveResponse={actions.handleSaveResponse} onBack={publicOnBack} people={people} externalBases={externalBases} resultsHref={publicResultsEnabled ? buildPublicFormResultsPath(publicForm) : ""} />}
