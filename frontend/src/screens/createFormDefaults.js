@@ -17,10 +17,10 @@ export const FIELD_TYPES = [
 export const FORM_MODE_OPTIONS = [
   {
     id: FORM_MODES.NUCLEO,
-    title: "Presença do núcleo",
-    desc: "Já nasce com o campo Nome da base central e habilita faltantes, resumo e filtro por grau.",
+    title: "Com base de socios",
+    desc: "Ja nasce com o campo Nome da base central. O controle de faltantes pode ficar ligado ou desligado nos resultados.",
     badge: "Base central ativa",
-    bullets: ["Campo Nome obrigatório", "Resumo e faltantes liberados", "Filtro por grau nos resultados"],
+    bullets: ["Campo Nome obrigatorio", "Pode controlar faltantes", "Pode ser usado em formularios opcionais"],
   },
   {
     id: FORM_MODES.GERAL,

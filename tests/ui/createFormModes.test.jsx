@@ -26,7 +26,7 @@ describe("CreateFormScreen form modes", () => {
   it("destaca o resumo do modo nucleo por padrao", () => {
     renderNewForm();
 
-    expect(screen.getByText("Modo ativo: Presença do núcleo")).toBeInTheDocument();
+    expect(screen.getByText("Modo ativo: Com base de socios")).toBeInTheDocument();
     expect(screen.getAllByText("Base central ativa").length).toBeGreaterThan(0);
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
     expect(screen.getByText("1 campo(s) ligado(s) à base central")).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe("CreateFormScreen form modes", () => {
     expect(screen.getByText("Modo ativo: Formulário geral")).toBeInTheDocument();
     expect(screen.getAllByText("Fluxo livre").length).toBeGreaterThan(0);
     expect(screen.getByText("Base central desativada neste formulário")).toBeInTheDocument();
-    expect(screen.getByRole("spinbutton")).toBeDisabled();
+    expect(screen.queryByText("Total esperado")).not.toBeInTheDocument();
   });
 
   it("remove o seletor por base local no formulario geral", () => {

@@ -7,7 +7,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge } from "./ui";
 import { canCreateForms, canViewForm } from "../lib/auth";
-import { formatDate, formatDateTime, getFormMode, getFormModeLabel, hasLinkedPeopleField } from "../lib/forms";
+import { formatDate, formatDateTime, getFormMode, getFormModeLabel, isLinkedRosterEnabled } from "../lib/forms";
 import { buildPublicFormPath, buildPublicFormUrl } from "../lib/appPublicRoutes";
 
 const LIST_ACTION_STYLE = {
@@ -37,7 +37,7 @@ export const FormListCard = ({
   const responses = form.metrics?.responses || 0;
   const total = form.metrics?.total || form.totalExpected || 0;
   const canOpenResults = canViewForm(user, form);
-  const showFillSummary = Boolean(user) && (form.type === "escala_organ" || hasLinkedPeopleField(form));
+  const showFillSummary = Boolean(user) && (form.type === "escala_organ" || isLinkedRosterEnabled(form));
   const fillPercent = total ? Math.min(100, (responses / total) * 100) : 0;
   const formMode = getFormMode(form);
 

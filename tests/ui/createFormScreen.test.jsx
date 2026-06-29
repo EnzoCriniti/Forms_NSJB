@@ -25,7 +25,7 @@ const baseProps = {
 const renderNewForm = ({ setupType = "presenca", ...props } = {}) => {
   const result = renderWithHeaderBack(<CreateFormScreen {...baseProps} {...props} />);
   if (setupType === "escala_organ") {
-    fireEvent.click(screen.getByRole("button", { name: /Escala da Organ/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulario interno/ }));
   }
   fireEvent.click(screen.getByRole("button", { name: "Continuar para o editor" }));
   return result;
@@ -38,7 +38,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Templates de formulário")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
     expect(screen.getByText("1 campo configurado")).toBeInTheDocument();
-    expect(screen.getByText("Presença do núcleo")).toBeInTheDocument();
+    expect(screen.getByText("Com base de socios")).toBeInTheDocument();
     expect(container.querySelector(".create-form-mobile-hero")).toBeInTheDocument();
   });
 
@@ -48,9 +48,31 @@ describe("CreateFormScreen", () => {
     expect(screen.getByRole("spinbutton")).not.toBeDisabled();
     expect(screen.getByText("Configuração dos Resultados")).toBeInTheDocument();
     expect(screen.getByLabelText("Habilitar pesquisa na planilha de respostas")).toBeInTheDocument();
-    expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).not.toBeDisabled();
+    expect(screen.getByLabelText("Controlar faltantes da base vinculada")).not.toBeDisabled();
     expect(screen.getByLabelText("Permitir visualização pública dos resultados")).toBeInTheDocument();
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
+  });
+
+  it("permite formulario opcional com base sem controlar faltantes", async () => {
+    const onSaveForm = vi.fn().mockResolvedValue({ ok: true });
+
+    renderNewForm({ onSaveForm });
+
+    expect(screen.getByText("Total esperado")).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText("Controlar faltantes da base vinculada"));
+    expect(screen.queryByText("Total esperado")).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByPlaceholderText("Ex: Presença Sessão de Escala - 02/05/2026"), {
+      target: { value: "Compra de Castanhas" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Publicar Formulário" }));
+
+    await waitFor(() => expect(onSaveForm).toHaveBeenCalledTimes(1));
+    expect(onSaveForm.mock.calls[0][0].totalExpected).toBe(0);
+    expect(onSaveForm.mock.calls[0][0].resultsConfig.showLinkedRoster).toBe(false);
+    expect(onSaveForm.mock.calls[0][0].fieldDefinitions).toEqual(expect.arrayContaining([
+      expect.objectContaining({ type: "person_select" }),
+    ]));
   });
 
   it("mantem apenas status e texto de fechamento na box de presenca", () => {
@@ -268,8 +290,8 @@ describe("CreateFormScreen", () => {
       />,
     );
 
-    expect(screen.getByRole("spinbutton")).toBeDisabled();
-    expect(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes")).toBeDisabled();
+    expect(screen.queryByText("Total esperado")).not.toBeInTheDocument();
+    expect(screen.getByLabelText("Controlar faltantes da base vinculada")).toBeDisabled();
   });
 
   it("troca para formulario geral e remove a base central do payload", async () => {

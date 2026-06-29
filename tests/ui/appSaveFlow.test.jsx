@@ -132,7 +132,7 @@ describe("App save flow", () => {
 
     await screen.findByText("Editar Formulário");
     fireEvent.click(screen.getByLabelText("Habilitar pesquisa na planilha de respostas"));
-    fireEvent.click(screen.getByLabelText("Exibir lista da base vinculada e destacar faltantes"));
+    fireEvent.click(screen.getByLabelText("Controlar faltantes da base vinculada"));
     fireEvent.click(screen.getByText("Salvar Formulário"));
 
     await waitFor(() => expect(screen.getByText("Formulário alterado com sucesso")).toBeInTheDocument());

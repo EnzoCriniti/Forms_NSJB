@@ -71,8 +71,8 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
 
     <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
       {[
-        { id: "presenca", title: "Presença", desc: "Perguntas, acompanhantes, totalização e controle de envio." },
-        { id: "escala_organ", title: "Escala da Organ", desc: "Planilha de tarefas com responsáveis e auxiliares." },
+        { id: "presenca", title: "Formulario de presenca", desc: "Presenca obrigatoria ou formulario opcional com base de socios." },
+        { id: "escala_organ", title: "Formulario interno", desc: "Escala da Organ e controles internos de tarefas." },
       ].map(option => (
         <button
           className="create-form-type-card"
@@ -130,6 +130,7 @@ export const FormBasicsPanel = ({
   peopleCount,
   onTotalExpectedChange,
   totalExpected,
+  expectedTrackingEnabled,
   formMode,
   closingText,
   onClosingTextChange,
@@ -186,7 +187,7 @@ export const FormBasicsPanel = ({
         </label>
         )}
       </div>
-      {format !== "escala_organ" && (
+      {format !== "escala_organ" && expectedTrackingEnabled && (
       <div className="create-form-meta-grid-1" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
         <label className="msg-field">
           <span className="msg-label">Total esperado</span>

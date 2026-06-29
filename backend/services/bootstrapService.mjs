@@ -35,7 +35,8 @@ export const getBootstrap = async () => {
       return { ...form, metrics: { responses: filled, total, filled, pending: total - filled } };
     }
     const responses = await countResponsesByFormId(form.id);
-    return { ...form, metrics: { responses, total: form.totalExpected || responses || 0 } };
+    const tracksLinkedRoster = form.resultsConfig?.showLinkedRoster !== false && Number(form.totalExpected) > 0;
+    return { ...form, metrics: { responses, total: tracksLinkedRoster ? form.totalExpected : responses } };
   }));
 
   const eventsPage = await searchEvents({ limit: 20, offset: 0 });

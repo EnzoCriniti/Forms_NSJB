@@ -30,10 +30,13 @@ export const getRespondentDisplay = response => {
 
 export const getExpectedResponses = (form, people = []) => {
   if (!form) return 0;
+  if (!isLinkedRosterEnabled(form)) return 0;
   if (Number(form.totalExpected) > 0) return Number(form.totalExpected);
   if (hasLinkedPeopleField(form)) return people.length;
   return 0;
 };
+
+export const isLinkedRosterEnabled = form => hasLinkedPeopleField(form) && form?.resultsConfig?.showLinkedRoster !== false;
 
 export const getResultsConfig = form => ({
   searchEnabled: form?.resultsConfig?.searchEnabled ?? true,

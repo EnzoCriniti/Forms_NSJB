@@ -253,7 +253,7 @@ export const useCreateFormController = ({
     },
     contextProps: {
       title: "Tipo do formulário",
-      body: format === "escala_organ" ? "Escala da Organ" : "Presença",
+      body: format === "escala_organ" ? "Formulario interno - Escala da Organ" : "Formulario de presenca",
       footer: "O tipo e a estrutura do formulário vigente ficam travados na edição. Para mudar isso, use duplicação ou crie um novo formulário.",
     },
     modePanelProps: {
@@ -294,6 +294,7 @@ export const useCreateFormController = ({
       peopleCount: people.length,
       onTotalExpectedChange: event => setTotalExpected(event.target.value),
       totalExpected,
+      expectedTrackingEnabled: derived.linkedPeopleField && resultsConfig.showLinkedRoster !== false,
       formMode,
       closingText,
       onClosingTextChange: event => setClosingText(event.target.value),

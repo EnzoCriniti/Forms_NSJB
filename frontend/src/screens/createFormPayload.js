@@ -28,6 +28,7 @@ export const buildCreateFormPayload = ({
   linkedPeopleField,
 }) => {
   const normalizedFields = normalizePresenceFieldsForMode(fields, formMode);
+  const tracksLinkedRoster = format === "presenca" && linkedPeopleField && resultsConfig?.showLinkedRoster !== false;
   return {
     id: form?.id,
     slug: form?.slug,
@@ -40,7 +41,7 @@ export const buildCreateFormPayload = ({
     date: eventDate,
     closing: "",
     closingText: format === "presenca" ? closingText : "",
-    totalExpected: format === "presenca" && linkedPeopleField ? Number(totalExpected || 0) : 0,
+    totalExpected: tracksLinkedRoster ? Number(totalExpected || 0) : 0,
     fieldDefinitions: format === "presenca" ? normalizedFields : [],
     resultsConfig: format === "presenca"
       ? syncResultsConfigWithFields({ ...resultsConfig, formMode }, normalizedFields)

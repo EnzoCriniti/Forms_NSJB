@@ -53,7 +53,7 @@ export const getFormMode = form => {
   return getPeopleBaseFields(form).length > 0 ? FORM_MODES.NUCLEO : FORM_MODES.GERAL;
 };
 
-export const getFormModeLabel = form => getFormMode(form) === FORM_MODES.NUCLEO ? "Presença do núcleo" : "Formulário geral";
+export const getFormModeLabel = form => getFormMode(form) === FORM_MODES.NUCLEO ? "Com base de socios" : "Formulario geral";
 
 export const getPrimaryPeopleBaseField = form => {
   const personFields = getPeopleBaseFields(form);

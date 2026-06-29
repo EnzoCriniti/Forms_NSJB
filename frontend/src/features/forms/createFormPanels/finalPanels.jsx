@@ -123,7 +123,7 @@ export const ResultsConfigPanel = ({
       </label>
       <label className="msg-check" style={{ color: linkedPeopleField ? undefined : "var(--text-muted)", cursor: linkedPeopleField ? "pointer" : "default" }}>
         <input type="checkbox" checked={linkedPeopleField && resultsConfig.showLinkedRoster !== false} disabled={!linkedPeopleField} onChange={event => onChangeResultsConfig({ ...resultsConfig, showLinkedRoster: event.target.checked })} />
-        Exibir lista da base vinculada e destacar faltantes
+        Controlar faltantes da base vinculada
       </label>
       <label className="msg-check">
         <input type="checkbox" checked={resultsConfig.blockDuplicatePersonResponses === true} onChange={event => onChangeResultsConfig({ ...resultsConfig, blockDuplicatePersonResponses: event.target.checked })} />

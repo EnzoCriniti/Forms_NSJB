@@ -609,6 +609,7 @@ Mapa curto das areas mais mexidas por agentes.
   Mutacoes puras de listas usadas pelo editor de criacao de formulario.
 - `frontend/src/screens/createFormResultsConfig.js`
   Layout de totais e sincronizacao da configuracao de resultados da criacao de formulario.
+  `resultsConfig.showLinkedRoster` e a flag que controla faltantes; o formulario pode usar base de socios sem gerar contagem de pendentes.
 - `frontend/src/screens/createFormFieldDraft.js`
   Defaults de grade, presets e transicoes do rascunho de campo da criacao de formulario.
 - `frontend/src/screens/createFormFieldSave.js`
@@ -657,6 +658,7 @@ Mapa curto das areas mais mexidas por agentes.
   Formatacao de data/hora e busca textual de formularios.
 - `frontend/src/lib/formResults.js`
   Helpers de leitura de respostas, configuracao de resultados, formulario publico fechado e reexports das regras compartilhadas.
+  `getExpectedResponses` so retorna esperado quando o controle de faltantes da base vinculada esta ativo.
 - `frontend/src/lib/gridDefaults.js`
   Fonte de verdade para linhas, colunas e presets padrao dos campos de grade usados na criacao de formulario e no admin.
 - `shared/formModes.mjs`

@@ -90,7 +90,7 @@ describe("FormListScreen", () => {
   it("mantem a listagem em bloco unico sem divisorias por modo", () => {
     render(<FormListScreen onNavigate={vi.fn()} user={{ role: "admin", name: "Admin" }} labels={labels} forms={forms} />);
 
-    expect(screen.getAllByText("Presença do núcleo").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Com base de socios").length).toBeGreaterThan(0);
     expect(screen.queryByText("Formularios gerais")).not.toBeInTheDocument();
   });
 

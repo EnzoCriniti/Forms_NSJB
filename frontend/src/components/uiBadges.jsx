@@ -28,6 +28,6 @@ export const StatusBadge = ({ status }) => {
 
 export const TypeBadge = ({ type }) => (
   <span className="ui-badge" style={{ background: type === "escala_organ" ? "var(--type-scale-bg)" : COLORS.primaryLight, color: type === "escala_organ" ? "var(--type-scale-text)" : COLORS.primary }}>
-    {type === "escala_organ" ? "Escala da Organ" : "Presen\u00e7a"}
+    {type === "escala_organ" ? "Formulario interno" : "Presen\u00e7a"}
   </span>
 );

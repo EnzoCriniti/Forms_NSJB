@@ -31,7 +31,7 @@ export const buildFormSearchIndex = (form, labels = []) => {
     .map(labelId => labels.find(label => label.id === labelId)?.name || "")
     .filter(Boolean)
     .join(" ");
-  const modeText = getFormMode(form) === FORM_MODES.NUCLEO ? "presenca do nucleo nucleo" : "formulario geral geral";
+  const modeText = getFormMode(form) === FORM_MODES.NUCLEO ? "com base de socios presenca do nucleo nucleo" : "formulario geral geral";
   return normalizeSearchText([
     form?.title,
     form?.description,

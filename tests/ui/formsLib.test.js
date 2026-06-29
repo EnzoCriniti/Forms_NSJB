@@ -52,6 +52,11 @@ describe("forms lib helpers", () => {
     expect(getFormMode(form)).toBe(FORM_MODES.NUCLEO);
     expect(getExpectedResponses(form, [{ name: "Ana" }, { name: "Bia" }])).toBe(2);
     expect(getResultsConfig(form)).toMatchObject({ searchEnabled: false, showLinkedRoster: true });
+    expect(getExpectedResponses({
+      ...form,
+      totalExpected: 2,
+      resultsConfig: { showLinkedRoster: false },
+    }, [{ name: "Ana" }, { name: "Bia" }])).toBe(0);
     expect(resolvePersonBySelectionValue([{ name: "Ana", grau: "Jovem" }], "jovem - ana")).toEqual({ name: "Ana", grau: "Jovem" });
   });
 });
