@@ -132,6 +132,8 @@ export const FormBasicsPanel = ({
   totalExpected,
   expectedTrackingEnabled,
   formMode,
+  escalaSex,
+  onEscalaSexChange,
   closingText,
   onClosingTextChange,
   labels,
@@ -140,6 +142,7 @@ export const FormBasicsPanel = ({
   peopleConfigLabel,
 }) => {
   const showClosingText = format === "presenca";
+  const isEscala = format === "escala_organ";
   const metaColumns = showClosingText ? "minmax(130px, 0.7fr) minmax(220px, 1.3fr)" : "minmax(130px, 0.7fr)";
 
   return (
@@ -187,6 +190,17 @@ export const FormBasicsPanel = ({
         </label>
         )}
       </div>
+      {isEscala && (
+      <label className="msg-field">
+        <span className="msg-label">Sexo da escala</span>
+        <select className="msg-input" value={escalaSex || "unisex"} onChange={onEscalaSexChange}>
+          <option value="unisex">Unissex (todos)</option>
+          <option value="male">Masculino</option>
+          <option value="female">Feminino</option>
+        </select>
+        <span className="msg-hint">Restringe quem recebe o lembrete de vagas e quem é considerado nos relatórios desta escala.</span>
+      </label>
+      )}
       {format !== "escala_organ" && expectedTrackingEnabled && (
       <div className="create-form-meta-grid-1" style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }}>
         <label className="msg-field">

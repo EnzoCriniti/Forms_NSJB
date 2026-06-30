@@ -58,5 +58,7 @@ export const syncResultsConfigWithFields = (config, fields) => {
     publicResultsEnabled: config?.publicResultsEnabled ?? false,
     formMode: config?.formMode || (fields.some(isMembersSelectionField) ? FORM_MODES.NUCLEO : FORM_MODES.GERAL),
     totalsLayout: currentLayout,
+    // preserva o sexo da escala no round-trip de edição (só presente em escala_organ)
+    ...(config?.escalaSex !== undefined ? { escalaSex: config.escalaSex } : {}),
   };
 };

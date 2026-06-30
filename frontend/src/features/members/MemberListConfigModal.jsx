@@ -130,7 +130,7 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
           </div>
           <span className="msg-hint">Informe apenas a letra da coluna: A, B, C...</span>
 
-          <details open={Boolean(draft.phoneColumn || draft.externalIdColumn || draft.activeColumn)}>
+          <details open={Boolean(draft.phoneColumn || draft.sexColumn || draft.externalIdColumn || draft.activeColumn)}>
             <summary className="msg-subtitle" style={{ cursor: "pointer" }}>Campos extras opcionais</summary>
             <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
               <span className="msg-hint">Preencha apenas se a sua planilha tiver esses dados e você quiser reaproveitá-los na base interna.</span>
@@ -138,6 +138,10 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
                 <label className="msg-field">
                   <span className="msg-label">Coluna do telefone</span>
                   <input className="msg-input" value={draft.phoneColumn || ""} onChange={e => setDraft({ ...draft, phoneColumn: e.target.value })} placeholder="C" />
+                </label>
+                <label className="msg-field">
+                  <span className="msg-label">Coluna do sexo</span>
+                  <input className="msg-input" value={draft.sexColumn || ""} onChange={e => setDraft({ ...draft, sexColumn: e.target.value })} placeholder="F" />
                 </label>
                 <label className="msg-field">
                   <span className="msg-label">Coluna do id externo</span>
@@ -148,6 +152,7 @@ export const MemberListConfigModalContent = ({ config, people, onSave, onSync })
                   <input className="msg-input" value={draft.activeColumn || ""} onChange={e => setDraft({ ...draft, activeColumn: e.target.value })} placeholder="E" />
                 </label>
               </div>
+              <span className="msg-hint">Sexo aceita "M"/"Masculino" e "F"/"Feminino"; em branco fica indefinido (fica de fora de escalas restritas a um sexo).</span>
             </div>
           </details>
 

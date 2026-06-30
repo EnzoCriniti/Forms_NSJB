@@ -82,7 +82,7 @@ export const EventMessageEditorFields = ({
 
     <MessageBodyEditor type={draft.type} body={draft.body} onChange={value => onChange({ body: value })} />
 
-    {draft.type === "fill_reminder" && (
+    {(draft.type === "fill_reminder" || draft.type === "open_slots") && (
       <MessageRecipientsPanel
         draft={draft}
         personPresets={personPresets}

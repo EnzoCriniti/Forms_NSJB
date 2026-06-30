@@ -296,6 +296,8 @@ export const useCreateFormController = ({
       totalExpected,
       expectedTrackingEnabled: derived.linkedPeopleField && resultsConfig.showLinkedRoster !== false,
       formMode,
+      escalaSex: resultsConfig.escalaSex || "unisex",
+      onEscalaSexChange: event => setResultsConfig(prev => ({ ...prev, escalaSex: event.target.value })),
       closingText,
       onClosingTextChange: event => setClosingText(event.target.value),
       labels,

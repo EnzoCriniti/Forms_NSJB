@@ -39,6 +39,7 @@ describe("eventMessageDomain", () => {
       recipientsPresetId: "",
       recipientsPersonKeys: [],
       recipientsGraus: [],
+      recipientsExcludedKeys: [],
       scheduledFor: "",
       windowOptions: [],
       autoDispatchEnabled: true,
@@ -64,6 +65,7 @@ describe("eventMessageDomain", () => {
       recipientsPresetId: "",
       recipientsPersonKeys: ["7"],
       recipientsGraus: [],
+      recipientsExcludedKeys: [],
       scheduledFor: "2026-05-20T10:00:00.000Z",
       windowOptions: [],
       autoDispatchEnabled: false,
@@ -133,6 +135,26 @@ describe("eventMessageDomain", () => {
       config: {},
       autoDispatchEnabled: false,
       scheduledFor: new Date("2026-05-20T10:00").toISOString(),
+    });
+  });
+
+  it("monta recipients de open_slots com grau e lista de exclusao", () => {
+    expect(buildEventMessageSavePayload({
+      id: null,
+      type: "open_slots",
+      templateId: "",
+      body: "Vagas abertas",
+      formId: "2",
+      recipientsGraus: ["QM"],
+      recipientsExcludedKeys: ["10", "11"],
+      autoDispatchEnabled: true,
+    })).toEqual({
+      id: undefined,
+      type: "open_slots",
+      templateId: undefined,
+      body: "Vagas abertas",
+      config: { formId: 2, recipients: { mode: "auto", graus: ["QM"], excludedKeys: ["10", "11"] } },
+      autoDispatchEnabled: true,
     });
   });
 

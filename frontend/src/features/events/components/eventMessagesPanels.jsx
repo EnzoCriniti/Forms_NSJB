@@ -18,6 +18,8 @@ const panelStyle = {
   gap: 10,
 };
 
+const ESCALA_SEX_LABEL = { male: "Masculino", female: "Feminino", unisex: "Unissex (todos)" };
+
 export const MessageRecipientsPanel = ({
   draft,
   personPresets,
@@ -29,28 +31,38 @@ export const MessageRecipientsPanel = ({
 }) => (
   <fieldset style={panelStyle}>
     <legend style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, padding: "0 6px" }}>Destinatários</legend>
-    <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-      <input type="radio" checked={draft.recipientsMode === "auto"} onChange={() => onChange({ recipientsMode: "auto" })} />
-      Quem ainda não respondeu (automático)
-    </label>
-    <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-      <input type="radio" checked={draft.recipientsMode === "preset"} onChange={() => onChange({ recipientsMode: "preset" })} disabled={personPresets.length === 0} />
-      Usar preset de pessoas
-    </label>
-    {draft.recipientsMode === "preset" && (
-      <select value={draft.recipientsPresetId || ""} onChange={event => onChange({ recipientsPresetId: event.target.value })} style={inputStyle}>
-        <option value="">Selecione um preset...</option>
-        {personPresets.map(preset => (
-          <option key={preset.id} value={preset.id}>{preset.name} ({preset.personKeys.length})</option>
-        ))}
-      </select>
+    {draft.type === "open_slots" && (
+      <div style={{ fontSize: 12, color: COLORS.textSecondary }}>
+        Enviado para quem ainda tem vaga em aberto, conforme o <strong>sexo da escala</strong>: {ESCALA_SEX_LABEL[selectedForm?.resultsConfig?.escalaSex || "unisex"]}.
+        {selectedForm?.resultsConfig?.escalaSex && selectedForm.resultsConfig.escalaSex !== "unisex" && " Sócios sem sexo definido ficam de fora."}
+      </div>
     )}
-    <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
-      <input type="radio" checked={draft.recipientsMode === "manual"} onChange={() => onChange({ recipientsMode: "manual" })} />
-      Seleção manual
-    </label>
-    {draft.recipientsMode === "manual" && (
-      <ManualPersonPicker people={people} selected={draft.recipientsPersonKeys} onChange={keys => onChange({ recipientsPersonKeys: keys })} inputStyle={inputStyle} />
+    {draft.type === "fill_reminder" && (
+      <>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+          <input type="radio" checked={draft.recipientsMode === "auto"} onChange={() => onChange({ recipientsMode: "auto" })} />
+          Quem ainda não respondeu (automático)
+        </label>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+          <input type="radio" checked={draft.recipientsMode === "preset"} onChange={() => onChange({ recipientsMode: "preset" })} disabled={personPresets.length === 0} />
+          Usar preset de pessoas
+        </label>
+        {draft.recipientsMode === "preset" && (
+          <select value={draft.recipientsPresetId || ""} onChange={event => onChange({ recipientsPresetId: event.target.value })} style={inputStyle}>
+            <option value="">Selecione um preset...</option>
+            {personPresets.map(preset => (
+              <option key={preset.id} value={preset.id}>{preset.name} ({preset.personKeys.length})</option>
+            ))}
+          </select>
+        )}
+        <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+          <input type="radio" checked={draft.recipientsMode === "manual"} onChange={() => onChange({ recipientsMode: "manual" })} />
+          Seleção manual
+        </label>
+        {draft.recipientsMode === "manual" && (
+          <ManualPersonPicker people={people} selected={draft.recipientsPersonKeys} onChange={keys => onChange({ recipientsPersonKeys: keys })} inputStyle={inputStyle} />
+        )}
+      </>
     )}
     {(() => {
       const graus = [...new Set((people || []).map(person => person.grau).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
@@ -77,6 +89,17 @@ export const MessageRecipientsPanel = ({
         </div>
       );
     })()}
+    <div style={{ display: "grid", gap: 6 }}>
+      <span style={{ fontSize: 12, color: COLORS.textSecondary }}>
+        Não enviar para {(draft.recipientsExcludedKeys || []).length === 0 ? "(ninguém excluído)" : `(${draft.recipientsExcludedKeys.length})`}
+      </span>
+      <ManualPersonPicker
+        people={people}
+        selected={draft.recipientsExcludedKeys || []}
+        onChange={keys => onChange({ recipientsExcludedKeys: keys })}
+        inputStyle={inputStyle}
+      />
+    </div>
     {draft.type === "fill_reminder" && (
       <div style={{ fontSize: 11, color: COLORS.textMuted }}>
         Base pública: {messagingConfig?.publicBaseUrl ? "configurada" : "ausente"}{selectedForm?.closing ? ` - fechamento: ${new Date(selectedForm.closing).toLocaleString("pt-BR")}` : ""}

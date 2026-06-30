@@ -37,6 +37,7 @@ export const buildInitialEventMessageDraft = (message, eligibleTypes, eventForms
       recipientsPresetId: message.config?.recipients?.presetId || "",
       recipientsPersonKeys: message.config?.recipients?.personKeys || [],
       recipientsGraus: message.config?.recipients?.graus || [],
+      recipientsExcludedKeys: message.config?.recipients?.excludedKeys || [],
       scheduledFor: message.scheduledFor || "",
       windowOptions: message.config?.windowOptions || (message.windowOption ? [message.windowOption] : []),
       autoDispatchEnabled: message.autoDispatchEnabled !== false,
@@ -55,6 +56,7 @@ export const buildInitialEventMessageDraft = (message, eligibleTypes, eventForms
     recipientsPresetId: "",
     recipientsPersonKeys: [],
     recipientsGraus: [],
+    recipientsExcludedKeys: [],
     scheduledFor: "",
     windowOptions: [],
     autoDispatchEnabled: true,
@@ -77,8 +79,9 @@ export const buildEventMessageSavePayload = draft => {
   if (draft.type !== "new_scale") {
     config.formId = Number(draft.formId);
   }
+  const graus = Array.isArray(draft.recipientsGraus) ? draft.recipientsGraus : [];
+  const excludedKeys = Array.isArray(draft.recipientsExcludedKeys) ? draft.recipientsExcludedKeys : [];
   if (draft.type === "fill_reminder") {
-    const graus = Array.isArray(draft.recipientsGraus) ? draft.recipientsGraus : [];
     if (draft.recipientsMode === "preset") {
       config.recipients = { mode: "preset", presetId: Number(draft.recipientsPresetId), graus };
     } else if (draft.recipientsMode === "manual") {
@@ -86,8 +89,13 @@ export const buildEventMessageSavePayload = draft => {
     } else {
       config.recipients = { mode: "auto", graus };
     }
+    if (excludedKeys.length) config.recipients.excludedKeys = excludedKeys;
     const windowOptions = Array.isArray(draft.windowOptions) ? draft.windowOptions : [];
     if (windowOptions.length) config.windowOptions = windowOptions;
+  } else if (draft.type === "open_slots") {
+    // open_slots: destinatários derivam da escala; só grau e exclusão são configuráveis
+    config.recipients = { mode: "auto", graus };
+    if (excludedKeys.length) config.recipients.excludedKeys = excludedKeys;
   }
 
   const payload = {
