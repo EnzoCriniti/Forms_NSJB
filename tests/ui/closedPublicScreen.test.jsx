@@ -27,7 +27,7 @@ describe("ClosedPublicScreen", () => {
     expect(screen.getByText("Fechamento: 12/05/2026 19:30")).toBeInTheDocument();
   });
 
-  it("prioriza titulo, mensagem e texto de fechamento customizados", () => {
+  it("usa titulo customizado e prioriza o texto de fechamento do formulario sobre mensagem generica", () => {
     render(
       <ClosedPublicScreen
         form={{ ...form, closingText: "Encerrado pela secretaria." }}
@@ -37,7 +37,20 @@ describe("ClosedPublicScreen", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Inscrições encerradas" })).toBeInTheDocument();
-    expect(screen.getByText("Procure a organização.")).toBeInTheDocument();
+    // texto de fechamento do formulario tem prioridade; a mensagem generica nao aparece
+    expect(screen.getByText("Encerrado pela secretaria.")).toBeInTheDocument();
+    expect(screen.queryByText("Procure a organização.")).not.toBeInTheDocument();
+  });
+
+  it("mostra a mensagem quando ela referencia resultados (link de resultados no fechado)", () => {
+    render(
+      <ClosedPublicScreen
+        form={{ ...form, closingText: "Encerrado pela secretaria." }}
+        message="Veja os resultados publicados."
+      />,
+    );
+
+    expect(screen.getByText("Veja os resultados publicados.")).toBeInTheDocument();
     expect(screen.queryByText("Encerrado pela secretaria.")).not.toBeInTheDocument();
   });
 
