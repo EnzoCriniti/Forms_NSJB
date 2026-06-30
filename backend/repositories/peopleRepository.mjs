@@ -12,6 +12,7 @@ const mapPersonRow = row => ({
   name: row.name,
   grau: row.grau || "",
   phone: row.phone || "",
+  sex: row.sex || "",
   active: row.active !== false,
   source: row.source || "manual",
   externalKey: row.external_key || "",
@@ -20,7 +21,7 @@ const mapPersonRow = row => ({
 });
 
 export const listPeople = async () => database.queryMany(`
-  SELECT id, name, grau, phone, active, source, external_key, metadata_json, synced_at
+  SELECT id, name, grau, phone, sex, active, source, external_key, metadata_json, synced_at
   FROM people
   ORDER BY lower(name) ASC, id ASC
 `).then(rows => rows.map(mapPersonRow));
@@ -30,8 +31,8 @@ export const replacePeopleRecords = async people => {
   await database.withTransaction(async tx => {
     await tx.execute("DELETE FROM people");
     const insertSql = `
-      INSERT INTO people (name, grau, phone, active, source, external_key, metadata_json, synced_at, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO people (name, grau, phone, sex, active, source, external_key, metadata_json, synced_at, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     for (const person of people) {
       if (!person?.name?.trim()) continue;
@@ -39,6 +40,7 @@ export const replacePeopleRecords = async people => {
         person.name.trim(),
         person.grau || "",
         person.phone || "",
+        person.sex || "",
         person.active !== false,
         person.source || "manual",
         person.externalKey || "",

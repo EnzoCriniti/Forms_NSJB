@@ -6,6 +6,7 @@
 
 import { FORM_MODES, FORM_MODE_VALUES } from "../../shared/formModes.mjs";
 import { isMembersSelectionField } from "../../shared/formFieldRules.mjs";
+import { normalizeEscalaSex } from "../../shared/sex.mjs";
 
 const normalizeTotalLayoutStyle = style => {
   if (style === "bar" || style === "split") return "split";
@@ -28,6 +29,8 @@ export const normalizeResultsConfig = (config, formMode) => {
   return {
     ...config,
     formMode,
+    // sexo da escala (só presente em formularios de escala): canonicaliza quando vier
+    ...(config.escalaSex !== undefined ? { escalaSex: normalizeEscalaSex(config.escalaSex) } : {}),
     totalsLayout: Array.isArray(config.totalsLayout)
       ? config.totalsLayout.map(item => ({
           ...item,

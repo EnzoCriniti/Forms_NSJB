@@ -67,6 +67,9 @@ export const validateEventMessagePayload = payload => {
     if (payload.config.recipients.graus !== undefined) {
       assert(Array.isArray(payload.config.recipients.graus), "Filtro de grau invalido.");
     }
+    if (payload.config.recipients.excludedKeys !== undefined) {
+      assert(Array.isArray(payload.config.recipients.excludedKeys), "Lista de exclusao invalida.");
+    }
   }
   if (payload.config?.windowOptions !== undefined) {
     assert(Array.isArray(payload.config.windowOptions), "Janelas de agendamento invalidas.");

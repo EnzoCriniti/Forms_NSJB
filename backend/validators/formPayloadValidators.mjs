@@ -9,6 +9,7 @@ import {
   validateSelectionSource,
 } from "./catalogPayloadValidators.mjs";
 import { FORM_MODE_VALUES } from "../../shared/formModes.mjs";
+import { ESCALA_SEXES } from "../../shared/sex.mjs";
 import { MEMBER_BINDING_ROLE_VALUES, SELECTION_SOURCE_KINDS } from "../../shared/formFieldRules.mjs";
 import {
   assertPayload as assert,
@@ -82,6 +83,7 @@ const validateResultsConfig = config => {
   assert(config.showLinkedRoster === undefined || typeof config.showLinkedRoster === "boolean", "showLinkedRoster invalido.");
   assert(config.blockDuplicatePersonResponses === undefined || typeof config.blockDuplicatePersonResponses === "boolean", "blockDuplicatePersonResponses invalido.");
   assert(config.formMode === undefined || FORM_MODE_VALUES.includes(config.formMode), "formMode invalido.");
+  assert(config.escalaSex === undefined || ESCALA_SEXES.includes(config.escalaSex), "escalaSex invalido.");
   assert(config.maxAssignmentsPerPerson === undefined || isOptionalPositiveIntegerLike(config.maxAssignmentsPerPerson), "maxAssignmentsPerPerson invalido.");
   if (config.totalsLayout !== undefined) {
     assert(Array.isArray(config.totalsLayout), "totalsLayout invalido.");

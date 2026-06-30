@@ -63,6 +63,7 @@ const ensureSchema = async pool => {
       await client.query(schemaSql);
     }
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS phone TEXT");
+    await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS sex TEXT NOT NULL DEFAULT ''");
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS active BOOLEAN NOT NULL DEFAULT TRUE");
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'manual'");
     await client.query("ALTER TABLE people ADD COLUMN IF NOT EXISTS external_key TEXT");

@@ -67,6 +67,7 @@ export const DEFAULT_MEMBERS_CONFIG = {
   nameColumn: "B",
   grauColumn: "A",
   phoneColumn: "",
+  sexColumn: "",
   externalIdColumn: "",
   activeColumn: "",
   range: "Socios!A:B",

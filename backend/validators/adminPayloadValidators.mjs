@@ -66,6 +66,7 @@ export const validateMembersConfigPayload = payload => {
   assert(isOptionalString(payload.nameColumn), "nameColumn invalido.");
   assert(isOptionalString(payload.grauColumn), "grauColumn invalido.");
   assert(isOptionalString(payload.phoneColumn), "phoneColumn invalido.");
+  assert(isOptionalString(payload.sexColumn), "sexColumn invalido.");
   assert(isOptionalString(payload.externalIdColumn), "externalIdColumn invalido.");
   assert(isOptionalString(payload.activeColumn), "activeColumn invalido.");
   assert(isOptionalString(payload.range), "range invalido.");

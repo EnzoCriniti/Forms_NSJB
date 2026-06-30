@@ -9,6 +9,7 @@ import { listResponsesByFormId } from "../repositories/responsesRepository.mjs";
 import { getEscalaByFormId } from "../repositories/escalaRepository.mjs";
 import { findPersonPresetById } from "../repositories/personPresetsRepository.mjs";
 import { normalizePhone, personKeyOf } from "../core/messages.mjs";
+import { isPersonEligibleForEscala } from "../../shared/sex.mjs";
 
 const lower = value => String(value || "").trim().toLowerCase();
 
@@ -16,8 +17,23 @@ const decoratePerson = person => ({
   key: personKeyOf(person),
   name: person.name,
   grau: person.grau || "",
+  sex: person.sex || "",
   phone: normalizePhone(person.phone),
 });
+
+/** Filtra candidatos por grau (vazio = todos). */
+const filterByGrau = (candidates, graus) => {
+  if (!Array.isArray(graus) || graus.length === 0) return candidates;
+  const grauSet = new Set(graus.map(lower));
+  return candidates.filter(person => grauSet.has(lower(person.grau)));
+};
+
+/** Remove os destinatarios da lista de exclusao (por chave de pessoa). */
+const filterByExclusion = (candidates, excludedKeys) => {
+  if (!Array.isArray(excludedKeys) || excludedKeys.length === 0) return candidates;
+  const excluded = new Set(excludedKeys.map(String));
+  return candidates.filter(person => !excluded.has(person.key));
+};
 
 const withSkipFlag = recipients => recipients.map(recipient => recipient.phone
   ? { ...recipient, skipped: false }
@@ -69,16 +85,14 @@ export const calculateRecipients = async ({ message, type, form, group }) => {
     } else {
       candidates = await getMissingPresenceRecipients(allPeople, form.id);
     }
-    const graus = Array.isArray(config.recipients?.graus) ? config.recipients.graus : [];
-    if (graus.length > 0) {
-      const grauSet = new Set(graus.map(lower));
-      candidates = candidates.filter(person => grauSet.has(lower(person.grau)));
-    }
+    candidates = filterByGrau(candidates, config.recipients?.graus);
+    candidates = filterByExclusion(candidates, config.recipients?.excludedKeys);
     return { kind: "dm", group: null, recipients: withSkipFlag(candidates) };
   }
 
   if (type === "open_slots") {
     if (!form) throw new Error("Form de escala obrigatorio para open_slots.");
+    const config = message?.config || {};
     const { assigned, openSlots } = await getEscalaContext(form.id);
     if (openSlots === 0) {
       const error = new Error("Escala nao possui vagas em aberto.");
@@ -86,7 +100,12 @@ export const calculateRecipients = async ({ message, type, form, group }) => {
       error.statusCode = 400;
       throw error;
     }
-    const candidates = allPeople.filter(person => !assigned.has(lower(person.name)));
+    // sexo da escala restringe quem recebe (unisex = todos; desconhecido fica fora de escala restrita)
+    const escalaSex = form?.resultsConfig?.escalaSex;
+    let candidates = allPeople.filter(person => !assigned.has(lower(person.name)));
+    candidates = candidates.filter(person => isPersonEligibleForEscala(person.sex, escalaSex));
+    candidates = filterByGrau(candidates, config.recipients?.graus);
+    candidates = filterByExclusion(candidates, config.recipients?.excludedKeys);
     return { kind: "dm", group: null, recipients: withSkipFlag(candidates) };
   }
 
