@@ -7,7 +7,7 @@
 import { summarizeMemberParticipation } from "../../shared/eventParticipation.mjs";
 import { buildOverview } from "../../shared/biOverview.mjs";
 import { composeTimeline } from "../../shared/biTimeline.mjs";
-import { personSectionRecurrence, sectionVacancy, escalaLoadByPerson } from "../../shared/biEscala.mjs";
+import { personSectionRecurrence, sectionVacancy, escalaLoadByPerson, escalaFocusByPerson, escalaFocusSummary } from "../../shared/biEscala.mjs";
 import { escalaTimingBySection } from "../../shared/biEscalaTiming.mjs";
 import { normalizePersonKey } from "../../shared/personIdentity.mjs";
 import { listAllEscalaAssignments } from "../repositories/escalaRepository.mjs";
@@ -76,6 +76,7 @@ export const getEscalaAnalytics = async () => {
     vacancy: sectionVacancy(assignments),
     recurrence: personSectionRecurrence(assignments),
     load: escalaLoadByPerson(assignments),
+    focus: { summary: escalaFocusSummary(assignments), people: escalaFocusByPerson(assignments) },
     timing: escalaTimingBySection(claims, formMeta),
   };
 };

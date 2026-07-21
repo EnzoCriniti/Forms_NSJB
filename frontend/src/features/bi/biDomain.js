@@ -80,6 +80,29 @@ export const presencaByGrau = (members = []) => {
     .sort((a, b) => compareGrauOptions(a.grau, b.grau));
 };
 
+/**
+ * Panorama do foco na escala (recalculado no front para respeitar o filtro de
+ * grau): quantos sócios só pegaram uma vaga, quantos repetem sempre a mesma
+ * seção e quantos circulam, além da média de seções distintas.
+ */
+export const summarizeEscalaFocus = (people = []) => {
+  const active = people.length;
+  const count = profile => people.filter(person => person.profile === profile).length;
+  const avgDistinct = active
+    ? Math.round((people.reduce((sum, person) => sum + (person.distinctSections || 0), 0) / active) * 10) / 10
+    : 0;
+  return { active, single: count("single"), mono: count("mono"), varied: count("varied"), avgDistinct };
+};
+
+/**
+ * Ranking dos sócios que fazem sempre a mesma seção (perfil "mono"), do que mais
+ * repete para o que menos repete.
+ */
+export const topEscalaMonoFocus = (people = [], limit = 10) => people
+  .filter(person => person.profile === "mono")
+  .sort((a, b) => (b.total - a.total) || a.personName.localeCompare(b.personName, "pt-BR"))
+  .slice(0, limit);
+
 export const topLeastEscala = (members = [], limit = 10, minCount = 0) => [...members]
   .filter(member => (member.escalaCount || 0) >= minCount)
   .sort((a, b) => ((a.escalaCount || 0) - (b.escalaCount || 0)) || a.personName.localeCompare(b.personName, "pt-BR"))

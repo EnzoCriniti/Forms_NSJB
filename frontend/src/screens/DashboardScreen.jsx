@@ -25,7 +25,9 @@ import {
   presencaByGrau,
   rate,
   sortGrauOptions,
+  summarizeEscalaFocus,
   timeToFillHistogram,
+  topEscalaMonoFocus,
   topLeastEscala,
   topLeastPresenca,
   topSlowestResponders,
@@ -248,6 +250,28 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
     };
   }, [escala, grau, grauByKey]);
 
+  // Foco na escala: entre quem faz escala da Organ, quem repete sempre a mesma
+  // seção, quem só pegou uma vaga e quem circula (recalculado por grau).
+  const focus = useMemo(() => {
+    const people = (escala?.focus?.people || []).filter(p => grau === ALL_GRAUS || grauByKey.get(p.personKey) === grau);
+    return {
+      summary: summarizeEscalaFocus(people),
+      mono: topEscalaMonoFocus(people).map(p => ({
+        personKey: p.personKey,
+        personName: p.personName,
+        grau: grauByKey.get(p.personKey),
+        value: `${p.total}× · ${p.topSection || "—"}`,
+      })),
+    };
+  }, [escala, grau, grauByKey]);
+
+  const focusStats = [
+    { label: "Fazem escala", value: focus.summary.active, hint: "sócios com ao menos uma vaga assumida", icon: "users", accent: COLORS.accent },
+    { label: "Sempre a mesma seção", value: focus.summary.mono, hint: "assumem 2+ vagas, todas na mesma seção", icon: "pin", accent: COLORS.warning },
+    { label: "Só uma vaga", value: focus.summary.single, hint: "assumiram escala uma única vez", icon: "user", accent: COLORS.textSecondary },
+    { label: "Circulam por seções", value: focus.summary.varied, hint: `passam por 2+ seções · média ${focus.summary.avgDistinct}`, icon: "grid", accent: "#1f9d6b" },
+  ];
+
   // Diretório de sócios (aba Sócios).
   const directory = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -378,7 +402,25 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
               />
             )}
           </section>
-          <section className="dash-section">{escalaRanking}</section>
+          <section className="dash-section">
+            <div className="dash-section-head"><h3>Foco na escala{grauSuffix}</h3></div>
+            <div className="bi-stats-grid">
+              {focusStats.map(stat => <StatCard key={stat.label} label={stat.label} value={stat.value} hint={stat.hint} icon={stat.icon} accent={stat.accent} />)}
+            </div>
+          </section>
+          <section className="dash-section">
+            <div className="bi-lists-grid">
+              {escalaRanking}
+              <TopMembersPanel
+                title="Sempre a mesma seção"
+                hint="Sócios que assumem 2+ vagas, mas sempre na mesma seção da Organ."
+                items={focus.mono}
+                emptyLabel="Ninguém repetindo a mesma seção ainda."
+                valueTone={COLORS.warning}
+                onSelect={setSelectedPersonKey}
+              />
+            </div>
+          </section>
         </>
       ) : (
         <section className="dash-section">

@@ -108,6 +108,32 @@ describe("DashboardScreen", () => {
     expect(screen.getAllByText("Ana").length).toBeGreaterThan(0);
   });
 
+  it("mostra o foco na escala (sempre a mesma seção) na aba Escala", async () => {
+    fetchBiDashboard.mockResolvedValue({
+      overview,
+      timeline: [],
+      escala: {
+        vacancy: [], timing: [], recurrence: { titles: [], people: [] }, load: [],
+        focus: {
+          summary: { active: 2, single: 1, mono: 1, varied: 0, avgDistinct: 1 },
+          people: [
+            { personKey: "ana", personName: "Ana", total: 3, distinctSections: 1, topSection: "Jantar", topCount: 3, concentration: 100, profile: "mono" },
+            { personKey: "bruno", personName: "Bruno", total: 1, distinctSections: 1, topSection: "Lixo", topCount: 1, concentration: 100, profile: "single" },
+          ],
+        },
+      },
+      matrix: { events: [], people: [] },
+    });
+    render(<DashboardScreen onNavigate={vi.fn()} forms={[]} user={{ role: "admin", name: "Admin" }} />);
+    await screen.findByText("50%");
+    fireEvent.click(screen.getByRole("tab", { name: /Escala/ }));
+
+    expect(await screen.findByText("Foco na escala")).toBeInTheDocument();
+    // "Sempre a mesma seção" aparece no card de resumo e no título do ranking
+    expect(screen.getAllByText("Sempre a mesma seção").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText("3× · Jantar")).toBeInTheDocument(); // Ana, perfil mono
+  });
+
   it("trata ausencia de dados de BI", async () => {
     mockAll({ graus: [], members: [], presenca: { expected: 0, filled: 0 }, escala: { totalSlots: 0, filledSlots: 0 } });
     render(<DashboardScreen onNavigate={vi.fn()} forms={[]} user={{ role: "admin", name: "Admin" }} />);

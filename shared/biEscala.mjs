@@ -68,3 +68,45 @@ export const escalaLoadByPerson = (assignments = []) => {
   const { people } = personSectionRecurrence(assignments);
   return people.map(person => ({ personKey: person.personKey, personName: person.personName, total: person.total }));
 };
+
+/**
+ * Foco de cada socio na escala da Organ: entre quem ja assumiu vaga, mede se a
+ * pessoa se concentra sempre na mesma secao ou circula por varias.
+ * - `single`: assumiu uma unica vaga no total.
+ * - `mono`: 2+ vagas, mas todas na mesma secao ("faz sempre a mesma escala").
+ * - `varied`: circula por 2+ secoes distintas.
+ * `concentration` = % das vagas da pessoa que caem na secao mais repetida.
+ */
+export const escalaFocusByPerson = (assignments = []) => {
+  const { people } = personSectionRecurrence(assignments);
+  return people.map(person => {
+    const [topSection, topCount] = Object.entries(person.bySection)
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "pt-BR"))[0] || [null, 0];
+    const distinctSections = Object.keys(person.bySection).length;
+    const profile = person.total <= 1 ? "single" : distinctSections === 1 ? "mono" : "varied";
+    return {
+      personKey: person.personKey,
+      personName: person.personName,
+      total: person.total,
+      distinctSections,
+      topSection,
+      topCount,
+      concentration: person.total > 0 ? Math.round((topCount / person.total) * 1000) / 10 : 0,
+      profile,
+    };
+  });
+};
+
+/**
+ * Panorama agregado do foco: quantos socios so pegaram uma vaga, quantos repetem
+ * sempre a mesma secao e quantos circulam, alem da media de secoes distintas.
+ */
+export const escalaFocusSummary = (assignments = []) => {
+  const rows = escalaFocusByPerson(assignments);
+  const active = rows.length;
+  const count = profile => rows.filter(row => row.profile === profile).length;
+  const avgDistinct = active
+    ? Math.round((rows.reduce((sum, row) => sum + row.distinctSections, 0) / active) * 10) / 10
+    : 0;
+  return { active, single: count("single"), mono: count("mono"), varied: count("varied"), avgDistinct };
+};

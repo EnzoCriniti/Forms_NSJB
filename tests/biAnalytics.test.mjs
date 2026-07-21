@@ -7,7 +7,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { composeTimeline, timelineForGrau } from "../shared/biTimeline.mjs";
-import { sectionVacancy, personSectionRecurrence, escalaLoadByPerson } from "../shared/biEscala.mjs";
+import { sectionVacancy, personSectionRecurrence, escalaLoadByPerson, escalaFocusByPerson, escalaFocusSummary } from "../shared/biEscala.mjs";
 import { escalaTimingBySection } from "../shared/biEscalaTiming.mjs";
 
 test("composeTimeline agrega por evento e ordena por data", () => {
@@ -69,6 +69,46 @@ test("escalaLoadByPerson devolve carga total ordenada", () => {
   const load = escalaLoadByPerson(assignments);
   assert.equal(load[0].personKey, "ana");
   assert.equal(load[0].total, 3);
+});
+
+test("escalaFocusByPerson classifica concentracao (single/mono/varied)", () => {
+  const rows = escalaFocusByPerson([
+    { sections: [
+      { title: "Jantar", slots: [{ person: "Ana" }, { person: "Bruno" }, { person: "Duda" }] },
+      { title: "Lixo", slots: [{ person: "Ana" }] },
+    ] },
+    { sections: [
+      { title: "Jantar", slots: [{ person: "Ana" }, { person: "Duda" }] },
+    ] },
+  ]);
+  const byKey = new Map(rows.map(row => [row.personKey, row]));
+  // Ana: 2 Jantar + 1 Lixo -> circula por 2 secoes
+  assert.equal(byKey.get("ana").profile, "varied");
+  assert.equal(byKey.get("ana").distinctSections, 2);
+  assert.equal(byKey.get("ana").topSection, "Jantar");
+  assert.equal(byKey.get("ana").concentration, 66.7);
+  // Duda: 2x Jantar, sempre a mesma secao
+  assert.equal(byKey.get("duda").profile, "mono");
+  assert.equal(byKey.get("duda").concentration, 100);
+  // Bruno: uma unica vaga
+  assert.equal(byKey.get("bruno").profile, "single");
+});
+
+test("escalaFocusSummary agrega os perfis e a media de secoes", () => {
+  const summary = escalaFocusSummary([
+    { sections: [
+      { title: "Jantar", slots: [{ person: "Ana" }, { person: "Bruno" }, { person: "Duda" }] },
+      { title: "Lixo", slots: [{ person: "Ana" }] },
+    ] },
+    { sections: [
+      { title: "Jantar", slots: [{ person: "Ana" }, { person: "Duda" }] },
+    ] },
+  ]);
+  assert.equal(summary.active, 3);
+  assert.equal(summary.single, 1);
+  assert.equal(summary.mono, 1);
+  assert.equal(summary.varied, 1);
+  assert.equal(summary.avgDistinct, 1.3); // (2 + 1 + 1) / 3
 });
 
 test("escalaTimingBySection mede minutos do opening ao claim", () => {
