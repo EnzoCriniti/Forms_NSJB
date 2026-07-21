@@ -55,6 +55,19 @@ describe("DashboardScreen", () => {
     expect(onNavigate).toHaveBeenCalledWith("results", forms[0]);
   });
 
+  it("refaz a busca com o período ao escolher um atalho de data", async () => {
+    render(<DashboardScreen onNavigate={vi.fn()} forms={[]} user={{ role: "admin", name: "Admin" }} />);
+    await screen.findByText("50%");
+    // carga inicial: sem filtro de período
+    expect(fetchBiDashboard).toHaveBeenLastCalledWith(null);
+
+    fireEvent.click(screen.getByRole("button", { name: "6 meses" }));
+    await waitFor(() => {
+      const lastArg = fetchBiDashboard.mock.calls.at(-1)[0];
+      expect(lastArg).toMatchObject({ from: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/), to: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) });
+    });
+  });
+
   it("mostra rankings ao trocar para a aba Presença", async () => {
     render(<DashboardScreen onNavigate={vi.fn()} forms={[]} user={{ role: "admin", name: "Admin" }} />);
     await screen.findByText("50%");

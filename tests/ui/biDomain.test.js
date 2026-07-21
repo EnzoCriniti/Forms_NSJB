@@ -10,8 +10,10 @@ import {
   formatDuration,
   presencaByGrau,
   presencaFillDistribution,
+  presetRange,
   rate,
   sortGrauOptions,
+  toIsoDate,
   topLeastEscala,
   topLeastPresenca,
 } from "../../frontend/src/features/bi/biDomain.js";
@@ -75,5 +77,17 @@ describe("biDomain", () => {
     ]);
     expect(sections.map(s => s.label)).toEqual(["Jantar", "Lixo"]); // Recepção (0) removida
     expect(sections[0].value).toBe(4);
+  });
+
+  it("presetRange converte atalho em intervalo e trata 'Tudo' como sem filtro", () => {
+    const today = new Date(2026, 6, 21); // 21/07/2026 (mês 0-indexado)
+    expect(presetRange("all", today)).toBe(null);
+    expect(presetRange("desconhecido", today)).toBe(null);
+    expect(presetRange("2m", today)).toEqual({ from: "2026-05-21", to: "2026-07-21" });
+    expect(presetRange("12m", today)).toEqual({ from: "2025-07-21", to: "2026-07-21" });
+  });
+
+  it("toIsoDate formata data local sem deslocar por fuso", () => {
+    expect(toIsoDate(new Date(2026, 0, 5))).toBe("2026-01-05");
   });
 });

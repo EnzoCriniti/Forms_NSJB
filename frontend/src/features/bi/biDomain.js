@@ -11,6 +11,34 @@ export const ALL_GRAUS = "todos";
 
 export const rate = (part, total) => (total > 0 ? Math.round((part / total) * 1000) / 10 : 0);
 
+/** Data local em ISO "YYYY-MM-DD" (sem deslocar o dia por fuso, como toISOString faz). */
+export const toIsoDate = date => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+/** Atalhos de periodo do dashboard. `months` ausente = "Tudo" (sem filtro). */
+export const RANGE_PRESETS = [
+  { id: "all", label: "Tudo" },
+  { id: "2m", label: "2 meses", months: 2 },
+  { id: "6m", label: "6 meses", months: 6 },
+  { id: "12m", label: "12 meses", months: 12 },
+];
+
+/**
+ * Converte um atalho em { from, to } (ISO). "Tudo" e atalhos desconhecidos
+ * devolvem null (sem filtro). `to` = hoje; `from` = hoje - N meses.
+ */
+export const presetRange = (id, today = new Date()) => {
+  const preset = RANGE_PRESETS.find(item => item.id === id);
+  if (!preset?.months) return null;
+  const from = new Date(today);
+  from.setMonth(from.getMonth() - preset.months);
+  return { from: toIsoDate(from), to: toIsoDate(today) };
+};
+
 export const formatPercent = value => `${Number(value || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}%`;
 
 export const formatDuration = minutes => {

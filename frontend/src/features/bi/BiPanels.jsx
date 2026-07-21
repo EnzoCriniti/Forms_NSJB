@@ -7,7 +7,7 @@
 
 import React from "react";
 import { COLORS, Icon } from "../../components/ui";
-import { ALL_GRAUS } from "./biDomain";
+import { ALL_GRAUS, RANGE_PRESETS } from "./biDomain";
 
 // Cores categoricas por grau (mid-tones que funcionam em claro/escuro).
 const GRAU_COLORS = { QM: "#2e6fd0", QS: "#16448c", CDC: "#1f9d6b", CI: "#e08a1e" };
@@ -50,6 +50,37 @@ export const GrauFilterChips = ({ graus = [], value = ALL_GRAUS, onChange }) => 
         </button>
       );
     })}
+  </div>
+);
+
+const rangeChipStyle = active => ({
+  border: `1px solid ${active ? COLORS.primary : COLORS.border}`,
+  background: active ? COLORS.primary : COLORS.surface,
+  color: active ? "#fff" : COLORS.textSecondary,
+});
+
+/**
+ * Filtro de periodo do dashboard: atalhos (Tudo/2/6/12 meses) + "Personalizado"
+ * que revela dois campos de data. Responsivo (chips quebram, datas empilham).
+ */
+export const BiDateRangeFilter = ({ preset = "all", from = "", to = "", onPreset, onCustom }) => (
+  <div className="bi-daterange">
+    <div className="bi-grau-chips" role="group" aria-label="Filtro por período">
+      {RANGE_PRESETS.map(option => (
+        <button key={option.id} type="button" className="bi-grau-chip" aria-pressed={preset === option.id} onClick={() => onPreset(option.id)} style={rangeChipStyle(preset === option.id)}>
+          {option.label}
+        </button>
+      ))}
+      <button type="button" className="bi-grau-chip" aria-pressed={preset === "custom"} onClick={() => onPreset("custom")} style={rangeChipStyle(preset === "custom")}>
+        Personalizado
+      </button>
+    </div>
+    {preset === "custom" && (
+      <div className="bi-daterange-custom">
+        <label>De<input type="date" value={from || ""} max={to || undefined} onChange={event => onCustom({ from: event.target.value })} /></label>
+        <label>Até<input type="date" value={to || ""} min={from || undefined} onChange={event => onCustom({ to: event.target.value })} /></label>
+      </div>
+    )}
   </div>
 );
 

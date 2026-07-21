@@ -10,7 +10,7 @@ import { COLORS, FeedbackBanner, ScreenHeader, Icon } from "../components/ui";
 import { formatDateTime } from "../lib/forms";
 import { fetchBiDashboard } from "../lib/api";
 import { DashboardUpcomingClosings } from "../components/DashboardPanels";
-import { BiBarChart, BiTabs, GrauFilterChips, KpiCard, StatCard, TopMembersPanel, grauColor } from "../features/bi/BiPanels";
+import { BiBarChart, BiDateRangeFilter, BiTabs, GrauFilterChips, KpiCard, StatCard, TopMembersPanel, grauColor } from "../features/bi/BiPanels";
 import { BiTrendChart, BiHistogramChart, BiHBarChart, BiDonutChart } from "../features/bi/BiCharts";
 import { MemberProfilePanel } from "../features/bi/MemberProfilePanel";
 import { MembersTable } from "../features/bi/MembersTable";
@@ -25,6 +25,7 @@ import {
   escalaFilledBySection,
   presencaByGrau,
   presencaFillDistribution,
+  presetRange,
   rate,
   sortGrauOptions,
   summarizeEscalaFocus,
@@ -81,15 +82,28 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
   const [escalaMin, setEscalaMin] = useState(0);
   const [search, setSearch] = useState("");
   const [selectedPersonKey, setSelectedPersonKey] = useState(null);
+  const [rangePreset, setRangePreset] = useState("all");
+  const [customRange, setCustomRange] = useState({ from: "", to: "" });
   const isMobile = useIsMobile();
   const barLabelWidth = isMobile ? 104 : 150;
+
+  // Período efetivo enviado ao backend: atalho vira {from,to}; custom usa os
+  // campos (só filtra quando ao menos uma data está preenchida).
+  const range = useMemo(() => {
+    if (rangePreset === "custom") {
+      const from = customRange.from || undefined;
+      const to = customRange.to || undefined;
+      return from || to ? { from, to } : null;
+    }
+    return presetRange(rangePreset);
+  }, [rangePreset, customRange]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
     (async () => {
       try {
-        const payload = await fetchBiDashboard();
+        const payload = await fetchBiDashboard(range);
         if (!active) return;
         setOverview(payload.overview);
         setTimeline(payload.timeline || []);
@@ -102,7 +116,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
       }
     })();
     return () => { active = false; };
-  }, []);
+  }, [range?.from, range?.to]);
 
   const safeForms = Array.isArray(forms) ? forms : [];
   const safeEvents = Array.isArray(events) ? events : [];
@@ -255,6 +269,16 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
   return (
     <div>
       <ScreenHeader className="settings-top-card" title="Dashboard" subtitle="Central de BI do núcleo: presença, escalas e participação por sócio." />
+
+      <div style={{ marginBottom: 12 }}>
+        <BiDateRangeFilter
+          preset={rangePreset}
+          from={customRange.from}
+          to={customRange.to}
+          onPreset={setRangePreset}
+          onCustom={patch => { setRangePreset("custom"); setCustomRange(prev => ({ ...prev, ...patch })); }}
+        />
+      </div>
 
       {graus.length > 0 && (
         <div style={{ marginBottom: 12 }}>

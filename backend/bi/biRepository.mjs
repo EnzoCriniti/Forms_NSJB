@@ -62,7 +62,12 @@ export const listEventParticipationByEvent = async eventId => (await database.qu
   ORDER BY filled ASC, lower(person_name) ASC
 `, [eventId])).map(mapRow);
 
-export const aggregateMemberParticipation = async () => (await database.queryMany(`
+/**
+ * Agrega participacao por socio. Se `eventIds` for um array, restringe aos
+ * eventos informados (usado pelo filtro de periodo do dashboard). `null` agrega
+ * todos os eventos; `[]` (periodo sem eventos) devolve vazio, como esperado.
+ */
+export const aggregateMemberParticipation = async (eventIds = null) => (await database.queryMany(`
   SELECT
     person_key,
     (ARRAY_AGG(person_name ORDER BY captured_at DESC, id DESC))[1] AS person_name,
@@ -73,9 +78,10 @@ export const aggregateMemberParticipation = async () => (await database.queryMan
     AVG(time_to_fill_minutes) FILTER (WHERE expected AND filled AND time_to_fill_minutes IS NOT NULL) AS avg_time_to_fill,
     MAX(responded_at) FILTER (WHERE expected AND filled) AS last_filled_at
   FROM event_participation
+  ${Array.isArray(eventIds) ? "WHERE event_id = ANY(?)" : ""}
   GROUP BY person_key
   ORDER BY lower((ARRAY_AGG(person_name ORDER BY captured_at DESC, id DESC))[1]) ASC
-`)).map(row => ({
+`, Array.isArray(eventIds) ? [eventIds] : [])).map(row => ({
   personKey: row.person_key,
   personName: row.person_name || "",
   grau: row.grau || "",

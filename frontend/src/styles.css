@@ -2174,6 +2174,37 @@ button:not(.ui-btn):focus-visible {
   gap: 8px;
 }
 
+.bi-daterange {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.bi-daterange-custom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bi-daterange-custom label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.bi-daterange-custom input[type="date"] {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 13px;
+  padding: 5px 8px;
+}
+
 .bi-grau-chip {
   align-items: center;
   border-radius: 999px;

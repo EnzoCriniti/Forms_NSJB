@@ -248,7 +248,13 @@ export const deleteEventMessage = (eventId, messageId) => requestJson(`/api/even
 
 export const fetchEventMessageLogs = (eventId, messageId) => requestJson(`/api/events/${eventId}/messages/${messageId}/logs`);
 
-export const fetchBiDashboard = () => requestJson("/api/reports/dashboard");
+export const fetchBiDashboard = (range = null) => {
+  const query = new URLSearchParams();
+  if (range?.from) query.set("from", range.from);
+  if (range?.to) query.set("to", range.to);
+  const suffix = query.toString() ? `?${query.toString()}` : "";
+  return requestJson(`/api/reports/dashboard${suffix}`);
+};
 
 export const fetchBiOverview = () => requestJson("/api/reports/overview");
 
