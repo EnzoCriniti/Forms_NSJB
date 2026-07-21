@@ -62,6 +62,39 @@ export const topLeastPresenca = (members = [], limit = 10) => members
  * Socios que menos fazem escala de trabalho: menor numero de slots assumidos.
  */
 /**
+ * Distribuicao dos socios por faixa de preenchimento de presenca. Considera
+ * apenas quem ja foi esperado em algum evento encerrado.
+ */
+const FILL_BANDS = [
+  { label: "0%", min: 0, max: 0 },
+  { label: "1–49%", min: 0.01, max: 49.99 },
+  { label: "50–79%", min: 50, max: 79.99 },
+  { label: "80–99%", min: 80, max: 99.99 },
+  { label: "100%", min: 100, max: 100 },
+];
+
+export const presencaFillDistribution = (members = []) => {
+  const counts = FILL_BANDS.map(band => ({ label: band.label, value: 0 }));
+  for (const member of members) {
+    const expected = member.presencaExpected || 0;
+    if (expected <= 0) continue;
+    const fillRate = rate(member.presencaFilled || 0, expected);
+    const index = FILL_BANDS.findIndex(band => fillRate >= band.min && fillRate <= band.max);
+    if (index >= 0) counts[index].value += 1;
+  }
+  return counts;
+};
+
+/**
+ * Total de vagas de escala assumidas por secao (deriva da vacancia), do mais
+ * assumido para o menos. Mostra quais secoes concentram mais gente.
+ */
+export const escalaFilledBySection = (vacancy = []) => vacancy
+  .map(section => ({ label: section.title, value: section.filledSlots || 0 }))
+  .filter(section => section.value > 0)
+  .sort((a, b) => b.value - a.value || a.label.localeCompare(b.label, "pt-BR"));
+
+/**
  * Taxa de presenca agregada por grau, para o grafico. So inclui graus que ja
  * foram esperados em algum evento, ordenados de forma canonica.
  */

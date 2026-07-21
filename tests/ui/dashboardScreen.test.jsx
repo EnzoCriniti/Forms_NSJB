@@ -62,6 +62,9 @@ describe("DashboardScreen", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Presença/ }));
     expect(await screen.findByText("Top 10 — menos preenchem presença")).toBeInTheDocument();
     expect(screen.getAllByText("Bruno").length).toBeGreaterThan(0);
+    // heatmap de "assiduidade" foi substituído pela distribuição de preenchimento
+    expect(screen.getByText(/Preenchimento por sócio/)).toBeInTheDocument();
+    expect(screen.queryByText(/Assiduidade/)).not.toBeInTheDocument();
   });
 
   it("filtra os indicadores por grau", async () => {
@@ -132,6 +135,9 @@ describe("DashboardScreen", () => {
     // "Sempre a mesma seção" aparece no card de resumo e no título do ranking
     expect(screen.getAllByText("Sempre a mesma seção").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText("3× · Jantar")).toBeInTheDocument(); // Ana, perfil mono
+    // heatmap de recorrência foi substituído por "Seções mais assumidas"
+    expect(screen.getByText("Seções mais assumidas")).toBeInTheDocument();
+    expect(screen.queryByText(/Recorrência/)).not.toBeInTheDocument();
   });
 
   it("trata ausencia de dados de BI", async () => {

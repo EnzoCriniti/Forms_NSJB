@@ -10,7 +10,7 @@ import { COLORS, FeedbackBanner, ScreenHeader, Icon } from "../components/ui";
 import { formatDateTime } from "../lib/forms";
 import { fetchBiDashboard } from "../lib/api";
 import { DashboardUpcomingClosings } from "../components/DashboardPanels";
-import { BiBarChart, BiHeatmap, BiTabs, GrauFilterChips, KpiCard, StatCard, TopMembersPanel, grauColor } from "../features/bi/BiPanels";
+import { BiBarChart, BiTabs, GrauFilterChips, KpiCard, StatCard, TopMembersPanel, grauColor } from "../features/bi/BiPanels";
 import { BiTrendChart, BiHistogramChart, BiHBarChart, BiDonutChart } from "../features/bi/BiCharts";
 import { MemberProfilePanel } from "../features/bi/MemberProfilePanel";
 import { MembersTable } from "../features/bi/MembersTable";
@@ -22,7 +22,9 @@ import {
   filterByGrau,
   formatDuration,
   formatPercent,
+  escalaFilledBySection,
   presencaByGrau,
+  presencaFillDistribution,
   rate,
   sortGrauOptions,
   summarizeEscalaFocus,
@@ -68,15 +70,10 @@ const useIsMobile = (query = "(max-width: 640px)") => {
   return isMobile;
 };
 
-const MobileNote = ({ children }) => (
-  <div className="bi-panel bi-mobile-note"><Icon name="info" size={16} /><span>{children}</span></div>
-);
-
 export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) => {
   const [overview, setOverview] = useState(null);
   const [timeline, setTimeline] = useState([]);
   const [escala, setEscala] = useState(null);
-  const [matrix, setMatrix] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [grau, setGrau] = useState(ALL_GRAUS);
@@ -97,7 +94,6 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
         setOverview(payload.overview);
         setTimeline(payload.timeline || []);
         setEscala(payload.escala || null);
-        setMatrix(payload.matrix || null);
         setError(null);
       } catch {
         if (active) setError("Não foi possível carregar o panorama.");
@@ -220,35 +216,11 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
     />
   );
 
-  // Heatmap sócio × evento (filtra por grau; ordena por menor assiduidade).
-  const matrixRows = useMemo(() => {
-    if (!matrix?.people) return [];
-    const fillRate = person => {
-      const vals = matrix.events.map(ev => person.cells[ev.eventId]).filter(v => v !== undefined);
-      return vals.length ? vals.filter(Boolean).length / vals.length : 1;
-    };
-    return matrix.people
-      .filter(p => grau === ALL_GRAUS || p.grau === grau)
-      .map(p => ({ key: p.personKey, label: p.personName, grau: p.grau, cells: p.cells, _rate: fillRate(p) }))
-      .sort((a, b) => a._rate - b._rate)
-      .slice(0, 40);
-  }, [matrix, grau]);
+  // Distribuição dos sócios por faixa de preenchimento (só quem já foi esperado).
+  const fillDistribution = useMemo(() => presencaFillDistribution(filteredMembers), [filteredMembers]);
 
-  // Matriz de recorrência pessoa × seção (top por carga).
-  const recurrenceData = useMemo(() => {
-    const rec = escala?.recurrence;
-    if (!rec?.people?.length) return { cols: [], rows: [], max: 1 };
-    const people = rec.people
-      .filter(p => grau === ALL_GRAUS || grauByKey.get(p.personKey) === grau)
-      .slice(0, 20);
-    let max = 1;
-    for (const p of people) for (const t of rec.titles) max = Math.max(max, p.bySection[t] || 0);
-    return {
-      max,
-      cols: rec.titles.map(t => ({ key: t, label: t })),
-      rows: people.map(p => ({ key: p.personKey, label: p.personName, grau: grauByKey.get(p.personKey), cells: p.bySection })),
-    };
-  }, [escala, grau, grauByKey]);
+  // Vagas de escala assumidas por seção (global; a escala não guarda grau/vaga).
+  const filledBySection = useMemo(() => escalaFilledBySection(escala?.vacancy || []), [escala]);
 
   // Foco na escala: entre quem faz escala da Organ, quem repete sempre a mesma
   // seção, quem só pegou uma vaga e quem circula (recalculado por grau).
@@ -328,21 +300,15 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
             </div>
           </section>
           <section className="dash-section">
-            {isMobile ? (
-              <MobileNote>Heatmap de assiduidade sócio × evento disponível em telas maiores.</MobileNote>
-            ) : (
-              <BiHeatmap
-                title="Assiduidade — sócio × evento"
-                hint="Verde = preencheu; cinza = faltou. Até 40 sócios com menor assiduidade. Clique para o perfil."
-                cols={(matrix?.events || []).map(e => ({ key: e.eventId, label: e.title }))}
-                rows={matrixRows}
-                intensity={value => (value === true ? 0.85 : value === false ? 0.12 : 0)}
-                format={value => (value === true ? "Preencheu" : value === false ? "Faltou" : "—")}
-                accent="#1f9d6b"
-                onSelect={setSelectedPersonKey}
-                emptyLabel="Sem eventos encerrados ainda."
-              />
-            )}
+            <div className="bi-panel">
+              <div className="bi-panel-head">
+                <div className="bi-panel-title">Preenchimento por sócio{grauSuffix}</div>
+                <div className="bi-panel-hint">Quantos sócios ficam em cada faixa de preenchimento (só quem já foi esperado).</div>
+              </div>
+              {filteredMembers.some(m => (m.presencaExpected || 0) > 0)
+                ? <BiHistogramChart data={fillDistribution} color="#1f9d6b" valueFormatter={v => `${v} sócios`} />
+                : <div className="bi-empty">Sem eventos encerrados ainda.</div>}
+            </div>
           </section>
           <section className="dash-section">
             <div className="bi-lists-grid">
@@ -386,21 +352,15 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
             </div>
           </section>
           <section className="dash-section">
-            {isMobile ? (
-              <MobileNote>Matriz de recorrência sócio × seção disponível em telas maiores.</MobileNote>
-            ) : (
-              <BiHeatmap
-                title="Recorrência — sócio × seção"
-                hint="Quantas vezes cada sócio assumiu cada seção. Mais escuro = mais recorrente."
-                cols={recurrenceData.cols}
-                rows={recurrenceData.rows}
-                intensity={value => (value ? Math.min(1, 0.25 + (value / recurrenceData.max) * 0.75) : 0)}
-                format={value => `${value || 0}×`}
-                accent={COLORS.primary}
-                onSelect={setSelectedPersonKey}
-                emptyLabel="Sem escalas registradas."
-              />
-            )}
+            <div className="bi-panel">
+              <div className="bi-panel-head">
+                <div className="bi-panel-title">Seções mais assumidas</div>
+                <div className="bi-panel-hint">Total de vagas preenchidas por seção — onde há mais gente.</div>
+              </div>
+              {filledBySection.length
+                ? <BiHBarChart data={filledBySection} color={COLORS.primary} labelWidth={barLabelWidth} valueFormatter={v => `${v} ${v === 1 ? "vaga" : "vagas"}`} />
+                : <div className="bi-empty">Sem escalas registradas.</div>}
+            </div>
           </section>
           <section className="dash-section">
             <div className="dash-section-head"><h3>Foco na escala{grauSuffix}</h3></div>

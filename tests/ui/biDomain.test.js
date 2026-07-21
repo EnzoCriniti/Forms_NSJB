@@ -5,9 +5,11 @@
 
 import { describe, it, expect } from "vitest";
 import {
+  escalaFilledBySection,
   filterByGrau,
   formatDuration,
   presencaByGrau,
+  presencaFillDistribution,
   rate,
   sortGrauOptions,
   topLeastEscala,
@@ -54,5 +56,24 @@ describe("biDomain", () => {
     expect(result.map(g => g.grau)).toEqual(["QM", "CDC"]);
     expect(result.find(g => g.grau === "QM").rate).toBe(100);
     expect(result.find(g => g.grau === "CDC").rate).toBe(25);
+  });
+
+  it("distribui socios por faixa de preenchimento (ignora quem nao foi esperado)", () => {
+    const dist = presencaFillDistribution(members); // Ana 100%, Bruno 25%, Caio sem esperados
+    const byLabel = Object.fromEntries(dist.map(band => [band.label, band.value]));
+    expect(byLabel["100%"]).toBe(1); // Ana
+    expect(byLabel["1–49%"]).toBe(1); // Bruno (25%)
+    expect(byLabel["0%"]).toBe(0);
+    expect(dist.reduce((sum, band) => sum + band.value, 0)).toBe(2); // Caio nao entra
+  });
+
+  it("ordena secoes por vagas assumidas e ignora as vazias", () => {
+    const sections = escalaFilledBySection([
+      { title: "Jantar", totalSlots: 5, filledSlots: 4 },
+      { title: "Recepção", totalSlots: 3, filledSlots: 0 },
+      { title: "Lixo", totalSlots: 2, filledSlots: 2 },
+    ]);
+    expect(sections.map(s => s.label)).toEqual(["Jantar", "Lixo"]); // Recepção (0) removida
+    expect(sections[0].value).toBe(4);
   });
 });

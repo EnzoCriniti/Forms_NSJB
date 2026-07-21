@@ -83,7 +83,7 @@ export const MemberProfilePanel = ({ personKey, forms = [], onNavigate, onClose 
             <div className="bi-profile-stats">
               <div className="bi-profile-stat">
                 <div className="bi-profile-stat-value">{formatPercent(summary.rate)}</div>
-                <div className="bi-profile-stat-label">Assiduidade</div>
+                <div className="bi-profile-stat-label">Preenchimento</div>
                 <div className="bi-profile-stat-hint">
                   {summary.filled}/{summary.expected} esperados{summary.exempted ? ` · ${summary.exempted} dispensado${summary.exempted !== 1 ? "s" : ""}` : ""}
                 </div>
