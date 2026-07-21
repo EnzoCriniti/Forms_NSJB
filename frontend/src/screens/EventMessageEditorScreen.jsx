@@ -126,6 +126,7 @@ export const EventMessageEditorScreen = ({
           onSwitchType={switchType}
           people={people}
           personPresets={personPresets}
+          eligibleGraus={event?.eligibleGraus}
           phoneColumnConfigured={phoneColumnConfigured}
           selectedForm={selectedForm}
           targetForms={targetForms}

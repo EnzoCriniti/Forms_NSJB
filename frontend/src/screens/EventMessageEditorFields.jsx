@@ -31,6 +31,7 @@ export const EventMessageEditorFields = ({
   onSwitchType,
   people,
   personPresets,
+  eligibleGraus,
   phoneColumnConfigured,
   selectedForm,
   targetForms,
@@ -87,6 +88,7 @@ export const EventMessageEditorFields = ({
         draft={draft}
         personPresets={personPresets}
         people={people}
+        eligibleGraus={eligibleGraus}
         inputStyle={inputStyle}
         messagingConfig={messagingConfig}
         selectedForm={selectedForm}

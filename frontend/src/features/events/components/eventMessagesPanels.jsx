@@ -7,6 +7,7 @@
 import React from "react";
 import { COLORS } from "../../../components/ui";
 import { ManualPersonPicker } from "./eventMessageManualPersonPicker";
+import { filterPeopleByEligibleGraus } from "../../../screens/eventGrauDomain";
 
 export { MessageSchedulePanel } from "./eventMessageSchedulePanel";
 
@@ -24,6 +25,7 @@ export const MessageRecipientsPanel = ({
   draft,
   personPresets,
   people,
+  eligibleGraus,
   inputStyle,
   messagingConfig,
   selectedForm,
@@ -65,13 +67,18 @@ export const MessageRecipientsPanel = ({
       </>
     )}
     {(() => {
-      const graus = [...new Set((people || []).map(person => person.grau).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
+      // opcoes limitadas aos graus elegiveis do evento (o backend ja impoe esse teto no disparo)
+      const eligiblePeople = filterPeopleByEligibleGraus(people || [], eligibleGraus);
+      const graus = [...new Set(eligiblePeople.map(person => person.grau).filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
       if (graus.length === 0) return null;
+      const restricted = Array.isArray(eligibleGraus) && eligibleGraus.length > 0;
       const selected = draft.recipientsGraus || [];
       const toggle = grau => onChange({ recipientsGraus: selected.includes(grau) ? selected.filter(item => item !== grau) : [...selected, grau] });
       return (
         <div style={{ display: "grid", gap: 6 }}>
-          <span style={{ fontSize: 12, color: COLORS.textSecondary }}>Filtrar por grau {selected.length === 0 ? "(todos)" : `(${selected.length})`}</span>
+          <span style={{ fontSize: 12, color: COLORS.textSecondary }}>
+            Filtrar por grau {selected.length === 0 ? (restricted ? "(todos os elegíveis)" : "(todos)") : `(${selected.length})`}
+          </span>
           <div className="msg-var-chips">
             {graus.map(grau => (
               <button

@@ -10,6 +10,7 @@ import { getEscalaByFormId } from "../repositories/escalaRepository.mjs";
 import { findPersonPresetById } from "../repositories/personPresetsRepository.mjs";
 import { normalizePhone, personKeyOf } from "../core/messages.mjs";
 import { isPersonEligibleForEscala } from "../../shared/sex.mjs";
+import { filterByEligibleGraus } from "../../shared/grauEligibility.mjs";
 
 const lower = value => String(value || "").trim().toLowerCase();
 
@@ -63,7 +64,7 @@ const getEscalaContext = async formId => {
   return { assigned, openSlots };
 };
 
-export const calculateRecipients = async ({ message, type, form, group }) => {
+export const calculateRecipients = async ({ message, type, form, group, event }) => {
   if (type === "new_scale") {
     return { kind: "group", group: { name: group?.name || "" }, recipients: [] };
   }
@@ -87,6 +88,8 @@ export const calculateRecipients = async ({ message, type, form, group }) => {
     }
     candidates = filterByGrau(candidates, config.recipients?.graus);
     candidates = filterByExclusion(candidates, config.recipients?.excludedKeys);
+    // teto duro: so recebe quem e de um grau elegivel do evento (independe do modo/filtro manual)
+    candidates = filterByEligibleGraus(candidates, event?.eligibleGraus);
     return { kind: "dm", group: null, recipients: withSkipFlag(candidates) };
   }
 
@@ -106,6 +109,8 @@ export const calculateRecipients = async ({ message, type, form, group }) => {
     candidates = candidates.filter(person => isPersonEligibleForEscala(person.sex, escalaSex));
     candidates = filterByGrau(candidates, config.recipients?.graus);
     candidates = filterByExclusion(candidates, config.recipients?.excludedKeys);
+    // teto duro: so recebe quem e de um grau elegivel do evento (independe do modo/filtro manual)
+    candidates = filterByEligibleGraus(candidates, event?.eligibleGraus);
     return { kind: "dm", group: null, recipients: withSkipFlag(candidates) };
   }
 

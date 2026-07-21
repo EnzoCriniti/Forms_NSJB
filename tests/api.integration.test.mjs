@@ -2041,6 +2041,64 @@ test("event message type 3 bloqueia preview quando escala nao tem vaga aberta", 
   }
 });
 
+test("event message fill_reminder restringe destinatarios aos graus elegiveis do evento", async () => {
+  const ctx = await startServer();
+  try {
+    const adminToken = await loginAsAdmin(ctx.baseUrl);
+
+    const peopleRes = await authedJson(ctx.baseUrl, "/api/people", {
+      people: [
+        { name: "Socio QM Um", grau: "QM", phone: "11999990001", active: true },
+        { name: "Socio QM Dois", grau: "QM", phone: "11999990002", active: true },
+        { name: "Socio CI Um", grau: "CI", phone: "11999990003", active: true },
+        { name: "Socio QS Um", grau: "QS", phone: "11999990004", active: true },
+      ],
+    }, adminToken, "PUT");
+    assert.equal(peopleRes.status, 200);
+
+    await authedJson(ctx.baseUrl, "/api/members-config", {
+      sourceType: "google_sheets",
+      nameColumn: "B",
+      grauColumn: "A",
+      phoneColumn: "C",
+      range: "Socios!A:C",
+      syncEnabled: true,
+      syncFrequencyHours: 24,
+    }, adminToken, "PUT");
+
+    const bootstrap = await (await fetch(`${ctx.baseUrl}/api/bootstrap`)).json();
+    const presenca = bootstrap.forms.find(form => form.type === "presenca");
+
+    // evento so aceita respostas de QM: o disparo NAO pode alcancar CI/QS
+    const eventRes = await authedJson(ctx.baseUrl, "/api/events", {
+      title: "Evento So QM",
+      date: "2026-06-15",
+      formIds: [presenca.id],
+      eligibleGraus: ["QM"],
+    }, adminToken);
+    assert.equal(eventRes.status, 200);
+    const event = (await eventRes.json()).event;
+
+    // mesmo sem filtro manual de grau (auto), o teto do evento vale
+    const createRes = await authedJson(ctx.baseUrl, `/api/events/${event.id}/messages`, {
+      type: "fill_reminder",
+      body: "Ola {{person.name}}",
+      config: { formId: presenca.id, recipients: { mode: "auto" } },
+    }, adminToken);
+    assert.equal(createRes.status, 200);
+    const message = (await createRes.json()).message;
+
+    const previewRes = await authedFetch(ctx.baseUrl, `/api/events/${event.id}/messages/${message.id}/preview`, adminToken);
+    assert.equal(previewRes.status, 200);
+    const { preview } = await previewRes.json();
+    const graus = new Set(preview.recipients.map(recipient => recipient.grau));
+    assert.deepEqual([...graus], ["QM"], "somente sócios QM podem receber");
+    assert.equal(preview.recipients.length, 2);
+  } finally {
+    await ctx.cleanup();
+  }
+});
+
 test("event message cancel e delete via API", async () => {
   const ctx = await startServer();
   try {

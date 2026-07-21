@@ -170,6 +170,7 @@ const buildPreview = async (message, event, eventForms, messagingConfig) => {
     message,
     type: message.type,
     form,
+    event,
     group: { name: messagingConfig.whatsappGroupName },
   });
   const rendered = renderForRecipients({ message, event, eventForms, form, messagingConfig, recipients });

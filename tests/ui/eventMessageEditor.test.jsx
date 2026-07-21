@@ -148,4 +148,29 @@ describe("EventMessageEditorScreen", () => {
       config: expect.objectContaining({ recipients: { mode: "preset", presetId: 7, graus: [] } }),
     }));
   });
+
+  it("limita as opcoes do filtro de grau aos graus elegiveis do evento", () => {
+    const people = [
+      { key: "1", name: "Ana", grau: "QM" },
+      { key: "2", name: "Bia", grau: "CI" },
+      { key: "3", name: "Cid", grau: "QS" },
+    ];
+    render(
+      <EventMessageEditorScreen
+        {...baseProps}
+        event={{ ...event, eligibleGraus: ["QM"] }}
+        eventForms={[presenca]}
+        people={people}
+        onSave={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Tipo da mensagem"), { target: { value: "fill_reminder" } });
+
+    expect(screen.getByText(/Filtrar por grau/)).toHaveTextContent("(todos os elegíveis)");
+    expect(screen.getByRole("button", { name: "QM" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "CI" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "QS" })).not.toBeInTheDocument();
+  });
 });
