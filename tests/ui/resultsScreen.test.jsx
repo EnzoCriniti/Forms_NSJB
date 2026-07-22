@@ -422,6 +422,7 @@ describe("ResultsScreen", () => {
 
     fireEvent.click(screen.getByLabelText("Remover vaga Sala Responsavel"));
     expect(screen.getByRole("heading", { name: "Remover vaga" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Remover" })).toHaveAttribute("data-variant", "warning");
     fireEvent.click(screen.getByRole("button", { name: "Remover" }));
 
     expect(onSaveSections).toHaveBeenCalledWith([

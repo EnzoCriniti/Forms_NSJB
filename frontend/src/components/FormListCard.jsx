@@ -138,7 +138,7 @@ export const FormListCard = ({
           </div>
         </div>
         <div className="form-card-badges" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
-          <StatusBadge status={form.status} />
+          <StatusBadge status={form.status} avoidDanger={isScaleForm} />
           {canCreateForms(user) && <TypeBadge type={form.type} />}
           {form.type === "presenca" && (
             <span className="ui-badge" style={{ background: formMode === "nucleo" ? COLORS.primaryLight : COLORS.surfaceAlt, color: formMode === "nucleo" ? COLORS.primary : COLORS.textSecondary }}>
@@ -192,7 +192,7 @@ export const FormListCard = ({
                 loading={archiveBusy}
               />
             )}
-            {canCreateForms(user) && <Btn v="danger" icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir" aria-label="Excluir" onClick={() => onDeleteForm?.(form)} />}
+            {canCreateForms(user) && <Btn v={isScaleForm ? "warning" : "danger"} icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir" aria-label="Excluir" onClick={() => onDeleteForm?.(form)} />}
           </div>
           )}
         </div>
@@ -238,7 +238,7 @@ export const FormListCard = ({
                   loading={archiveBusy}
                 />
               )}
-              {canCreateForms(user) && <Btn v="danger" icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir" aria-label="Excluir" onClick={() => onDeleteForm?.(form)} />}
+              {canCreateForms(user) && <Btn v={isScaleForm ? "warning" : "danger"} icon="trash" sz="sm" style={LIST_ACTION_STYLE} title="Excluir" aria-label="Excluir" onClick={() => onDeleteForm?.(form)} />}
             </div>
           </div>
         </div>

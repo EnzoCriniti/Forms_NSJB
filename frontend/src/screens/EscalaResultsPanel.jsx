@@ -68,7 +68,7 @@ export const EscalaResultsPanel = ({
       title="Remover vaga"
       message="Tem certeza que deseja remover a pessoa desta vaga? A alteração será salva imediatamente."
       confirmLabel="Remover"
-      tone="danger"
+      tone="warning"
       busy={busyAction === "remove"}
       onCancel={onCancelRemoval}
       onConfirm={onConfirmRemoval}

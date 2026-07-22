@@ -1,5 +1,6 @@
 import React from "react";
 import { COLORS, Btn } from "../components/ui";
+import { resolveScaleSectionColor } from "../lib/scaleSectionColors";
 
 export const PublicScaleSignupModal = ({
   sectionTitle,
@@ -34,9 +35,9 @@ export const PublicScaleMetricsPanel = ({ filled, pending, total, scaleLimit, re
         <div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div>
         <strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong>
       </div>
-      <div className="public-scale-metric" style={{ background: COLORS.dangerLight, borderRadius: 10, padding: 12 }}>
+      <div className="public-scale-metric" style={{ background: "var(--type-scale-bg)", borderRadius: 10, padding: 12 }}>
         <div style={{ fontSize: 11, color: COLORS.textSecondary }}>Pendentes</div>
-        <strong style={{ fontSize: 24, color: COLORS.danger }}>{pending}</strong>
+        <strong style={{ fontSize: 24, color: "var(--type-scale-text)" }}>{pending}</strong>
       </div>
       <div className="public-scale-metric" style={{ background: COLORS.surfaceAlt, borderRadius: 10, padding: 12 }}>
         <div style={{ fontSize: 11, color: COLORS.textSecondary }}>Total</div>
@@ -59,7 +60,7 @@ export const PublicScaleSectionsPanel = ({ sections, onPickSlot, readOnly = fals
   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
     {sections.map((section, sectionIndex) => (
       <div key={sectionIndex} className="public-scale-section" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: section.color, padding: "9px 14px", fontWeight: 800, fontSize: 13 }}>{section.title}</div>
+        <div style={{ background: resolveScaleSectionColor(section.color, sectionIndex), padding: "9px 14px", fontWeight: 800, fontSize: 13 }}>{section.title}</div>
         {section.slots.map((slot, slotIndex) => (
           <button
             key={slotIndex}

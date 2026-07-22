@@ -12,7 +12,7 @@ export const Badge = ({ label, small, labels = [] }) => {
   return <span className="ui-badge" style={{ background: item?.color || "var(--text-secondary)", color: "#fff", padding: small ? "3px 8px" : "4px 10px", whiteSpace: "nowrap" }}>{item?.name || ""}</span>;
 };
 
-export const StatusBadge = ({ status }) => {
+export const StatusBadge = ({ status, avoidDanger = false }) => {
   const map = {
     aberto: { bg: COLORS.primaryLight, c: COLORS.accent, t: "Aberto" },
     fechado: { bg: COLORS.dangerLight, c: COLORS.danger, t: "Fechado" },
@@ -22,7 +22,9 @@ export const StatusBadge = ({ status }) => {
     encerrado: { bg: COLORS.surfaceAlt, c: COLORS.textSecondary, t: "Encerrado" },
     arquivado: { bg: COLORS.surfaceAlt, c: COLORS.textSecondary, t: "Arquivado" },
   };
-  const item = map[status] || map.rascunho;
+  const item = avoidDanger && status === "fechado"
+    ? { bg: "var(--type-scale-bg)", c: "var(--type-scale-text)", t: "Fechado" }
+    : (map[status] || map.rascunho);
   return <span className="ui-badge" style={{ background: item.bg, color: item.c }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: item.c, flex: "0 0 auto" }} />{item.t}</span>;
 };
 

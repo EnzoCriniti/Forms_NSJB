@@ -93,7 +93,7 @@ export const ScaleEditorPanel = ({
           <label style={{ fontSize: 11, color: COLORS.textSecondary }}>Descrição na escala<input className="msg-input" value={section.title} onChange={event => onUpdateScale(index, { title: event.target.value })} style={{ marginTop: 4 }} /></label>
           <label style={{ fontSize: 11, color: COLORS.textSecondary }}>Responsáveis<input className="msg-input" type="number" min="0" value={section.responsaveis} onChange={event => onUpdateScale(index, { responsaveis: Number(event.target.value) })} style={{ marginTop: 4 }} /></label>
           <label style={{ fontSize: 11, color: COLORS.textSecondary }}>Auxiliares<input className="msg-input" type="number" min="0" value={section.auxiliares} onChange={event => onUpdateScale(index, { auxiliares: Number(event.target.value) })} style={{ marginTop: 4 }} /></label>
-          <button aria-label={`Remover seção ${index + 1}`} onClick={() => onRemoveScaleSection(index)} style={{ background: "none", border: "none", color: COLORS.danger, cursor: "pointer", alignSelf: "flex-end", padding: "10px 4px" }}><Icon name="trash" size={16} /></button>
+          <button aria-label={`Remover seção ${index + 1}`} onClick={() => onRemoveScaleSection(index)} style={{ background: "none", border: "none", color: "var(--type-scale-text)", cursor: "pointer", alignSelf: "flex-end", padding: "10px 4px" }}><Icon name="trash" size={16} /></button>
         </div>
       ))}
     </div>
@@ -207,7 +207,7 @@ export const FormFooterPanel = ({
       <Btn icon="check" onClick={onSubmit} disabled={!canSubmit} loading={saving}>{saving ? "Salvando..." : submitButtonLabel}</Btn>
     </div>
     {hasError && (
-      <div style={{ marginTop: 12, background: COLORS.dangerLight, border: `1px solid ${COLORS.danger}`, borderRadius: 10, padding: "10px 14px", fontSize: 12, color: COLORS.danger }}>
+      <div style={{ marginTop: 12, background: format === "escala_organ" ? COLORS.warningLight : COLORS.dangerLight, border: `1px solid ${format === "escala_organ" ? COLORS.warning : COLORS.danger}`, borderRadius: 10, padding: "10px 14px", fontSize: 12, color: format === "escala_organ" ? COLORS.warning : COLORS.danger }}>
         {hasError}
       </div>
     )}

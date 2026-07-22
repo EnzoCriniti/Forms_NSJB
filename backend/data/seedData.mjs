@@ -364,7 +364,7 @@ export const MOCK_RESPONSES = [
 export const ESCALA_SECTIONS = [
   {
     title: "Preparação do Jantar. Servir às 17h",
-    color: "#ffcdd2",
+    color: "#fff2c7",
     slots: [
       { role: "Responsável", person: "" },
       { role: "Auxiliar", person: "Maria" },
@@ -374,7 +374,7 @@ export const ESCALA_SECTIONS = [
   },
   {
     title: "Limpeza Após o Jantar",
-    color: "#ffcdd2",
+    color: "#dff2ec",
     slots: [
       { role: "Responsável", person: "Marcia Léo" },
       { role: "Auxiliar", person: "Diego" },
@@ -385,7 +385,7 @@ export const ESCALA_SECTIONS = [
   },
   {
     title: "Preparação do Lanche Após a Sessão",
-    color: "#ffcdd2",
+    color: "#e5edf7",
     slots: [
       { role: "Responsável", person: "Cláudia Gonçalves" },
       { role: "Auxiliar", person: "Mariângela" },
@@ -397,7 +397,7 @@ export const ESCALA_SECTIONS = [
   },
   {
     title: "Limpeza da cozinha após o lanche",
-    color: "#ffcdd2",
+    color: "#e8e2f3",
     slots: [
       { role: "Responsável", person: "Laura Gadelha" },
       { role: "Auxiliar", person: "Sandra" },

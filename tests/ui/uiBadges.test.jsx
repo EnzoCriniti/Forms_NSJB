@@ -34,6 +34,15 @@ describe("uiBadges", () => {
     expect(screen.getByText("Rascunho")).toBeInTheDocument();
   });
 
+  it("evita vermelho no status fechado da Escala da Organ", () => {
+    render(<StatusBadge status="fechado" avoidDanger />);
+
+    expect(screen.getByText("Fechado")).toHaveStyle({
+      background: "var(--type-scale-bg)",
+      color: "var(--type-scale-text)",
+    });
+  });
+
   it("renderiza tipo de formulario", () => {
     render(
       <>

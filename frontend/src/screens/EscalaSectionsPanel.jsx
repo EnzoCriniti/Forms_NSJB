@@ -5,6 +5,7 @@
 
 import React from "react";
 import { COLORS, Btn, Icon } from "../components/ui";
+import { resolveScaleSectionColor } from "../lib/scaleSectionColors";
 
 export const EscalaSectionsPanel = ({
   busyAction,
@@ -19,7 +20,7 @@ export const EscalaSectionsPanel = ({
   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
     {sections.map((section, sectionIndex) => (
       <div key={sectionIndex} style={{ borderRadius: 12, overflow: "hidden", border: `1px solid ${COLORS.borderLight}` }}>
-        <div style={{ background: section.color, padding: "10px 16px" }}><h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#333" }}>{section.title}</h3></div>
+        <div style={{ background: resolveScaleSectionColor(section.color, sectionIndex), padding: "10px 16px" }}><h3 style={{ margin: 0, fontSize: 13, fontWeight: 700, color: "#333" }}>{section.title}</h3></div>
         <div style={{ background: COLORS.surface }}>
           {section.slots.map((slot, slotIndex) => (
             <div key={slotIndex} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 16px", borderBottom: slotIndex < section.slots.length - 1 ? `1px solid ${COLORS.borderLight}` : "none", cursor: canEdit && !slot.person ? "pointer" : "default", transition: "background 0.15s" }} onClick={() => onOpenSignup(sectionIndex, slotIndex)}>

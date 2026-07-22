@@ -6,13 +6,14 @@ export const FeedbackBanner = ({ tone = "info", title, message, fixed = false })
   const config = {
     success: { bg: "var(--feedback-success-bg)", border: "var(--feedback-success-border)", color: "var(--feedback-success-text)", icon: "check", label: title || "Sucesso" },
     error: { bg: "var(--feedback-error-bg)", border: "var(--feedback-error-border)", color: "var(--feedback-error-text)", icon: "warning", label: title || "Erro" },
+    warning: { bg: "var(--warning-light)", border: "var(--type-scale-border)", color: "var(--type-scale-text)", icon: "warning", label: title || "Aten\u00e7\u00e3o" },
     loading: { bg: "var(--feedback-loading-bg)", border: "var(--feedback-loading-border)", color: "var(--feedback-loading-text)", icon: "spinner", label: title || "Processando" },
     info: { bg: "var(--feedback-info-bg)", border: "var(--feedback-info-border)", color: "var(--feedback-info-text)", icon: "info", label: title || "Aviso" },
   }[tone] || null;
   if (!config) return null;
   return (
     <div
-      role={tone === "error" ? "alert" : "status"}
+      role={["error", "warning"].includes(tone) ? "alert" : "status"}
       className={`ui-feedback ui-feedback--${tone}${fixed ? " ui-feedback--fixed" : ""}`}
       style={{ background: config.bg, borderColor: config.border, color: config.color }}
     >

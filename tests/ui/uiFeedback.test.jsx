@@ -27,6 +27,14 @@ describe("uiFeedback", () => {
     expect(screen.getByText("Tente novamente.")).toBeInTheDocument();
   });
 
+  it("renderiza aviso dourado como alerta acessivel", () => {
+    render(<FeedbackBanner tone="warning" message="Revise a escala." />);
+
+    const alert = screen.getByRole("alert");
+    expect(alert).toHaveTextContent("Revise a escala.");
+    expect(alert).toHaveStyle({ color: "var(--type-scale-text)" });
+  });
+
   it("nao renderiza sem mensagem ou com tone desconhecido", () => {
     const { container, rerender } = render(<FeedbackBanner message="" />);
     expect(container).toBeEmptyDOMElement();

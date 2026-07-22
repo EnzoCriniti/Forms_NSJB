@@ -48,6 +48,9 @@ describe("PublicEscalaScreen", () => {
       />,
     );
 
+    expect(screen.getByText("Pendentes").parentElement).toHaveStyle({ background: "var(--type-scale-bg)" });
+    expect(screen.getByText("Sala")).toHaveStyle({ background: "#fff2c7" });
+
     const slotButton = screen.getAllByRole("button").find(button => button.textContent.includes("Pendente"));
     fireEvent.click(slotButton);
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "Maria" } });
