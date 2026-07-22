@@ -10,6 +10,7 @@ import { AppHeader } from "./components/AppHeader";
 import { AppSidebar } from "./components/AppSidebar";
 import { AppShellRoutes } from "./AppShellRoutes";
 import { HeaderBackContext } from "./lib/headerBack";
+import { resolveAppHeaderTitle } from "./lib/appHeaderTitle";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
 
 const SIDEBAR_STORAGE_KEY = "nsjb.sidebarCollapsed";
@@ -47,7 +48,9 @@ export const AppShellContent = ({ app }) => {
     theme,
     fontScale,
     activeEventId,
+    activeEvent,
     activeForm,
+    editingForm,
   } = state;
   const {
     events,
@@ -83,7 +86,13 @@ export const AppShellContent = ({ app }) => {
     onNavigate("list");
   };
 
-  const pageTitle = (nav || []).find(item => item.key === screen)?.label || "";
+  const pageTitle = resolveAppHeaderTitle({
+    screen,
+    nav,
+    activeEvent,
+    activeForm,
+    editingForm,
+  });
 
   return (
     <HeaderBackContext.Provider value={headerBackContext}>

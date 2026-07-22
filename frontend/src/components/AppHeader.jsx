@@ -98,7 +98,7 @@ export const AppHeader = ({
             <StarMark size={20} color="#ffffff" />
             <span className="app-header__brand-name">NSJB Forms</span>
           </span>
-          <span className="app-header__title">{pageTitle || ""}</span>
+          {pageTitle && <span className="app-header__title">{pageTitle}</span>}
         </div>
         <div className="app-header__right">
           {currentUser && (

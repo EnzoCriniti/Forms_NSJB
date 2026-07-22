@@ -289,6 +289,8 @@ Mapa curto das areas mais mexidas por agentes.
   Selecao dos blocos do bootstrap consumidos pelo controller do App, incluindo defaults de mensagens.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
+- `frontend/src/lib/appHeaderTitle.js`
+  Resolve o titulo contextual do header global: omite `Eventos` na listagem inicial e usa nomes reais de eventos e formularios nos fluxos internos.
 - `frontend/vite.config.js` e `frontend/src/components/AppSidebar.jsx`
   A versao exibida no rodape da navegacao combina a versao do `package.json` com o hash curto do commit Git injetado no build.
 - `frontend/src/AppViewport.jsx`
