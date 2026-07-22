@@ -250,7 +250,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/AppGuideScreen.jsx`
   Tela autenticada do menu `Guia`, com indice navegavel, leitura funcional/tecnica e busca por relevancia.
 - `frontend/src/screens/appGuideContent.js`
-  Fonte versionada dos artigos do guia e algoritmo local de busca, com normalizacao, sinonimos e similaridade por trigramas.
+  Fonte versionada dos artigos do guia e algoritmo local de busca, com normalizacao, sinonimos e similaridade por trigramas. Documenta tambem a ativacao e os limites da visualizacao publica simplificada dos resultados de presenca.
 - `frontend/src/lib/appNav.js` e `frontend/src/AppShellRouteRegistry.jsx`
   Expoem o Guia para qualquer usuario autenticado e resolvem sua rota dentro do shell.
 

@@ -31,6 +31,17 @@ describe("appGuide search", () => {
       "Execucao",
     ]);
   });
+
+  it("explica como publicar e consultar resultados externos de presenca", () => {
+    const presence = GUIDE_ARTICLES.find(article => article.id === "formularios-presenca");
+    const publicFlow = GUIDE_ARTICLES.find(article => article.id === "preenchimento-publico");
+
+    expect(presence.workflow.join(" ")).toContain("Permitir visualizacao publica dos resultados");
+    expect(presence.technical).toContain("publicResultsEnabled");
+    expect(publicFlow.workflow.join(" ")).toContain("Ver resultados");
+    expect(publicFlow.technical).toContain("nao mostra faltantes");
+    expect(rankGuideArticles(GUIDE_ARTICLES, "ver resultados externos").slice(0, 3).some(result => result.article.id === "preenchimento-publico")).toBe(true);
+  });
 });
 
 describe("AppGuideScreen", () => {
