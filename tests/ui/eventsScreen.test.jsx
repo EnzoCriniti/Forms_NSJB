@@ -114,10 +114,35 @@ describe("EventsScreen", () => {
       />,
     );
 
+    expect(screen.getByText("Organize encontros, acompanhe seus formul\u00e1rios e centralize as comunica\u00e7\u00f5es de cada evento.")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Formul\u00e1rio de presen\u00e7a" })).toBeInTheDocument();
     expect(screen.queryByText("Escala Maio")).not.toBeInTheDocument();
+  });
+
+  it("diferencia visualmente presenca e escala da Organ", () => {
+    render(
+      <EventsScreen
+        events={[{ ...events[0], formIds: [1, 2] }]}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={vi.fn()}
+        onDeleteEvent={vi.fn()}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+
+    const presenceCard = screen.getByText("Presenca Maio").closest(".form-card");
+    const scaleCard = screen.getByText("Escala Maio").closest(".form-card");
+    expect(presenceCard).toHaveAttribute("data-form-type", "presenca");
+    expect(scaleCard).toHaveAttribute("data-form-type", "escala_organ");
+    expect(screen.getByRole("img", { name: "Formul\u00e1rio de presen\u00e7a" })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Escala da Organ" })).toBeInTheDocument();
   });
 
   it("pesquisa eventos usando a pagina do backend", async () => {

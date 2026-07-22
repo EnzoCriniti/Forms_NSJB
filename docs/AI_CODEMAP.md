@@ -6,6 +6,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 - `frontend/src/screens/SettingsScreen.jsx`
   Tela dedicada da area administrativa. Encapsula o modal em modo tela.
+- `frontend/src/screens/MessagingSettingsScreen.jsx`
+  Tela dedicada do menu `Mensagens`, separada da central de configuracoes e composta pelo painel administrativo existente.
 - `frontend/src/features/admin/AdminSettingsModal.jsx`
   CRUDs de usuarios, base de socios, catalogos, classificacoes, templates, seguranca e auditoria.
 - `frontend/src/features/admin/adminSettingsController.js`
@@ -55,7 +57,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/features/admin/adminSettingsActions.js`
   Helper do fluxo assíncrono dos submits e exclusoes confirmadas da central administrativa: busy, feedback, sucesso e erro.
 - `frontend/src/features/admin/MessagingSettingsPanel.jsx`
-  Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets.
+  Composicao do painel administrativo de mensagens, juntando configuracao global, modelos e presets; e consumido pela tela dedicada `MessagingSettingsScreen.jsx`.
 - `frontend/src/features/admin/MessagingConfigBlock.jsx`
   Configuracao global do painel administrativo de mensagens.
 - `frontend/src/features/admin/MessagingTemplatesBlock.jsx`
@@ -287,6 +289,8 @@ Mapa curto das areas mais mexidas por agentes.
   Selecao dos blocos do bootstrap consumidos pelo controller do App, incluindo defaults de mensagens.
 - `frontend/src/lib/appNav.js`
   Montagem pura dos itens de navegacao do shell autenticado conforme permissao do usuario.
+- `frontend/vite.config.js` e `frontend/src/components/AppSidebar.jsx`
+  A versao exibida no rodape da navegacao combina a versao do `package.json` com o hash curto do commit Git injetado no build.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
 - `frontend/src/lib/appViewportState.js`
@@ -479,6 +483,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/FormListCard.jsx`
   Card da listagem com metadados do formulario, incluindo badge do modo estrutural nos formularios de presenca.
   Tambem expõe a acao de copiar link publico de compartilhamento, montado por `frontend/src/lib/appPublicRoutes.js`.
+  Presenca usa acento e icone verde-petroleo; escala da Organ usa acento e icone dourado para identificacao rapida.
 - `frontend/src/components/FormListToolbar.jsx`
   Barra de busca, filtros e ordenacao da listagem. No mobile, os filtros ficam em faixa horizontal rolavel.
 
@@ -488,7 +493,7 @@ Mapa curto das areas mais mexidas por agentes.
   Tela de eventos para contas logadas. Admin lista, cria, edita, fixa e exclui eventos; viewer acessa os eventos e formularios vinculados sem acoes administrativas.
   A selecao do detalhe sincroniza `activeEventId` no shell para que botoes de voltar de formularios vinculados retornem ao evento; clique direto na aba `Eventos` limpa essa selecao e abre a listagem.
 - `frontend/src/screens/EventsScreenViews.jsx`
-  Views de lista, detalhe e edicao da tela de eventos, extraidas de `EventsScreen.jsx`.
+  Views de lista, detalhe e edicao da tela de eventos, extraidas de `EventsScreen.jsx`; o topo da listagem inclui uma breve explicacao do fluxo.
 - `frontend/src/screens/eventsScreenController.js`
   Controller da tela de eventos: estado de modo, selecao, feedback, paginacao e acoes de salvar, publicar, encerrar e excluir.
   Sincroniza `initialSelectedEventId` com o modo detalhe/lista e avisa o shell quando um evento e aberto, salvo ou limpo.
@@ -743,6 +748,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/styles.css`
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
   Blocos mortos antigos de totalizacao, badges e topo de resultados foram removidos apos varredura de classes.
+  Centraliza tambem a paleta visual: base azul-marinho, acentos dourados, verde-petroleo e tons neutros quentes em claro e escuro.
 - `frontend/src/App.jsx`
   Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 - `frontend/src/AppPublicViewport.jsx`

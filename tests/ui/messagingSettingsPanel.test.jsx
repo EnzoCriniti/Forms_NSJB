@@ -8,6 +8,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { MessagingSettingsPanel } from "../../frontend/src/features/admin/MessagingSettingsPanel.jsx";
+import { MessagingSettingsScreen } from "../../frontend/src/screens/MessagingSettingsScreen.jsx";
 
 const baseProps = {
   messagingConfig: { whatsappGroupName: "Grupo", autoDispatchEnabled: true, publicBaseUrl: "https://app.example.com" },
@@ -28,5 +29,13 @@ describe("MessagingSettingsPanel", () => {
     expect(screen.getByText("Configuração global")).toBeInTheDocument();
     expect(screen.getByText("Modelos existentes")).toBeInTheDocument();
     expect(screen.getByText("Presets existentes")).toBeInTheDocument();
+  });
+
+  it("renderiza o painel na tela dedicada", () => {
+    render(<MessagingSettingsScreen {...baseProps} onNavigate={vi.fn()} />);
+
+    expect(screen.getByRole("heading", { name: "Mensagens" })).toBeInTheDocument();
+    expect(screen.getByText("Gerencie a configuracao global, os modelos e os presets de destinatarios")).toBeInTheDocument();
+    expect(screen.getByText("Modelos existentes")).toBeInTheDocument();
   });
 });

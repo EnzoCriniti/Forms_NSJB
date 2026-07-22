@@ -38,6 +38,11 @@ export const FormListCard = ({
   const total = form.metrics?.total || form.totalExpected || 0;
   const canOpenResults = canViewForm(user, form);
   const showFillSummary = Boolean(user) && (form.type === "escala_organ" || isLinkedRosterEnabled(form));
+  const isScaleForm = form.type === "escala_organ";
+  const typeIcon = isScaleForm ? "users" : "clipboard";
+  const typeIconLabel = isScaleForm ? "Escala da Organ" : "Formul\u00e1rio de presen\u00e7a";
+  const typeBackground = isScaleForm ? "var(--type-scale-bg)" : "var(--type-presence-bg)";
+  const typeColor = isScaleForm ? "var(--type-scale-text)" : "var(--type-presence-text)";
   const fillPercent = total ? Math.min(100, (responses / total) * 100) : 0;
   const formMode = getFormMode(form);
 
@@ -103,6 +108,7 @@ export const FormListCard = ({
   return (
     <div
       className={`form-card form-card--interactive elevated${showFillSummary ? "" : " form-card--no-summary"}`}
+      data-form-type={form.type}
       role="button"
       tabIndex={0}
       onClick={openPublicForm}
@@ -113,10 +119,8 @@ export const FormListCard = ({
         }
       }}
       style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", transition: "all 0.15s", touchAction: "manipulation" }}
-      onMouseEnter={event => { event.currentTarget.style.borderColor = COLORS.primary; }}
-      onMouseLeave={event => { event.currentTarget.style.borderColor = COLORS.borderLight; }}
     >
-      <div className="form-card-icon" style={{ width: 46, height: 46, borderRadius: 12, background: COLORS.primaryLight, display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.primary, flexShrink: 0 }}><Icon name="form" size={20} /></div>
+      <div role="img" aria-label={typeIconLabel} className="form-card-icon" style={{ width: 46, height: 46, borderRadius: 12, background: typeBackground, display: "flex", alignItems: "center", justifyContent: "center", color: typeColor, flexShrink: 0 }}><Icon name={typeIcon} size={20} /></div>
       <div className="form-card-main" style={{ flex: 1, minWidth: 0 }}>
         <div className="form-card-title-row" style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 8 }}>
           <div className="form-card-title-wrap" style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -198,12 +202,12 @@ export const FormListCard = ({
           <div className="fill-summary" style={{ textAlign: "right", minWidth: 0, padding: "14px 16px", borderRadius: 14, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}` }}>
             <div style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.45 }}>Preenchimento</div>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "flex-end", gap: 3, marginTop: 4 }}>
-              <strong style={{ fontSize: 24, fontWeight: 800, color: COLORS.primary, lineHeight: 1 }}>{responses}</strong>
+              <strong style={{ fontSize: 24, fontWeight: 800, color: typeColor, lineHeight: 1 }}>{responses}</strong>
               <span style={{ fontSize: 14, fontWeight: 700, color: COLORS.textMuted }}>/ {total}</span>
             </div>
             <div style={{ fontSize: 12, color: COLORS.textSecondary, marginTop: 4 }}>{form.type === "escala_organ" ? "vagas preenchidas" : "respostas recebidas"}</div>
             <div style={{ width: "100%", height: 7, background: COLORS.borderLight, borderRadius: 99, marginTop: 10, overflow: "hidden" }}>
-              <div style={{ width: `${fillPercent}%`, height: "100%", background: form.status === "fechado" ? COLORS.textMuted : COLORS.primary, borderRadius: 99 }} />
+              <div style={{ width: `${fillPercent}%`, height: "100%", background: form.status === "fechado" ? COLORS.textMuted : typeColor, borderRadius: 99 }} />
             </div>
           </div>
           <div className="card-actions" style={{ display: "grid", gap: 10, minWidth: 0 }} onClick={event => event.stopPropagation()}>

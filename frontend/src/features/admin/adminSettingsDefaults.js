@@ -56,7 +56,6 @@ export const buildAdminSettingsTabs = currentUser => [
   { key: "catalog", label: "Campos e tarefas", description: "Biblioteca reutilizável" },
   { key: "labels", label: "Classificações", description: "Etiquetas dos formulários" },
   { key: "presets", label: "Templates", description: "Templates de formulário" },
-  { key: "messages", label: "Mensagens", description: "Modelos, presets e disparo" },
   { key: "security", label: "Exclusão segura", description: "Chave mestra" },
   ...(currentUser?.role === "admin" ? [{ key: "audit", label: "Histórico", description: "Auditoria do sistema" }] : []),
 ];

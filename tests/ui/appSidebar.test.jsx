@@ -18,8 +18,20 @@ describe("AppSidebar", () => {
     expect(ativo).toHaveAttribute("data-active", "true");
     expect(ativo).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("button", { name: "Dashboard" })).toHaveAttribute("data-active", "false");
+    expect(screen.getByText(/^v0\.1\.0\+g/)).toHaveAttribute("title", expect.stringContaining("commit"));
 
     fireEvent.click(screen.getByRole("button", { name: "Equipes" }));
     expect(onNavigate).toHaveBeenCalledWith("teams");
+  });
+
+  it("expõe o botão de recolher e dispara o toggle", () => {
+    const onToggle = vi.fn();
+    const { rerender } = render(<AppSidebar nav={nav} screen="events" onNavigate={vi.fn()} collapsed={false} onToggle={onToggle} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Recolher menu" }));
+    expect(onToggle).toHaveBeenCalledTimes(1);
+
+    rerender(<AppSidebar nav={nav} screen="events" onNavigate={vi.fn()} collapsed onToggle={onToggle} />);
+    expect(screen.getByRole("button", { name: "Expandir menu" })).toBeInTheDocument();
   });
 });

@@ -12,9 +12,30 @@ import { AppShellRoutes } from "./AppShellRoutes";
 import { HeaderBackContext } from "./lib/headerBack";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
 
+const SIDEBAR_STORAGE_KEY = "nsjb.sidebarCollapsed";
+
+const readSidebarCollapsed = () => {
+  try {
+    return globalThis.localStorage?.getItem(SIDEBAR_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+};
+
 export const AppShellContent = ({ app }) => {
   const [headerBack, setHeaderBack] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(readSidebarCollapsed);
   const headerBackContext = useMemo(() => ({ setBack: setHeaderBack }), []);
+
+  const toggleSidebar = () => setSidebarCollapsed(previous => {
+    const next = !previous;
+    try {
+      globalThis.localStorage?.setItem(SIDEBAR_STORAGE_KEY, next ? "1" : "0");
+    } catch {
+      /* persistencia e opcional */
+    }
+    return next;
+  });
   const state = getShellState(app);
   const data = getShellData(app);
   const actions = getShellActions(app);
@@ -67,8 +88,8 @@ export const AppShellContent = ({ app }) => {
   return (
     <HeaderBackContext.Provider value={headerBackContext}>
       <div className="app-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>
-        <div className="app-layout">
-          <AppSidebar nav={nav} screen={screen} onNavigate={onNavigate} />
+        <div className="app-layout" data-sidebar-collapsed={sidebarCollapsed}>
+          <AppSidebar nav={nav} screen={screen} onNavigate={onNavigate} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
           <div className="app-shell-main">
             <AppHeader
               nav={nav}

@@ -10,6 +10,7 @@ import { CreateFormScreen } from "./screens/CreateFormScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
+import { MessagingSettingsScreen } from "./screens/MessagingSettingsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { TeamsScreen } from "./screens/TeamsScreen";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
@@ -317,6 +318,30 @@ export const SettingsFlow = ({ app }) => {
       onDeleteMessageTemplate={handleDeleteMessageTemplate}
       onSavePersonPreset={handleSavePersonPreset}
       onDeletePersonPreset={handleDeletePersonPreset}
+    />
+  );
+};
+
+export const MessagingSettingsFlow = ({ app }) => {
+  const state = getShellState(app);
+  const data = getShellData(app);
+  const actions = getShellActions(app);
+  const { currentUser } = state;
+
+  if (!currentUser) return null;
+
+  return (
+    <MessagingSettingsScreen
+      onNavigate={actions.onNavigate}
+      messagingConfig={data.messagingConfig}
+      messageTemplates={data.messageTemplates}
+      personPresets={data.personPresets}
+      people={data.people}
+      onSaveMessagingConfig={actions.handleSaveMessagingConfig}
+      onSaveMessageTemplate={actions.handleSaveMessageTemplate}
+      onDeleteMessageTemplate={actions.handleDeleteMessageTemplate}
+      onSavePersonPreset={actions.handleSavePersonPreset}
+      onDeletePersonPreset={actions.handleDeletePersonPreset}
     />
   );
 };

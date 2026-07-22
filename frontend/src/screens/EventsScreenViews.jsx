@@ -163,6 +163,7 @@ export const EventListView = ({
       className="settings-top-card"
       title="Eventos"
       titleSize={20}
+      subtitle={"Organize encontros, acompanhe seus formul\u00e1rios e centralize as comunica\u00e7\u00f5es de cada evento."}
       actions={canManageEvents ? <Btn icon="plus" onClick={onStartNew} aria-label="Novo evento" title="Novo evento" /> : null}
     />
     <EventListPanel

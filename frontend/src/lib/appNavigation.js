@@ -19,6 +19,7 @@ export const resolveAppNavigation = ({
   const screenGuards = {
     dashboard: () => can(currentUser, "reports.view"),
     teams: () => can(currentUser, "teams.view"),
+    messages: () => can(currentUser, "messages.view"),
     create: () => canCreateForms(currentUser),
     settings: () => canAccessSettings(currentUser),
   };

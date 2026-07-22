@@ -75,6 +75,22 @@ describe("appShell navigation", () => {
     })).toEqual({ screen: "list", clearDraft: false });
   });
 
+  it("protege o menu de mensagens pela capacidade de visualizacao", () => {
+    expect(resolveAppNavigation({
+      nextScreen: "messages",
+      currentUser: { role: "viewer" },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({ screen: "list", clearDraft: false });
+
+    expect(resolveAppNavigation({
+      nextScreen: "messages",
+      currentUser: { role: "viewer", permissions: ["messages.view"] },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({ screen: "messages", clearDraft: true, activeFormId: undefined });
+  });
+
   it("manda usuarios logados da lista para eventos", () => {
     expect(resolveAppNavigation({
       nextScreen: "list",
@@ -114,6 +130,8 @@ describe("appShell route registry", () => {
   it("resolve somente rotas com dependencias atendidas", () => {
     expect(resolveAppShellRoute({ screen: "events", currentUser: null })).toBeNull();
     expect(resolveAppShellRoute({ screen: "events", currentUser: { id: 1 } })?.screen).toBe("events");
+    expect(resolveAppShellRoute({ screen: "messages", currentUser: { role: "admin" } })?.screen).toBe("messages");
+    expect(resolveAppShellRoute({ screen: "messages", currentUser: { role: "viewer" } })).toBeNull();
     expect(resolveAppShellRoute({ screen: "results", activeForm: null })).toBeNull();
     expect(resolveAppShellRoute({ screen: "results", activeForm: { id: 2 } })?.screen).toBe("results");
     expect(resolveAppShellRoute({ screen: "eventMessageDetail", currentUser: { id: 1 }, activeEvent: { id: 3 }, activeMessageId: null })).toBeNull();
@@ -221,6 +239,7 @@ describe("appShell derived state", () => {
         { key: "dashboard", icon: "chart", label: "Dashboard" },
         { key: "events", icon: "calendar", label: "Eventos" },
         { key: "teams", icon: "users", label: "Equipes" },
+        { key: "messages", icon: "message", label: "Mensagens" },
       ],
       screen: "events",
       theme: "dark",
@@ -490,6 +509,11 @@ describe("app navigation items", () => {
       { key: "dashboard", icon: "chart", label: "Dashboard" },
       { key: "events", icon: "calendar", label: "Eventos" },
       { key: "teams", icon: "users", label: "Equipes" },
+      { key: "messages", icon: "message", label: "Mensagens" },
+    ]);
+
+    expect(buildAppNavItems({ currentUser: { role: "viewer", permissions: ["messages.view"] } })).toEqual([
+      { key: "messages", icon: "message", label: "Mensagens" },
     ]);
   });
 });
