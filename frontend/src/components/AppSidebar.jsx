@@ -12,7 +12,7 @@ import { StarMark } from "./StarMark";
 
 const appVersion = import.meta.env.VITE_APP_VERSION || "dev";
 const gitCommit = import.meta.env.VITE_GIT_COMMIT || "dev";
-const buildLabel = `v${appVersion}+g${gitCommit}`;
+const versionLabel = appVersion === "dev" ? "Versão de desenvolvimento" : `Versão ${appVersion}`;
 
 export const AppSidebar = ({ nav = [], screen, onNavigate, collapsed = false, onToggle }) => (
   <aside className="app-sidebar" data-collapsed={collapsed} aria-label="Navegação principal">
@@ -48,6 +48,10 @@ export const AppSidebar = ({ nav = [], screen, onNavigate, collapsed = false, on
         </button>
       ))}
     </nav>
-    <div className="app-sidebar__foot" title={`Versao ${appVersion}, commit ${gitCommit}`}>{buildLabel}</div>
+    {!collapsed && (
+      <div className="app-sidebar__foot" title={`${versionLabel}, commit ${gitCommit}`}>
+        {versionLabel}
+      </div>
+    )}
   </aside>
 );

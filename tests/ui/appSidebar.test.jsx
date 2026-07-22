@@ -18,7 +18,7 @@ describe("AppSidebar", () => {
     expect(ativo).toHaveAttribute("data-active", "true");
     expect(ativo).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("button", { name: "Dashboard" })).toHaveAttribute("data-active", "false");
-    expect(screen.getByText(/^v0\.1\.0\+g/)).toHaveAttribute("title", expect.stringContaining("commit"));
+    expect(screen.getByText("Versão 0.1.0")).toHaveAttribute("title", expect.stringContaining("commit"));
 
     fireEvent.click(screen.getByRole("button", { name: "Equipes" }));
     expect(onNavigate).toHaveBeenCalledWith("teams");
@@ -33,5 +33,6 @@ describe("AppSidebar", () => {
 
     rerender(<AppSidebar nav={nav} screen="events" onNavigate={vi.fn()} collapsed onToggle={onToggle} />);
     expect(screen.getByRole("button", { name: "Expandir menu" })).toBeInTheDocument();
+    expect(screen.queryByText("Versão 0.1.0")).not.toBeInTheDocument();
   });
 });
