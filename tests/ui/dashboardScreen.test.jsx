@@ -61,11 +61,26 @@ describe("DashboardScreen", () => {
     // carga inicial: sem filtro de período
     expect(fetchBiDashboard).toHaveBeenLastCalledWith(null);
 
+    fireEvent.click(screen.getByRole("button", { name: /Filtros/ })); // expande o painel
     fireEvent.click(screen.getByRole("button", { name: "6 meses" }));
     await waitFor(() => {
       const lastArg = fetchBiDashboard.mock.calls.at(-1)[0];
       expect(lastArg).toMatchObject({ from: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/), to: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) });
     });
+  });
+
+  it("mantém os filtros recolhidos com um resumo do que está ativo", async () => {
+    render(<DashboardScreen onNavigate={vi.fn()} forms={[]} user={{ role: "admin", name: "Admin" }} />);
+    await screen.findByText("50%");
+
+    // recolhido: resumo visível, chips escondidos
+    expect(screen.getByText(/Período: Tudo · Grau: Todos/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "6 meses" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Filtros/ }));
+    expect(screen.getByRole("button", { name: "6 meses" })).toBeInTheDocument();
+    expect(screen.getByText("Período")).toBeInTheDocument();
+    expect(screen.getByText("Grau")).toBeInTheDocument();
   });
 
   it("mostra rankings ao trocar para a aba Presença", async () => {
@@ -86,6 +101,7 @@ describe("DashboardScreen", () => {
     fireEvent.click(screen.getByRole("tab", { name: /Presença/ }));
     await screen.findAllByText("Bruno");
 
+    fireEvent.click(screen.getByRole("button", { name: /Filtros/ })); // expande o painel
     fireEvent.click(screen.getByRole("button", { name: "QM" }));
     await waitFor(() => expect(screen.queryAllByText("Bruno")).toHaveLength(0));
     expect(screen.getAllByText("Ana").length).toBeGreaterThan(0);

@@ -23,10 +23,12 @@ import {
   formatDuration,
   formatPercent,
   escalaFilledBySection,
+  formatDate,
   presencaByGrau,
   presencaFillDistribution,
   presetRange,
   rate,
+  RANGE_PRESETS,
   sortGrauOptions,
   summarizeEscalaFocus,
   timeToFillHistogram,
@@ -84,6 +86,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
   const [selectedPersonKey, setSelectedPersonKey] = useState(null);
   const [rangePreset, setRangePreset] = useState("all");
   const [customRange, setCustomRange] = useState({ from: "", to: "" });
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const isMobile = useIsMobile();
   const barLabelWidth = isMobile ? 104 : 150;
 
@@ -133,6 +136,12 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
   const histogram = useMemo(() => timeToFillHistogram(filteredMembers), [filteredMembers]);
   const grauSuffix = grau === ALL_GRAUS ? "" : ` · ${grau}`;
   const isFiltered = grau !== ALL_GRAUS;
+
+  // Resumo dos filtros ativos, mostrado ao lado do botão de expandir.
+  const periodLabel = rangePreset === "custom"
+    ? (range ? `${range.from ? formatDate(range.from) : "…"} – ${range.to ? formatDate(range.to) : "…"}` : "Personalizado")
+    : (RANGE_PRESETS.find(preset => preset.id === rangePreset)?.label || "Tudo");
+  const grauLabel = grau === ALL_GRAUS ? "Todos" : grau;
 
   const grauByKey = useMemo(() => new Map(allMembers.map(m => [m.personKey, m.grau])), [allMembers]);
 
@@ -270,21 +279,34 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
     <div>
       <ScreenHeader className="settings-top-card" title="Dashboard" subtitle="Central de BI do núcleo: presença, escalas e participação por sócio." />
 
-      <div style={{ marginBottom: 12 }}>
-        <BiDateRangeFilter
-          preset={rangePreset}
-          from={customRange.from}
-          to={customRange.to}
-          onPreset={setRangePreset}
-          onCustom={patch => { setRangePreset("custom"); setCustomRange(prev => ({ ...prev, ...patch })); }}
-        />
+      <div className="bi-filters">
+        <button type="button" className="bi-filters-toggle" onClick={() => setFiltersOpen(open => !open)} aria-expanded={filtersOpen}>
+          <Icon name="list" size={15} />
+          <span className="bi-filters-title">Filtros</span>
+          <span className="bi-filters-summary">Período: {periodLabel}{graus.length > 0 ? ` · Grau: ${grauLabel}` : ""}</span>
+          <span className={`bi-filters-caret${filtersOpen ? " is-open" : ""}`} aria-hidden>▾</span>
+        </button>
+        {filtersOpen && (
+          <div className="bi-filters-body">
+            <div className="bi-filter-group">
+              <span className="bi-filter-label">Período</span>
+              <BiDateRangeFilter
+                preset={rangePreset}
+                from={customRange.from}
+                to={customRange.to}
+                onPreset={setRangePreset}
+                onCustom={patch => { setRangePreset("custom"); setCustomRange(prev => ({ ...prev, ...patch })); }}
+              />
+            </div>
+            {graus.length > 0 && (
+              <div className="bi-filter-group">
+                <span className="bi-filter-label">Grau</span>
+                <GrauFilterChips graus={graus} value={grau} onChange={setGrau} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      {graus.length > 0 && (
-        <div style={{ marginBottom: 12 }}>
-          <GrauFilterChips graus={graus} value={grau} onChange={setGrau} />
-        </div>
-      )}
 
       <div style={{ marginBottom: 16 }}>
         <BiTabs tabs={TABS} value={tab} onChange={setTab} />
