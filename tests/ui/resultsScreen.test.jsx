@@ -69,6 +69,32 @@ describe("ResultsScreen", () => {
     expect(screen.queryByText("Preenchimento")).not.toBeInTheDocument();
   });
 
+  it("simplifica os resultados publicos e lista somente quem respondeu", () => {
+    render(
+      <ResultsScreen
+        responses={responses}
+        form={form}
+        sections={[]}
+        people={people}
+        user={null}
+        labels={[]}
+        onSaveSections={vi.fn()}
+        publicFormHref="#/formularios/1"
+        publicView
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Presenca Completa" })).toBeInTheDocument();
+    expect(screen.getByText("Maria")).toBeInTheDocument();
+    expect(screen.queryByText("Joao")).not.toBeInTheDocument();
+    expect(screen.queryByText("Pendente")).not.toBeInTheDocument();
+    expect(screen.queryByText("Faltam")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Todos" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Exportar" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Aumentar zoom da planilha" })).not.toBeInTheDocument();
+    expect(screen.getByText("Voltar ao formulário")).toBeInTheDocument();
+  });
+
   it("permite ajustar o zoom interno da planilha por botoes no desktop", () => {
     render(
       <ResultsScreen

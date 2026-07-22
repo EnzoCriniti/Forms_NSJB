@@ -9,7 +9,7 @@ export const PublicResponseSuccessPanel = ({ isInternal, form, onBack, resultsHr
         isInternal={isInternal}
         form={form}
         onBack={onBack}
-        actionLabel="Resultados"
+        actionLabel="Ver resultados"
         actionHref={resultsHref}
         readingControls={readingControls}
       />
@@ -34,7 +34,7 @@ export const PublicResponseHeader = ({ isInternal, form, onBack, resultsHref, re
     titleFallback="Formulário"
     internalSubtitle={form.description || subtitle || "Preencha o formulário abaixo."}
     publicDescription={form.description || subtitle || "Preencha o formulário abaixo."}
-    actionLabel={resultsHref ? "Resultados" : ""}
+    actionLabel={resultsHref ? "Ver resultados" : ""}
     actionHref={resultsHref}
     readingControls={readingControls}
   />

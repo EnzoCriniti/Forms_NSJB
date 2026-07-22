@@ -32,7 +32,7 @@ import {
   sortPresenceRows,
 } from "./resultsPresenceDomain";
 
-export const usePresenceResultsController = ({ responses, form, people }) => {
+export const usePresenceResultsController = ({ responses, form, people, publicView = false }) => {
   const columns = useMemo(() => getVisibleFields(form).filter(field => !(field.type === "person_select" && isPrimaryPeopleBaseField(form, field))), [form]);
   const resultsConfig = getResultsConfig(form);
   const [sortCol, setSortCol] = useState(null);
@@ -44,9 +44,9 @@ export const usePresenceResultsController = ({ responses, form, people }) => {
   const tableZoomController = usePresenceTableZoomController();
 
   const linkedPeople = hasLinkedPeopleField(form);
-  const showLinkedRows = linkedPeople && resultsConfig.showLinkedRoster && people.length > 0;
+  const showLinkedRows = !publicView && linkedPeople && resultsConfig.showLinkedRoster && people.length > 0;
   const expectedTotal = getExpectedResponses(form, people);
-  const hasExpectedTotal = expectedTotal > 0;
+  const hasExpectedTotal = !publicView && expectedTotal > 0;
 
   const handleSort = col => {
     const next = resolvePresenceSortState({ sortCol, sortDir, nextCol: col });

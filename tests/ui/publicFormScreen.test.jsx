@@ -39,7 +39,7 @@ describe("PublicFormScreen", () => {
 
     expect(screen.getByText("Formulario Publico - 10/05/2026")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Voltar" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Resultados" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ver resultados" })).toBeInTheDocument();
     expect(screen.getByText("Nome *")).toBeInTheDocument();
     expect(screen.getByText("Vai comparecer? *")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Enviar Resposta" })).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe("PublicFormScreen", () => {
     window.location.hash = "";
     render(<PublicFormScreen form={form} responses={[]} onSaveResponse={vi.fn()} onBack={vi.fn()} people={people} resultsHref="#/formularios/1/resultados" />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Resultados" }));
+    fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
 
     expect(window.location.hash).toBe("#/formularios/1/resultados");
   });
@@ -81,7 +81,7 @@ describe("PublicFormScreen", () => {
     );
 
     expect(screen.getAllByText("Formulario Publico").length).toBeGreaterThan(0);
-    expect(screen.queryByRole("button", { name: "Resultados" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Ver resultados" })).not.toBeInTheDocument();
     expect(screen.queryByText("NSJB Forms")).not.toBeInTheDocument();
   });
 

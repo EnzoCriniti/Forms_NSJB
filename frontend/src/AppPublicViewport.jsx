@@ -68,6 +68,7 @@ export const AppPublicViewport = ({ app, onBack }) => {
           labels={labels}
           onSaveSections={() => {}}
           publicFormHref={buildPublicFormPath(publicForm)}
+          publicView
         />
       </PublicRoot>
     );

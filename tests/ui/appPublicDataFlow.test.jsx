@@ -180,7 +180,10 @@ describe("App public data flow", () => {
     render(<App />);
 
     expect(await screen.findByRole("button", { name: "Voltar" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Todos" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Formulario Publico" })).toBeInTheDocument();
+    expect(screen.getByText("Maria")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Todos" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Exportar" })).not.toBeInTheDocument();
   });
 
   it("bloqueia a tela publica de resultados quando a opcao nao esta habilitada", async () => {
