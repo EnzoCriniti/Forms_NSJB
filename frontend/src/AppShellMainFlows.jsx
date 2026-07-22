@@ -11,6 +11,7 @@ import { DashboardScreen } from "./screens/DashboardScreen";
 import { EventsScreen } from "./screens/EventsScreen";
 import { FormListScreen } from "./screens/FormListScreen";
 import { MessagingSettingsScreen } from "./screens/MessagingSettingsScreen";
+import { AppGuideScreen } from "./screens/AppGuideScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { TeamsScreen } from "./screens/TeamsScreen";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
@@ -345,3 +346,5 @@ export const MessagingSettingsFlow = ({ app }) => {
     />
   );
 };
+
+export const AppGuideFlow = () => <AppGuideScreen />;

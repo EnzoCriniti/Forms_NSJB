@@ -247,6 +247,13 @@ Mapa curto das areas mais mexidas por agentes.
 
 ## App shell
 
+- `frontend/src/screens/AppGuideScreen.jsx`
+  Tela autenticada do menu `Guia`, com indice navegavel, leitura funcional/tecnica e busca por relevancia.
+- `frontend/src/screens/appGuideContent.js`
+  Fonte versionada dos artigos do guia e algoritmo local de busca, com normalizacao, sinonimos e similaridade por trigramas.
+- `frontend/src/lib/appNav.js` e `frontend/src/AppShellRouteRegistry.jsx`
+  Expoem o Guia para qualquer usuario autenticado e resolvem sua rota dentro do shell.
+
 - `frontend/index.html` e `frontend/public/star.svg`
   Definem o favicon da aba do navegador; o SVG publico reaproveita o mesmo desenho da `StarMark`, sem fundo.
 - `frontend/src/App.jsx`
@@ -292,7 +299,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/lib/appHeaderTitle.js`
   Resolve o titulo contextual do header global: omite `Eventos` na listagem inicial e usa nomes reais de eventos e formularios nos fluxos internos.
 - `frontend/vite.config.js` e `frontend/src/components/AppSidebar.jsx`
-  A versao exibida no rodape da navegacao combina a versao do `package.json` com o hash curto do commit Git injetado no build.
+  O rodape da navegacao exibe uma versao legivel vinda do `package.json`; o hash curto do commit Git fica disponivel apenas no tooltip e o rodape some quando a barra esta recolhida.
 - `frontend/src/AppViewport.jsx`
   Gate de alto nivel do frontend: resolve loading, erro, login, rotas publicas e entrega o shell autenticado.
 - `frontend/src/lib/appViewportState.js`
@@ -725,6 +732,8 @@ Mapa curto das areas mais mexidas por agentes.
   Botoes de filtro, filtro por coluna/grau, filtro de respostas, ordenacao de linhas e opcoes do filtro ativo.
 - `frontend/src/screens/resultsEscalaDomain.js`
   Helpers puros da escala de resultados: metricas, nomes e mutacoes de slots.
+- `frontend/src/lib/scaleSectionColors.js`
+  Normaliza secoes vermelhas da Escala da Organ para tons suaves de dourado, verde, azul ou lavanda, preservando rosa nas secoes femininas.
 - `frontend/src/screens/resultsCsv.js`
   Formatacao de valores e geracao de CSV para presenca e escala.
 - `frontend/src/screens/PublicFormScreen.jsx`

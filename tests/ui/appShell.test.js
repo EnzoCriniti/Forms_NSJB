@@ -91,6 +91,16 @@ describe("appShell navigation", () => {
     })).toEqual({ screen: "messages", clearDraft: true, activeFormId: undefined });
   });
 
+  it("oferece o Guia para qualquer usuario autenticado", () => {
+    expect(buildAppNavItems({ currentUser: { role: "viewer" } })).toContainEqual({ key: "guide", icon: "book", label: "Guia" });
+    expect(resolveAppNavigation({
+      nextScreen: "guide",
+      currentUser: { role: "viewer" },
+      canCreateForms,
+      canViewForm,
+    })).toEqual({ screen: "guide", clearDraft: true, activeFormId: undefined });
+  });
+
   it("manda usuarios logados da lista para eventos", () => {
     expect(resolveAppNavigation({
       nextScreen: "list",
@@ -132,6 +142,7 @@ describe("appShell route registry", () => {
     expect(resolveAppShellRoute({ screen: "events", currentUser: { id: 1 } })?.screen).toBe("events");
     expect(resolveAppShellRoute({ screen: "messages", currentUser: { role: "admin" } })?.screen).toBe("messages");
     expect(resolveAppShellRoute({ screen: "messages", currentUser: { role: "viewer" } })).toBeNull();
+    expect(resolveAppShellRoute({ screen: "guide", currentUser: { role: "viewer" } })?.screen).toBe("guide");
     expect(resolveAppShellRoute({ screen: "results", activeForm: null })).toBeNull();
     expect(resolveAppShellRoute({ screen: "results", activeForm: { id: 2 } })?.screen).toBe("results");
     expect(resolveAppShellRoute({ screen: "eventMessageDetail", currentUser: { id: 1 }, activeEvent: { id: 3 }, activeMessageId: null })).toBeNull();
@@ -240,6 +251,7 @@ describe("appShell derived state", () => {
         { key: "events", icon: "calendar", label: "Eventos" },
         { key: "teams", icon: "users", label: "Equipes" },
         { key: "messages", icon: "message", label: "Mensagens" },
+        { key: "guide", icon: "book", label: "Guia" },
       ],
       screen: "events",
       theme: "dark",
@@ -504,16 +516,19 @@ describe("app navigation items", () => {
     expect(buildAppNavItems({ currentUser: null, canCreateForms })).toEqual([]);
     expect(buildAppNavItems({ currentUser: { role: "viewer" }, canCreateForms })).toEqual([
       { key: "events", icon: "calendar", label: "Eventos" },
+      { key: "guide", icon: "book", label: "Guia" },
     ]);
     expect(buildAppNavItems({ currentUser: { role: "admin" }, canCreateForms })).toEqual([
       { key: "dashboard", icon: "chart", label: "Dashboard" },
       { key: "events", icon: "calendar", label: "Eventos" },
       { key: "teams", icon: "users", label: "Equipes" },
       { key: "messages", icon: "message", label: "Mensagens" },
+      { key: "guide", icon: "book", label: "Guia" },
     ]);
 
     expect(buildAppNavItems({ currentUser: { role: "viewer", permissions: ["messages.view"] } })).toEqual([
       { key: "messages", icon: "message", label: "Mensagens" },
+      { key: "guide", icon: "book", label: "Guia" },
     ]);
   });
 });

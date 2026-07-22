@@ -5,7 +5,7 @@
 
 import { EventMessageDetailFlow, EventMessageEditorFlow } from "./AppShellEventMessageFlows";
 import { InternalRespondFlow, InternalResultsFlow } from "./AppShellFormFlows";
-import { CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, MessagingSettingsFlow, SettingsFlow, TeamsFlow } from "./AppShellMainFlows";
+import { AppGuideFlow, CreateFormFlow, DashboardFlow, EventsFlow, FormListFlow, MessagingSettingsFlow, SettingsFlow, TeamsFlow } from "./AppShellMainFlows";
 import { can } from "./lib/auth";
 import { getShellState } from "./lib/appShellObject";
 
@@ -28,6 +28,11 @@ export const APP_SHELL_ROUTES = [
     screen: "messages",
     component: MessagingSettingsFlow,
     canRender: app => can(getShellState(app).currentUser, "messages.view"),
+  },
+  {
+    screen: "guide",
+    component: AppGuideFlow,
+    canRender: app => Boolean(getShellState(app).currentUser),
   },
   {
     screen: "eventMessageEditor",
