@@ -56,7 +56,7 @@ export const PresenceResultsPanel = ({
     <ResultsPresenceHeader
       publicActionHref={publicFormHref}
       readingControls={readingControls}
-      grauOptions={!publicView && linkedPeople ? grauOptions : []}
+      grauOptions={linkedPeople ? grauOptions : []}
       selectedGrau={selectedGrau}
       onSelectGrau={onSelectGrau}
       stats={stats}
@@ -71,25 +71,24 @@ export const PresenceResultsPanel = ({
     {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
     <PresenceTotalsPanel totalsLayout={totalsLayout} />
 
-    {!publicView && (
-      <PresenceResultsToolbar
-        resultsConfig={resultsConfig}
-        filterButtons={filterButtons}
-        activeSearchCol={activeSearchCol}
-        onToggleSearchCol={onToggleSearchCol}
-        columnSearches={columnSearches}
-        activeFilter={activeFilter}
-        activeFilterLabel={activeFilterLabel}
-        activeFilterOptions={activeFilterOptions}
-        onChangeColumnSearch={onChangeColumnSearch}
-        onClearFilters={onClearFilters}
-        onClearColumnSearch={onClearColumnSearch}
-        tableZoom={tableZoom}
-        onZoomChange={onZoomChange}
-        onResetZoom={onResetZoom}
-        onExportCsv={onExportCsv}
-      />
-    )}
+    <PresenceResultsToolbar
+      resultsConfig={resultsConfig}
+      filterButtons={filterButtons}
+      activeSearchCol={activeSearchCol}
+      onToggleSearchCol={onToggleSearchCol}
+      columnSearches={columnSearches}
+      activeFilter={activeFilter}
+      activeFilterLabel={activeFilterLabel}
+      activeFilterOptions={activeFilterOptions}
+      onChangeColumnSearch={onChangeColumnSearch}
+      onClearFilters={onClearFilters}
+      onClearColumnSearch={onClearColumnSearch}
+      tableZoom={tableZoom}
+      onZoomChange={onZoomChange}
+      onResetZoom={onResetZoom}
+      onExportCsv={onExportCsv}
+      showExport={!publicView}
+    />
 
     <PresenceResultsTable
       columns={columns}

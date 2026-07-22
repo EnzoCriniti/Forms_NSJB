@@ -764,7 +764,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/App.jsx`
   Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 - `frontend/src/AppPublicViewport.jsx`
-  No fluxo publico, formularios de presenca exibem o atalho externo para resultados quando `resultsConfig.publicResultsEnabled` esta habilitado, sem abrir o shell autenticado. A visualizacao publica reutiliza totalizadores e listagem, mas omite faltantes da base, filtros avancados, zoom e exportacao.
+  No fluxo publico, formularios de presenca exibem o atalho externo para resultados quando `resultsConfig.publicResultsEnabled` esta habilitado, sem abrir o shell autenticado. A visualizacao publica reutiliza totalizadores, listagem, filtros e zoom, mas omite faltantes da base e exportacao.
   Formularios fechados mantem esse atalho quando a visualizacao publica esta habilitada.
   Quando a rota publica pertence a um evento encerrado, presenca bloqueia preenchimento e escala da Organ permanece visivel em modo consulta, com vagas pendentes desabilitadas.
 

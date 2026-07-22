@@ -21,6 +21,7 @@ export const PresenceResultsToolbar = ({
   onToggleSearchCol,
   onZoomChange,
   resultsConfig,
+  showExport = true,
   tableZoom,
 }) => (
   <>
@@ -110,7 +111,7 @@ export const PresenceResultsToolbar = ({
         <Btn v="secondary" sz="sm" onClick={() => onZoomChange(1)} disabled={tableZoom >= 2.5} aria-label="Aumentar zoom da planilha">A+</Btn>
         <Btn v="ghost" sz="sm" onClick={onResetZoom} disabled={tableZoom === 1}>100%</Btn>
       </div>
-      <Btn v="secondary" sz="sm" icon="download" onClick={onExportCsv}>Exportar</Btn>
+      {showExport && <Btn v="secondary" sz="sm" icon="download" onClick={onExportCsv}>Exportar</Btn>}
     </div>
   </>
 );

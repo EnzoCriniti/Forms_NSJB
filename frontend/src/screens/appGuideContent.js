@@ -81,7 +81,7 @@ export const GUIDE_ARTICLES = [
     purpose: "O fluxo publico permite responder um formulario sem entrar no painel administrativo. Usuarios autenticados tambem podem preencher pelo modo interno.",
     possibilities: ["Compartilhar um link direto de evento e formulario.", "Localizar uma resposta existente quando a regra do formulario permitir.", "Abrir Ver resultados sem entrar na plataforma quando a visualizacao publica estiver habilitada.", "Exibir aviso de formulario fechado sem perder o acesso aos resultados publicados.", "Usar o mesmo formulario em telas pequenas."],
     workflow: ["Copie o link exibido no formulario ou evento.", "A pessoa informa os dados solicitados e envia.", "Se houver resposta anterior identificavel, o fluxo oferece a edicao.", "Quando houver publicacao de resultados, use Ver resultados para consultar totais e quem ja respondeu.", "Use Voltar ao formulario para retornar ao preenchimento."],
-    technical: "As rotas publicas canonicas usam #/formularios/<id> ou #/eventos/<evento>/<formulario>. Os resultados usam #/formularios/<id>/resultados e permanecem fora do shell autenticado. Essa visao nao mostra faltantes, tamanho da base vinculada, filtros avancados, zoom nem exportacao.",
+    technical: "As rotas publicas canonicas usam #/formularios/<id> ou #/eventos/<evento>/<formulario>. Os resultados usam #/formularios/<id>/resultados e permanecem fora do shell autenticado. Essa visao oferece filtros e zoom, mas nao mostra faltantes, tamanho da base vinculada nem exportacao.",
   },
   {
     id: "planilha-presenca",
@@ -92,7 +92,7 @@ export const GUIDE_ARTICLES = [
     purpose: "A planilha de presenca transforma as respostas do formulario em uma tabela de consulta e em totais configuraveis.",
     possibilities: ["Filtrar por coluna, valor e grau.", "Ordenar linhas e ajustar o zoom da tabela, inclusive por gesto de toque.", "Comparar respostas recebidas com a base vinculada quando o controle de faltantes estiver ativo.", "Exportar os dados visiveis em CSV.", "Oferecer uma versao publica reduzida com totalizadores e somente as respostas recebidas."],
     workflow: ["Abra o formulario e escolha Resultados.", "Use os filtros para localizar pessoas ou respostas.", "Confira os totais e pendencias apresentados no topo.", "Exporte o CSV quando precisar trabalhar fora da aplicacao."],
-    technical: "O controller combina respostas, configuracao do formulario e base vinculada para montar linhas e totais. A lista de faltantes so existe quando showLinkedRoster esta ativo na visao interna. No modo publico, a tabela usa apenas respostas recebidas e remove controles administrativos; a exportacao interna continua sendo gerada no frontend.",
+    technical: "O controller combina respostas, configuracao do formulario e base vinculada para montar linhas e totais. A lista de faltantes so existe quando showLinkedRoster esta ativo na visao interna. No modo publico, a tabela usa apenas respostas recebidas, preserva filtros e zoom para facilitar a leitura e omite a exportacao.",
   },
   {
     id: "planilha-organ",

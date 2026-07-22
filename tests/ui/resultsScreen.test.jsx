@@ -89,9 +89,10 @@ describe("ResultsScreen", () => {
     expect(screen.queryByText("Joao")).not.toBeInTheDocument();
     expect(screen.queryByText("Pendente")).not.toBeInTheDocument();
     expect(screen.queryByText("Faltam")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Todos" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Todos" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Exportar" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Aumentar zoom da planilha" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Aumentar zoom da planilha" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Vai?" })).toBeInTheDocument();
     expect(screen.getByText("Voltar ao formulário")).toBeInTheDocument();
   });
 
