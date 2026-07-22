@@ -749,7 +749,7 @@ Mapa curto das areas mais mexidas por agentes.
   Ajustes responsivos da planilha de resultados, incluindo barra de filtros e caixa interna da tabela.
   Blocos mortos antigos de totalizacao, badges e topo de resultados foram removidos apos varredura de classes.
   Centraliza tambem a paleta visual: base azul-marinho, acentos dourados, verde-petroleo e tons neutros quentes em claro e escuro.
-  As boxes de titulo usam fundo amarelo suave uniforme, sem gradiente entre cores.
+  As boxes de titulo usam gradiente exclusivamente azul, alinhado aos botoes de acao primaria, sem mistura com amarelo.
 - `frontend/src/App.jsx`
   Distingue o acesso interno e publico aos resultados. A rota publica `#/formularios/<id>/resultados` so abre quando o formulario de presenca permite resultados publicos.
 - `frontend/src/AppPublicViewport.jsx`
