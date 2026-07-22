@@ -7,6 +7,7 @@
 import React, { useMemo, useState } from "react";
 import { COLORS } from "./components/ui";
 import { AppHeader } from "./components/AppHeader";
+import { AppSidebar } from "./components/AppSidebar";
 import { AppShellRoutes } from "./AppShellRoutes";
 import { HeaderBackContext } from "./lib/headerBack";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
@@ -61,28 +62,36 @@ export const AppShellContent = ({ app }) => {
     onNavigate("list");
   };
 
+  const pageTitle = (nav || []).find(item => item.key === screen)?.label || "";
+
   return (
     <HeaderBackContext.Provider value={headerBackContext}>
       <div className="app-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>
-        <AppHeader
-          nav={nav}
-          screen={screen}
-          currentUser={currentUser}
-          theme={theme}
-          fontScale={fontScale}
-          onNavigate={onNavigate}
-          onIncreaseFontScale={onIncreaseFontScale}
-          onDecreaseFontScale={onDecreaseFontScale}
-          onToggleTheme={onToggleTheme}
-          onOpenSettings={onOpenSettings}
-          onLogin={onLogin}
-          onLogout={onLogout}
-          onBackFromDetail={handleBackFromDetail}
-          headerBack={headerBack}
-        />
-        <main className="app-main" style={{ maxWidth: 1120, margin: "0 auto", padding: "24px 20px" }}>
-          <AppShellRoutes app={app} />
-        </main>
+        <div className="app-layout">
+          <AppSidebar nav={nav} screen={screen} onNavigate={onNavigate} />
+          <div className="app-shell-main">
+            <AppHeader
+              nav={nav}
+              screen={screen}
+              pageTitle={pageTitle}
+              currentUser={currentUser}
+              theme={theme}
+              fontScale={fontScale}
+              onNavigate={onNavigate}
+              onIncreaseFontScale={onIncreaseFontScale}
+              onDecreaseFontScale={onDecreaseFontScale}
+              onToggleTheme={onToggleTheme}
+              onOpenSettings={onOpenSettings}
+              onLogin={onLogin}
+              onLogout={onLogout}
+              onBackFromDetail={handleBackFromDetail}
+              headerBack={headerBack}
+            />
+            <main className="app-main">
+              <AppShellRoutes app={app} />
+            </main>
+          </div>
+        </div>
       </div>
     </HeaderBackContext.Provider>
   );

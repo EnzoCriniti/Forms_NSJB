@@ -1174,11 +1174,163 @@ textarea.msg-input {
   box-shadow: var(--shadow-sm);
 }
 
+.app-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app-shell-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 12px;
+  background: var(--header-bg);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 21;
+}
+
+.app-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 18px;
+  color: var(--header-fg);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+}
+
+.app-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.app-sidebar button.app-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 0 10px 10px 0;
+  background: transparent;
+  color: var(--header-fg-muted);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.app-sidebar button.app-sidebar__item:hover {
+  background: var(--header-control-bg);
+  color: var(--header-fg);
+}
+
+.app-sidebar button.app-sidebar__item[data-active="true"] {
+  background: var(--header-control-bg-strong);
+  color: var(--header-fg);
+  border-left-color: var(--accent);
+}
+
+.app-sidebar__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  flex: 0 0 auto;
+}
+
+.app-sidebar__foot {
+  margin-top: auto;
+  padding: 12px 12px 2px;
+  color: var(--header-fg-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .app-header {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 3px solid var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  background: var(--header-bg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-header__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.app-header__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header__title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--header-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-header__brand {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  color: var(--header-fg);
+  font-weight: 800;
+  font-size: 16px;
+  min-width: 0;
+}
+
+.app-header__brand-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-header button.app-header__icon-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: none;
+  background: var(--header-control-bg);
+  color: var(--header-fg);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: background 0.15s ease;
+}
+
+.app-header button.app-header__icon-btn:hover {
+  background: var(--header-control-bg-strong);
 }
 
 .app-header .ui-btn,
@@ -1217,14 +1369,17 @@ textarea.msg-input {
 }
 
 .app-main {
-  width: min(1120px, calc(100% - 40px));
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 26px 28px 44px;
 }
 
 .app-nav:empty {
   display: none;
 }
 
-.app-header__menu-toggle {
+.app-header button.app-header__menu-toggle {
   display: none;
 }
 
@@ -1254,7 +1409,8 @@ textarea.msg-input {
 }
 
 .app-header__session {
-  justify-self: end;
+  display: flex;
+  align-items: center;
 }
 
 .app-header-drawer {
@@ -1636,23 +1792,30 @@ button:not(.ui-btn):focus-visible {
     grid-template-columns: 1fr !important;
   }
 
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    display: none;
+  }
+
   .app-header {
-    align-items: center !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
     gap: 10px !important;
     padding: 10px 12px !important;
   }
 
-  .app-header > div:first-child {
+  .app-header__left {
     min-width: 0;
     gap: 8px !important;
   }
 
-  .app-header > div:first-child span {
-    font-size: 14px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .app-header__brand {
+    display: flex;
+  }
+
+  .app-header__title {
+    display: none;
   }
 
   .app-nav {
@@ -1666,7 +1829,6 @@ button:not(.ui-btn):focus-visible {
   .app-header__mobile-tools {
     display: inline-flex;
     gap: 4px;
-    justify-self: end;
   }
 
   .app-header__session {

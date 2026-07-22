@@ -1,11 +1,11 @@
 /**
  * @file frontend/src/components/AppHeader.jsx
- * @summary Cabecalho principal do frontend.
- * @responsibility Exibir navegacao, marca e controles de sessao no topo.
+ * @summary Cabecalho principal do frontend (topbar enxuta).
+ * @responsibility No desktop mostra titulo/contexto da tela e as acoes de sessao;
+ * no mobile vira uma barra compacta com marca, menu (drawer) e ajustes de leitura.
  */
 
 import React, { useEffect, useState } from "react";
-import appData from "../data/appData.json";
 import { AuthPanel } from "../features/auth/AuthPanel";
 import { FONT_SCALE_MAX, FONT_SCALE_MIN } from "../lib/appFontScale";
 import { Icon } from "./ui";
@@ -14,6 +14,7 @@ import { StarMark } from "./StarMark";
 export const AppHeader = ({
   nav,
   screen,
+  pageTitle,
   currentUser,
   theme,
   fontScale,
@@ -29,6 +30,7 @@ export const AppHeader = ({
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const canOpenDrawer = Boolean(currentUser);
+  const showBack = currentUser && (headerBack || ["respond", "results"].includes(screen));
   const userInitials = String(currentUser?.name || "Usuário")
     .trim()
     .split(/\s+/)
@@ -55,32 +57,29 @@ export const AppHeader = ({
     onLogout();
   };
 
-  const toggleThemeAndClose = () => {
-    onToggleTheme();
+  const runBack = () => {
+    if (headerBack) {
+      headerBack.run();
+      return;
+    }
+    if (onBackFromDetail) {
+      onBackFromDetail();
+      return;
+    }
+    onNavigate("list");
   };
 
   return (
     <>
-      <header className="app-header" data-screen={screen} style={{ background: "var(--header-bg)", padding: "12px 24px", display: "grid", gridTemplateColumns: "auto 1fr auto", alignItems: "center", gap: 18, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-          {currentUser && (headerBack || ["respond", "results"].includes(screen)) && (
+      <header className="app-header" data-screen={screen}>
+        <div className="app-header__left">
+          {showBack && (
             <button
               type="button"
-              className="app-header__back-button"
-              onClick={() => {
-                if (headerBack) {
-                  headerBack.run();
-                  return;
-                }
-                if (onBackFromDetail) {
-                  onBackFromDetail();
-                  return;
-                }
-                onNavigate("list");
-              }}
+              className="app-header__icon-btn app-header__back-button"
+              onClick={runBack}
               aria-label={headerBack ? headerBack.label : "Voltar para listagem"}
               title={headerBack ? headerBack.label : "Voltar para listagem"}
-              style={{ width: 40, height: 40, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "var(--header-control-bg)", color: "var(--header-fg)", cursor: "pointer", flex: "0 0 auto" }}
             >
               <Icon name="back" size={18} />
             </button>
@@ -88,56 +87,39 @@ export const AppHeader = ({
           {canOpenDrawer && (
             <button
               type="button"
-              className="app-header__menu-toggle"
+              className="app-header__icon-btn app-header__menu-toggle"
               onClick={() => setDrawerOpen(true)}
               aria-label="Abrir menu"
-              style={{ width: 40, height: 40, alignItems: "center", justifyContent: "center", borderRadius: 12, border: "none", background: "var(--header-control-bg)", color: "var(--header-fg)", cursor: "pointer", flex: "0 0 auto" }}
             >
               <Icon name="menu" size={18} />
             </button>
           )}
-          <StarMark size={22} color="#ffffff" />
-          <span title={`Dados base JSON v${appData.version}`} style={{ fontWeight: 700, fontSize: 16, color: "var(--header-fg)", letterSpacing: 0, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>NSJB Forms</span>
+          <span className="app-header__brand">
+            <StarMark size={20} color="#ffffff" />
+            <span className="app-header__brand-name">NSJB Forms</span>
+          </span>
+          <span className="app-header__title">{pageTitle || ""}</span>
         </div>
-        <nav className="app-nav" style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
-          {nav.map(n => (
-            <button
-              key={n.key}
-              onClick={() => onNavigate(n.key)}
-              style={{
-                display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", borderRadius: 10, fontSize: 12, fontWeight: 700,
-                border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all 0.15s",
-                background: screen === n.key ? "var(--header-control-bg-strong)" : "transparent",
-                color: screen === n.key ? "var(--header-fg)" : "var(--header-fg-muted)",
-              }}
-            >
-              <Icon name={n.icon} size={14} />
-              {n.label}
-            </button>
-          ))}
-        </nav>
-        {currentUser && (
-          <div className="app-header__mobile-tools" aria-label="Ajustes de leitura">
-            <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= FONT_SCALE_MIN} aria-label="Diminuir fonte">
-              A-
-            </button>
-            <button type="button" className="app-header__mobile-font-button" onClick={onIncreaseFontScale} disabled={fontScale >= FONT_SCALE_MAX} aria-label="Aumentar fonte">
-              A+
-            </button>
+        <div className="app-header__right">
+          {currentUser && (
+            <div className="app-header__mobile-tools" aria-label="Ajustes de leitura">
+              <button type="button" className="app-header__mobile-font-button" onClick={onDecreaseFontScale} disabled={fontScale <= FONT_SCALE_MIN} aria-label="Diminuir fonte">A-</button>
+              <button type="button" className="app-header__mobile-font-button" onClick={onIncreaseFontScale} disabled={fontScale >= FONT_SCALE_MAX} aria-label="Aumentar fonte">A+</button>
+            </div>
+          )}
+          <div className="app-header__session">
+            <AuthPanel
+              user={currentUser}
+              onLogin={onLogin}
+              onLogout={onLogout}
+              theme={theme}
+              fontScale={fontScale}
+              onIncreaseTextSize={onIncreaseFontScale}
+              onDecreaseTextSize={onDecreaseFontScale}
+              onToggleTheme={onToggleTheme}
+              onOpenSettings={onOpenSettings}
+            />
           </div>
-        )}
-        <div className="app-header__session">
-          <AuthPanel
-            user={currentUser}
-            onLogin={onLogin}
-            onLogout={onLogout}
-            theme={theme}
-            fontScale={fontScale}
-            onIncreaseTextSize={onIncreaseFontScale}
-            onDecreaseTextSize={onDecreaseFontScale}
-            onToggleTheme={onToggleTheme}
-            onOpenSettings={onOpenSettings}
-          />
         </div>
       </header>
       {canOpenDrawer && drawerOpen && (
@@ -185,7 +167,7 @@ export const AppHeader = ({
                 </div>
               </div>
               <div className="app-header-drawer__actions">
-                <button type="button" className="app-header-drawer__action" onClick={toggleThemeAndClose}>
+                <button type="button" className="app-header-drawer__action" onClick={onToggleTheme}>
                   <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
                 </button>
                 {currentUser?.role === "admin" && (
