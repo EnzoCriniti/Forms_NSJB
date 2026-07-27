@@ -34,7 +34,6 @@ describe("MessagingSettingsPanel", () => {
   it("renderiza o painel na tela dedicada", () => {
     render(<MessagingSettingsScreen {...baseProps} onNavigate={vi.fn()} />);
 
-    expect(screen.getByRole("heading", { name: "Mensagens" })).toBeInTheDocument();
     expect(screen.getByText("Gerencie a configuracao global, os modelos e os presets de destinatarios")).toBeInTheDocument();
     expect(screen.getByText("Modelos existentes")).toBeInTheDocument();
   });

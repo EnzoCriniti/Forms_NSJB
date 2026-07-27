@@ -31,7 +31,7 @@ export const AppGuideScreen = () => {
   return (
     <div className="app-guide-screen">
       <ScreenHeader
-        title="Guia da aplicacao"
+        className="settings-top-card"
         subtitle="Consulte os fluxos, possibilidades e detalhes tecnicos do NSJB Forms."
         leading={<span className="app-guide-header-icon"><Icon name="book" size={24} /></span>}
       />

@@ -68,7 +68,7 @@ describe("EventsScreen — aba Mensagens", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Vazio - 21/05/2026"));
+    fireEvent.click(screen.getByText("Evento Vazio"));
 
     expect(screen.getByRole("button", { name: /Formulários/ })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Mensagens/ })).not.toBeInTheDocument();
@@ -86,7 +86,7 @@ describe("EventsScreen — aba Mensagens", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByText("Evento Maio"));
     fireEvent.click(screen.getByRole("button", { name: /Mensagens \(2\)/ }));
 
     expect(screen.getByText("Anuncio (grupo)")).toBeInTheDocument();
@@ -109,7 +109,7 @@ describe("EventsScreen — aba Mensagens", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByText("Evento Maio"));
     fireEvent.click(screen.getByRole("button", { name: /Mensagens/ }));
     fireEvent.click(screen.getByRole("button", { name: "Nova mensagem" }));
 
@@ -130,7 +130,7 @@ describe("EventsScreen — aba Mensagens", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByText("Evento Maio"));
     fireEvent.click(screen.getByRole("button", { name: /Mensagens/ }));
     fireEvent.click(screen.getByText("Anuncio (grupo)"));
 
@@ -152,7 +152,7 @@ describe("EventsScreen — aba Mensagens", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio - 20/05/2026"));
+    fireEvent.click(screen.getByText("Evento Maio"));
     fireEvent.click(screen.getByRole("button", { name: /Mensagens/ }));
 
     expect(screen.getByText("Nenhuma mensagem cadastrada neste evento.")).toBeInTheDocument();

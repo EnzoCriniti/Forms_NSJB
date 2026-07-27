@@ -207,7 +207,7 @@ const FieldEditorSourcePanel = ({
         <div style={{ fontSize: 11, color: COLORS.textMuted, lineHeight: 1.4 }}>
           {formMode === "nucleo"
             ? "Este campo fica apenas neste formulário e não entra no catálogo global."
-            : "No formulário geral, campos locais não usam a base central de sócios."}
+            : "No Formulário Geral, campos locais não usam a base central de sócios."}
         </div>
       )}
     </div>
@@ -279,7 +279,7 @@ const FieldEditorDefinitionPanel = ({
           <div style={{ fontSize: 11, color: COLORS.textSecondary, lineHeight: 1.45 }}>
             {formMode === "nucleo"
               ? "Campos locais usam a base central de sócios como origem. Quando o campo vem da biblioteca, a origem já chega definida ali. Este editor não troca a base."
-              : "Formulário geral não usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
+              : "Formulário Geral não usa a base central. Para seletor por base, use um campo da biblioteca ligado a uma base externa sincronizada."}
           </div>
         </div>
         <div style={{ display: "grid", gap: 6 }}>

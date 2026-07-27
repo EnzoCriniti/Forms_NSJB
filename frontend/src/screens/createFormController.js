@@ -253,7 +253,7 @@ export const useCreateFormController = ({
     },
     contextProps: {
       title: "Tipo do formulário",
-      body: format === "escala_organ" ? "Formulario interno - Escala da Organ" : "Formulario de presenca",
+      body: format === "escala_organ" ? "Formulário Organ - Escala da Organ" : "Formulário de presença",
       footer: "O tipo e a estrutura do formulário vigente ficam travados na edição. Para mudar isso, use duplicação ou crie um novo formulário.",
     },
     modePanelProps: {

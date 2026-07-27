@@ -9,7 +9,7 @@ import { Btn, FeedbackBanner, resolveActionErrorMessage, ThemeIcon } from "../..
 import { ROLES } from "../../lib/auth";
 import { FONT_SCALE_MAX, FONT_SCALE_MIN } from "../../lib/appFontScale";
 
-export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onToggleTheme, onIncreaseTextSize, onDecreaseTextSize, onOpenSettings, variant = "header" }) => {
+export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onToggleTheme, onIncreaseTextSize, onDecreaseTextSize, variant = "header" }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [feedback, setFeedback] = useState(null);
@@ -80,11 +80,6 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
       >
         <ThemeIcon theme={theme} />
       </Btn>
-      {user.role === "admin" && (
-        <Btn v="ghost" sz="sm" onClick={onOpenSettings} style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38 }}>
-          Configurações
-        </Btn>
-      )}
       <div style={{ color: "var(--header-fg)", fontSize: 12, textAlign: "right", lineHeight: 1.2 }}>
         <strong>{user.name}</strong>
         <div style={{ color: "var(--header-fg-muted)" }}>{ROLES[user.role]?.label}</div>

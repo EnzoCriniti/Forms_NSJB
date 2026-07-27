@@ -30,6 +30,6 @@ export const StatusBadge = ({ status, avoidDanger = false }) => {
 
 export const TypeBadge = ({ type }) => (
   <span className="ui-badge" style={{ background: type === "escala_organ" ? "var(--type-scale-bg)" : "var(--type-presence-bg)", color: type === "escala_organ" ? "var(--type-scale-text)" : "var(--type-presence-text)" }}>
-    {type === "escala_organ" ? "Formulario interno" : "Presen\u00e7a"}
+    {type === "escala_organ" ? "Formul\u00e1rio Organ" : "Presen\u00e7a"}
   </span>
 );

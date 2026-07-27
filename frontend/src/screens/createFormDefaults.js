@@ -17,14 +17,14 @@ export const FIELD_TYPES = [
 export const FORM_MODE_OPTIONS = [
   {
     id: FORM_MODES.NUCLEO,
-    title: "Com base de socios",
+    title: "Formulário Presença Núcleo",
     desc: "Ja nasce com o campo Nome da base central. O controle de faltantes pode ficar ligado ou desligado nos resultados.",
     badge: "Base central ativa",
     bullets: ["Campo Nome obrigatorio", "Pode controlar faltantes", "Pode ser usado em formularios opcionais"],
   },
   {
     id: FORM_MODES.GERAL,
-    title: "Formulário geral",
+    title: "Formulário Geral",
     desc: "Não usa a base central de sócios. Permite campos livres e bases externas.",
     badge: "Fluxo livre",
     bullets: ["Sem nome fixo da base central", "Aceita bases externas no catálogo", "Sem lógica de faltantes do núcleo"],

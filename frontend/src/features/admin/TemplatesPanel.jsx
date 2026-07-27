@@ -32,7 +32,7 @@ export const TemplatesPanel = ({
               : `${preset.fieldDefinitions?.length ?? 0} campos`;
             const modeLabel = preset.type === "escala_organ"
               ? "Escala da Organ"
-              : (preset.resultsConfig?.formMode === "nucleo" ? "Com base de socios" : "Formulario geral");
+              : (preset.resultsConfig?.formMode === "nucleo" ? "Formulário Presença Núcleo" : "Formulário Geral");
             return (
               <div key={preset.id} className="settings-row">
                 <div>

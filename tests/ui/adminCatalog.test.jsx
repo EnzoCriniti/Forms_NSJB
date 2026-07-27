@@ -335,8 +335,8 @@ describe("AdminSettingsModal catalogo", () => {
     expect(screen.getByText("Templates de formulário existentes")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Criar template" })).not.toBeInTheDocument();
     expect(screen.queryByPlaceholderText("Nome do template")).not.toBeInTheDocument();
-    expect(screen.getByText("Com base de socios - 2 campos - Criado por Admin")).toBeInTheDocument();
-    expect(screen.getByText("Formulario geral - 1 campos - Criado por Admin")).toBeInTheDocument();
+    expect(screen.getByText("Formulário Presença Núcleo - 2 campos - Criado por Admin")).toBeInTheDocument();
+    expect(screen.getByText("Formulário Geral - 1 campos - Criado por Admin")).toBeInTheDocument();
   });
 });
 

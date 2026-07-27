@@ -277,7 +277,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
 
   return (
     <div>
-      <ScreenHeader className="settings-top-card" title="Dashboard" subtitle="Central de BI do núcleo: presença, escalas e participação por sócio." />
+      <ScreenHeader className="settings-top-card" subtitle="Central de BI do núcleo: presença, escalas e participação por sócio." />
 
       <div className="bi-filters">
         <button type="button" className="bi-filters-toggle" onClick={() => setFiltersOpen(open => !open)} aria-expanded={filtersOpen}>
@@ -377,7 +377,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
               {escalaKpiCard}
               <div className="bi-panel">
                 <div className="bi-panel-head">
-                  <div className="bi-panel-title">Vacância por seção</div>
+                  <div className="bi-panel-title">Vagas em aberto por seção</div>
                   <div className="bi-panel-hint">% de vagas que ficam vazias — quais seções faltam gente.</div>
                 </div>
                 {escala?.vacancy?.length

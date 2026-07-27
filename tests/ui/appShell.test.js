@@ -252,6 +252,7 @@ describe("appShell derived state", () => {
         { key: "teams", icon: "users", label: "Equipes" },
         { key: "messages", icon: "message", label: "Mensagens" },
         { key: "guide", icon: "book", label: "Guia" },
+        { key: "settings", icon: "settings", label: "Configurações" },
       ],
       screen: "events",
       theme: "dark",
@@ -524,6 +525,7 @@ describe("app navigation items", () => {
       { key: "teams", icon: "users", label: "Equipes" },
       { key: "messages", icon: "message", label: "Mensagens" },
       { key: "guide", icon: "book", label: "Guia" },
+      { key: "settings", icon: "settings", label: "Configurações" },
     ]);
 
     expect(buildAppNavItems({ currentUser: { role: "viewer", permissions: ["messages.view"] } })).toEqual([

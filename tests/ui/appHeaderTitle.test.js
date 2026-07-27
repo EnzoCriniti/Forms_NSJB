@@ -12,8 +12,12 @@ const nav = [
 ];
 
 describe("resolveAppHeaderTitle", () => {
-  it("remove o titulo redundante da listagem inicial de eventos", () => {
-    expect(resolveAppHeaderTitle({ screen: "events", nav })).toBe("");
+  it("usa o rotulo de menu na listagem inicial de eventos", () => {
+    expect(resolveAppHeaderTitle({ screen: "events", nav })).toBe("Eventos");
+  });
+
+  it("resolve titulos de telas fora do menu principal", () => {
+    expect(resolveAppHeaderTitle({ screen: "settings", nav })).toBe("Configurações");
   });
 
   it("usa os nomes reais nos fluxos internos", () => {

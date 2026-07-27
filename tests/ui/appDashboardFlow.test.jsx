@@ -147,10 +147,10 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    expect(await screen.findByText("Evento Dashboard - 10/05/2026")).toBeInTheDocument();
+    expect(await screen.findByText("Evento Dashboard")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Evento Dashboard - 10/05/2026"));
+    fireEvent.click(screen.getByText("Evento Dashboard"));
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
   });
 
@@ -171,7 +171,7 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    fireEvent.click(await screen.findByText("Evento Dashboard - 10/05/2026"));
+    fireEvent.click(await screen.findByText("Evento Dashboard"));
     fireEvent.click(screen.getByRole("button", { name: "Responder" }));
     fireEvent.click(await screen.findByRole("button", { name: "Voltar para listagem" }));
 
@@ -196,7 +196,7 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    fireEvent.click(await screen.findByText("Evento Dashboard - 10/05/2026"));
+    fireEvent.click(await screen.findByText("Evento Dashboard"));
     fireEvent.click(await screen.findByRole("button", { name: "Ver resultados" }));
 
     expect(await screen.findByText("Resultado do preenchimento")).toBeInTheDocument();
@@ -223,7 +223,7 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    fireEvent.click(await screen.findByText("Evento Dashboard - 10/05/2026"));
+    fireEvent.click(await screen.findByText("Evento Dashboard"));
     expect(await screen.findByRole("button", { name: "Voltar" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Dashboard" }));
@@ -232,7 +232,7 @@ describe("App dashboard flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Eventos" }));
     expect(await screen.findByRole("heading", { name: "Eventos" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Voltar" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Evento Dashboard - 10\/05\/2026/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Evento Dashboard/i })).toBeInTheDocument();
   });
 
   it("derruba a sessao quando o validador encontra o token revogado", async () => {
@@ -292,9 +292,9 @@ describe("App dashboard flow", () => {
 
     expect(await screen.findByRole("button", { name: "Eventos" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Dashboard" })).not.toBeInTheDocument();
-    expect(screen.getByText("Evento Dashboard - 10/05/2026")).toBeInTheDocument();
+    expect(screen.getByText("Evento Dashboard")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Evento Dashboard - 10/05/2026"));
+    fireEvent.click(screen.getByText("Evento Dashboard"));
 
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo formulário" })).not.toBeInTheDocument();

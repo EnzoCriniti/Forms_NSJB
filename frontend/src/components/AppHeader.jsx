@@ -22,7 +22,6 @@ export const AppHeader = ({
   onIncreaseFontScale,
   onDecreaseFontScale,
   onToggleTheme,
-  onOpenSettings,
   onLogin,
   onLogout,
   onBackFromDetail,
@@ -45,11 +44,6 @@ export const AppHeader = ({
   const navigateAndClose = nextScreen => {
     setDrawerOpen(false);
     onNavigate(nextScreen);
-  };
-
-  const openSettingsAndClose = () => {
-    setDrawerOpen(false);
-    onOpenSettings();
   };
 
   const logoutAndClose = () => {
@@ -96,9 +90,8 @@ export const AppHeader = ({
           )}
           <span className="app-header__brand">
             <StarMark size={20} color="#ffffff" />
-            <span className="app-header__brand-name">NSJB Forms</span>
           </span>
-          {pageTitle && <span className="app-header__title">{pageTitle}</span>}
+          {pageTitle && <h1 className="app-header__title">{pageTitle}</h1>}
         </div>
         <div className="app-header__right">
           {currentUser && (
@@ -117,7 +110,6 @@ export const AppHeader = ({
               onIncreaseTextSize={onIncreaseFontScale}
               onDecreaseTextSize={onDecreaseFontScale}
               onToggleTheme={onToggleTheme}
-              onOpenSettings={onOpenSettings}
             />
           </div>
         </div>
@@ -134,7 +126,10 @@ export const AppHeader = ({
             <div className="app-header-drawer__top">
               <div>
                 <div style={{ fontSize: 10, fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.6 }}>Menu</div>
-                <strong style={{ fontSize: 13, color: "var(--text)" }}>NSJB Forms</strong>
+                <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <StarMark size={16} color="var(--primary)" />
+                  <strong style={{ fontSize: 13, color: "var(--text)" }}>NSJB Forms</strong>
+                </span>
               </div>
               <button type="button" className="app-header-drawer__close" aria-label="Fechar menu" onClick={() => setDrawerOpen(false)}>
                 <Icon name="close" size={18} />
@@ -170,11 +165,6 @@ export const AppHeader = ({
                 <button type="button" className="app-header-drawer__action" onClick={onToggleTheme}>
                   <span>{theme === "dark" ? "Modo claro" : "Modo escuro"}</span>
                 </button>
-                {currentUser?.role === "admin" && (
-                  <button type="button" className="app-header-drawer__action app-header-drawer__action--primary" onClick={openSettingsAndClose}>
-                    <span>Configurações</span>
-                  </button>
-                )}
                 <button type="button" className="app-header-drawer__action app-header-drawer__action--danger" onClick={logoutAndClose}>
                   <span>Sair</span>
                 </button>

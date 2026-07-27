@@ -13,5 +13,6 @@ export const buildAppNavItems = ({ currentUser }) => {
   if (can(currentUser, "teams.view")) items.push({ key: "teams", icon: "users", label: "Equipes" });
   if (can(currentUser, "messages.view")) items.push({ key: "messages", icon: "message", label: "Mensagens" });
   items.push({ key: "guide", icon: "book", label: "Guia" });
+  if (currentUser.role === "admin") items.push({ key: "settings", icon: "settings", label: "Configurações" });
   return items;
 };

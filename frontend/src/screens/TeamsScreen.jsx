@@ -29,7 +29,7 @@ export const TeamsScreen = ({
   return (
     <div style={{ display: "grid", gap: 18 }}>
       <ScreenHeader
-        title="Periodos de equipes"
+        className="settings-top-card"
         subtitle="Cadastre as equipes do Mestre Assistente e da Organ para controlar dispensas e contexto operacional por periodo."
       />
       {controller.feedback && <FeedbackBanner tone={controller.feedback.tone} message={controller.feedback.message} />}

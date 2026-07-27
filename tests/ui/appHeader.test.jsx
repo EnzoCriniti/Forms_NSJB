@@ -17,6 +17,7 @@ describe("AppHeader", () => {
         nav={[
           { key: "dashboard", icon: "chart", label: "Dashboard" },
           { key: "list", icon: "list", label: "Formulários" },
+          { key: "settings", icon: "settings", label: "Configurações" },
         ]}
         screen="list"
         currentUser={{ id: 1, name: "Admin", role: "admin" }}
@@ -39,9 +40,9 @@ describe("AppHeader", () => {
 
     expect(screen.getByRole("dialog", { name: "Menu principal" })).toBeInTheDocument();
     expect(screen.getByText("Conta")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Configurações" }));
+    fireEvent.click(within(screen.getByRole("dialog", { name: "Menu principal" })).getByRole("button", { name: "Configurações" }));
 
-    expect(onOpenSettings).toHaveBeenCalledTimes(1);
+    expect(onNavigate).toHaveBeenCalledWith("settings");
 
     fireEvent.click(screen.getByRole("button", { name: "Abrir menu" }));
     fireEvent.click(within(screen.getByRole("dialog", { name: "Menu principal" })).getByRole("button", { name: "Formulários" }));

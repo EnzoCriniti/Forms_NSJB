@@ -26,7 +26,7 @@ describe("CreateFormScreen form modes", () => {
   it("destaca o resumo do modo nucleo por padrao", () => {
     renderNewForm();
 
-    expect(screen.getByText("Modo ativo: Com base de socios")).toBeInTheDocument();
+    expect(screen.getByText("Modo ativo: Formulário Presença Núcleo")).toBeInTheDocument();
     expect(screen.getAllByText("Base central ativa").length).toBeGreaterThan(0);
     expect(screen.getByText("Campo principal da base central")).toBeInTheDocument();
     expect(screen.getByText("1 campo(s) ligado(s) à base central")).toBeInTheDocument();
@@ -37,7 +37,7 @@ describe("CreateFormScreen form modes", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /Formulário geral/i }));
 
-    expect(screen.getByText("Modo ativo: Formulário geral")).toBeInTheDocument();
+    expect(screen.getByText("Modo ativo: Formulário Geral")).toBeInTheDocument();
     expect(screen.getAllByText("Fluxo livre").length).toBeGreaterThan(0);
     expect(screen.getByText("Base central desativada neste formulário")).toBeInTheDocument();
     expect(screen.queryByText("Total esperado")).not.toBeInTheDocument();
@@ -52,7 +52,7 @@ describe("CreateFormScreen form modes", () => {
     const typeSelect = screen.getByDisplayValue("Sim / Não");
     expect(screen.queryByRole("option", { name: "Seletor por base" })).not.toBeInTheDocument();
     expect(typeSelect).toBeInTheDocument();
-    expect(screen.getByText("No formulário geral, campos locais não usam a base central de sócios.")).toBeInTheDocument();
+    expect(screen.getByText("No Formulário Geral, campos locais não usam a base central de sócios.")).toBeInTheDocument();
   });
 
   it("filtra a biblioteca no formulario geral para manter apenas bases externas", () => {

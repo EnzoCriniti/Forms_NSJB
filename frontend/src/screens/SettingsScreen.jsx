@@ -5,15 +5,13 @@
  */
 
 import React from "react";
-import { Btn, ScreenHeader } from "../components/ui";
+import { ScreenHeader } from "../components/ui";
 import { AdminSettingsModal } from "../features/admin/AdminSettingsModal";
 
 export const SettingsScreen = ({ onNavigate, ...props }) => (
   <div>
     <ScreenHeader
       className="settings-top-card"
-      onBack={() => onNavigate("list")}
-      title="Configurações"
       subtitle="Gerencie usuários, segurança, bases e catálogos do sistema"
     />
     <AdminSettingsModal

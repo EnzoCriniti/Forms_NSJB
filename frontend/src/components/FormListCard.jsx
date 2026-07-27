@@ -45,6 +45,11 @@ export const FormListCard = ({
   const typeColor = isScaleForm ? "var(--type-scale-text)" : "var(--type-presence-text)";
   const fillPercent = total ? Math.min(100, (responses / total) * 100) : 0;
   const formMode = getFormMode(form);
+  const formattedDate = form?.date ? formatDate(form.date) : "";
+  const titleDateSuffix = formattedDate ? ` - ${formattedDate}` : "";
+  const displayTitle = titleDateSuffix && form?.title?.endsWith(titleDateSuffix)
+    ? form.title.slice(0, -titleDateSuffix.length)
+    : form?.title;
 
   const openPublicForm = () => {
     if (!form?.id) return;
@@ -124,10 +129,10 @@ export const FormListCard = ({
       <div className="form-card-main" style={{ flex: 1, minWidth: 0 }}>
         <div className="form-card-title-row" style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 8 }}>
           <div className="form-card-title-wrap" style={{ minWidth: 0, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-            <span style={{ fontWeight: 700, fontSize: 16, lineHeight: 1.25 }}>{form?.title}</span>
-            {form?.date && (
+            <span style={{ fontWeight: 700, fontSize: 16, lineHeight: 1.25 }}>{displayTitle}</span>
+            {formattedDate && (
               <span style={{ fontSize: 14, fontWeight: 700, color: COLORS.textSecondary, whiteSpace: "nowrap" }}>
-                {formatDate(form.date)}
+                {formattedDate}
               </span>
             )}
             {isPinned && (
@@ -139,7 +144,7 @@ export const FormListCard = ({
         </div>
         <div className="form-card-badges" style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
           <StatusBadge status={form.status} avoidDanger={isScaleForm} />
-          {canCreateForms(user) && <TypeBadge type={form.type} />}
+          {canCreateForms(user) && isScaleForm && <TypeBadge type={form.type} />}
           {form.type === "presenca" && (
             <span className="ui-badge" style={{ background: formMode === "nucleo" ? COLORS.primaryLight : COLORS.surfaceAlt, color: formMode === "nucleo" ? COLORS.primary : COLORS.textSecondary }}>
               {getFormModeLabel(form)}

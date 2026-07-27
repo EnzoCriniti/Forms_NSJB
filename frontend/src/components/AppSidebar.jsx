@@ -29,7 +29,6 @@ export const AppSidebar = ({ nav = [], screen, onNavigate, collapsed = false, on
       </button>
       <span className="app-sidebar__brand">
         <StarMark size={20} color="#ffffff" />
-        <span className="app-sidebar__brand-name">NSJB Forms</span>
       </span>
     </div>
     <nav className="app-sidebar__nav">

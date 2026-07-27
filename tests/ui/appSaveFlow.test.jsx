@@ -70,7 +70,7 @@ const bootstrap = form => ({
 });
 
 const openTestEvent = async () => {
-  const eventCard = await screen.findByText("Evento Teste - 04/05/2026");
+  const eventCard = await screen.findByText("Evento Teste");
   fireEvent.click(eventCard);
 };
 

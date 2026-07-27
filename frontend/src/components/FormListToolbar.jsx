@@ -94,7 +94,7 @@ export const FormListToolbar = ({
           <select value={type || ""} onChange={event => onTypeChange(event.target.value || null)} style={controlStyle}>
             <option value="">Todos os tipos</option>
             <option value="presenca">Presença</option>
-            <option value="escala_organ">Formulario interno</option>
+            <option value="escala_organ">Formulário Organ</option>
           </select>
           <select value={label || ""} onChange={event => onLabelChange(event.target.value ? Number(event.target.value) : null)} style={controlStyle}>
             <option value="">Todas as classificações</option>

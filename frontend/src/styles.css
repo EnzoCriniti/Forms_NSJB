@@ -941,18 +941,15 @@ textarea.msg-input {
 .create-form-header,
 .screen-top-card,
 .settings-top-card {
-  background:
-    radial-gradient(circle at top right, rgba(var(--primary-rgb), 0.2), transparent 38%),
-    linear-gradient(135deg, rgba(var(--primary-rgb), 0.16) 0%, rgba(var(--primary-rgb), 0.06) 58%, var(--surface) 100%) !important;
-  border: 1px solid var(--border-light) !important;
-  border-radius: 14px !important;
-  box-shadow: var(--shadow-sm);
-  padding: 14px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--border-light) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 2px 0 14px !important;
 }
 
-:root[data-theme="dark"] .create-form-header,
-:root[data-theme="dark"] .screen-top-card,
-:root[data-theme="dark"] .settings-top-card {
+:root[data-theme="dark"] .create-form-header {
   background:
     radial-gradient(circle at top right, rgba(var(--primary-rgb), 0.2), transparent 38%),
     linear-gradient(135deg, var(--primary-dark), var(--surface) 100%) !important;
@@ -1384,6 +1381,7 @@ textarea.msg-input {
 }
 
 .app-header__title {
+  margin: 0;
   font-size: 18px;
   font-weight: 800;
   color: var(--header-fg);
@@ -2285,7 +2283,8 @@ button:not(.ui-btn):focus-visible {
   }
 
   .app-header__title {
-    display: none;
+    display: block;
+    font-size: 16px;
   }
 
   .app-nav {

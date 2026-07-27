@@ -71,8 +71,8 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
 
     <div className="create-form-type-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, marginBottom: 14 }}>
       {[
-        { id: "presenca", title: "Formulario de presenca", desc: "Presenca obrigatoria ou formulario opcional com base de socios." },
-        { id: "escala_organ", title: "Formulario interno", desc: "Escala da Organ e controles internos de tarefas." },
+        { id: "presenca", title: "Formulário de presença", desc: "Presença do núcleo (com base de sócios) ou formulário geral." },
+        { id: "escala_organ", title: "Formulário Organ", desc: "Escala da Organ e controles internos de tarefas." },
       ].map(option => (
         <button
           className="create-form-type-card"
@@ -218,7 +218,7 @@ export const FormBasicsPanel = ({
           <span className="msg-hint">{linkedPeopleField
             ? `Se deixar em branco, o total será assumido pela base carregada (${peopleCount} pessoas).`
             : formMode === "geral"
-              ? "Formulário geral não usa a base central, então o sistema não controla faltantes esperados."
+              ? "Formulário Geral não usa a base central, então o sistema não controla faltantes esperados."
               : "Sem vínculo com a base completa, o sistema não controla faltantes esperados."}</span>
         </label>
       </div>

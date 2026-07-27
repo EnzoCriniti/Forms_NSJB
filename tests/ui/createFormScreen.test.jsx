@@ -25,7 +25,7 @@ const baseProps = {
 const renderNewForm = ({ setupType = "presenca", ...props } = {}) => {
   const result = renderWithHeaderBack(<CreateFormScreen {...baseProps} {...props} />);
   if (setupType === "escala_organ") {
-    fireEvent.click(screen.getByRole("button", { name: /Formulario interno/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Formulário Organ/ }));
   }
   fireEvent.click(screen.getByRole("button", { name: "Continuar para o editor" }));
   return result;
@@ -38,7 +38,7 @@ describe("CreateFormScreen", () => {
     expect(screen.getByText("Templates de formulário")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Template vazio")).toBeInTheDocument();
     expect(screen.getByText("1 campo configurado")).toBeInTheDocument();
-    expect(screen.getByText("Com base de socios")).toBeInTheDocument();
+    expect(screen.getByText("Formulário Presença Núcleo")).toBeInTheDocument();
     expect(container.querySelector(".create-form-mobile-hero")).toBeInTheDocument();
   });
 
