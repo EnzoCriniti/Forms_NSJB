@@ -98,9 +98,9 @@ export const PublicResponseFieldPanel = ({
   onNumberChange,
   onGridChange,
 }) => (
-  <div className="public-form-field" style={{ padding: "16px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
-    <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 10 }}>{field.label}{field.required ? " *" : ""}</label>
-    {validationSummary && <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 8 }}>{validationSummary}</div>}
+  <div className="public-form-field" style={{ padding: "18px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
+    <label style={{ fontSize: 14, fontWeight: 600, display: "block", marginBottom: 12 }}>{field.label}{field.required ? " *" : ""}</label>
+    {validationSummary && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: -6, marginBottom: 10 }}>{validationSummary}</div>}
     {personSelectNode}
     {field.type === "yes_no" && (
       <div style={{ display: "flex", gap: 10 }}>
@@ -110,14 +110,15 @@ export const PublicResponseFieldPanel = ({
             onClick={() => onYesNoChange(option)}
             style={{
               flex: 1,
+              minHeight: 46,
               padding: "10px 16px",
-              borderRadius: 8,
+              borderRadius: 12,
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
               fontFamily: "inherit",
               transition: "all 0.15s",
-              border: `2px solid ${value === option ? (option === "Sim" ? colorTokens.accent : colorTokens.danger) : COLORS.borderLight}`,
+              border: `1.5px solid ${value === option ? (option === "Sim" ? colorTokens.accent : colorTokens.danger) : COLORS.borderLight}`,
               background: value === option ? (option === "Sim" ? colorTokens.primaryLight : colorTokens.dangerLight) : COLORS.surface,
               color: value === option ? (option === "Sim" ? colorTokens.accent : colorTokens.danger) : COLORS.textSecondary,
             }}
@@ -128,20 +129,20 @@ export const PublicResponseFieldPanel = ({
       </div>
     )}
     {field.type === "number" && (
-      <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {[0, 1, 2, 3, 4, 5].map(option => (
           <button
             key={option}
             onClick={() => onNumberChange(option)}
             style={{
-              width: 34,
-              height: 34,
-              borderRadius: 8,
-              fontSize: 13,
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              fontSize: 15,
               fontWeight: 600,
               cursor: "pointer",
               fontFamily: "inherit",
-              border: `2px solid ${value === option ? colorTokens.primary : COLORS.borderLight}`,
+              border: `1.5px solid ${value === option ? colorTokens.primary : COLORS.borderLight}`,
               background: value === option ? colorTokens.primaryLight : COLORS.surface,
               color: value === option ? colorTokens.primary : COLORS.textMuted,
             }}
@@ -151,7 +152,7 @@ export const PublicResponseFieldPanel = ({
         ))}
       </div>
     )}
-    {field.type === "text" && <input value={value} onChange={event => onTextChange(event.target.value)} placeholder="Digite sua resposta..." style={{ width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8 }} />}
+    {field.type === "text" && <input value={value} onChange={event => onTextChange(event.target.value)} placeholder="Digite sua resposta..." style={{ width: "100%", minHeight: 46, padding: "11px 13px", border: `1px solid ${COLORS.border}`, borderRadius: 12 }} />}
     {field.type === "grid" && (
       <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>

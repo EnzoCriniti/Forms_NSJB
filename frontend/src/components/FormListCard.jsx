@@ -204,7 +204,7 @@ export const FormListCard = ({
       </div>
       {showFillSummary && (
         <div className="form-card-side" style={{ display: "grid", gap: 10, flexShrink: 0, width: 246 }}>
-          <div className="fill-summary" style={{ textAlign: "right", minWidth: 0, padding: "14px 16px", borderRadius: 14, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}` }}>
+          <div className="fill-summary" style={{ textAlign: "right", minWidth: 0, padding: "14px 16px", borderRadius: 12, background: COLORS.surfaceAlt, border: `1px solid ${COLORS.borderLight}` }}>
             <div style={{ fontSize: 11, color: COLORS.textMuted, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.45 }}>Preenchimento</div>
             <div style={{ display: "flex", alignItems: "baseline", justifyContent: "flex-end", gap: 3, marginTop: 4 }}>
               <strong style={{ fontSize: 24, fontWeight: 800, color: typeColor, lineHeight: 1 }}>{responses}</strong>

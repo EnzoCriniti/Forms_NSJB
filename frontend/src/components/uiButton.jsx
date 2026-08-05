@@ -29,7 +29,7 @@ export const Btn = ({ children, v = "primary", sz = "md", icon, onClick, style: 
       className={`ui-btn${className ? ` ${className}` : ""}`}
       {...props}
       style={{
-        display: "inline-flex", alignItems: "center", gap: 6, border: "none", borderRadius: 8,
+        display: "inline-flex", alignItems: "center", gap: 6, border: "none", borderRadius: 10,
         cursor: disabled || loading ? "not-allowed" : "pointer", fontWeight: 600, fontFamily: "inherit",
         transition: "all 0.15s", opacity: disabled || loading ? 0.5 : 1, padding: pad, fontSize: fs,
         ...vars[v], ...extra,

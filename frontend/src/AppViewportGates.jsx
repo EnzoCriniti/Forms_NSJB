@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { COLORS } from "./components/ui";
+import { COLORS, Icon } from "./components/ui";
 import { AppStatusScreen } from "./components/AppStatusScreen";
 import { AuthPanel } from "./features/auth/AuthPanel";
 
@@ -33,6 +33,12 @@ export const AppLoginGate = ({
 }) => (
   <AppStatusScreen width={480} tone="info">
     <div className="login-screen">
+      <div className="login-screen__brand" style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+        <span style={{ width: 40, height: 40, borderRadius: 12, background: COLORS.primaryLight, color: COLORS.primary, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Icon name="form" size={20} />
+        </span>
+        <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em" }}>NSJB Forms</span>
+      </div>
       <div className="login-screen__header" style={{ marginBottom: 18 }}>
         <h2 style={{ margin: 0, fontSize: 20 }}>Acesso restrito</h2>
         <p style={{ margin: "4px 0 0", color: COLORS.textSecondary, fontSize: 13 }}>Entre com sua conta para acessar a pagina inicial e os formularios internos.</p>

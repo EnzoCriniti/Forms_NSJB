@@ -143,7 +143,7 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
               <select
                 value={value}
                 onChange={event => handleSelectMemberField(field, event.target.value)}
-                style={{ width: "100%", padding: "10px 12px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 8, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
+                style={{ width: "100%", minHeight: 46, padding: "11px 13px", border: `1px solid ${editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warning : COLORS.border}`, borderRadius: 12, fontSize: 14, fontFamily: "inherit", background: editing && isPrimaryPeopleBaseField(form, field) ? COLORS.warningLight : COLORS.surface, color: value ? COLORS.text : COLORS.textMuted }}
               >
                 <option value="">
                   {placeholder}

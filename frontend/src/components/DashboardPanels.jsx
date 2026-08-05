@@ -20,7 +20,7 @@ export const DashboardHeader = ({ onNavigate, user }) => (
 );
 
 export const DashboardEmptyState = ({ onNavigate, user }) => (
-  <div className="dashboard-empty-state" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 24, textAlign: "center" }}>
+  <div className="dashboard-empty-state" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 24, textAlign: "center" }}>
     <div style={{ width: 56, height: 56, borderRadius: "50%", margin: "0 auto 14px", display: "flex", alignItems: "center", justifyContent: "center", background: COLORS.primaryLight, color: COLORS.primary }}>
       <Icon name="chart" size={26} />
     </div>
@@ -37,7 +37,7 @@ export const DashboardStatsGrid = ({ cards }) => (
     {cards.map(card => (
       <div key={card.label} className="elevated metric-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "16px 18px" }}>
         <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{card.label}</div>
-        <div style={{ fontSize: 24, fontWeight: 800, color: card.color }}>{card.value}</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: card.color }}>{card.value}</div>
         <div style={{ fontSize: 11, color: COLORS.textMuted }}>{card.note}</div>
       </div>
     ))}
@@ -50,15 +50,15 @@ export const DashboardMiniRow = ({ label, value, note }) => (
       <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.text }}>{label}</div>
       <div style={{ fontSize: 11, color: COLORS.textMuted }}>{note}</div>
     </div>
-    <div style={{ fontSize: 18, fontWeight: 800, color: COLORS.primary }}>{value}</div>
+    <div style={{ fontSize: 18, fontWeight: 700, color: COLORS.primary }}>{value}</div>
   </div>
 );
 
 export const DashboardUpcomingClosings = ({ forms, onNavigate, formatClosing = value => value }) => (
-  <div className="dashboard-panel dashboard-upcoming" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 18 }}>
+  <div className="dashboard-panel dashboard-upcoming" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 18 }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
       <div>
-        <div style={{ fontSize: 14, fontWeight: 800, color: COLORS.text }}>Próximos fechamentos</div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.text }}>Próximos fechamentos</div>
         <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>Ordenado pelo prazo mais próximo.</div>
       </div>
       <div style={{ fontSize: 11, color: COLORS.textMuted }}>{forms.length} formulário{forms.length !== 1 ? "s" : ""}</div>

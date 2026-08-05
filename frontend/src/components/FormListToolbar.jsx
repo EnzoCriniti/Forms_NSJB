@@ -8,10 +8,10 @@ import React from "react";
 import { COLORS, Icon } from "./ui";
 
 const controlStyle = {
-  minHeight: 38,
+  minHeight: 40,
   padding: "8px 10px",
   border: `1px solid ${COLORS.border}`,
-  borderRadius: 8,
+  borderRadius: 10,
   fontSize: 13,
   fontFamily: "inherit",
   background: COLORS.surface,
@@ -23,10 +23,10 @@ const controlStyle = {
 
 const searchStyle = {
   width: "100%",
-  minHeight: 38,
+  minHeight: 40,
   padding: "8px 38px 8px 34px",
   border: `1px solid ${COLORS.border}`,
-  borderRadius: 8,
+  borderRadius: 10,
   fontSize: 13,
   fontFamily: "inherit",
   outline: "none",

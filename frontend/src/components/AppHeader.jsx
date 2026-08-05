@@ -125,7 +125,7 @@ export const AppHeader = ({
           <aside className="app-header-drawer__panel">
             <div className="app-header-drawer__top">
               <div>
-                <div style={{ fontSize: 10, fontWeight: 800, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.6 }}>Menu</div>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: 0.6 }}>Menu</div>
                 <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <StarMark size={16} color="var(--primary)" />
                   <strong style={{ fontSize: 13, color: "var(--text)" }}>NSJB Forms</strong>

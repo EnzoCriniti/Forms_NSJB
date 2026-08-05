@@ -151,7 +151,7 @@ export const EventListPanel = ({
       </div>
     </form>
     {events.length === 0 ? (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
+      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 12, padding: 18, color: COLORS.textSecondary, fontSize: 13 }}>
         {searchValue ? "Nenhum evento encontrado para a pesquisa." : "Nenhum evento criado."}
       </div>
     ) : (

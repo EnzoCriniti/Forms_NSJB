@@ -24,7 +24,7 @@ export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, 
         <button
           key={option.id}
           onClick={() => onSelectMode(option.id)}
-          style={{ textAlign: "left", padding: 14, borderRadius: 12, border: `2px solid ${formMode === option.id ? COLORS.primary : COLORS.borderLight}`, background: formMode === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer", display: "grid", gap: 10 }}
+          style={{ textAlign: "left", padding: 14, borderRadius: 12, border: `1.5px solid ${formMode === option.id ? COLORS.primary : COLORS.borderLight}`, background: formMode === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer", display: "grid", gap: 10 }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
             <div>
@@ -48,7 +48,7 @@ export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, 
     <div style={{ marginTop: 12, borderRadius: 12, border: `1px solid ${COLORS.borderLight}`, background: COLORS.surfaceAlt, padding: 14 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 800, color: COLORS.text }}>Modo ativo: {activeModeOption.title}</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: COLORS.text }}>Modo ativo: {activeModeOption.title}</div>
           <div style={{ fontSize: 11, color: COLORS.textSecondary, marginTop: 3 }}>{activeModeOption.desc}</div>
         </div>
         <div style={{ fontSize: 11, color: COLORS.textMuted }}>
@@ -62,7 +62,7 @@ export const FormModePanel = ({ activeModeOption, formMode, membersFieldsCount, 
 export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
   <>
     <div className="create-form-start-card">
-      <div style={{ fontSize: 11, fontWeight: 900, color: COLORS.primary, textTransform: "uppercase", letterSpacing: 0.6 }}>Etapa inicial</div>
+      <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.primary, textTransform: "uppercase", letterSpacing: "0.04em" }}>Etapa inicial</div>
       <h3 style={{ margin: "4px 0 4px", fontSize: 20, color: COLORS.text }}>Qual estrutura voce vai criar?</h3>
       <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>
         A escolha define o editor correto e evita carregar configuracoes que nao pertencem ao tipo do formulario.
@@ -78,7 +78,7 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
           className="create-form-type-card"
           key={option.id}
           onClick={() => onSelectFormat(option.id)}
-          style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `2px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
+          style={{ textAlign: "left", padding: 16, borderRadius: 12, border: `1.5px solid ${format === option.id ? COLORS.primary : COLORS.borderLight}`, background: format === option.id ? COLORS.primaryLight : COLORS.surface, color: COLORS.text, cursor: "pointer" }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
             <strong style={{ fontSize: 14 }}>{option.title}</strong>
@@ -111,7 +111,7 @@ export const FormHeaderPanel = ({ onBack, title, subtitle }) => {
 export const FormContextPanel = ({ title, body, footer }) => (
   <section className="msg-card" style={{ marginBottom: 14 }}>
     <div className="msg-label" style={{ marginBottom: 4 }}>{title}</div>
-    <div style={{ fontSize: 13, fontWeight: 800, color: "var(--text)" }}>{body}</div>
+    <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>{body}</div>
     <div className="msg-hint" style={{ marginTop: 4 }}>{footer}</div>
   </section>
 );
@@ -227,7 +227,7 @@ export const FormBasicsPanel = ({
         <span className="msg-label">Classificações</span>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {labels.map(label => (
-            <button key={label.id} onClick={() => onToggleLabel(label.id)} style={{ padding: "4px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "2px solid", cursor: "pointer", transition: "all 0.15s", borderColor: selectedLabels.includes(label.id) ? label.color : COLORS.borderLight, background: selectedLabels.includes(label.id) ? label.color : "transparent", color: selectedLabels.includes(label.id) ? "#fff" : label.color }}>{label.name}</button>
+            <button key={label.id} onClick={() => onToggleLabel(label.id)} style={{ padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, border: "1.5px solid", cursor: "pointer", transition: "all 0.15s", borderColor: selectedLabels.includes(label.id) ? label.color : COLORS.borderLight, background: selectedLabels.includes(label.id) ? label.color : "transparent", color: selectedLabels.includes(label.id) ? "#fff" : label.color }}>{label.name}</button>
           ))}
         </div>
       </label>

@@ -16,7 +16,7 @@ export const PublicScaleSignupModal = ({
     <div style={{ background: COLORS.surface, borderRadius: 16, padding: 24, width: 420, maxWidth: "100%" }}>
       <h3 style={{ margin: "0 0 6px" }}>Preencher vaga</h3>
       <p style={{ margin: "0 0 16px", fontSize: 13, color: COLORS.textSecondary }}><strong>{sectionTitle}</strong> - {slotRole}</p>
-      <select value={signName} onChange={event => onChangeSignName(event.target.value)} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${COLORS.border}`, borderRadius: 8, marginBottom: 16 }}>
+      <select value={signName} onChange={event => onChangeSignName(event.target.value)} style={{ width: "100%", minHeight: 46, padding: "11px 13px", border: `1px solid ${COLORS.border}`, borderRadius: 12, marginBottom: 16 }}>
         <option value="">Selecione seu nome...</option>
         {names.map(name => <option key={name} value={name}>{name}</option>)}
       </select>
@@ -31,15 +31,15 @@ export const PublicScaleSignupModal = ({
 export const PublicScaleMetricsPanel = ({ filled, pending, total, scaleLimit, readOnly = false }) => (
   <>
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, marginBottom: 16 }}>
-      <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 10, padding: 12 }}>
+      <div className="public-scale-metric" style={{ background: COLORS.primaryLight, borderRadius: 12, padding: 14 }}>
         <div style={{ fontSize: 11, color: COLORS.textSecondary }}>Preenchidas</div>
         <strong style={{ fontSize: 24, color: COLORS.primary }}>{filled}</strong>
       </div>
-      <div className="public-scale-metric" style={{ background: "var(--type-scale-bg)", borderRadius: 10, padding: 12 }}>
+      <div className="public-scale-metric" style={{ background: "var(--type-scale-bg)", borderRadius: 12, padding: 14 }}>
         <div style={{ fontSize: 11, color: COLORS.textSecondary }}>Pendentes</div>
         <strong style={{ fontSize: 24, color: "var(--type-scale-text)" }}>{pending}</strong>
       </div>
-      <div className="public-scale-metric" style={{ background: COLORS.surfaceAlt, borderRadius: 10, padding: 12 }}>
+      <div className="public-scale-metric" style={{ background: COLORS.surfaceAlt, borderRadius: 12, padding: 14 }}>
         <div style={{ fontSize: 11, color: COLORS.textSecondary }}>Total</div>
         <strong style={{ fontSize: 24, color: COLORS.textSecondary }}>{total}</strong>
       </div>
@@ -60,16 +60,16 @@ export const PublicScaleSectionsPanel = ({ sections, onPickSlot, readOnly = fals
   <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
     {sections.map((section, sectionIndex) => (
       <div key={sectionIndex} className="public-scale-section" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: resolveScaleSectionColor(section.color, sectionIndex), padding: "9px 14px", fontWeight: 800, fontSize: 13 }}>{section.title}</div>
+        <div style={{ background: resolveScaleSectionColor(section.color, sectionIndex), padding: "10px 16px", fontWeight: 700, fontSize: 13 }}>{section.title}</div>
         {section.slots.map((slot, slotIndex) => (
           <button
             key={slotIndex}
             disabled={readOnly || !!slot.person}
             onClick={() => onPickSlot(sectionIndex, slotIndex)}
-            style={{ width: "100%", border: "none", borderBottom: `1px solid ${COLORS.borderLight}`, background: slot.person || readOnly ? COLORS.surfaceAlt : COLORS.surface, padding: "10px 14px", display: "flex", justifyContent: "space-between", gap: 10, cursor: slot.person || readOnly ? "not-allowed" : "pointer", color: COLORS.text, textAlign: "left" }}
+            style={{ width: "100%", minHeight: 48, border: "none", borderBottom: `1px solid ${COLORS.borderLight}`, background: slot.person || readOnly ? COLORS.surfaceAlt : COLORS.surface, padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, cursor: slot.person || readOnly ? "not-allowed" : "pointer", color: COLORS.text, textAlign: "left" }}
           >
-            <strong style={{ minWidth: 100 }}>{slot.role}</strong>
-            <span style={{ color: slot.person || readOnly ? COLORS.textSecondary : COLORS.primary, fontWeight: slot.person || readOnly ? 500 : 800 }}>{slot.person || "Pendente"}</span>
+            <strong style={{ minWidth: 100, fontWeight: 600 }}>{slot.role}</strong>
+            <span style={{ color: slot.person || readOnly ? COLORS.textSecondary : COLORS.primary, fontWeight: slot.person || readOnly ? 500 : 700 }}>{slot.person || "Pendente"}</span>
           </button>
         ))}
       </div>
