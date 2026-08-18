@@ -7,7 +7,6 @@ RUN npm ci --omit=dev
 
 COPY backend ./backend
 COPY shared ./shared
-COPY storage ./storage
 COPY docker/db/DDL-POSTGRESQL-INICIAL.sql ./docker/db/DDL-POSTGRESQL-INICIAL.sql
 
 ENV NSJB_API_PORT=8787
