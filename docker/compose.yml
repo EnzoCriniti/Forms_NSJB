@@ -57,6 +57,8 @@ services:
     build:
       context: ..
       dockerfile: docker/frontend/Dockerfile
+      args:
+        GIT_COMMIT: ${GIT_COMMIT:-dev}
     container_name: nsjb-frontend
     environment:
       NSJB_API_PROXY_TARGET: http://backend:${NSJB_API_PORT:-8787}
@@ -69,13 +71,14 @@ services:
     healthcheck:
       test:
         - CMD
-        - node
-        - -e
-        - fetch('http://127.0.0.1:5173/').then((response) => { if (!response.ok) process.exit(1); }).catch(() => process.exit(1))
+        - wget
+        - --spider
+        - -q
+        - http://127.0.0.1:5173/
       interval: 15s
       timeout: 5s
       retries: 5
-      start_period: 15s
+      start_period: 10s
 
 volumes:
   postgres_data:

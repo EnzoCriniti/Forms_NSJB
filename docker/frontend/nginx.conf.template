@@ -1,0 +1,55 @@
+# Servidor da interface em producao.
+#
+# Este arquivo e um template: o entrypoint da imagem nginx roda envsubst nele
+# na subida do container. O NGINX_ENVSUBST_FILTER limita a substituicao as
+# variaveis NSJB_*, entao as variaveis do proprio nginx ($uri, $host, ...)
+# sobrevivem intactas.
+
+server {
+    listen 5173;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # O backend impoe seu proprio limite (NSJB_MAX_BODY_BYTES); aqui so evitamos
+    # que o nginx seja o gargalo antes da requisicao chegar na aplicacao.
+    client_max_body_size 10m;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_proxied any;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+
+    # Assets carregam hash no nome, entao podem ser cacheados agressivamente.
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # index.html nunca vai para cache: e ele que aponta para o bundle novo
+    # depois de cada deploy.
+    location = /index.html {
+        add_header Cache-Control "no-cache, no-store, must-revalidate";
+    }
+
+    location /api/ {
+        proxy_pass ${NSJB_API_PROXY_TARGET};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
+    }
+
+    # Fallback de SPA. Os links publicos gerados hoje usam hash
+    # (#/formularios/<id>), que nem chega ao servidor, mas links antigos
+    # compartilhados usam caminho direto (/formularios/<id>, /eventos/<id>/<id>)
+    # e precisam receber o index.html em vez de 404.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
