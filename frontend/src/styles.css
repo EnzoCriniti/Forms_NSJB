@@ -1483,6 +1483,27 @@ textarea.msg-input {
   padding: 26px 28px 44px;
 }
 
+/*
+ * Em telas de notebook e monitores maiores o conteudo ficava preso em 1160px e
+ * sobrava margem morta dos dois lados. A largura cresce por faixa; o
+ * `margin: 0 auto` permanece, entao o conteudo continua centralizado, so que
+ * ocupando mais espaco. Nao afeta tablet e celular, tratados nos blocos
+ * `max-width` mais abaixo.
+ */
+@media (min-width: 1280px) {
+  .app-main {
+    max-width: 1290px;
+    padding: 30px 34px 48px;
+  }
+}
+
+@media (min-width: 1600px) {
+  .app-main {
+    max-width: 1440px;
+    padding: 34px 40px 52px;
+  }
+}
+
 .app-nav:empty {
   display: none;
 }
