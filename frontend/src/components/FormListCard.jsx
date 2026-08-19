@@ -155,7 +155,7 @@ export const FormListCard = ({
           {[...new Set(form.labels || [])].map(labelId => <Badge key={labelId} label={labelId} labels={labels} small />)}
         </div>
         <div className="form-card-meta" style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", fontSize: 12, color: COLORS.textMuted }}>
-          <span>Fechamento: {formatDateTime(form.closing)}</span>
+          <span>{form.closing ? `Fechamento: ${formatDateTime(form.closing)}` : "Sem data de fechamento"}</span>
         </div>
         <div
           className="card-primary-actions card-primary-actions--inline"
