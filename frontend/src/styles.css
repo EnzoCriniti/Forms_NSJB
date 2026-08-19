@@ -550,6 +550,18 @@ input[type="radio"] {
   width: 246px;
 }
 
+/*
+ * Seis acoes de 42px com 6px de intervalo somam 282px. Numa coluna de 246px a
+ * ultima caia sozinha para uma segunda linha, deixando a lixeira solta abaixo
+ * das demais. No desktop a coluna acomoda a fileira inteira; no celular ela
+ * continua ocupando 100%, definido mais adiante.
+ */
+@media (min-width: 1280px) {
+  .form-card-side {
+    width: 292px;
+  }
+}
+
 .metric-card {
   min-width: 0;
 }
