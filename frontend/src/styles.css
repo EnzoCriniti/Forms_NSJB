@@ -1516,6 +1516,79 @@ textarea.msg-input {
  *
  * O `min()` evita transbordo quando a tela e mais estreita que a coluna minima.
  */
+/*
+ * Estado vazio padrao.
+ *
+ * Cada painel improvisava a propria caixa com borda e texto encostado a
+ * esquerda. Num container largo o resultado era uma tira de poucos pixels de
+ * altura. Aqui o conteudo e centralizado e a caixa tem altura minima, entao a
+ * proporcao se mantem em qualquer largura de tela.
+ */
+.empty-state {
+  align-items: center;
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  min-height: 180px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.empty-state__title {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.empty-state__hint {
+  font-size: 13px;
+  margin: 0;
+  max-width: 46ch;
+}
+
+/*
+ * Cartoes de destaque do painel (presenca e escala).
+ *
+ * Sao apenas dois numa grade `auto-fit`, entao no desktop cada um ocupava mais
+ * de 700px com 116px de altura: uma barra quase vazia. Em vez de encolher a
+ * caixa (o que devolveria o espaco morto que motivou o alargamento), o
+ * conteudo cresce para ocupar a largura: rosca maior e tipografia maior, com a
+ * proporcao saindo de ~6,5:1 para ~4,5:1. O SVG tem viewBox, entao escala pelo
+ * CSS sem mexer no componente.
+ */
+@media (min-width: 1280px) {
+  .bi-kpi-card {
+    gap: 24px;
+    padding: 24px 28px;
+  }
+
+  .bi-kpi-card > svg {
+    height: 108px;
+    width: 108px;
+  }
+
+  .bi-kpi-label {
+    font-size: 15px;
+  }
+
+  .bi-kpi-caption {
+    font-size: 13px;
+    margin-top: 6px;
+  }
+}
+
+@media (max-width: 720px) {
+  .empty-state {
+    min-height: 140px;
+    padding: 24px 18px;
+  }
+}
+
 .events-card-grid {
   grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
 }

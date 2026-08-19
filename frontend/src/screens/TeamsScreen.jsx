@@ -30,7 +30,7 @@ export const TeamsScreen = ({
     <div style={{ display: "grid", gap: 18 }}>
       <ScreenHeader
         className="settings-top-card"
-        subtitle="Cadastre as equipes do Mestre Assistente e da Organ para controlar dispensas e contexto operacional por periodo."
+        subtitle="Cadastre as equipes do Mestre Assistente e da Organ para controlar dispensas por período."
       />
       {controller.feedback && <FeedbackBanner tone={controller.feedback.tone} message={controller.feedback.message} />}
       {controller.editing ? (
@@ -64,8 +64,8 @@ export const TeamsScreen = ({
       {controller.pendingDelete && (
         <ConfirmModal
           open
-          title="Excluir periodo?"
-          message={`Isso vai remover o periodo "${controller.pendingDelete.title || "Periodo de equipes"}".`}
+          title="Excluir período?"
+          message={`Isso vai remover o periodo "${controller.pendingDelete.title || "Período de equipes"}".`}
           confirmLabel="Excluir"
           busy={controller.deleting}
           onCancel={() => controller.setPendingDelete(null)}

@@ -43,16 +43,18 @@ const SummaryBadge = ({ children, tone = "info" }) => (
 export const TeamPeriodSummaryPanel = ({ summary, loading, onOpenResults }) => {
   if (loading) {
     return (
-      <section style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, background: COLORS.surface, color: COLORS.textMuted }}>
-        Carregando formularios e eventos do periodo...
+      <section className="empty-state">
+        <span className="empty-state__title">Carregando…</span>
+        <p className="empty-state__hint">Buscando os formulários e eventos deste período.</p>
       </section>
     );
   }
 
   if (!summary?.period) {
     return (
-      <section style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18, background: COLORS.surface, color: COLORS.textMuted }}>
-        Selecione um periodo para ver os formularios e eventos.
+      <section className="empty-state">
+        <span className="empty-state__title">Nenhum período selecionado</span>
+        <p className="empty-state__hint">Escolha um período na lista ao lado para ver os formulários e eventos vinculados a ele.</p>
       </section>
     );
   }

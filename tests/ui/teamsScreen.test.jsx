@@ -98,7 +98,7 @@ describe("TeamsScreen", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /Novo periodo/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Novo período/i }));
 
     expect(screen.getByText("Equipe do Mestre Assistente")).toBeInTheDocument();
     expect(screen.getByText("Equipe da Organ")).toBeInTheDocument();

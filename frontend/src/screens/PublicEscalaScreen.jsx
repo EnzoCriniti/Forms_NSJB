@@ -60,13 +60,13 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
         form={form}
         onBack={onBack}
         titleFallback="Escala"
-        internalSubtitle={isReadOnly ? "Escala disponivel apenas para consulta." : "Escolha uma vaga pendente para preencher seu nome."}
+        internalSubtitle={isReadOnly ? "Escala disponível apenas para consulta." : "Escolha uma vaga pendente para preencher seu nome."}
         readingControls={readingControls}
       />
       <PublicScreenFrame isInternal={isInternal} cardClassName="public-scale-card">
         <div className="public-scale-card__content">
           <PublicScaleMetricsPanel filled={filled} pending={total - filled} total={total} scaleLimit={scaleLimit} readOnly={isReadOnly} />
-          {isReadOnly && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="info" message={readOnlyMessage || "A escala segue disponivel apenas para consulta."} /></div>}
+          {isReadOnly && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="info" message={readOnlyMessage || "A escala segue disponível apenas para consulta."} /></div>}
           {error && <div style={{ marginBottom: 14 }}><FeedbackBanner tone="warning" message={error} /></div>}
           <PublicScaleSectionsPanel sections={sections} onPickSlot={(sectionIndex, slotIndex) => setSelSlot({ si: sectionIndex, sli: slotIndex })} readOnly={isReadOnly} />
         </div>

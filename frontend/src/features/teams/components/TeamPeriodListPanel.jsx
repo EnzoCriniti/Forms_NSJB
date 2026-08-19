@@ -20,14 +20,15 @@ export const TeamPeriodListPanel = ({
   <section style={{ display: "grid", gap: 12 }}>
     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
       <div>
-        <h2 style={{ margin: 0, fontSize: 18, color: COLORS.text }}>Periodos cadastrados</h2>
+        <h2 style={{ margin: 0, fontSize: 18, color: COLORS.text }}>Períodos cadastrados</h2>
         <p style={{ margin: "4px 0 0", color: COLORS.textMuted, fontSize: 13 }}>Controle as equipes vigentes por intervalo.</p>
       </div>
-      {canManage && <Btn icon="plus" onClick={onStartNew}>Novo periodo</Btn>}
+      {canManage && <Btn icon="plus" onClick={onStartNew}>Novo período</Btn>}
     </div>
     {periods.length === 0 ? (
-      <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textMuted }}>
-        Nenhum periodo de equipes cadastrado.
+      <div className="empty-state">
+        <span className="empty-state__title">Nenhum período cadastrado</span>
+        <p className="empty-state__hint">Crie um período para organizar as equipes do Mestre Assistente e da Organ por intervalo de datas.</p>
       </div>
     ) : (
       <div style={{ display: "grid", gap: 10 }}>
@@ -50,7 +51,7 @@ export const TeamPeriodListPanel = ({
                 onClick={() => onSelect(period.id)}
                 style={{ border: "none", background: "transparent", padding: 0, textAlign: "left", cursor: "pointer", color: COLORS.text }}
               >
-                <strong style={{ display: "block", fontSize: 15 }}>{period.title || "Periodo de equipes"}</strong>
+                <strong style={{ display: "block", fontSize: 15 }}>{period.title || "Período de equipes"}</strong>
                 <span style={{ display: "block", color: COLORS.textMuted, fontSize: 12, marginTop: 3 }}>
                   {formatTeamDate(period.startDate)} ate {formatTeamDate(period.endDate)}
                 </span>
@@ -71,10 +72,10 @@ export const TeamPeriodListPanel = ({
               </button>
               {canManage && (
                 <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", flexWrap: "wrap" }}>
-                  <button type="button" onClick={() => onEdit(period)} aria-label="Editar periodo" style={{ border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text, padding: "7px 9px", cursor: "pointer" }}>
+                  <button type="button" onClick={() => onEdit(period)} aria-label="Editar período" style={{ border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.text, padding: "7px 9px", cursor: "pointer" }}>
                     <Icon name="edit" size={15} />
                   </button>
-                  <button type="button" onClick={() => onDelete(period)} aria-label="Excluir periodo" style={{ border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.danger, padding: "7px 9px", cursor: "pointer" }}>
+                  <button type="button" onClick={() => onDelete(period)} aria-label="Excluir período" style={{ border: `1px solid ${COLORS.border}`, borderRadius: 8, background: COLORS.surface, color: COLORS.danger, padding: "7px 9px", cursor: "pointer" }}>
                     <Icon name="trash" size={15} />
                   </button>
                 </div>
