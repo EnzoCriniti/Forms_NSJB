@@ -155,7 +155,7 @@ export const EventListPanel = ({
         {searchValue ? "Nenhum evento encontrado para a pesquisa." : "Nenhum evento criado."}
       </div>
     ) : (
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 14 }}>
+      <div className="events-card-grid" style={{ display: "grid", gap: 14 }}>
         {pagination.pageItems.map(event => (
           <EventCard
             key={event.id}

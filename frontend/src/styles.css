@@ -1492,15 +1492,34 @@ textarea.msg-input {
  */
 @media (min-width: 1280px) {
   .app-main {
-    max-width: 1290px;
+    max-width: 1360px;
     padding: 30px 34px 48px;
   }
 }
 
 @media (min-width: 1600px) {
   .app-main {
-    max-width: 1440px;
+    max-width: 1520px;
     padding: 34px 40px 52px;
+  }
+}
+
+/*
+ * Grade dos cards de evento.
+ *
+ * Com `auto-fill` o container largo gerava mais colunas em vez de cards
+ * maiores: sobrava espaco e as pecas continuavam miudas. A partir do desktop a
+ * grade fixa quatro colunas, entao o card cresce junto com a largura em vez de
+ * se multiplicar. O `min()` no caso base evita transbordo quando a tela e mais
+ * estreita que a largura minima da coluna.
+ */
+.events-card-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+}
+
+@media (min-width: 1280px) {
+  .events-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

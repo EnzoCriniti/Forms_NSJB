@@ -11,15 +11,20 @@ import path from "node:path";
 
 const root = process.cwd();
 const nodeExec = process.execPath;
+const args = parseArgs(process.argv.slice(2));
+
+// `--base <url>` aponta a captura para um servidor que ja esta no ar (o dev
+// local, a VM ou o dominio publico) e pula a subida de API + Vite. Sem ele o
+// comportamento e o de antes: o script sobe os dois processos locais.
+const externalBase = typeof args.base === "string" ? args.base.replace(/\/+$/, "") : null;
+
 const clientPort = 4173;
 const apiPort = 8787;
 const browserPort = 9222;
-const clientUrl = `http://127.0.0.1:${clientPort}`;
-const apiUrl = `http://127.0.0.1:${apiPort}`;
+const clientUrl = externalBase || `http://127.0.0.1:${clientPort}`;
+const apiUrl = externalBase || `http://127.0.0.1:${apiPort}`;
 const storageSessionKey = "nsjb_forms_mvp_session";
 const storageThemeKey = "nsjb_forms_mvp_theme";
-
-const args = parseArgs(process.argv.slice(2));
 const outputPath = path.resolve(root, args.out || "screenshots/app.png");
 const browserPath = resolveBrowserPath();
 const tempProfileDir = fs.mkdtempSync(path.join(os.tmpdir(), "nsjb-forms-shot-"));
@@ -44,8 +49,8 @@ async function main() {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
   const apiAlreadyRunning = await probeUrl(`${apiUrl}/api/health`, body => body?.ok === true);
-  if (!apiAlreadyRunning) {
-    const serverChild = spawn(nodeExec, [path.join(root, "server", "index.mjs")], {
+  if (!externalBase && !apiAlreadyRunning) {
+    const serverChild = spawn(nodeExec, [path.join(root, "backend", "index.mjs")], {
       cwd: root,
       stdio: "inherit",
     });
@@ -53,7 +58,7 @@ async function main() {
   }
 
   const clientAlreadyRunning = await probeUrl(clientUrl, body => typeof body === "string" && body.toLowerCase().includes("<!doctype html"), false);
-  if (!clientAlreadyRunning) {
+  if (!externalBase && !clientAlreadyRunning) {
     const viteChild = spawn(nodeExec, [
       path.join(root, "node_modules", "vite", "bin", "vite.js"),
       "--host",
