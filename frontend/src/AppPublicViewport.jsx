@@ -15,7 +15,7 @@ import { buildPublicFormPath, buildPublicFormResultsPath } from "./lib/appPublic
 import { getShellActions, getShellData, getShellState } from "./lib/appShellObject";
 
 const PublicRoot = ({ children }) => (
-  <div className="app-root public-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
+  <div className="app-root public-root" style={{ fontFamily: "var(--font-sans)", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, padding: "24px 16px" }}>
     {children}
   </div>
 );
@@ -58,6 +58,7 @@ export const AppPublicViewport = ({ app, onBack }) => {
     }
     return (
       <PublicRoot>
+        <div className="public-results-shell">
         <ResultsScreen
           onNavigate={publicOnBack}
           form={publicForm}
@@ -70,6 +71,7 @@ export const AppPublicViewport = ({ app, onBack }) => {
           publicFormHref={buildPublicFormPath(publicForm)}
           publicView
         />
+        </div>
       </PublicRoot>
     );
   }

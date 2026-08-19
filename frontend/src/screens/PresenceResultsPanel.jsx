@@ -53,6 +53,13 @@ export const PresenceResultsPanel = ({
   NO_VALUES,
 }) => (
   <div>
+    {publicView && (
+      <div className="public-results-intro" style={{ margin: "0 0 16px", padding: "18px 20px", borderRadius: 12, background: "var(--primary-dark)", color: "var(--on-dark)" }}>
+        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--on-dark-muted)" }}>Resultados públicos</div>
+        <h1 style={{ margin: "5px 0 4px", fontSize: 22, lineHeight: 1.15 }}>{formTitle || "Lista de presença"}</h1>
+        <p style={{ margin: 0, fontSize: 12, color: "var(--on-dark-muted)" }}>Confira os totais e as pessoas que já responderam.</p>
+      </div>
+    )}
     <ResultsPresenceHeader
       publicActionHref={publicFormHref}
       readingControls={readingControls}
@@ -61,13 +68,6 @@ export const PresenceResultsPanel = ({
       onSelectGrau={onSelectGrau}
       stats={stats}
     />
-    {publicView && (
-      <div className="public-results-intro" style={{ margin: "0 0 16px", padding: "18px 20px", borderRadius: 12, background: "var(--header-bg)", color: "var(--header-fg)" }}>
-        <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--header-fg-muted)" }}>Resultados públicos</div>
-        <h1 style={{ margin: "5px 0 4px", fontSize: 22, lineHeight: 1.15 }}>{formTitle || "Lista de presença"}</h1>
-        <p style={{ margin: 0, fontSize: 12, color: "var(--header-fg-muted)" }}>Confira os totais e as pessoas que já responderam.</p>
-      </div>
-    )}
     {feedback && <div style={{ marginBottom: 12 }}><FeedbackBanner tone={feedback.tone} message={feedback.message} fixed /></div>}
     <PresenceTotalsPanel totalsLayout={totalsLayout} />
 

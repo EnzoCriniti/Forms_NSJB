@@ -12,8 +12,8 @@ const FormLink = ({ form, onOpenResults }) => (
     type="button"
     onClick={() => onOpenResults(form.id)}
     style={{
-      border: `1px solid ${COLORS.borderLight}`,
-      borderRadius: 8,
+      border: `1px solid ${COLORS.border}`,
+      borderRadius: 12,
       background: COLORS.surface,
       color: COLORS.text,
       padding: 10,
@@ -63,30 +63,32 @@ export const TeamPeriodSummaryPanel = ({ summary, loading, onOpenResults }) => {
   const unlinkedForms = Array.isArray(summary.unlinkedForms) ? summary.unlinkedForms : [];
 
   return (
-    <section style={{ display: "grid", gap: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <Icon name="calendar" size={18} />
+    <section className="panel-card" style={{ display: "grid", gap: 12, padding: 24 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
+        <span style={{ width: 36, height: 36, borderRadius: 10, background: COLORS.primaryLight, color: COLORS.primary, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Icon name="calendar" size={17} />
+        </span>
         <div>
-          <h2 style={{ margin: 0, fontSize: 18, color: COLORS.text }}>Formularios e eventos do periodo</h2>
-          <p style={{ margin: "4px 0 0", color: COLORS.textMuted, fontSize: 13 }}>
-            Clique em um formulario para abrir o resultado.
+          <h2 className="panel-card__title">Formulários e eventos do período</h2>
+          <p className="panel-card__hint">
+            Clique em um formulário para abrir o resultado.
           </p>
         </div>
       </div>
       {events.length === 0 && unlinkedForms.length === 0 && (
         <div style={{ border: `1px dashed ${COLORS.border}`, borderRadius: 8, padding: 18, color: COLORS.textMuted }}>
-          Nenhum formulario ou evento encontrado nesse intervalo.
+          Nenhum formulário ou evento encontrado nesse intervalo.
         </div>
       )}
       {events.map(event => (
-        <article key={event.id} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 14, background: COLORS.surfaceAlt, display: "grid", gap: 10 }}>
+        <article key={event.id} style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 16, background: COLORS.surfaceAlt, display: "grid", gap: 12 }}>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
             <div>
               <strong style={{ color: COLORS.text }}>{event.title}</strong>
               <div style={{ color: COLORS.textMuted, fontSize: 12, marginTop: 3 }}>{formatTeamDate(event.date)} - {event.status}</div>
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {event.hasPresence && <SummaryBadge>Presenca</SummaryBadge>}
+              {event.hasPresence && <SummaryBadge>Presença</SummaryBadge>}
               {event.hasOrganScale && <SummaryBadge tone="success">Escala da Organ</SummaryBadge>}
             </div>
           </div>
@@ -98,8 +100,8 @@ export const TeamPeriodSummaryPanel = ({ summary, loading, onOpenResults }) => {
         </article>
       ))}
       {unlinkedForms.length > 0 && (
-        <article style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 14, background: COLORS.surfaceAlt, display: "grid", gap: 10 }}>
-          <strong style={{ color: COLORS.text }}>Formularios sem evento vinculado</strong>
+        <article style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 14, padding: 16, background: COLORS.surfaceAlt, display: "grid", gap: 12 }}>
+          <strong style={{ color: COLORS.text }}>Formulários sem evento vinculado</strong>
           <div style={{ display: "grid", gap: 8 }}>
             {unlinkedForms.map(form => (
               <FormLink key={form.id} form={form} onOpenResults={onOpenResults} />

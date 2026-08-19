@@ -17,14 +17,16 @@ export const TeamPeriodListPanel = ({
   onDelete,
   onStartNew,
 }) => (
-  <section style={{ display: "grid", gap: 12 }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-      <div>
-        <h2 style={{ margin: 0, fontSize: 18, color: COLORS.text }}>Períodos cadastrados</h2>
-        <p style={{ margin: "4px 0 0", color: COLORS.textMuted, fontSize: 13 }}>Controle as equipes vigentes por intervalo.</p>
-      </div>
-      {canManage && <Btn icon="plus" onClick={onStartNew}>Novo período</Btn>}
+  <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+    <div>
+      <h2 className="panel-card__title">Períodos cadastrados</h2>
+      <p className="panel-card__hint">Controle as equipes vigentes por intervalo.</p>
     </div>
+    {canManage && (
+      <Btn icon="plus" onClick={onStartNew} style={{ width: "100%", justifyContent: "center", borderRadius: 10, fontSize: 13, fontWeight: 700, boxShadow: "0 6px 16px rgba(var(--primary-rgb), 0.28)" }}>
+        Novo período
+      </Btn>
+    )}
     {periods.length === 0 ? (
       <div className="empty-state">
         <span className="empty-state__title">Nenhum período cadastrado</span>
@@ -39,11 +41,12 @@ export const TeamPeriodListPanel = ({
               key={period.id}
               style={{
                 border: `1px solid ${active ? COLORS.primary : COLORS.borderLight}`,
-                borderRadius: 8,
+                borderRadius: 14,
                 background: active ? COLORS.primaryLight : COLORS.surface,
-                padding: 14,
+                boxShadow: active ? "none" : "var(--shadow-sm)",
+                padding: 15,
                 display: "grid",
-                gap: 10,
+                gap: 6,
               }}
             >
               <button
@@ -51,8 +54,8 @@ export const TeamPeriodListPanel = ({
                 onClick={() => onSelect(period.id)}
                 style={{ border: "none", background: "transparent", padding: 0, textAlign: "left", cursor: "pointer", color: COLORS.text }}
               >
-                <strong style={{ display: "block", fontSize: 15 }}>{period.title || "Período de equipes"}</strong>
-                <span style={{ display: "block", color: COLORS.textMuted, fontSize: 12, marginTop: 3 }}>
+                <strong style={{ display: "block", fontSize: 14.5 }}>{period.title || "Período de equipes"}</strong>
+                <span style={{ display: "block", color: COLORS.textMuted, fontSize: 11.5, marginTop: 3 }}>
                   {formatTeamDate(period.startDate)} ate {formatTeamDate(period.endDate)}
                 </span>
                 <span style={{ display: "block", color: COLORS.textSecondary, fontSize: 12, marginTop: 6 }}>

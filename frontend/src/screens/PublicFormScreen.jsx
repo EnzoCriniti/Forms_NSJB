@@ -169,8 +169,8 @@ export const PublicFormScreen = ({ responses, onSaveResponse, onBack, form, peop
             />
           );
         })}
-        <div style={{ padding: "20px 24px 0" }}>
-          <Btn sz="lg" icon={editing ? "edit" : "check"} style={{ width: "100%", justifyContent: "center" }} onClick={submit} loading={submitting} disabled={submitting || duplicateResponseLocked}>{editing ? "Atualizar Resposta" : "Enviar Resposta"}</Btn>
+        <div style={{ padding: "20px 24px 4px" }}>
+          <Btn sz="lg" icon={editing ? "edit" : "check"} style={{ width: "100%", minHeight: 52, justifyContent: "center", borderRadius: 12, fontSize: 15, fontWeight: 700, boxShadow: "0 6px 16px rgba(var(--primary-rgb), 0.28)" }} onClick={submit} loading={submitting} disabled={submitting || duplicateResponseLocked}>{editing ? "Atualizar Resposta" : "Enviar Resposta"}</Btn>
           <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", marginTop: 8 }}>Você pode editar sua resposta enquanto o formulário estiver aberto.</p>
         </div>
       </PublicScreenFrame>

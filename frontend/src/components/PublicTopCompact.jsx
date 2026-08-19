@@ -14,10 +14,11 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
   return (
     <div>
       <PublicReadingToolbar {...readingControls} />
-      <div className="public-top" style={{ color: "var(--header-fg)" }}>
+      <div className="public-top" style={{ color: "var(--on-dark)" }}>
+      <div className="public-top__inner">
       <div className="public-top-compact-row" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: 16, alignItems: "start" }}>
         <div className="public-top-compact-main" style={{ minWidth: 0 }}>
-          <p className="public-top-eyebrow" style={{ margin: 0, color: "var(--header-fg-muted)", fontSize: 12, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" }}>{form?.type === "escala_organ" ? "Escala da Organ" : "Formulário de Presença"}</p>
+          <p className="public-top-eyebrow" style={{ margin: 0, color: "var(--on-dark-muted)", fontSize: 12, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" }}>{form?.type === "escala_organ" ? "Escala da Organ" : "Formulário de Presença"}</p>
           <h1 style={{ margin: "8px 0 0", fontSize: 23, fontWeight: 800, lineHeight: 1.12, letterSpacing: "-0.02em" }}>{displayTitle}</h1>
         </div>
         <div className="public-top-compact-side" style={{ display: "grid", gap: 10 }}>
@@ -30,6 +31,7 @@ export const PublicTopCompact = ({ form, onBack, description, actionLabel, actio
       {descriptionText && (
         <p className="public-top-description">{descriptionText}</p>
       )}
+      </div>
       </div>
     </div>
   );

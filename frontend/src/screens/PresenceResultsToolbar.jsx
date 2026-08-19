@@ -30,19 +30,20 @@ export const PresenceResultsToolbar = ({
         className="results-filter-toolbar"
         style={{
           background: COLORS.surface,
-          border: `1px solid ${COLORS.borderLight}`,
-          borderRadius: 12,
-          padding: 14,
-          marginBottom: 12,
+          border: `1px solid ${COLORS.border}`,
+          borderRadius: 14,
+          padding: "18px 22px",
+          marginBottom: 16,
         }}
       >
-        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 10 }}>Filtros da planilha</div>
+        <div style={{ fontSize: 12.5, fontWeight: 700, color: COLORS.textSecondary, marginBottom: 12 }}>Filtros da planilha</div>
         <div className="results-filter-toolbar-row" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           {filterButtons.map(item => (
             <Btn
               key={item.id}
               v={activeSearchCol === item.id ? "primary" : "secondary"}
               sz="sm"
+              style={{ minHeight: 36, padding: "8px 16px", borderRadius: 999, fontSize: 12.5 }}
               onClick={() => onToggleSearchCol(item.id)}
             >
               {item.label}

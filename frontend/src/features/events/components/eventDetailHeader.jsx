@@ -31,7 +31,7 @@ export const EventDetailHeader = ({
           <Btn v="secondary" icon="lock" onClick={onClose} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
         )}
         {canManageEvents && <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>}
-        {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={onCreateForm} aria-label="Novo formulário" title="Novo formulário" />}
+        {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={onCreateForm} title="Novo formulário">Novo formulário</Btn>}
         {canManageEvents && detailTab === "messages" && messagesEligible && onCreateMessage && (
           <Btn icon="plus" onClick={onCreateMessage} aria-label="Nova mensagem" title="Nova mensagem" />
         )}

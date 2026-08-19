@@ -8,7 +8,7 @@ import React from "react";
 import { Icon } from "./uiIcons";
 import { COLORS } from "./uiTheme";
 
-export const Btn = ({ children, v = "primary", sz = "md", icon, onClick, style: extra, disabled, loading = false, type = "button", className = "", ...props }) => {
+export const Btn = ({ children, v = "primary", sz = "md", icon, iconSize, onClick, style: extra, disabled, loading = false, type = "button", className = "", ...props }) => {
   const pad = sz === "sm" ? "6px 12px" : sz === "lg" ? "12px 24px" : "8px 16px";
   const fs = sz === "sm" ? 12 : sz === "lg" ? 15 : 13;
   const vars = {
@@ -36,7 +36,7 @@ export const Btn = ({ children, v = "primary", sz = "md", icon, onClick, style: 
       }}
     >
       {loading && <span className="ui-spinner" aria-hidden="true" />}
-      {icon && !loading && <Icon name={icon} size={sz === "sm" ? 14 : 16} />}
+      {icon && !loading && <Icon name={icon} size={iconSize || (sz === "sm" ? 14 : 16)} />}
       {children}
     </button>
   );

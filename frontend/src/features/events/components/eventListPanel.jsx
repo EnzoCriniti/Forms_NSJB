@@ -34,51 +34,50 @@ export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, on
           onOpen(event);
         }
       }}
-      style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer", transition: "all 0.15s", touchAction: "manipulation" }}
+      style={{ background: COLORS.surface, border: `1px solid ${COLORS.border}`, borderRadius: 16, padding: 18, display: "flex", flexDirection: "column", gap: 12, cursor: "pointer", transition: "transform .15s, box-shadow .15s", touchAction: "manipulation" }}
       onMouseEnter={eventMouseEnter => { eventMouseEnter.currentTarget.style.borderColor = COLORS.primary; }}
-      onMouseLeave={eventMouseLeave => { eventMouseLeave.currentTarget.style.borderColor = COLORS.borderLight; }}
+      onMouseLeave={eventMouseLeave => { eventMouseLeave.currentTarget.style.borderColor = COLORS.border; }}
     >
-      <div style={{ height: 4, background: tile.fg, flexShrink: 0 }} />
-      <div style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
+      <>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
           {eventDate ? (
-            <div style={{ width: 52, borderRadius: 12, background: tile.bg, color: tile.fg, textAlign: "center", padding: "8px 0", flexShrink: 0, lineHeight: 1 }}>
-              <div style={{ fontSize: 22, fontWeight: 700 }}>{String(eventDate.getDate()).padStart(2, "0")}</div>
-              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: 0.5, marginTop: 3 }}>{MONTHS_PT[eventDate.getMonth()]}</div>
+            <div style={{ width: 50, height: 50, borderRadius: 12, background: tile.bg, color: tile.fg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0, lineHeight: 1 }}>
+              <div style={{ fontSize: 19, fontWeight: 800 }}>{String(eventDate.getDate()).padStart(2, "0")}</div>
+              <div style={{ fontSize: 9.5, letterSpacing: "0.05em", marginTop: 1 }}>{MONTHS_PT[eventDate.getMonth()]}</div>
             </div>
           ) : (
-            <div style={{ width: 52, height: 52, borderRadius: 12, background: tile.bg, display: "flex", alignItems: "center", justifyContent: "center", color: tile.fg, flexShrink: 0 }}>
+            <div style={{ width: 50, height: 50, borderRadius: 12, background: tile.bg, display: "flex", alignItems: "center", justifyContent: "center", color: tile.fg, flexShrink: 0 }}>
               <Icon name="calendar" size={20} />
             </div>
           )}
           <div style={{ minWidth: 0, flex: 1 }}>
-            <strong style={{ fontSize: 15, display: "block", lineHeight: 1.35 }}>{event.title}</strong>
-            {eventDate && <span style={{ fontSize: 12, color: COLORS.textMuted }}>{formatDate(event.date)}</span>}
+            <strong style={{ fontSize: 15, display: "block", lineHeight: 1.3 }}>{event.title}</strong>
+            {eventDate && <span style={{ fontSize: 11.5, color: COLORS.textMuted }}>{formatDate(event.date)}</span>}
           </div>
           {isPinned && (
-            <span title="Evento fixado" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: 999, background: COLORS.warningLight, color: COLORS.warning, flexShrink: 0 }}>
+            <span title="Evento fixado" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: 8, background: COLORS.warningLight, color: "var(--secondary-strong)", flexShrink: 0 }}>
               <Icon name="pin" size={12} />
             </span>
           )}
         </div>
         {(event.opening || event.closing) && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: COLORS.textMuted }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 12, color: COLORS.textMuted }}>
             {event.opening && <span>Abertura: {formatDateTime(event.opening)}</span>}
             {event.closing && <span>Fechamento: {formatDateTime(event.closing)}</span>}
           </div>
         )}
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginTop: "auto" }}>
-          <StatusBadge status={event.status} />
-          <span className="ui-badge" style={{ background: COLORS.surfaceAlt, color: COLORS.textSecondary }}>{event.formIds?.length || 0} forms</span>
+          <StatusBadge status={event.status} uppercase />
+          <span className="ui-badge" style={{ background: "var(--track)", color: COLORS.textSecondary, fontWeight: 600, padding: "4px 11px" }}>{event.formIds?.length || 0} {(event.formIds?.length || 0) === 1 ? "formulário" : "formulários"}</span>
         </div>
         {canManageEvents && (
-          <div style={{ display: "flex", gap: 6, paddingTop: 10, borderTop: `1px solid ${COLORS.borderLight}` }} onClick={eventClick => eventClick.stopPropagation()}>
-            <Btn v={isPinned ? "warning" : "ghost"} icon="pin" sz="sm" style={{ width: 38, height: 38, minWidth: 38, padding: 0, justifyContent: "center", borderRadius: 10 }} title={isPinned ? "Desfixar evento" : "Fixar evento"} aria-label={isPinned ? "Desfixar evento" : "Fixar evento"} onClick={() => onTogglePinned?.(event.id)} />
-            <Btn v="ghost" icon="edit" sz="sm" style={{ width: 38, height: 38, minWidth: 38, padding: 0, justifyContent: "center", borderRadius: 10 }} title="Editar evento" aria-label="Editar evento" onClick={() => onEdit(event)} />
-            <Btn v="danger" icon="trash" sz="sm" style={{ width: 38, height: 38, minWidth: 38, padding: 0, justifyContent: "center", borderRadius: 10 }} title="Excluir evento" aria-label="Excluir evento" onClick={() => onDelete(event)} />
+          <div style={{ display: "flex", gap: 6, paddingTop: 12, borderTop: `1px solid ${COLORS.borderLight}` }} onClick={eventClick => eventClick.stopPropagation()}>
+            <Btn v={isPinned ? "warning" : "ghost"} icon="pin" iconSize={17} sz="sm" style={{ flex: 1, height: 42, minHeight: 42, padding: 0, justifyContent: "center", borderRadius: 10, background: isPinned ? COLORS.warningLight : COLORS.surfaceAlt, border: `1px solid ${isPinned ? "var(--secondary)" : COLORS.border}`, color: isPinned ? "var(--secondary-strong)" : COLORS.textSecondary }} title={isPinned ? "Desfixar evento" : "Fixar evento"} aria-label={isPinned ? "Desfixar evento" : "Fixar evento"} onClick={() => onTogglePinned?.(event.id)} />
+            <Btn v="ghost" icon="edit" iconSize={17} sz="sm" style={{ flex: 1, height: 42, minHeight: 42, padding: 0, justifyContent: "center", borderRadius: 10, background: COLORS.primaryLight, border: `1px solid ${COLORS.border}`, color: COLORS.primary }} title="Editar evento" aria-label="Editar evento" onClick={() => onEdit(event)} />
+            <Btn v="danger" icon="trash" iconSize={17} sz="sm" style={{ flex: 1, height: 42, minHeight: 42, padding: 0, justifyContent: "center", borderRadius: 10, background: COLORS.dangerLight, border: "1px solid var(--feedback-error-border)", color: COLORS.danger }} title="Excluir evento" aria-label="Excluir evento" onClick={() => onDelete(event)} />
           </div>
         )}
-      </div>
+      </>
     </div>
   );
 };
@@ -155,7 +154,7 @@ export const EventListPanel = ({
         {searchValue ? "Nenhum evento encontrado para a pesquisa." : "Nenhum evento criado."}
       </div>
     ) : (
-      <div className="events-card-grid" style={{ display: "grid", gap: 14 }}>
+      <div className="events-card-grid" style={{ display: "grid", gap: 16 }}>
         {pagination.pageItems.map(event => (
           <EventCard
             key={event.id}

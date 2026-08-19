@@ -5,7 +5,7 @@
 
 import React from "react";
 import { can } from "../lib/auth";
-import { ConfirmModal, FeedbackBanner, ScreenHeader } from "../components/ui";
+import { ConfirmModal, FeedbackBanner } from "../components/ui";
 import { TeamPeriodEditorPanel } from "../features/teams/components/TeamPeriodEditorPanel";
 import { TeamPeriodListPanel } from "../features/teams/components/TeamPeriodListPanel";
 import { TeamPeriodSummaryPanel } from "../features/teams/components/TeamPeriodSummaryPanel";
@@ -28,10 +28,6 @@ export const TeamsScreen = ({
 
   return (
     <div style={{ display: "grid", gap: 18 }}>
-      <ScreenHeader
-        className="settings-top-card"
-        subtitle="Cadastre as equipes do Mestre Assistente e da Organ para controlar dispensas por período."
-      />
       {controller.feedback && <FeedbackBanner tone={controller.feedback.tone} message={controller.feedback.message} />}
       {controller.editing ? (
         <TeamPeriodEditorPanel
@@ -43,7 +39,7 @@ export const TeamsScreen = ({
           saving={controller.saving}
         />
       ) : (
-        <div className="teams-layout" style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 18, alignItems: "start" }}>
+        <div className="teams-layout" style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 20, alignItems: "start" }}>
           <TeamPeriodListPanel
             periods={controller.sortedPeriods}
             people={people}

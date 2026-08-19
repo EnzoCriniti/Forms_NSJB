@@ -6,11 +6,11 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { COLORS, FeedbackBanner, ScreenHeader, Icon } from "../components/ui";
+import { COLORS, FeedbackBanner, Icon } from "../components/ui";
 import { formatDateTime } from "../lib/forms";
 import { fetchBiDashboard } from "../lib/api";
 import { DashboardUpcomingClosings } from "../components/DashboardPanels";
-import { BiBarChart, BiDateRangeFilter, BiTabs, GrauFilterChips, KpiCard, StatCard, TopMembersPanel, grauColor } from "../features/bi/BiPanels";
+import { BiBarChart, BiDateRangeFilter, BiTabs, GrauFilterChips, KpiCard, StatCard, TopMembersPanel } from "../features/bi/BiPanels";
 import { BiTrendChart, BiHistogramChart, BiHBarChart, BiDonutChart } from "../features/bi/BiCharts";
 import { MemberProfilePanel } from "../features/bi/MemberProfilePanel";
 import { MembersTable } from "../features/bi/MembersTable";
@@ -175,7 +175,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
   );
 
   // Destaca o grau selecionado no gráfico por grau (demais esmaecidos).
-  const grauChartColor = label => (isFiltered && label !== grau ? "var(--border)" : grauColor(label));
+  const grauChartColor = label => (isFiltered && label !== grau ? "var(--border)" : "var(--primary)");
 
   const presencaKpiCard = (
     <KpiCard label={`Presença${grauSuffix}`} percent={formatPercent(presenca.rate)} caption={`${presenca.filled} de ${presenca.expected} esperados`} accent={COLORS.primary} icon="check" details={presencaDetails} />
@@ -277,7 +277,6 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
 
   return (
     <div>
-      <ScreenHeader className="settings-top-card" subtitle="Indicadores de presença, escalas e participação dos sócios." />
 
       <div className="bi-filters">
         <button type="button" className="bi-filters-toggle" onClick={() => setFiltersOpen(open => !open)} aria-expanded={filtersOpen}>
@@ -308,9 +307,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
         )}
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <BiTabs tabs={TABS} value={tab} onChange={setTab} />
-      </div>
+      <BiTabs tabs={TABS} value={tab} onChange={setTab} />
 
       {error && <FeedbackBanner tone="error" message={error} />}
 
@@ -319,9 +316,8 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
       ) : tab === "overview" ? (
         <>
           <section className="dash-section">
-            <div className="dash-section-head"><h3>Visão geral{grauSuffix}</h3></div>
             <div className="bi-kpi-grid">{presencaKpiCard}{escalaKpiCard}</div>
-            <div className="bi-stats-grid" style={{ marginTop: 12 }}>
+            <div className="bi-stats-grid" style={{ marginTop: 20 }}>
               {stats.map(stat => <StatCard key={stat.label} label={stat.label} value={stat.value} hint={stat.hint} icon={stat.icon} accent={stat.accent} />)}
             </div>
           </section>

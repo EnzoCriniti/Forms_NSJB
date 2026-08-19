@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { COLORS, Icon, Btn, StatusBadge, TypeBadge } from "./ui";
+import { COLORS, Icon, Btn } from "./ui";
 
 export const DashboardHeader = ({ onNavigate, user }) => (
   <div className="dashboard-hero" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
@@ -55,32 +55,29 @@ export const DashboardMiniRow = ({ label, value, note }) => (
 );
 
 export const DashboardUpcomingClosings = ({ forms, onNavigate, formatClosing = value => value }) => (
-  <div className="dashboard-panel dashboard-upcoming" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 18 }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
-      <div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.text }}>Próximos fechamentos</div>
-        <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: 2 }}>Ordenado pelo prazo mais próximo.</div>
-      </div>
-      <div style={{ fontSize: 11, color: COLORS.textMuted }}>{forms.length} formulário{forms.length !== 1 ? "s" : ""}</div>
+  <div className="bi-panel dashboard-upcoming">
+    <div className="bi-panel-head">
+      <div className="bi-panel-title">Próximos fechamentos</div>
+      <div className="bi-panel-hint">Formulários abertos, por data de fechamento.</div>
     </div>
     {forms.length === 0 ? (
-      <div style={{ padding: "18px 0", color: COLORS.textMuted, fontSize: 13 }}>Nenhum formulário aberto com fechamento definido.</div>
+      <div className="bi-empty">Nenhum formulário aberto com fechamento definido.</div>
     ) : (
-      <div style={{ display: "grid", gap: 10 }}>
+      <div className="dash-closings">
         {forms.map(form => (
-          <div key={form.id} className="dashboard-upcoming-row" style={{ border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <strong style={{ fontSize: 14 }}>{form.title}</strong>
-                <StatusBadge status={form.status} />
-                <TypeBadge type={form.type} />
-              </div>
-              <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 4 }}>
-                {form.sessionName || "Sem sessão"}{form.closing ? ` • Fecha em ${formatClosing(form.closing)}` : ""}
-              </div>
-            </div>
-            <Btn v="secondary" sz="sm" icon="eye" onClick={() => onNavigate("results", form)}>Abrir resultados</Btn>
-          </div>
+          <button
+            key={form.id}
+            type="button"
+            className="dash-closing-row"
+            onClick={() => onNavigate("results", form)}
+            title="Abrir resultados"
+          >
+            <span className="dash-closing-main">
+              <span className="dash-closing-title">{form.title}</span>
+              <span className="dash-closing-sub">{form.closing ? `Fecha em ${formatClosing(form.closing)}` : "Sem fechamento definido"}</span>
+            </span>
+            <span className="dash-closing-badge">{form.type === "escala_organ" ? "ESCALA" : "PRESENÇA"}</span>
+          </button>
         ))}
       </div>
     )}

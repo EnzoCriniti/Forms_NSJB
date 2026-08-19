@@ -15,6 +15,7 @@ export const AppHeader = ({
   nav,
   screen,
   pageTitle,
+  pageSubtitle = "",
   currentUser,
   theme,
   fontScale,
@@ -89,9 +90,14 @@ export const AppHeader = ({
             </button>
           )}
           <span className="app-header__brand">
-            <StarMark size={20} color="#ffffff" />
+            <StarMark size={20} color="var(--primary)" />
           </span>
-          {pageTitle && <h1 className="app-header__title">{pageTitle}</h1>}
+          {(pageTitle || pageSubtitle) && (
+            <div className="app-header__heading">
+              {pageTitle && <h1 className="app-header__title">{pageTitle}</h1>}
+              {pageSubtitle && <p className="app-header__subtitle">{pageSubtitle}</p>}
+            </div>
+          )}
         </div>
         <div className="app-header__right">
           {currentUser && (

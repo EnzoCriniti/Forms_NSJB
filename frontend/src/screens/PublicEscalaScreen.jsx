@@ -60,7 +60,6 @@ export const PublicEscalaScreen = ({ onBack, form, people, sections = [], onSave
         form={form}
         onBack={onBack}
         titleFallback="Escala"
-        internalSubtitle={isReadOnly ? "Escala disponível apenas para consulta." : "Escolha uma vaga pendente para preencher seu nome."}
         readingControls={readingControls}
       />
       <PublicScreenFrame isInternal={isInternal} cardClassName="public-scale-card">

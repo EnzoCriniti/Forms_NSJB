@@ -26,3 +26,18 @@ export const resolveAppHeaderTitle = ({
   }
   return nav.find(item => item.key === screen)?.label || STATIC_TITLES[screen] || "";
 };
+
+const SCREEN_SUBTITLES = {
+  dashboard: "Indicadores de presença, escalas e participação dos sócios.",
+  events: "Organize encontros, acompanhe seus formulários e centralize as comunicações de cada evento.",
+  teams: "Cadastre as equipes do Mestre Assistente e da Organ para controlar dispensas por período.",
+  messages: "Configure o envio, os modelos de mensagem e os grupos de destinatários.",
+  guide: "Consulte os fluxos, possibilidades e detalhes técnicos do NSJB Forms.",
+  settings: "Área administrativa do sistema.",
+};
+
+export const resolveAppHeaderSubtitle = ({ screen, activeEvent = null, activeForm = null }) => {
+  if (screen === "events" && activeEvent) return "";
+  if (["respond", "results"].includes(screen)) return activeForm?.description || "";
+  return SCREEN_SUBTITLES[screen] || "";
+};

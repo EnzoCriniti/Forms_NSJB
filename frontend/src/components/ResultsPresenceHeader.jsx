@@ -27,6 +27,7 @@ export const ResultsPresenceHeader = ({
             <Btn
               v={selectedGrau === "todos" ? "primary" : "secondary"}
               sz="sm"
+              style={{ minHeight: 36, padding: "8px 16px", borderRadius: 999, fontSize: 12.5 }}
               onClick={() => onSelectGrau("todos")}
             >
               Todos
@@ -36,6 +37,7 @@ export const ResultsPresenceHeader = ({
                 key={grau}
                 v={selectedGrau === grau ? "primary" : "secondary"}
                 sz="sm"
+                style={{ minHeight: 36, padding: "8px 16px", borderRadius: 999, fontSize: 12.5 }}
                 onClick={() => onSelectGrau(grau)}
               >
                 {grau}
@@ -46,12 +48,12 @@ export const ResultsPresenceHeader = ({
       </div>
     )}
 
-    <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 10, margin: "0 0 20px" }}>
+    <div className="stats-grid results-stats-grid">
       {stats.map((card, index) => (
-        <div key={index} className="elevated metric-card" style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 12, padding: "16px 18px" }}>
-          <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 4 }}>{card.l}</div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: card.c }}>{card.v}</div>
-          <div style={{ fontSize: 11, color: COLORS.textMuted }}>{card.s}</div>
+        <div key={index} className="metric-card results-stat-card">
+          <div className="results-stat-card__value" style={{ color: card.c }}>{card.v}</div>
+          <div className="results-stat-card__label">{card.l}</div>
+          <div className="results-stat-card__hint">{card.s}</div>
         </div>
       ))}
     </div>

@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { COLORS, ScreenHeader } from "../components/ui";
+import { COLORS } from "../components/ui";
 import { PublicTopCompact } from "../components/publicUi";
 
 export const PublicScreenLayout = ({ maxWidth, children }) => (
@@ -14,39 +14,34 @@ export const PublicScreenLayout = ({ maxWidth, children }) => (
   </div>
 );
 
+/*
+ * No fluxo interno (admin abrindo o formulario) o titulo e o contexto ja vivem
+ * no cabecalho global do shell — repetir aqui criava dois cabecalhos empilhados.
+ * Entao o modo interno nao renderiza cabecalho proprio; so o publico tem a
+ * faixa de topo.
+ */
 export const PublicScreenHeader = ({
   isInternal,
   form,
   onBack,
   readingControls,
-  titleFallback,
-  internalSubtitle,
   publicDescription,
   actionLabel = "",
   actionHref = "",
-}) => (
-  <>
-    {isInternal ? (
-      <ScreenHeader
-        className="internal-response-header"
-        title={form?.title || titleFallback}
-        subtitle={internalSubtitle}
-        titleStyle={{ color: COLORS.text }}
-        subtitleStyle={{ color: COLORS.textMuted }}
-        marginBottom={14}
-      />
-    ) : (
-      <PublicTopCompact
-        form={form}
-        onBack={onBack}
-        description={publicDescription}
-        actionLabel={actionLabel}
-        actionHref={actionHref}
-        readingControls={readingControls}
-      />
-    )}
-  </>
-);
+}) => {
+  if (isInternal) return null;
+
+  return (
+    <PublicTopCompact
+      form={form}
+      onBack={onBack}
+      description={publicDescription}
+      actionLabel={actionLabel}
+      actionHref={actionHref}
+      readingControls={readingControls}
+    />
+  );
+};
 
 export const PublicScreenFrame = ({
   isInternal,

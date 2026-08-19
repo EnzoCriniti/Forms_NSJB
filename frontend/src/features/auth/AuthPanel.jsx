@@ -9,6 +9,13 @@ import { Btn, FeedbackBanner, resolveActionErrorMessage, ThemeIcon } from "../..
 import { ROLES } from "../../lib/auth";
 import { FONT_SCALE_MAX, FONT_SCALE_MIN } from "../../lib/appFontScale";
 
+const userInitials = name => String(name || "Usuário")
+  .trim()
+  .split(/\s+/)
+  .slice(0, 2)
+  .map(part => part.charAt(0).toUpperCase())
+  .join("") || "U";
+
 export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onToggleTheme, onIncreaseTextSize, onDecreaseTextSize, variant = "header" }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -56,7 +63,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         title="Diminuir fonte"
         aria-label="Diminuir fonte"
         disabled={fontScale <= FONT_SCALE_MIN}
-        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
+        style={{ border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text)", minHeight: 36, minWidth: 36, padding: "8px 10px", fontWeight: 700, borderRadius: 10, boxShadow: "var(--shadow-sm)" }}
       >
         A-
       </Btn>
@@ -67,7 +74,7 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         title="Aumentar fonte"
         aria-label="Aumentar fonte"
         disabled={fontScale >= FONT_SCALE_MAX}
-        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38, padding: "8px 10px", fontWeight: 800 }}
+        style={{ border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text)", minHeight: 36, minWidth: 36, padding: "8px 10px", fontWeight: 700, borderRadius: 10, boxShadow: "var(--shadow-sm)" }}
       >
         A+
       </Btn>
@@ -76,15 +83,18 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         sz="sm"
         onClick={onToggleTheme}
         title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
-        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", padding: "8px 10px", minHeight: 38 }}
+        style={{ border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text)", padding: "8px 10px", minHeight: 36, minWidth: 36, borderRadius: 10, boxShadow: "var(--shadow-sm)" }}
       >
         <ThemeIcon theme={theme} />
       </Btn>
-      <div style={{ color: "var(--header-fg)", fontSize: 12, textAlign: "right", lineHeight: 1.2 }}>
-        <strong>{user.name}</strong>
-        <div style={{ color: "var(--header-fg-muted)" }}>{ROLES[user.role]?.label}</div>
+      <div className="app-header__user">
+        <span className="app-header__user-badge">{userInitials(user.name)}</span>
+        <div>
+          <div className="app-header__user-name">{user.name}</div>
+          <div className="app-header__user-role">{ROLES[user.role]?.label}</div>
+        </div>
       </div>
-      <Btn v="ghost" sz="sm" onClick={onLogout} style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", minHeight: 38 }}>
+      <Btn v="ghost" sz="sm" onClick={onLogout} style={{ border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text)", minHeight: 36, borderRadius: 10, fontWeight: 600, boxShadow: "var(--shadow-sm)" }}>
         Sair
       </Btn>
     </div>
@@ -92,24 +102,30 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
 
   if (isSheet) {
     return (
-      <div className="auth-panel auth-panel--sheet" style={{ display: "grid", gap: 12, width: "100%" }}>
-        <input
-          className="auth-panel__input"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          placeholder="Usuário"
-          style={{ width: "100%" }}
-        />
-        <input
-          className="auth-panel__input"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          placeholder="Senha"
-          type="password"
-          style={{ width: "100%" }}
-          onKeyDown={e => { if (e.key === "Enter") submit(); }}
-        />
-        <Btn onClick={submit} loading={saving} style={{ background: "var(--primary)", color: "var(--on-primary)", minHeight: 42, boxShadow: "var(--shadow-sm)", width: "100%" }}>Entrar</Btn>
+      <div className="auth-panel auth-panel--sheet" style={{ display: "grid", gap: 14, width: "100%" }}>
+        <label style={{ display: "grid", gap: 6 }}>
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--text-secondary)" }}>Usuário</span>
+          <input
+            className="auth-panel__input"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            placeholder="ex.: admin"
+            style={{ width: "100%", minHeight: 44 }}
+          />
+        </label>
+        <label style={{ display: "grid", gap: 6 }}>
+          <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--text-secondary)" }}>Senha</span>
+          <input
+            className="auth-panel__input"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="••••••••"
+            type="password"
+            style={{ width: "100%", minHeight: 44 }}
+            onKeyDown={e => { if (e.key === "Enter") submit(); }}
+          />
+        </label>
+        <Btn onClick={submit} loading={saving} style={{ marginTop: 4, background: "var(--primary)", color: "var(--on-primary)", minHeight: 46, fontSize: 15, fontWeight: 700, borderRadius: 10, boxShadow: "0 6px 16px rgba(var(--primary-rgb), 0.28)", width: "100%" }}>Entrar</Btn>
         {feedback && <FeedbackBanner fixed tone={feedback.tone} title={feedback.title} message={feedback.message} />}
       </div>
     );
@@ -122,13 +138,13 @@ export const AuthPanel = ({ user, onLogin, onLogout, theme, fontScale = 1, onTog
         sz="sm"
         onClick={onToggleTheme}
         title={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
-        style={{ border: "1px solid var(--header-control-border)", background: "var(--header-control-bg)", color: "var(--header-fg)", padding: "8px 10px", minHeight: 38 }}
+        style={{ border: "1px solid var(--border)", background: "var(--surface)", color: "var(--text)", padding: "8px 10px", minHeight: 36, minWidth: 36, borderRadius: 10, boxShadow: "var(--shadow-sm)" }}
       >
         <ThemeIcon theme={theme} />
       </Btn>
       <input value={username} onChange={e => setUsername(e.target.value)} placeholder="Usuário" style={{ width: 140 }} />
       <input value={password} onChange={e => setPassword(e.target.value)} placeholder="Senha" type="password" style={{ width: 128 }} onKeyDown={e => { if (e.key === "Enter") submit(); }} />
-      <Btn onClick={submit} loading={saving} style={{ background: "var(--header-fg)", color: "var(--header-bg)", minHeight: 38, boxShadow: "var(--shadow-sm)" }}>Entrar</Btn>
+      <Btn onClick={submit} loading={saving} style={{ background: "var(--primary)", color: "var(--on-primary)", minHeight: 36, borderRadius: 10, boxShadow: "var(--shadow-sm)" }}>Entrar</Btn>
       {feedback && <FeedbackBanner fixed tone={feedback.tone} title={feedback.title} message={feedback.message} />}
     </div>
   );

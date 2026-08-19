@@ -24,7 +24,7 @@ export const AppStatusScreen = ({
   }[tone];
 
   return (
-    <div className="app-root" style={{ minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+    <div className="app-root app-status-root" style={{ background: COLORS.surfaceAlt, color: COLORS.text, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
       <div style={{ width: `min(${width}px, 100%)`, background: palette.background, border: `1px solid ${palette.border}`, borderRadius: 18, padding: 28, boxShadow: "var(--shadow-md)" }}>
         {loading && (
           <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>

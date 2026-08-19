@@ -8,7 +8,6 @@
 
 import React from "react";
 import { Icon } from "./ui";
-import { StarMark } from "./StarMark";
 
 const appVersion = import.meta.env.VITE_APP_VERSION || "dev";
 const gitCommit = import.meta.env.VITE_GIT_COMMIT || "dev";
@@ -27,8 +26,9 @@ export const AppSidebar = ({ nav = [], screen, onNavigate, collapsed = false, on
       >
         <Icon name="menu" size={18} />
       </button>
+      <span className="app-sidebar__mark">NF</span>
       <span className="app-sidebar__brand">
-        <StarMark size={20} color="#ffffff" />
+        <span className="app-sidebar__brand-name">NSJB Forms</span>
       </span>
     </div>
     <nav className="app-sidebar__nav">

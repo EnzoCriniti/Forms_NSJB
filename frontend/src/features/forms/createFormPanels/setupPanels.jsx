@@ -63,9 +63,9 @@ export const FormTypeSetupPanel = ({ format, onSelectFormat, onContinue }) => (
   <>
     <div className="create-form-start-card">
       <div style={{ fontSize: 11, fontWeight: 700, color: COLORS.primary, textTransform: "uppercase", letterSpacing: "0.04em" }}>Etapa inicial</div>
-      <h3 style={{ margin: "4px 0 4px", fontSize: 20, color: COLORS.text }}>Qual estrutura voce vai criar?</h3>
+      <h3 style={{ margin: "4px 0 4px", fontSize: 20, color: COLORS.text }}>Qual estrutura você vai criar?</h3>
       <p style={{ margin: 0, fontSize: 13, color: COLORS.textSecondary, lineHeight: 1.5 }}>
-        A escolha define o editor correto e evita carregar configuracoes que nao pertencem ao tipo do formulario.
+        A escolha define o editor correto e evita carregar configurações que não pertencem ao tipo do formulário.
       </p>
     </div>
 

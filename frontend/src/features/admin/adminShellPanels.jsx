@@ -5,11 +5,11 @@
  */
 
 import React from "react";
-import { Btn, COLORS } from "../../components/ui";
+import { Btn } from "../../components/ui";
 
 export const AdminSettingsHeader = ({ tabs, tab, setTab }) => (
   <>
-    <div className="settings-tabs" style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
+    <div className="settings-tabs" style={{ display: "inline-flex", gap: 4, flexWrap: "wrap", marginBottom: 24 }}>
       {tabs.map(item => (
         <Btn
           key={item.key}
@@ -17,16 +17,15 @@ export const AdminSettingsHeader = ({ tabs, tab, setTab }) => (
           sz="sm"
           className="settings-tab"
           onClick={() => setTab(item.key)}
+          title={item.description || item.label}
           style={{
-            alignItems: "flex-start",
-            border: tab === item.key ? "1px solid rgba(var(--primary-rgb), 0.28)" : `1px solid ${COLORS.borderLight}`,
-            borderRadius: 12,
-            boxShadow: tab === item.key ? "0 10px 24px rgba(var(--primary-rgb), 0.14)" : "none",
-            flexDirection: "column",
-            gap: 2,
-            minHeight: 54,
-            padding: "9px 12px",
-            textAlign: "left",
+            alignItems: "center",
+            border: "none",
+            borderRadius: 9,
+            boxShadow: "none",
+            minHeight: 0,
+            padding: "8px 18px",
+            textAlign: "center",
           }}
         >
           <span className="settings-tab__label">{item.label}</span>

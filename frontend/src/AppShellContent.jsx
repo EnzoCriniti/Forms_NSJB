@@ -10,7 +10,7 @@ import { AppHeader } from "./components/AppHeader";
 import { AppSidebar } from "./components/AppSidebar";
 import { AppShellRoutes } from "./AppShellRoutes";
 import { HeaderBackContext } from "./lib/headerBack";
-import { resolveAppHeaderTitle } from "./lib/appHeaderTitle";
+import { resolveAppHeaderSubtitle, resolveAppHeaderTitle } from "./lib/appHeaderTitle";
 import { getShellActions, getShellData, getShellSetters, getShellState } from "./lib/appShellObject";
 
 const SIDEBAR_STORAGE_KEY = "nsjb.sidebarCollapsed";
@@ -86,6 +86,7 @@ export const AppShellContent = ({ app }) => {
     onNavigate("list");
   };
 
+  const pageSubtitle = resolveAppHeaderSubtitle({ screen, activeEvent, activeForm });
   const pageTitle = resolveAppHeaderTitle({
     screen,
     nav,
@@ -96,7 +97,7 @@ export const AppShellContent = ({ app }) => {
 
   return (
     <HeaderBackContext.Provider value={headerBackContext}>
-      <div className="app-root" style={{ fontFamily: "'Segoe UI', -apple-system, sans-serif", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>
+      <div className="app-root" style={{ fontFamily: "var(--font-sans)", minHeight: "100vh", background: COLORS.surfaceAlt, color: COLORS.text }}>
         <div className="app-layout" data-sidebar-collapsed={sidebarCollapsed}>
           <AppSidebar nav={nav} screen={screen} onNavigate={onNavigate} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
           <div className="app-shell-main">
@@ -104,6 +105,7 @@ export const AppShellContent = ({ app }) => {
               nav={nav}
               screen={screen}
               pageTitle={pageTitle}
+              pageSubtitle={pageSubtitle}
               currentUser={currentUser}
               theme={theme}
               fontScale={fontScale}

@@ -32,7 +32,6 @@ export const PublicResponseHeader = ({ isInternal, form, onBack, resultsHref, re
     form={form}
     onBack={onBack}
     titleFallback="Formulário"
-    internalSubtitle={form.description || subtitle || "Preencha o formulário abaixo."}
     publicDescription={form.description || subtitle || "Preencha o formulário abaixo."}
     actionLabel={resultsHref ? "Ver resultados" : ""}
     actionHref={resultsHref}
@@ -98,8 +97,8 @@ export const PublicResponseFieldPanel = ({
   onNumberChange,
   onGridChange,
 }) => (
-  <div className="public-form-field" style={{ padding: "18px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
-    <label style={{ fontSize: 14, fontWeight: 600, display: "block", marginBottom: 12 }}>{field.label}{field.required ? " *" : ""}</label>
+  <div className="public-form-field" style={{ padding: "20px 24px", borderBottom: `1px solid ${COLORS.borderLight}` }}>
+    <label style={{ fontSize: 14, fontWeight: 700, display: "block", marginBottom: 12 }}>{field.label}{field.required ? " *" : ""}</label>
     {validationSummary && <div style={{ fontSize: 11, color: COLORS.textMuted, marginTop: -6, marginBottom: 10 }}>{validationSummary}</div>}
     {personSelectNode}
     {field.type === "yes_no" && (
@@ -110,11 +109,11 @@ export const PublicResponseFieldPanel = ({
             onClick={() => onYesNoChange(option)}
             style={{
               flex: 1,
-              minHeight: 46,
+              minHeight: 48,
               padding: "10px 16px",
               borderRadius: 12,
               fontSize: 14,
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: "pointer",
               fontFamily: "inherit",
               transition: "all 0.15s",
@@ -135,11 +134,13 @@ export const PublicResponseFieldPanel = ({
             key={option}
             onClick={() => onNumberChange(option)}
             style={{
-              width: 44,
-              height: 44,
+              width: 46,
+              height: 46,
+              minHeight: 46,
+              padding: 0,
               borderRadius: 12,
               fontSize: 15,
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: "pointer",
               fontFamily: "inherit",
               border: `1.5px solid ${value === option ? colorTokens.primary : COLORS.borderLight}`,
@@ -152,7 +153,7 @@ export const PublicResponseFieldPanel = ({
         ))}
       </div>
     )}
-    {field.type === "text" && <input value={value} onChange={event => onTextChange(event.target.value)} placeholder="Digite sua resposta..." style={{ width: "100%", minHeight: 46, padding: "11px 13px", border: `1px solid ${COLORS.border}`, borderRadius: 12 }} />}
+    {field.type === "text" && <input value={value} onChange={event => onTextChange(event.target.value)} placeholder="Digite sua resposta..." style={{ width: "100%", minHeight: 48, padding: "12px 14px", background: COLORS.surfaceAlt, border: `1px solid ${COLORS.border}`, borderRadius: 12 }} />}
     {field.type === "grid" && (
       <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>

@@ -6,14 +6,12 @@
  */
 
 import React from "react";
-import { COLORS, Icon } from "../../components/ui";
+import { COLORS } from "../../components/ui";
 import { ALL_GRAUS, RANGE_PRESETS } from "./biDomain";
 
 // Cores categoricas por grau (mid-tones que funcionam em claro/escuro).
 const GRAU_COLORS = { QM: "#2e6fd0", QS: "#16448c", CDC: "#1f9d6b", CI: "#e08a1e" };
 export const grauColor = grau => GRAU_COLORS[String(grau || "").toUpperCase()] || "#7a8aa3";
-
-const toNumber = value => parseFloat(String(value).replace(",", ".")) || 0;
 
 const initials = name => String(name || "")
   .trim()
@@ -84,34 +82,6 @@ export const BiDateRangeFilter = ({ preset = "all", from = "", to = "", onPreset
   </div>
 );
 
-const Ring = ({ percent, accent, size = 84, stroke = 9 }) => {
-  const pct = Math.max(0, Math.min(100, toNumber(percent)));
-  const radius = (size - stroke) / 2;
-  const circ = 2 * Math.PI * radius;
-  const center = size / 2;
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ flexShrink: 0 }} role="img" aria-label={`${percent}`}>
-      <circle cx={center} cy={center} r={radius} fill="none" stroke={COLORS.surfaceAlt} strokeWidth={stroke} />
-      <circle
-        cx={center}
-        cy={center}
-        r={radius}
-        fill="none"
-        stroke={accent}
-        strokeWidth={stroke}
-        strokeLinecap="round"
-        strokeDasharray={circ}
-        strokeDashoffset={circ * (1 - pct / 100)}
-        transform={`rotate(-90 ${center} ${center})`}
-        style={{ transition: "stroke-dashoffset .5s ease" }}
-      />
-      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" style={{ fontSize: 17, fontWeight: 800, fill: COLORS.text }}>
-        {percent}
-      </text>
-    </svg>
-  );
-};
-
 export const BiTabs = ({ tabs = [], value, onChange }) => (
   <div className="bi-tabs" role="tablist" aria-label="Seções do dashboard">
     {tabs.map(tab => (
@@ -123,23 +93,17 @@ export const BiTabs = ({ tabs = [], value, onChange }) => (
         className={`bi-tab${tab.id === value ? " is-active" : ""}`}
         onClick={() => onChange(tab.id)}
       >
-        {tab.icon && <Icon name={tab.icon} size={15} />}
         {tab.label}
       </button>
     ))}
   </div>
 );
 
-export const KpiCard = ({ label, percent, caption, accent = COLORS.primary, icon, details = [] }) => (
+export const KpiCard = ({ label, percent, caption, accent = COLORS.primary, details = [] }) => (
   <div className="bi-kpi-card">
-    <Ring percent={percent} accent={accent} />
-    <div style={{ minWidth: 0 }}>
-      <div className="bi-kpi-label">
-        {icon && <span className="bi-kpi-icon" style={{ color: accent }}><Icon name={icon} size={15} /></span>}
-        {label}
-      </div>
-      <div className="bi-kpi-caption">{caption}</div>
-    </div>
+    <div className="bi-kpi-label" style={{ color: accent }}>{label}</div>
+    <div className="bi-kpi-value">{percent}</div>
+    <div className="bi-kpi-caption">{caption}</div>
     {details.length > 0 && (
       <div className="bi-kpi-hover" role="tooltip">
         {details.map(detail => (
@@ -153,14 +117,11 @@ export const KpiCard = ({ label, percent, caption, accent = COLORS.primary, icon
   </div>
 );
 
-export const StatCard = ({ label, value, hint, accent = COLORS.primary, icon }) => (
+export const StatCard = ({ label, value, hint }) => (
   <div className="bi-stat-card">
-    {icon && <span className="bi-stat-icon" style={{ color: accent, background: COLORS.surfaceAlt }}><Icon name={icon} size={18} /></span>}
-    <div style={{ minWidth: 0 }}>
-      <div className="bi-stat-value">{value}</div>
-      <div className="bi-stat-label">{label}</div>
-      {hint && <div className="bi-stat-hint">{hint}</div>}
-    </div>
+    <div className="bi-stat-value">{value}</div>
+    <div className="bi-stat-label">{label}</div>
+    {hint && <div className="bi-stat-hint">{hint}</div>}
   </div>
 );
 
@@ -178,16 +139,15 @@ export const BiBarChart = ({ title, hint, data = [], emptyLabel, colorFor = grau
           const tone = colorFor(item.label);
           return (
             <div key={item.label} className="bi-bar-row">
-              <span className="bi-bar-label">
-                <span className="bi-grau-dot" style={{ background: tone }} />
-                {item.label}
-              </span>
+              <div className="bi-bar-head">
+                <span className="bi-bar-label">{item.label}</span>
+                <span className="bi-bar-value">
+                  {item.caption}
+                  {item.sub && <span className="bi-bar-sub"> · {item.sub}</span>}
+                </span>
+              </div>
               <span className="bi-bar-track">
                 <span className="bi-bar-fill" style={{ width: `${Math.min(100, Math.max(0, item.value))}%`, background: tone }} />
-              </span>
-              <span className="bi-bar-value">
-                {item.caption}
-                {item.sub && <span className="bi-bar-sub">{item.sub}</span>}
               </span>
             </div>
           );

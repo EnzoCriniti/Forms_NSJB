@@ -33,15 +33,19 @@ export const getPresenceSortIconName = ({ sortCol, sortDir, col }) => {
 };
 
 export const buildPresenceHeaderCellStyle = ({ col, sortCol, colors }) => ({
-  padding: "10px 12px",
+  padding: "11px 14px",
   textAlign: ["grau", "name", "status"].includes(col) ? "left" : "center",
-  color: "#fff",
-  fontWeight: 600,
+  color: sortCol === col ? colors.primary : colors.textMuted,
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: "0.04em",
+  textTransform: "uppercase",
   whiteSpace: "nowrap",
   cursor: "pointer",
   userSelect: "none",
-  background: sortCol === col ? colors.primaryDark : colors.primary,
-  transition: "background 0.15s",
+  background: colors.surface,
+  borderBottom: `1px solid ${colors.borderLight}`,
+  transition: "color 0.15s",
   verticalAlign: "top",
   minWidth: col === "grau" ? 90 : col === "name" ? 160 : col === "status" ? 110 : 130,
 });
