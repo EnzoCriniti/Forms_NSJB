@@ -34,7 +34,7 @@ describe("MessagingSettingsPanel", () => {
   it("renderiza o painel na tela dedicada", () => {
     render(<MessagingSettingsScreen {...baseProps} onNavigate={vi.fn()} />);
 
-    expect(screen.getByText("Gerencie a configuracao global, os modelos e os presets de destinatarios")).toBeInTheDocument();
+    expect(screen.getByText("Configure o envio, os modelos de mensagem e os grupos de destinatários")).toBeInTheDocument();
     expect(screen.getByText("Modelos existentes")).toBeInTheDocument();
   });
 });

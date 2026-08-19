@@ -12,7 +12,7 @@ export const MessagingSettingsScreen = ({ onNavigate: _onNavigate, ...props }) =
   <div>
     <ScreenHeader
       className="settings-top-card"
-      subtitle="Gerencie a configuracao global, os modelos e os presets de destinatarios"
+      subtitle="Configure o envio, os modelos de mensagem e os grupos de destinatários"
     />
     <MessagingSettingsPanel {...props} />
   </div>

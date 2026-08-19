@@ -796,6 +796,18 @@ input[type="radio"] {
   gap: 6px;
 }
 
+/*
+ * O formulario e uma grade de coluna unica, entao cada campo herdava a largura
+ * inteira do cartao: no desktop um campo de nome curto chegava a ~1390px. Uma
+ * linha de texto tao longa e dificil de ler, porque o olho perde o inicio ao
+ * voltar. O cartao continua largo; so a largura util do campo e limitada.
+ */
+@media (min-width: 1280px) {
+  .msg-field {
+    max-width: 720px;
+  }
+}
+
 .msg-label {
   color: var(--text-secondary);
   font-size: 11.5px;

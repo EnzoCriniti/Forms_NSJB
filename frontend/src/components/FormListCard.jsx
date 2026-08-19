@@ -91,22 +91,24 @@ export const FormListCard = ({
     }
   };
 
+  // A confirmacao de copia nao pode ocupar espaco: a coluna de acoes do card
+  // tem largura fixa, entao um texto ao lado do botao empurrava os demais para
+  // a linha de baixo. O retorno visual vira troca de icone (no proprio botao) e
+  // o aviso textual fica so para leitores de tela.
   const shareButton = (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+    <span style={{ display: "inline-flex", alignItems: "center" }}>
       <Btn
         v="ghost"
-        icon="share"
+        icon={copiedPublicLink ? "check" : "share"}
         sz="sm"
-        style={LIST_ACTION_STYLE}
-        title={copiedPublicLink ? "Link copiado" : "Copiar link publico"}
-        aria-label="Copiar link publico"
+        style={copiedPublicLink ? { ...LIST_ACTION_STYLE, color: COLORS.accent } : LIST_ACTION_STYLE}
+        title={copiedPublicLink ? "Link copiado" : "Copiar link público"}
+        aria-label={copiedPublicLink ? "Link copiado" : "Copiar link público"}
         onClick={copyPublicLink}
       />
-      {copiedPublicLink && (
-        <span role="status" style={{ fontSize: 11, fontWeight: 700, color: COLORS.primary, whiteSpace: "nowrap" }}>
-          Link copiado
-        </span>
-      )}
+      <span role="status" aria-live="polite" className="sr-only">
+        {copiedPublicLink ? "Link copiado" : ""}
+      </span>
     </span>
   );
 

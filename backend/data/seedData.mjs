@@ -463,17 +463,17 @@ export const DEFAULT_MESSAGING_CONFIG = {
 export const MESSAGE_TEMPLATES = [
   {
     type: "new_scale",
-    name: "Anuncio de nova escala/presenca",
-    body: "Prezada Irmandade,\n\nO evento {{event.title}} ({{event.date}}) ja esta com formularios abertos.\n\n{{forms.list}}\n\nPor favor preencham ate {{event.closing}}.",
+    name: "Anúncio de nova escala/presença",
+    body: "Prezada Irmandade,\n\nO evento {{event.title}} ({{event.date}}) já está com formulários abertos.\n\n{{forms.list}}\n\nPor favor, preencham até {{event.closing}}.",
   },
   {
     type: "fill_reminder",
-    name: "Lembrete de preenchimento da presenca",
-    body: "Ola {{person.name}},\n\nLembrete: o formulario de presenca de {{event.title}} fecha em {{form.closing}}.\n\nPreenche por favor: {{form.publicLink}}",
+    name: "Lembrete de preenchimento da presença",
+    body: "Olá {{person.name}},\n\nLembrete: o formulário de presença de {{event.title}} fecha em {{form.closing}}.\n\nPreencha, por favor: {{form.publicLink}}",
   },
   {
     type: "open_slots",
     name: "Lembrete de vagas em aberto da escala",
-    body: "Ola {{person.name}},\n\nA escala de {{event.title}} ainda tem vagas em aberto. Caso queira participar, escolha um horario: {{form.publicLink}}",
+    body: "Olá {{person.name}},\n\nA escala de {{event.title}} ainda tem vagas em aberto. Caso queira participar, escolha um horário: {{form.publicLink}}",
   },
 ];

@@ -298,7 +298,7 @@ describe("FormListScreen", () => {
     );
 
     window.location.hash = "";
-    fireEvent.click(screen.getAllByRole("button", { name: "Copiar link publico" })[0]);
+    fireEvent.click(screen.getAllByRole("button", { name: "Copiar link público" })[0]);
 
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(`${window.location.origin}${window.location.pathname}#/formularios/1`));
     expect(await screen.findByText("Link copiado")).toBeInTheDocument();
