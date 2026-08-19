@@ -86,7 +86,7 @@ describe("App dashboard flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Dashboard" }));
 
     expect(await screen.findByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
-    expect(screen.getByText("Central de BI do núcleo: presença, escalas e participação por sócio.")).toBeInTheDocument();
+    expect(screen.getByText("Indicadores de presença, escalas e participação dos sócios.")).toBeInTheDocument();
   }, 10000);
 
   it("abre configuracoes em tela dedicada para admin", async () => {

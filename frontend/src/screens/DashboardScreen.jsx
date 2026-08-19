@@ -277,7 +277,7 @@ export const DashboardScreen = ({ onNavigate, forms = [], events = [], user }) =
 
   return (
     <div>
-      <ScreenHeader className="settings-top-card" subtitle="Central de BI do núcleo: presença, escalas e participação por sócio." />
+      <ScreenHeader className="settings-top-card" subtitle="Indicadores de presença, escalas e participação dos sócios." />
 
       <div className="bi-filters">
         <button type="button" className="bi-filters-toggle" onClick={() => setFiltersOpen(open => !open)} aria-expanded={filtersOpen}>

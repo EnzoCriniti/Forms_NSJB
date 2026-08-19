@@ -3197,10 +3197,20 @@ button:not(.ui-btn):focus-visible {
   font-size: 12px;
 }
 
+/*
+ * Vazio dos paineis de BI. Antes era so texto no canto superior esquerdo, o
+ * que deixava o painel parecendo quebrado: um bloco alto com uma frase solta
+ * no topo. Centralizado e com altura minima, o painel vazio fica intencional.
+ */
 .bi-empty {
+  align-items: center;
   color: var(--text-muted);
+  display: flex;
   font-size: 13px;
+  justify-content: center;
+  min-height: 120px;
   padding: 8px 0;
+  text-align: center;
 }
 
 .bi-bars {

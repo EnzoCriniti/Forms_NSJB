@@ -54,7 +54,7 @@ export const TeamPeriodSummaryPanel = ({ summary, loading, onOpenResults }) => {
     return (
       <section className="empty-state">
         <span className="empty-state__title">Nenhum período selecionado</span>
-        <p className="empty-state__hint">Escolha um período na lista ao lado para ver os formulários e eventos vinculados a ele.</p>
+        <p className="empty-state__hint">Escolha um período na lista para ver os formulários e eventos vinculados a ele.</p>
       </section>
     );
   }
