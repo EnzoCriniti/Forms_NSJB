@@ -114,7 +114,7 @@ describe("EventsScreen", () => {
       />,
     );
 
-    expect(screen.getByText("Organize encontros, acompanhe seus formul\u00e1rios e centralize as comunica\u00e7\u00f5es de cada evento.")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Buscar por nome, data ou descrição")).toBeInTheDocument();
     fireEvent.click(screen.getByText("Evento Maio"));
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
@@ -195,7 +195,7 @@ describe("EventsScreen", () => {
       />,
     );
 
-    expect(screen.getByText("Exibindo 1 a 1 de 8")).toBeInTheDocument();
+    expect(screen.getByText(/1.*1 de 8 eventos/)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Pr.xima/ }));
 
@@ -221,7 +221,7 @@ describe("EventsScreen", () => {
     expect(eventCard.style.borderColor).toBe(COLORS.primary);
 
     fireEvent.mouseLeave(eventCard);
-    expect(eventCard.style.borderColor).toBe(COLORS.borderLight);
+    expect(eventCard.style.borderColor).toBe(COLORS.border);
   });
 
   it("cria formulario a partir do evento selecionado", () => {

@@ -186,8 +186,8 @@ describe("resultsDomain", () => {
     expect(buildPresenceHeaderCellStyle({
       col: "name",
       sortCol: "name",
-      colors: { primary: "#111", primaryDark: "#222" },
-    })).toMatchObject({ textAlign: "left", background: "#222", minWidth: 160 });
+      colors: { primary: "#111", surface: "#fff", textMuted: "#888", borderLight: "#eee" },
+    })).toMatchObject({ textAlign: "left", background: "#fff", color: "#111", minWidth: 160 });
   });
 
   it("filtra respostas por grau e anexa resumo dos totais", () => {

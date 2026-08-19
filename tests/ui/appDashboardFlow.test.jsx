@@ -110,7 +110,7 @@ describe("App dashboard flow", () => {
 
     expect(await screen.findByRole("button", { name: "Acessos" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Configurações" })).toBeInTheDocument();
-    expect(screen.getByText("Gerencie usuários, segurança, bases e catálogos do sistema")).toBeInTheDocument();
+    expect(screen.getByText("Área administrativa do sistema.")).toBeInTheDocument();
   });
 
   it("mostra a tela de login quando nao ha sessao", async () => {
@@ -122,9 +122,9 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    expect(await screen.findByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Usu.*rio/)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Senha")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Entrar no painel" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Usuário")).toBeInTheDocument();
+    expect(screen.getByLabelText("Senha")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Entrar" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Formulários" })).not.toBeInTheDocument();
     expect(document.querySelector(".form-card")).toBeNull();
@@ -269,8 +269,8 @@ describe("App dashboard flow", () => {
       await Promise.resolve();
     });
 
-    expect(screen.getByRole("heading", { name: "Acesso restrito" })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Usuário")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Entrar no painel" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Usuário")).toBeInTheDocument();
     vi.useRealTimers();
   });
 

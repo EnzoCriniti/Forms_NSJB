@@ -67,7 +67,7 @@ describe("PublicFormScreen", () => {
     expect(window.location.hash).toBe("#/formularios/1/resultados");
   });
 
-  it("usa um topo leve quando a tela interna de resposta esta ativa", () => {
+  it("nao repete o cabecalho na tela interna de resposta (o shell ja mostra o titulo)", () => {
     render(
       <PublicFormScreen
         form={form}
@@ -80,9 +80,10 @@ describe("PublicFormScreen", () => {
       />,
     );
 
-    expect(screen.getAllByText("Formulario Publico").length).toBeGreaterThan(0);
+    expect(screen.queryByText("Formulario Publico")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Ver resultados" })).not.toBeInTheDocument();
     expect(screen.queryByText("NSJB Forms")).not.toBeInTheDocument();
+    expect(document.querySelector(".internal-response-card")).not.toBeNull();
   });
 
   it("abre modal de edicao quando a pessoa ja respondeu", () => {

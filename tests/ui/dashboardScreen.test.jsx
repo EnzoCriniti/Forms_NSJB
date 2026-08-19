@@ -51,7 +51,7 @@ describe("DashboardScreen", () => {
     expect(await screen.findByText("50%")).toBeInTheDocument(); // escala 5/10
     expect(screen.getByText("Próximos fechamentos")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Abrir resultados" }));
+    fireEvent.click(screen.getByTitle("Abrir resultados"));
     expect(onNavigate).toHaveBeenCalledWith("results", forms[0]);
   });
 
