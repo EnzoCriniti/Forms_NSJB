@@ -6,10 +6,18 @@
  * de preenchimento existe. Aqui inserimos um `claim_escala_slot` por vaga preenchida,
  * com `created_at` escalonado entre a abertura e o fechamento do evento.
  *
- * Conecta direto no Postgres do Docker (precisa do created_at customizado, que a
- * rota de claim nao permite). Idempotente: limpa os claims anteriores.
+ * Tambem reescreve o `created_at` das RESPOSTAS de presenca: elas entram pela rota
+ * publica, que sempre carimba "agora", entao um seed rodado hoje deixa um evento de
+ * abril com respostas de hoje e "tempo para preencher" de milhares de horas. Aqui cada
+ * resposta e reposicionada dentro da janela do proprio evento (abertura -> fechamento,
+ * limitado por agora), de forma estavel por (socio, formulario).
+ *
+ * Conecta direto no Postgres do Docker (precisa do created_at customizado, que as
+ * rotas publicas nao permitem). Idempotente: limpa os claims anteriores e recalcula
+ * os timestamps a partir da janela do evento, entao pode rodar quantas vezes quiser.
  *
  * @usage node scripts/seedEscalaClaims.mjs
+ * @usage NSJB_PGHOST=192.168.15.55 NSJB_PGPASSWORD=... node scripts/seedEscalaClaims.mjs
  */
 
 import pg from "pg";
@@ -94,39 +102,77 @@ const main = async () => {
 
   console.log(`Claims inseridos: ${inserted}${skipped ? ` (pulados sem janela: ${skipped})` : ""}.`);
 
-  // --- Tempo de resposta da presença ---
-  // As respostas mock foram inseridas no momento do seed (semanas após a abertura
-  // do evento), o que deixa o "tempo para preencher" irreal (centenas de horas).
-  // Aqui regravamos `time_to_fill_minutes`/`responded_at` no read model com tempos
-  // realistas e estáveis por sócio (alguns sempre rápidos, outros devagar).
-  const { rows: openings } = await client.query("SELECT id, opening FROM events WHERE opening IS NOT NULL");
-  const openingByEvent = new Map(openings.map(e => [e.id, new Date(e.opening)]));
-
+  // --- Backdate das respostas de presenca ---
+  // A rota publica carimba `created_at = agora`. Reposiciona cada resposta dentro da
+  // janela do proprio evento, com um instante estavel por (socio, formulario): o mesmo
+  // socio sempre responde igualmente cedo/tarde, entao o ranking de "responde rapido"
+  // do BI para de mudar a cada reexecucao.
   const stableUnit = str => {
     let h = 2166136261;
     for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
     return ((h >>> 0) % 100000) / 100000;
   };
 
-  const { rows: filledRows } = await client.query(
-    "SELECT id, event_id, person_name FROM event_participation WHERE filled = true",
-  );
-  let timed = 0;
-  for (const row of filledRows) {
-    const opening = openingByEvent.get(row.event_id);
-    if (!opening || Number.isNaN(opening.getTime())) continue;
-    // distribuição enviesada p/ rápido: a maioria responde em horas, alguns em dias.
-    const base = stableUnit(row.person_name || "x");
-    const jitter = rng();
-    const minutes = Math.round(20 + Math.pow(base * 0.7 + jitter * 0.3, 2) * 3600); // ~20min a ~2.5 dias
-    const respondedAt = new Date(opening.getTime() + minutes * 60000).toISOString();
-    await client.query(
-      "UPDATE event_participation SET time_to_fill_minutes = $1, responded_at = $2 WHERE id = $3",
-      [minutes, respondedAt, row.id],
-    );
-    timed++;
+  const { rows: eventRows } = await client.query("SELECT id, form_ids_json, opening, closing, date FROM events");
+  const nowMs = Date.now();
+  const windowByForm = new Map();
+  for (const event of eventRows) {
+    const opening = event.opening ? new Date(event.opening) : null;
+    const eventDate = event.date ? new Date(event.date) : null;
+    const from = opening && !Number.isNaN(opening.getTime())
+      ? opening
+      : (eventDate && !Number.isNaN(eventDate.getTime()) ? new Date(eventDate.getTime() - 7 * 86400000) : null);
+    if (!from) continue;
+    const closing = event.closing ? new Date(event.closing) : null;
+    const rawEnd = closing && !Number.isNaN(closing.getTime()) && closing > from
+      ? closing
+      : new Date(from.getTime() + 5 * 86400000);
+    // Evento ainda aberto: ninguem respondeu no futuro.
+    const end = new Date(Math.min(rawEnd.getTime(), nowMs));
+    if (end <= from) continue;
+    for (const formId of asArray(event.form_ids_json)) {
+      windowByForm.set(Number(formId), { fromMs: from.getTime(), spanMs: end.getTime() - from.getTime() });
+    }
   }
-  console.log(`Tempos de resposta regravados: ${timed}.`);
+
+  const { rows: responseRows } = await client.query("SELECT id, form_id, respondent_name FROM responses");
+  let backdated = 0;
+  for (const row of responseRows) {
+    const win = windowByForm.get(Number(row.form_id));
+    if (!win) continue;
+    // Distribuicao enviesada para o inicio: a maioria responde nos primeiros dias.
+    const diligence = stableUnit(row.respondent_name || "x");
+    const jitter = stableUnit(`${row.respondent_name}#${row.form_id}`);
+    const fraction = Math.min(0.98, Math.max(0.01, Math.pow(diligence * 0.6 + jitter * 0.4, 1.8)));
+    const createdAt = new Date(win.fromMs + win.spanMs * fraction).toISOString();
+    await client.query(
+      "UPDATE responses SET created_at = $1, updated_at = $1 WHERE id = $2",
+      [createdAt, row.id],
+    );
+    await client.query(
+      "UPDATE response_values SET created_at = $1, updated_at = $1 WHERE response_id = $2",
+      [createdAt, row.id],
+    ).catch(() => {});
+    backdated++;
+  }
+  console.log(`Respostas reposicionadas na janela do evento: ${backdated}.`);
+
+  // --- Participacao (read model congelado no encerramento) ---
+  // Depois do backdate, o snapshot gravado no encerramento aponta para o horario
+  // antigo. Recalcula a partir da propria resposta, sem inventar numero.
+  const { rows: syncRows } = await client.query(`
+    UPDATE event_participation ep
+       SET responded_at = r.created_at,
+           time_to_fill_minutes = GREATEST(0, ROUND(EXTRACT(EPOCH FROM (r.created_at - e.opening)) / 60))
+      FROM responses r, events e
+     WHERE ep.filled = true
+       AND ep.event_id = e.id
+       AND e.opening IS NOT NULL
+       AND r.form_id = ep.form_id
+       AND r.person_key = ep.person_key
+    RETURNING ep.id
+  `);
+  console.log(`Snapshots de participacao sincronizados com as respostas: ${syncRows.length}.`);
 
   await client.end();
 };

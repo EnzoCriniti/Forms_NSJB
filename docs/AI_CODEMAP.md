@@ -783,6 +783,27 @@ Mapa curto das areas mais mexidas por agentes.
 - `backend/validators/formPayloadValidators.mjs`
   Aceita `resultsConfig.formMode` com os valores de `shared/formModes.mjs`.
 
+## Scripts de seed e dados simulados
+
+- `scripts/seedSessoesDemo.mjs`
+  Seed principal de demonstracao: cria eventos de sessao (escala, instrutiva, direcao), feijoada e eventos pontuais, cada um com presenca vinculada a base de socios, escala da Organ (noite) e escala de atividades no nucleo (dia), e simula o preenchimento com os nomes reais da base. Cobre os quatro status de evento (rascunho, pronto, publicado, encerrado) e aplica o limitador de grau por evento. A tabela `HISTORICO` no fim do arquivo tambem preenche e reencerra eventos antigos que ja existiam na base.
+  A simulacao respeita a hierarquia dos graus: a adesao a presenca cresce de CI para QM, enquanto escalas e eventos de trabalho concentram vagas na base (CI/QS) e deixam QM/CDC principalmente em postos de coordenacao. A presenca usa cotas deterministicas por grau para evitar que a amostra pequena de QM distorca o BI.
+  `--reset` (com credenciais do Postgres em `NSJB_PG*`) apaga as respostas dos formularios do seed antes de recriar: e a unica forma de obter exatamente os percentuais do plano, porque sem ele o script so acrescenta.
+- `scripts/seedEscalaClaims.mjs`
+  Conserta o que a API nao permite carimbar: insere os audits `claim_escala_slot` com `created_at` escalonado, reposiciona o `created_at` das respostas dentro da janela do evento e ressincroniza `event_participation` com esses horarios. Rodar DEPOIS do seed.
+- `scripts/insertMockEvents.mjs`
+  Seed antigo de eventos. Nao grava `memberBinding`/`selectionSource` nos campos `person_select`; prefira `seedSessoesDemo.mjs`.
+- `scripts/reseedDashboard.mjs`
+  Regera os dados de BI dos eventos encerrados. O snapshot de participacao e congelado no encerramento, entao o script insere respostas e depois toggla o status para recapturar.
+
+Pontos de atencao ao escrever seeds:
+
+- `POST /api/responses` e rota publica com rate limit de 20 requisicoes por minuto por IP (`backend/routes/formRoutes.mjs`), e a chave e o `x-forwarded-for`. Como no mundo real cada socio responde do proprio aparelho, o seed manda um IP estavel por pessoa em vez de estrangular o proprio ritmo: nenhuma regra e desligada e o audit log fica coerente.
+- A decisao de "esta pessoa respondeu este formulario" precisa ser deterministica e respeitar uma cota por grau, nunca um sorteio sequencial. Com sorteio, cada reexecucao rola o dado de novo para quem ainda nao respondeu e o preenchimento sobe ate 100%; com sorteio independente, uma unica falta entre os 12 QM tambem desloca o indicador em mais de 8 pontos.
+- Um mesmo nome so pode ocupar uma vaga por escala, salvo `resultsConfig.maxAssignmentsPerPerson` (`backend/services/escalaService.mjs`). Escalas vindas de seeds antigos podem ter nomes repetidos e travar qualquer `PUT` seguinte com 409.
+- Formulario de presenca em modo `nucleo` exige ao menos um `person_select` ligado a base central; em modo `geral` esse vinculo e proibido (`backend/services/formModeRules.mjs`).
+- Coerencia entre status e dados: formulario em `rascunho` nao pode ter resposta, evento com respostas nao pode ter `opening` no futuro, e o snapshot de participacao so e recapturado na transicao nao-encerrado -> encerrado.
+
 ## Testes ligados a essa area
 
 - `tests/ui/adminCatalog.test.jsx`
