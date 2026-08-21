@@ -786,9 +786,11 @@ Mapa curto das areas mais mexidas por agentes.
 ## Scripts de seed e dados simulados
 
 - `scripts/seedSessoesDemo.mjs`
-  Seed principal de demonstracao: cria eventos de sessao (escala, instrutiva, direcao), feijoada e eventos pontuais, cada um com presenca vinculada a base de socios, escala da Organ (noite) e escala de atividades no nucleo (dia), e simula o preenchimento com os nomes reais da base. Cobre os quatro status de evento (rascunho, pronto, publicado, encerrado) e aplica o limitador de grau por evento. A tabela `HISTORICO` no fim do arquivo tambem preenche e reencerra eventos antigos que ja existiam na base.
+  Seed principal de demonstracao: cria eventos de sessao (escala, instrutiva, direcao), feijoada e eventos pontuais, cada um com presenca vinculada a base de socios, escala da Organ (noite) e escala de atividades no nucleo (dia), e simula o preenchimento com os nomes reais da base. O plano atual fecha em 20 eventos, com maioria historica (11 encerrados) e apenas 9 atuais/futuros. Cobre os quatro status de evento e aplica o limitador de grau por evento. A tabela `HISTORICO` no fim do arquivo tambem preenche e reencerra eventos antigos que ja existiam na base.
   A simulacao respeita a hierarquia dos graus: a adesao a presenca cresce de CI para QM, enquanto escalas e eventos de trabalho concentram vagas na base (CI/QS) e deixam QM/CDC principalmente em postos de coordenacao. A presenca usa cotas deterministicas por grau para evitar que a amostra pequena de QM distorca o BI.
   `--reset` (com credenciais do Postgres em `NSJB_PG*`) apaga as respostas dos formularios do seed antes de recriar: e a unica forma de obter exatamente os percentuais do plano, porque sem ele o script so acrescenta.
+- `scripts/seedApiClient.mjs`
+  Cliente HTTP do seed com renovacao automatica do token quando um lote longo recebe `401`, preservando a requisicao original e repetindo-a uma unica vez.
 - `scripts/seedEscalaClaims.mjs`
   Conserta o que a API nao permite carimbar: insere os audits `claim_escala_slot` com `created_at` escalonado, reposiciona o `created_at` das respostas dentro da janela do evento e ressincroniza `event_participation` com esses horarios. Rodar DEPOIS do seed.
 - `scripts/insertMockEvents.mjs`
@@ -814,3 +816,5 @@ Pontos de atencao ao escrever seeds:
   Suite focada no modo estrutural da criacao de formularios de presenca, incluindo nucleo, geral e filtros de catalogo.
 - `tests/ui/appSaveFlow.test.jsx`
   Fluxo salvo do app com configuracao de resultados ligada a base vinculada.
+- `tests/seedApiClient.test.mjs`
+  Regressao da renovacao de autenticacao durante lotes longos do seed.

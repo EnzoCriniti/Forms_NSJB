@@ -25,6 +25,8 @@
  * existir), lidas de NSJB_PGHOST/PGPORT/PGUSER/PGPASSWORD/PGDATABASE.
  */
 
+import { createSeedApiClient } from "./seedApiClient.mjs";
+
 const API = process.argv.find(a => a.startsWith("http")) || "http://localhost:8787";
 const argValue = (flag, fallback) => {
   const index = process.argv.indexOf(flag);
@@ -63,26 +65,12 @@ const stableUnit = str => {
 // ---------------------------------------------------------------------------
 // HTTP
 // ---------------------------------------------------------------------------
-let token = "";
-const req = async (method, path, body, extraHeaders = {}) => {
-  const res = await fetch(`${API}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...extraHeaders,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    const error = new Error(`${method} ${path} -> ${res.status}: ${json.error || JSON.stringify(json).slice(0, 200)}`);
-    error.status = res.status;
-    error.retryAfter = Number(res.headers.get("retry-after")) || 0;
-    throw error;
-  }
-  return json;
-};
+const { authenticate, request: req } = createSeedApiClient({
+  api: API,
+  username: USER,
+  password: PASS,
+  onReauthenticate: () => console.log("[auth] sessao expirada; autenticando novamente..."),
+});
 
 // `POST /api/responses` e rota publica com rate limit por IP (20/min, ver
 // backend/routes/formRoutes.mjs, chave = x-forwarded-for). No mundo real cada
@@ -277,6 +265,130 @@ const PLANO = [
     evento: {
       title: "Sessao de Escala",
       description: "Sessao de escala com atividades no nucleo durante o dia e sessao a noite.",
+      date: "2025-09-20",
+      eligibleGraus: [],
+      opening: "2025-09-08T08:00",
+      closing: "2025-09-20T15:00",
+      status: "encerrado",
+      label: 1,
+    },
+    fill: { presenca: 0.58, escala: 0.68 },
+    forms: [
+      presenca("Presenca Sessao de Escala - 20/09/2025", "Sessao de Escala", CAMPOS_SESSAO_ESCALA, { statusForm: "fechado" }),
+      escala("Escala da Organ - 20/09/2025", "Sessao de Escala", ESCALA_ORGAN_COMPLETA, { statusForm: "fechado" }),
+      escala("Atividades no Nucleo - 20/09/2025", "Sessao de Escala", ATIVIDADES_NUCLEO_DIA, { statusForm: "fechado", desc: DESC_ATIVIDADES }),
+    ],
+  },
+  {
+    evento: {
+      title: "Sessao Instrutiva",
+      description: "Sessao instrutiva com apresentacoes dos graus intermediarios.",
+      date: "2025-10-18",
+      eligibleGraus: ["CDC", "CI"],
+      opening: "2025-10-06T08:00",
+      closing: "2025-10-18T18:00",
+      status: "encerrado",
+      label: 5,
+    },
+    fill: { presenca: 0.52, escala: 0.6 },
+    forms: [
+      presenca("Presenca Sessao Instrutiva - 18/10/2025", "Sessao Instrutiva", CAMPOS_INSTRUTIVA, { statusForm: "fechado" }),
+      escala("Escala da Organ - 18/10/2025", "Sessao Instrutiva", ESCALA_ORGAN_ENXUTA, { statusForm: "fechado" }),
+    ],
+  },
+  {
+    evento: {
+      title: "Sessao de Escala",
+      description: "Sessao de escala com atividades no nucleo durante o dia e sessao a noite.",
+      date: "2025-11-22",
+      eligibleGraus: [],
+      opening: "2025-11-10T08:00",
+      closing: "2025-11-22T15:00",
+      status: "encerrado",
+      label: 1,
+    },
+    fill: { presenca: 0.64, escala: 0.72 },
+    forms: [
+      presenca("Presenca Sessao de Escala - 22/11/2025", "Sessao de Escala", CAMPOS_SESSAO_ESCALA, { statusForm: "fechado" }),
+      escala("Escala da Organ - 22/11/2025", "Sessao de Escala", ESCALA_ORGAN_COMPLETA, { statusForm: "fechado" }),
+      escala("Atividades no Nucleo - 22/11/2025", "Sessao de Escala", ATIVIDADES_NUCLEO_DIA, { statusForm: "fechado", desc: DESC_ATIVIDADES }),
+    ],
+  },
+  {
+    evento: {
+      title: "Feijoada Beneficente",
+      description: "Feijoada beneficente do nucleo: escala do dia inteiro, convidados e marmitas para viagem.",
+      date: "2025-12-14",
+      eligibleGraus: [],
+      opening: "2025-11-24T08:00",
+      closing: "2025-12-12T20:00",
+      status: "encerrado",
+      labelName: "Feijoada",
+      labelColor: "#8d6e63",
+    },
+    fill: { presenca: 0.76, escala: 0.8 },
+    forms: [
+      presenca("Presenca Feijoada Beneficente - 14/12/2025", "Feijoada Beneficente", CAMPOS_FEIJOADA, { statusForm: "fechado", guests: true }),
+      escala("Escala da Feijoada - 14/12/2025", "Feijoada Beneficente", ESCALA_FEIJOADA, { statusForm: "fechado", desc: "Escala historica da Feijoada Beneficente." }),
+    ],
+  },
+  {
+    evento: {
+      title: "Sessao de Escala",
+      description: "Sessao de escala com atividades no nucleo durante o dia e sessao a noite.",
+      date: "2026-01-24",
+      eligibleGraus: [],
+      opening: "2026-01-12T08:00",
+      closing: "2026-01-24T15:00",
+      status: "encerrado",
+      label: 1,
+    },
+    fill: { presenca: 0.69, escala: 0.75 },
+    forms: [
+      presenca("Presenca Sessao de Escala - 24/01/2026", "Sessao de Escala", CAMPOS_SESSAO_ESCALA, { statusForm: "fechado" }),
+      escala("Escala da Organ - 24/01/2026", "Sessao de Escala", ESCALA_ORGAN_COMPLETA, { statusForm: "fechado" }),
+      escala("Atividades no Nucleo - 24/01/2026", "Sessao de Escala", ATIVIDADES_NUCLEO_DIA, { statusForm: "fechado", desc: DESC_ATIVIDADES }),
+    ],
+  },
+  {
+    evento: {
+      title: "Sessao Instrutiva",
+      description: "Sessao instrutiva com apresentacoes dos graus intermediarios.",
+      date: "2026-02-21",
+      eligibleGraus: ["CDC", "CI"],
+      opening: "2026-02-09T08:00",
+      closing: "2026-02-21T18:00",
+      status: "encerrado",
+      label: 5,
+    },
+    fill: { presenca: 0.6, escala: 0.65 },
+    forms: [
+      presenca("Presenca Sessao Instrutiva - 21/02/2026", "Sessao Instrutiva", CAMPOS_INSTRUTIVA, { statusForm: "fechado" }),
+      escala("Escala da Organ - 21/02/2026", "Sessao Instrutiva", ESCALA_ORGAN_ENXUTA, { statusForm: "fechado" }),
+    ],
+  },
+  {
+    evento: {
+      title: "Mutirao de Limpeza do Nucleo",
+      description: "Evento historico de manutencao e atividades no nucleo.",
+      date: "2026-03-21",
+      eligibleGraus: [],
+      perfil: "trabalho",
+      opening: "2026-03-02T08:00",
+      closing: "2026-03-20T20:00",
+      status: "encerrado",
+      label: 3,
+    },
+    fill: { presenca: 0.42, escala: 0.7 },
+    forms: [
+      presenca("Presenca Mutirao de Limpeza - 21/03/2026", "Mutirao de Limpeza", CAMPOS_MUTIRAO, { statusForm: "fechado" }),
+      escala("Atividades no Nucleo - Mutirao 21/03/2026", "Mutirao de Limpeza", ATIVIDADES_MUTIRAO, { statusForm: "fechado", desc: "Escala historica do mutirao de manutencao." }),
+    ],
+  },
+  {
+    evento: {
+      title: "Sessao de Escala",
+      description: "Sessao de escala com atividades no nucleo durante o dia e sessao a noite.",
       date: "2026-08-08",
       eligibleGraus: [],
       opening: "2026-08-03T08:00",
@@ -356,7 +468,7 @@ const PLANO = [
       label: 4,
       eligibleGraus: ["QM", "CDC"],
     },
-    fill: { presenca: 0, escala: 0 },
+    fill: { presenca: 0, escala: 0.5 },
     forms: [
       presenca("Presenca Sessao da Direcao - 05/09/2026", "Sessao da Direcao", CAMPOS_DIRECAO, { statusForm: "rascunho" }),
       escala("Escala da Organ - 05/09/2026", "Sessao da Direcao", ESCALA_ORGAN_ENXUTA, { statusForm: "rascunho" }),
@@ -391,7 +503,7 @@ const PLANO = [
       status: "pronto",
       label: 1,
     },
-    fill: { presenca: 0, escala: 0.18 },
+    fill: { presenca: 0, escala: 0.65 },
     forms: [
       presenca("Presenca Sessao de Escala - 19/09/2026", "Sessao de Escala", CAMPOS_SESSAO_ESCALA, { statusForm: "rascunho" }),
       escala("Escala da Organ - 19/09/2026", "Sessao de Escala", ESCALA_ORGAN_COMPLETA, { statusForm: "rascunho" }),
@@ -428,7 +540,7 @@ const PLANO = [
       status: "pronto",
       label: 6,
     },
-    fill: { presenca: 0, escala: 0.3 },
+    fill: { presenca: 0, escala: 0.7 },
     forms: [
       presenca("Presenca Bazar Beneficente - 27/09/2026", "Bazar Beneficente", CAMPOS_BAZAR, { statusForm: "rascunho", guests: true }),
       escala("Escala do Bazar - 27/09/2026", "Bazar Beneficente", ATIVIDADES_MUTIRAO.slice(0, 4), { statusForm: "rascunho" }),
@@ -616,7 +728,7 @@ const main = async () => {
   console.log(`Conectando a ${API}...`);
   const health = await fetch(`${API}/api/health`).catch(() => null);
   if (!health?.ok) throw new Error("Backend nao esta acessivel.");
-  ({ token } = await req("POST", "/api/auth/login", { username: USER, password: PASS }));
+  await authenticate();
   console.log(`Autenticado como ${USER}.\n`);
 
   const boot = await req("GET", "/api/bootstrap");
