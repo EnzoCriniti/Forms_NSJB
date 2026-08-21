@@ -259,6 +259,47 @@ describe("ResultsScreen", () => {
     expect(screen.getByText("Não")).toBeInTheDocument();
   });
 
+  it("mostra criancas, jovens e visitantes estimados por refeicao", () => {
+    const mealForm = {
+      ...form,
+      fieldDefinitions: [
+        { id: 1, type: "person_select", label: "Nome", required: true, show: true, total: false },
+        { id: 2, type: "yes_no", label: "18h - Jantar", required: true, show: true, total: true },
+        { id: 3, type: "number", label: "Crianças (1-11 anos)", show: true, total: true },
+        { id: 4, type: "number", label: "Jovens (12-17 anos)", show: true, total: true },
+        { id: 5, type: "number", label: "Visitantes adultos", show: true, total: true },
+      ],
+      resultsConfig: {
+        ...form.resultsConfig,
+        totalsLayout: [{ fieldId: 2, style: "bar" }],
+      },
+    };
+    const mealResponses = [
+      { id: 10, respondentName: "Maria", respondentGrau: "QS", values: { "1": "QS - Maria", "2": "Sim", "3": 2, "4": 1, "5": 1 } },
+      { id: 11, respondentName: "Joao", respondentGrau: "QM", values: { "1": "QM - Joao", "2": "Nao", "3": 4, "4": 3, "5": 2 } },
+    ];
+
+    render(
+      <ResultsScreen
+        onNavigate={vi.fn()}
+        responses={mealResponses}
+        form={mealForm}
+        sections={[]}
+        people={people}
+        user={{ role: "admin" }}
+        labels={[]}
+        onSaveSections={vi.fn()}
+      />,
+    );
+
+    const attendance = screen.getByText("Presentes estimados").parentElement.parentElement;
+    expect(attendance).toHaveTextContent("5");
+    expect(attendance).toHaveTextContent("Respondentes: 1");
+    expect(attendance).toHaveTextContent("Crianças: 2");
+    expect(attendance).toHaveTextContent("Jovens: 1");
+    expect(attendance).toHaveTextContent("Visitantes: 1");
+  });
+
   it("nao mostra filtro por grau sem campo principal vinculado a base", () => {
     render(
       <ResultsScreen

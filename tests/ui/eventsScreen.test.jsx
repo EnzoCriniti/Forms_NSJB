@@ -86,6 +86,7 @@ describe("EventsScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: "Novo evento" }));
     fireEvent.change(screen.getByLabelText("Nome do evento"), { target: { value: "Evento Junho" } });
     fireEvent.change(screen.getByLabelText("Data"), { target: { value: "2026-06-20" } });
+    expect(screen.getByLabelText("Data")).toHaveStyle({ width: "100%", boxSizing: "border-box" });
     fireEvent.change(screen.getByLabelText("Abertura"), { target: { value: "2026-06-10T08:00" } });
     fireEvent.change(screen.getByLabelText("Fechamento"), { target: { value: "2026-06-18T18:00" } });
     fireEvent.change(screen.getByLabelText("Descrição"), { target: { value: "Evento operacional" } });
@@ -115,7 +116,7 @@ describe("EventsScreen", () => {
     );
 
     expect(screen.getByPlaceholderText("Buscar por nome, data ou descrição")).toBeInTheDocument();
-    fireEvent.click(screen.getByText("Evento Maio"));
+    fireEvent.click(screen.getByText(/Evento Maio/));
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Formul\u00e1rio de presen\u00e7a" })).toBeInTheDocument();
@@ -135,7 +136,7 @@ describe("EventsScreen", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio"));
+    fireEvent.click(screen.getByText(/Evento Maio/));
 
     const presenceCard = screen.getByText("Presenca Maio").closest(".form-card");
     const scaleCard = screen.getByText("Escala Maio").closest(".form-card");
@@ -216,12 +217,47 @@ describe("EventsScreen", () => {
     );
 
     const eventCard = screen.getByRole("button", { name: /Evento Maio/i });
+    expect(eventCard).toHaveTextContent("Evento Maio - 20/05/2026");
 
     fireEvent.mouseEnter(eventCard);
     expect(eventCard.style.borderColor).toBe(COLORS.primary);
 
     fireEvent.mouseLeave(eventCard);
     expect(eventCard.style.borderColor).toBe(COLORS.border);
+  });
+
+  it("reabre evento encerrado e permite alterar seu status na edicao", async () => {
+    const closedEvent = { ...events[0], status: "encerrado" };
+    const onSaveEvent = vi.fn(async payload => ({ ...payload }));
+
+    render(
+      <EventsScreen
+        events={[closedEvent]}
+        forms={forms}
+        user={admin}
+        labels={[]}
+        onSaveEvent={onSaveEvent}
+        onDeleteEvent={vi.fn()}
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByText(/Evento Maio/));
+    fireEvent.click(screen.getByRole("button", { name: "Reabrir" }));
+
+    await waitFor(() => expect(onSaveEvent).toHaveBeenCalledWith(expect.objectContaining({
+      id: 10,
+      status: "publicado",
+    })));
+
+    fireEvent.click(screen.getByRole("button", { name: "Editar" }));
+    fireEvent.change(screen.getByLabelText("Status"), { target: { value: "pronto" } });
+    fireEvent.click(screen.getByRole("button", { name: "Salvar evento" }));
+
+    await waitFor(() => expect(onSaveEvent).toHaveBeenLastCalledWith(expect.objectContaining({
+      id: 10,
+      status: "pronto",
+    })));
   });
 
   it("cria formulario a partir do evento selecionado", () => {
@@ -240,7 +276,7 @@ describe("EventsScreen", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio"));
+    fireEvent.click(screen.getByText(/Evento Maio/));
     fireEvent.click(screen.getByRole("button", { name: "Novo formulário" }));
 
     expect(onCreateFormInEvent).toHaveBeenCalledWith(events[0]);
@@ -320,7 +356,7 @@ describe("EventsScreen", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio"));
+    fireEvent.click(screen.getByText(/Evento Maio/));
     fireEvent.click(screen.getByRole("button", { name: "Mensagens (2)" }));
 
     const editButtons = screen.getAllByRole("button", { name: "Editar mensagem" });
@@ -348,7 +384,7 @@ describe("EventsScreen", () => {
       />,
     );
 
-    fireEvent.click(screen.getByText("Evento Maio"));
+    fireEvent.click(screen.getByText(/Evento Maio/));
     fireEvent.click(screen.getByRole("button", { name: "Mensagens (2)" }));
 
     const deleteButtons = screen.getAllByRole("button", { name: "Excluir mensagem" });
@@ -374,12 +410,12 @@ describe("EventsScreen", () => {
       />,
     );
 
-    expect(screen.getByText("Evento Maio")).toBeInTheDocument();
+    expect(screen.getByText("Evento Maio - 20/05/2026")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo evento" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Editar evento" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Excluir evento" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Evento Maio"));
+    fireEvent.click(screen.getByText(/Evento Maio/));
 
     expect(screen.getByText("Presenca Maio")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo formulário" })).not.toBeInTheDocument();

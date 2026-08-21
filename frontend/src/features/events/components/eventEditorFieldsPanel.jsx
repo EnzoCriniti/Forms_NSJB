@@ -8,6 +8,9 @@ import { Btn, COLORS } from "../../../components/ui";
 import { buildEligibleGrauOptions, isGrauSelected, toggleEligibleGrau } from "../../../screens/eventGrauDomain";
 
 const inputStyle = {
+  boxSizing: "border-box",
+  minWidth: 0,
+  width: "100%",
   padding: "10px 12px",
   border: `1px solid ${COLORS.border}`,
   borderRadius: 8,
@@ -17,6 +20,7 @@ const inputStyle = {
 
 const labelStyle = {
   display: "grid",
+  minWidth: 0,
   gap: 6,
   fontSize: 12,
   fontWeight: 700,
@@ -30,7 +34,7 @@ export const EventEditorFieldsPanel = ({ draft, onChangeDraft, onCancel, onSave,
   return (
   <section style={{ background: COLORS.surface, border: `1px solid ${COLORS.borderLight}`, borderRadius: 8, padding: 18 }}>
     <div style={{ display: "grid", gap: 14 }}>
-      <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 160px", gap: 12 }}>
+      <div className="events-form-grid" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 160px)", gap: 12 }}>
         <label style={labelStyle}>
           Nome do evento
           <input value={draft.title} onChange={event => onChangeDraft(current => ({ ...current, title: event.target.value }))} placeholder="Ex: Reuniao mensal - Maio" style={inputStyle} />
@@ -53,6 +57,18 @@ export const EventEditorFieldsPanel = ({ draft, onChangeDraft, onCancel, onSave,
       <label style={labelStyle}>
         Descrição
         <textarea value={draft.description || ""} onChange={event => onChangeDraft(current => ({ ...current, description: event.target.value }))} rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+      </label>
+      <label style={labelStyle}>
+        Status
+        <select aria-label="Status" value={draft.status || "rascunho"} onChange={event => onChangeDraft(current => ({ ...current, status: event.target.value }))} style={inputStyle}>
+          <option value="rascunho">Rascunho</option>
+          <option value="pronto">Pronto</option>
+          <option value="publicado">Publicado</option>
+          <option value="encerrado">Encerrado</option>
+        </select>
+        <span style={{ fontWeight: 400, color: COLORS.textMuted, fontSize: 11 }}>
+          Eventos com formulários vinculados são salvos no mínimo como prontos.
+        </span>
       </label>
       <div style={labelStyle}>
         Graus que devem preencher

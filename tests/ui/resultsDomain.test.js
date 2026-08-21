@@ -118,6 +118,32 @@ describe("resultsDomain", () => {
     });
   });
 
+  it("soma acompanhantes apenas nas refeicoes confirmadas pela pessoa", () => {
+    const columns = [
+      { id: 2, type: "yes_no", label: "12h - Almoço" },
+      { id: 3, type: "yes_no", label: "18h - Jantar" },
+      { id: 4, type: "yes_no", label: "20h - Sessão" },
+      { id: 5, type: "number", label: "Crianças (1-11 anos)" },
+      { id: 6, type: "number", label: "Jovens (12-17 anos)" },
+      { id: 7, type: "number", label: "Visitantes adultos" },
+    ];
+    const responses = [
+      { 2: "Sim", 3: "Nao", 4: "Sim", 5: 2, 6: 1, 7: 1 },
+      { 2: "Sim", 3: "Sim", 4: "Nao", 5: 1, 6: 0, 7: 2 },
+      { 2: "Nao", 3: "Sim", 4: "Sim", 5: 3, 6: 2, 7: 0 },
+    ];
+
+    const totals = buildPresenceTotals({
+      columns,
+      responses,
+      getFieldValue: (response, fieldId) => response[fieldId],
+    });
+
+    expect(totals[2].mealAttendance).toEqual({ respondents: 2, children: 3, youths: 1, adultVisitors: 3, total: 9 });
+    expect(totals[3].mealAttendance).toEqual({ respondents: 2, children: 4, youths: 2, adultVisitors: 2, total: 10 });
+    expect(totals[4].mealAttendance).toBeUndefined();
+  });
+
   it("monta layout de totais, largura minima e filtros da presenca", () => {
     const columns = [
       { id: 2, label: "Vai?", type: "yes_no", total: true },

@@ -7,6 +7,27 @@ import { getPersonKey, getResponsePersonKey } from "../../../shared/personIdenti
 
 export const NO_VALUES = ["Nao", "NÃƒÂ£o", "NÃƒÆ’Ã‚Â£o", "NÃƒÆ’Ã‚Æ’Ãƒâ€šÃ‚Â£o"];
 
+const normalizeFieldLabel = value => String(value || "")
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase();
+
+const MEAL_LABEL_PATTERN = /\b(almoco|jantar|lanche|cafe|refeicao|ceia)\b/;
+
+const getCompanionCategory = field => {
+  if (field.type !== "number") return null;
+  const label = normalizeFieldLabel(field.label);
+  if (/\bcrianca/.test(label)) return "children";
+  if (/\b(jovem|jovens)\b/.test(label)) return "youths";
+  if (/\b(visitante|convidado|acompanhante adulto)/.test(label)) return "adultVisitors";
+  return null;
+};
+
+const toCount = value => {
+  const count = Number(value || 0);
+  return Number.isFinite(count) && count > 0 ? count : 0;
+};
+
 export const buildPresenceStats = ({
   hasExpectedTotal,
   filteredResponsesLength,
@@ -61,12 +82,28 @@ export const buildPresenceBaseResponses = ({ responses = [], people = [], showLi
 
 export const buildPresenceTotals = ({ columns = [], responses = [], getFieldValue }) => {
   const result = {};
+  const companionFields = columns
+    .map(field => ({ field, category: getCompanionCategory(field) }))
+    .filter(item => item.category);
   for (const col of columns) {
     if (col.type === "yes_no") {
+      const affirmativeResponses = responses.filter(response => getFieldValue(response, col.id) === "Sim");
       result[col.id] = {
-        sim: responses.filter(response => getFieldValue(response, col.id) === "Sim").length,
+        sim: affirmativeResponses.length,
         nao: responses.filter(response => NO_VALUES.includes(getFieldValue(response, col.id))).length,
       };
+      if (MEAL_LABEL_PATTERN.test(normalizeFieldLabel(col.label))) {
+        const attendance = affirmativeResponses.reduce((totals, response) => {
+          for (const { field, category } of companionFields) {
+            totals[category] += toCount(getFieldValue(response, field.id));
+          }
+          return totals;
+        }, { respondents: affirmativeResponses.length, children: 0, youths: 0, adultVisitors: 0 });
+        result[col.id].mealAttendance = {
+          ...attendance,
+          total: attendance.respondents + attendance.children + attendance.youths + attendance.adultVisitors,
+        };
+      }
     } else if (col.type === "number") {
       result[col.id] = {
         sum: responses.reduce((sum, response) => sum + Number(getFieldValue(response, col.id) || 0), 0),

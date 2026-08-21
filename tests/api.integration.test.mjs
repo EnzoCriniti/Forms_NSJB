@@ -486,7 +486,7 @@ test("nova sessao revoga a anterior da mesma conta", async () => {
   }
 });
 
-test("nova sessao admin revoga sessoes de outros administradores", async () => {
+test("administradores diferentes permanecem autenticados ao mesmo tempo", async () => {
   const ctx = await startServer();
   try {
     const firstAdminToken = await loginAsAdmin(ctx.baseUrl);
@@ -505,11 +505,18 @@ test("nova sessao admin revoga sessoes de outros administradores", async () => {
       password: "admin234",
     });
     assert.equal(secondLoginRes.status, 200);
+    const secondLogin = await secondLoginRes.json();
+    assert.ok(secondLogin.token);
 
     const firstMeRes = await fetch(`${ctx.baseUrl}/api/auth/me`, {
       headers: { Authorization: `Bearer ${firstAdminToken}` },
     });
-    assert.equal(firstMeRes.status, 401);
+    assert.equal(firstMeRes.status, 200);
+
+    const secondMeRes = await fetch(`${ctx.baseUrl}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${secondLogin.token}` },
+    });
+    assert.equal(secondMeRes.status, 200);
   } finally {
     await ctx.cleanup();
   }
@@ -766,6 +773,10 @@ test("postgres initializes a fresh database with the official schema", async () 
     const bootstrap = await bootstrapRes.json();
     assert.ok(bootstrap.forms.length >= 1);
     assert.ok(bootstrap.users.length >= 1);
+    const organPreset = bootstrap.presets.find(preset => preset.name === "Escala da Organ - Completa");
+    assert.ok(organPreset);
+    assert.equal(organPreset.type, "escala_organ");
+    assert.equal(organPreset.scaleSections.length, 9);
   } finally {
     await ctx.cleanup();
   }
@@ -788,6 +799,7 @@ test("postgres reopens the same database without duplicating seed or migrations"
 
       assert.equal(secondBootstrap.forms.length, firstBootstrap.forms.length);
       assert.equal(secondBootstrap.users.length, firstBootstrap.users.length);
+      assert.equal(secondBootstrap.presets.length, firstBootstrap.presets.length);
       assert.deepEqual(secondMigrations, firstMigrations);
     } finally {
       await second.cleanup();
@@ -879,6 +891,24 @@ test("events endpoint persists linked forms and publishes manually", async () =>
     const published = await publishRes.json();
     assert.equal(published.event.status, "publicado");
     assert.ok(published.event.publishedAt);
+
+    const closeRes = await authedJson(ctx.baseUrl, "/api/events", {
+      ...published.event,
+      status: "encerrado",
+    }, adminToken);
+    assert.equal(closeRes.status, 200);
+    assert.equal((await closeRes.json()).event.status, "encerrado");
+
+    const reopenAsReadyRes = await authedJson(ctx.baseUrl, "/api/events", {
+      ...published.event,
+      status: "pronto",
+    }, adminToken);
+    assert.equal(reopenAsReadyRes.status, 200);
+    assert.equal((await reopenAsReadyRes.json()).event.status, "pronto");
+
+    const republishRes = await authedJson(ctx.baseUrl, `/api/events/${created.event.id}/publish`, {}, adminToken);
+    assert.equal(republishRes.status, 200);
+    assert.equal((await republishRes.json()).event.status, "publicado");
 
     const refreshedRes = await fetch(`${ctx.baseUrl}/api/bootstrap`);
     const refreshed = await refreshedRes.json();

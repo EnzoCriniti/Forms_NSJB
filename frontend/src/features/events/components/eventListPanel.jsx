@@ -22,6 +22,11 @@ const STATUS_TILE = {
 export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, onDelete, onTogglePinned }) => {
   const tile = STATUS_TILE[event.status] || { bg: COLORS.primaryLight, fg: COLORS.primary };
   const eventDate = parseEventDate(event.date);
+  const formattedDate = eventDate ? formatDate(event.date) : "";
+  const titleDateSuffix = formattedDate ? ` - ${formattedDate}` : "";
+  const displayTitle = titleDateSuffix && !String(event.title).endsWith(titleDateSuffix)
+    ? `${event.title}${titleDateSuffix}`
+    : event.title;
   return (
     <div
       className="form-card form-card--interactive elevated"
@@ -51,8 +56,7 @@ export const EventCard = ({ event, isPinned, canManageEvents, onOpen, onEdit, on
             </div>
           )}
           <div style={{ minWidth: 0, flex: 1 }}>
-            <strong style={{ fontSize: 15, display: "block", lineHeight: 1.3 }}>{event.title}</strong>
-            {eventDate && <span style={{ fontSize: 11.5, color: COLORS.textMuted }}>{formatDate(event.date)}</span>}
+            <strong style={{ fontSize: 15, display: "block", lineHeight: 1.3 }}>{displayTitle}</strong>
           </div>
           {isPinned && (
             <span title="Evento fixado" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: 8, background: COLORS.warningLight, color: "var(--secondary-strong)", flexShrink: 0 }}>

@@ -35,9 +35,8 @@ const ensureLinkedFormsExist = async formIds => {
   }
 };
 
-const normalizeStatus = (requestedStatus, formIds, existingEvent) => {
-  if (requestedStatus === "encerrado") return "encerrado";
-  if (requestedStatus === "publicado" || existingEvent?.status === "publicado") return "publicado";
+const normalizeStatus = (requestedStatus, formIds) => {
+  if (requestedStatus !== "rascunho" && EVENT_STATUS.includes(requestedStatus)) return requestedStatus;
   return formIds.length > 0 ? "pronto" : "rascunho";
 };
 
@@ -75,7 +74,7 @@ export const saveEvent = async payload => {
   const formIds = normalizeFormIds(payload.formIds);
   await ensureLinkedFormsExist(formIds);
 
-  const status = normalizeStatus(payload.status, formIds, existingEvent);
+  const status = normalizeStatus(payload.status, formIds);
   const eventId = await upsertEventRecord({
     id: payload.id ? Number(payload.id) : null,
     title,

@@ -170,31 +170,46 @@ const ensureLabelsSeed = async () => {
   });
 };
 
+const insertPresetSeed = async (tx, preset, now) => tx.execute(`
+  INSERT INTO presets (
+    type, name, description, closing_text, labels_json, field_definitions_json, results_config_json,
+    scale_sections_json, created_by, created_at, updated_at
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`, [
+  preset.type,
+  preset.name,
+  preset.desc || "",
+  preset.closingText || "",
+  stringifyJson(preset.labels || []),
+  stringifyJson(preset.fieldDefinitions || []),
+  stringifyJson(preset.resultsConfig || {}),
+  stringifyJson(preset.scaleSections || []),
+  "Sistema",
+  now,
+  now,
+]);
+
 const ensurePresetsSeed = async () => {
-  const count = (await database.queryOne("SELECT COUNT(*) AS total FROM presets"))?.total || 0;
-  if (count) return;
+  const count = Number((await database.queryOne("SELECT COUNT(*) AS total FROM presets"))?.total || 0);
   const now = nowIso();
 
   await database.withTransaction(async tx => {
-    for (const preset of PRESETS) {
-      await tx.execute(`
-        INSERT INTO presets (
-          type, name, description, closing_text, labels_json, field_definitions_json, results_config_json,
-          scale_sections_json, created_by, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        preset.type,
-        preset.name,
-        preset.desc || "",
-        preset.closingText || "",
-        stringifyJson(preset.labels || []),
-        stringifyJson(preset.fieldDefinitions || []),
-        stringifyJson(preset.resultsConfig || {}),
-        stringifyJson(preset.scaleSections || []),
-        "Sistema",
-        now,
-        now,
-      ]);
+    if (!count) {
+      for (const preset of PRESETS) await insertPresetSeed(tx, preset, now);
+      return;
+    }
+
+    for (const preset of PRESETS.filter(item => item.type === "escala_organ")) {
+      const current = await tx.queryOne("SELECT id FROM presets WHERE type = ? AND name = ?", [preset.type, preset.name]);
+      if (current) continue;
+
+      const legacyName = preset.name.replace("Escala da Organ", "Escala Organ");
+      const legacy = await tx.queryOne("SELECT id FROM presets WHERE type = ? AND name = ?", [preset.type, legacyName]);
+      if (legacy) {
+        await tx.execute("UPDATE presets SET name = ?, updated_at = ? WHERE id = ?", [preset.name, now, legacy.id]);
+      } else {
+        await insertPresetSeed(tx, preset, now);
+      }
     }
   });
 };

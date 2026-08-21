@@ -229,6 +229,20 @@ export const useEventsScreenController = ({
     }
   };
 
+  const reopen = async () => {
+    if (!selectedEvent || !onSaveEvent) return;
+    setStatusAction("reopen");
+    setFeedback(null);
+    try {
+      await onSaveEvent({ ...selectedEvent, status: "publicado" });
+      setFeedback({ tone: "success", message: "Evento reaberto." });
+    } catch (error) {
+      setFeedback({ tone: "error", message: resolveActionErrorMessage(error) });
+    } finally {
+      setStatusAction(null);
+    }
+  };
+
   const requestDeleteMessage = message => setPendingMessageDelete(message);
 
   const cancelDeleteMessage = () => {
@@ -319,6 +333,7 @@ export const useEventsScreenController = ({
     save,
     publish,
     close,
+    reopen,
     confirmDelete,
     previousEventsPage,
     nextEventsPage,

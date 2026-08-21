@@ -42,6 +42,26 @@ describe("CreateFormScreen", () => {
     expect(container.querySelector(".create-form-mobile-hero")).toBeInTheDocument();
   });
 
+  it("oferece e aplica o preset completo da escala da Organ", () => {
+    const organPreset = {
+      id: 4,
+      type: "escala_organ",
+      name: "Escala da Organ - Completa",
+      scaleSections: [
+        { title: "Preparação do Jantar. Servir às 17h", responsaveis: 1, auxiliares: 3 },
+        { title: "Limpeza Após o Jantar", responsaveis: 1, auxiliares: 4 },
+      ],
+    };
+
+    renderNewForm({ setupType: "escala_organ", presets: [organPreset] });
+
+    fireEvent.change(screen.getByDisplayValue("Template vazio"), { target: { value: "4" } });
+
+    expect(screen.getByDisplayValue("Escala da Organ - Completa (Escala)")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Preparação do Jantar. Servir às 17h")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Limpeza Após o Jantar")).toBeInTheDocument();
+  });
+
   it("inicia no modo nucleo com campo da base central ativo", () => {
     renderNewForm();
 

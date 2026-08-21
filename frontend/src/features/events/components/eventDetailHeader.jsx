@@ -10,6 +10,7 @@ export const EventDetailHeader = ({
   onBack,
   onPublish,
   onClose,
+  onReopen,
   onEdit,
   onCreateForm,
   onCreateMessage,
@@ -29,6 +30,9 @@ export const EventDetailHeader = ({
         )}
         {canManageEvents && event.status === "publicado" && (
           <Btn v="secondary" icon="lock" onClick={onClose} loading={statusAction === "close"} disabled={Boolean(statusAction)}>Encerrar</Btn>
+        )}
+        {canManageEvents && event.status === "encerrado" && onReopen && (
+          <Btn v="secondary" icon="upload" onClick={onReopen} loading={statusAction === "reopen"} disabled={Boolean(statusAction)}>Reabrir</Btn>
         )}
         {canManageEvents && <Btn v="secondary" icon="edit" onClick={onEdit}>Editar</Btn>}
         {canManageEvents && detailTab === "forms" && <Btn icon="plus" onClick={onCreateForm} title="Novo formulário">Novo formulário</Btn>}

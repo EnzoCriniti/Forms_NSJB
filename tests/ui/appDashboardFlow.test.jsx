@@ -147,10 +147,10 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    expect(await screen.findByText("Evento Dashboard")).toBeInTheDocument();
+    expect(await screen.findByText(/Evento Dashboard/)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo" })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Evento Dashboard"));
+    fireEvent.click(screen.getByText(/Evento Dashboard/));
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
   });
 
@@ -171,7 +171,7 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    fireEvent.click(await screen.findByText("Evento Dashboard"));
+    fireEvent.click(await screen.findByText(/Evento Dashboard/));
     fireEvent.click(screen.getByRole("button", { name: "Responder" }));
     fireEvent.click(await screen.findByRole("button", { name: "Voltar para listagem" }));
 
@@ -196,7 +196,7 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    fireEvent.click(await screen.findByText("Evento Dashboard"));
+    fireEvent.click(await screen.findByText(/Evento Dashboard/));
     fireEvent.click(await screen.findByRole("button", { name: "Ver resultados" }));
 
     expect(await screen.findByText("Resultado do preenchimento")).toBeInTheDocument();
@@ -223,7 +223,7 @@ describe("App dashboard flow", () => {
 
     render(<App />);
 
-    fireEvent.click(await screen.findByText("Evento Dashboard"));
+    fireEvent.click(await screen.findByText(/Evento Dashboard/));
     expect(await screen.findByRole("button", { name: "Voltar" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Dashboard" }));
@@ -292,9 +292,9 @@ describe("App dashboard flow", () => {
 
     expect(await screen.findByRole("button", { name: "Eventos" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Dashboard" })).not.toBeInTheDocument();
-    expect(screen.getByText("Evento Dashboard")).toBeInTheDocument();
+    expect(screen.getByText(/Evento Dashboard/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText("Evento Dashboard"));
+    fireEvent.click(screen.getByText(/Evento Dashboard/));
 
     expect(await screen.findByText("Presenca Dashboard")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Novo formulário" })).not.toBeInTheDocument();

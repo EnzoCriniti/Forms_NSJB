@@ -206,6 +206,21 @@ describe("FormListScreen", () => {
     expect(window.location.hash).toBe("");
   });
 
+  it("mostra resultados ao visitante somente quando a publicacao externa esta habilitada", () => {
+    window.location.hash = "";
+    const publicForm = {
+      ...forms[0],
+      resultsConfig: { ...forms[0].resultsConfig, publicResultsEnabled: true },
+    };
+    const { rerender } = render(<FormListScreen onNavigate={vi.fn()} user={null} labels={labels} forms={[publicForm]} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Ver resultados" }));
+    expect(window.location.hash).toBe("#/formularios/1/resultados");
+
+    rerender(<FormListScreen onNavigate={vi.fn()} user={null} labels={labels} forms={[forms[0]]} />);
+    expect(screen.queryByRole("button", { name: "Ver resultados" })).not.toBeInTheDocument();
+  });
+
   it("abre resposta interna para usuario autenticado", () => {
     const onNavigate = vi.fn();
     render(<FormListScreen onNavigate={onNavigate} user={{ role: "viewer", name: "Viewer" }} labels={labels} forms={forms} />);

@@ -11,7 +11,6 @@ import {
   createAuthSessionRecord,
   findAuthSessionByTokenHash,
   revokeAuthSessionRecord,
-  revokeAuthSessionsByRole,
   revokeAuthSessionsByUserId,
   touchAuthSessionRecord,
 } from "../repositories/sessionsRepository.mjs";
@@ -101,11 +100,7 @@ export const loginWithCredentials = async ({ username, password }) => {
     await migrateLegacyPassword(user, secret);
   }
 
-  if (user.role === "admin") {
-    await revokeAuthSessionsByRole("admin");
-  } else {
-    await revokeAuthSessionsByUserId(user.id);
-  }
+  await revokeAuthSessionsByUserId(user.id);
   const token = generateOpaqueToken();
   const tokenHash = hashOpaqueToken(token);
   const expiresAt = new Date(Date.now() + SESSION_TTL_MS).toISOString();

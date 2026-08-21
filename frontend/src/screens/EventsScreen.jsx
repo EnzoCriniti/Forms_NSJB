@@ -99,6 +99,7 @@ export const EventsScreen = ({
     save,
     publish,
     close,
+    reopen,
     confirmDelete,
     previousEventsPage,
     nextEventsPage,
@@ -136,6 +137,7 @@ export const EventsScreen = ({
         }}
         onChangeDetailTab={setDetailTab}
         onClose={close}
+        onReopen={reopen}
         onCreateForm={() => onCreateFormInEvent(selectedEvent)}
         onCreateMessage={onCreateEventMessage ? () => onCreateEventMessage(selectedEvent) : null}
         onDeleteForm={onDeleteForm}

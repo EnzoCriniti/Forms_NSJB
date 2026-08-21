@@ -240,6 +240,8 @@ Mapa curto das areas mais mexidas por agentes.
 
 ## Autenticacao
 
+- `backend/services/authService.mjs`
+  Emite sessoes opacas e revoga apenas as sessoes anteriores da mesma conta. Administradores distintos podem permanecer autenticados simultaneamente; um novo login continua invalidando a sessao anterior daquele mesmo usuario.
 - `frontend/src/App.jsx`
   Quando nao ha sessao, renderiza a tela de login diretamente com `AuthPanel` em modo `sheet`.
 - `frontend/src/features/auth/AuthPanel.jsx`
@@ -492,6 +494,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/components/FormListCard.jsx`
   Card da listagem com metadados do formulario, incluindo badge do modo estrutural nos formularios de presenca.
   Tambem expõe a acao de copiar link publico de compartilhamento, montado por `frontend/src/lib/appPublicRoutes.js`.
+  Para visitantes, exibe `Ver resultados` apenas em presenca com `resultsConfig.publicResultsEnabled === true`, navegando para `#/formularios/<id>/resultados`.
   Presenca usa acento e icone verde-petroleo; escala da Organ usa acento e icone dourado para identificacao rapida.
 - `frontend/src/components/FormListToolbar.jsx`
   Barra de busca, filtros e ordenacao da listagem. No mobile, os filtros ficam em faixa horizontal rolavel.
@@ -504,7 +507,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/EventsScreenViews.jsx`
   Views de lista, detalhe e edicao da tela de eventos, extraidas de `EventsScreen.jsx`; o topo da listagem inclui uma breve explicacao do fluxo.
 - `frontend/src/screens/eventsScreenController.js`
-  Controller da tela de eventos: estado de modo, selecao, feedback, paginacao e acoes de salvar, publicar, encerrar e excluir.
+  Controller da tela de eventos: estado de modo, selecao, feedback, paginacao e acoes de salvar, publicar, encerrar, reabrir e excluir.
   Sincroniza `initialSelectedEventId` com o modo detalhe/lista e avisa o shell quando um evento e aberto, salvo ou limpo.
   A listagem usa busca/filtros/ordenacao/paginacao de eventos no backend via `GET /api/events`, substituindo a pagina atual no bootstrap.
 - `frontend/src/screens/eventsDomain.js`
@@ -515,17 +518,18 @@ Mapa curto das areas mais mexidas por agentes.
   Shell visual do editor de evento, compondo cabecalho e campos do formulario.
 - `frontend/src/features/events/components/eventListPanel.jsx`
   Card e listagem visual de eventos, incluindo botoes administrativos e paginacao.
+  O titulo do card inclui a data formatada para facilitar a navegacao, sem duplicar a data quando ela ja estiver no titulo persistido.
   Inclui a barra responsiva de pesquisa, status e ordenacao de eventos; a busca deve chamar o backend, nao filtrar somente a pagina atual.
 - `frontend/src/features/events/components/eventDetailFormsPanel.jsx`
   Lista visual de formularios vinculados ao detalhe de evento, adaptando `FormListCard`.
 - `frontend/src/features/events/components/eventDetailHeader.jsx`
-  Cabecalho visual do detalhe de evento, incluindo status e acoes administrativas.
+  Cabecalho visual do detalhe de evento, incluindo status e acoes administrativas de publicar, encerrar e reabrir.
 - `frontend/src/features/events/components/eventDetailTabs.jsx`
   Abas visuais do detalhe de evento para formularios e mensagens.
 - `frontend/src/features/events/components/eventDeleteConfirmModal.jsx`
   Modal de confirmacao de exclusao de evento.
 - `frontend/src/features/events/components/eventEditorFieldsPanel.jsx`
-  Campos visuais do editor de evento, incluindo nome, data, abertura, fechamento, descricao e acoes.
+  Campos visuais do editor de evento, incluindo nome, data, abertura, fechamento, descricao, status e acoes. Inputs usam largura limitada ao grid para a data nao escapar do card.
 - `frontend/src/features/events/components/eventPaginationControls.jsx`
   Controles visuais de paginacao reutilizados pela lista de eventos e pelos formularios do detalhe.
 - `frontend/src/features/events/components/eventMessagesListPanel.jsx`
@@ -553,7 +557,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `backend/routes/eventRoutes.mjs`
   Rotas de eventos: `GET /api/events` pesquisa, filtra, ordena e pagina eventos para usuarios autenticados; admin usa `POST /api/events`, `DELETE /api/events/:id` e `POST /api/events/:id/publish`.
 - `backend/services/eventsService.mjs`
-  Normaliza evento, valida formularios vinculados, pesquisa eventos paginados e remove agrupadores sem apagar formularios.
+  Normaliza evento, valida formularios vinculados, permite transicoes explicitas de status (inclusive sair de publicado/encerrado), pesquisa eventos paginados e remove agrupadores sem apagar formularios.
 - `backend/repositories/eventsRepository.mjs`
   Persistencia da tabela `events`, incluindo busca por texto, filtro de status, ordenacao e `LIMIT/OFFSET`.
 
@@ -609,6 +613,8 @@ Mapa curto das areas mais mexidas por agentes.
   Normalizacao de `person_select` e `memberBinding` ligados a base central de socios.
 - `frontend/src/screens/createFormTemplates.js`
   Payload e estado de aplicacao de templates reutilizaveis da criacao de formulario.
+- `backend/seed.mjs` e `backend/data/seedData.mjs`
+  Definem e garantem os presets `Escala da Organ - Completa` e `Escala da Organ - Enxuta`. Em bancos existentes, o seed renomeia os nomes legados ou insere os presets ausentes sem sobrescrever templates personalizados.
 - `frontend/src/screens/createFormState.js`
   Estado inicial, selecao de formato e retorno de salvamento do editor de formulario.
 - `frontend/src/screens/createFormModeTransition.js`
@@ -715,6 +721,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/PresenceTotalsPanel.jsx`
   Painel visual de totalizacao da planilha de presenca.
   O cabecalho do painel usa o titulo simples `Resultado do preenchimento`, sem contadores de indicadores ou respostas.
+  Campos Sim/Nao reconhecidos como refeicao exibem presentes estimados, separados em respondentes, criancas, jovens e visitantes adultos.
 - `frontend/src/screens/PresenceResultsTable.jsx`
   Tabela visual da planilha de presenca, incluindo cabecalho, linhas e area rolavel.
 - `frontend/src/screens/resultsDomain.js`
@@ -728,6 +735,7 @@ Mapa curto das areas mais mexidas por agentes.
 - `frontend/src/screens/resultsPresenceTableDomain.js`
   Linhas, respostas base, stats, totais, layout de totais, resumo e largura minima da planilha de presenca.
   O resumo superior evita cards auxiliares de configuracao; sem total esperado, mostra apenas respostas recebidas.
+  Para cada refeicao confirmada com `Sim`, soma os campos numericos de acompanhantes daquela resposta; acompanhantes nao entram nas refeicoes marcadas como `Nao`.
 - `frontend/src/screens/resultsPresenceFilterDomain.js`
   Botoes de filtro, filtro por coluna/grau, filtro de respostas, ordenacao de linhas e opcoes do filtro ativo.
 - `frontend/src/screens/resultsEscalaDomain.js`

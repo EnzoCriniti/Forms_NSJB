@@ -129,7 +129,7 @@ export const PRESETS = [
   {
     id: 4,
     type: "escala_organ",
-    name: "Escala Organ - Completa",
+    name: "Escala da Organ - Completa",
     desc: "Escala completa da Organ com todas as funções de preparo, limpeza e coleta.",
     closingText: "Esta escala não está mais aceitando inscrições.",
     labels: [1],
@@ -149,7 +149,7 @@ export const PRESETS = [
   {
     id: 5,
     type: "escala_organ",
-    name: "Escala Organ - Enxuta",
+    name: "Escala da Organ - Enxuta",
     desc: "Escala simplificada da Organ apenas com preparo e limpeza.",
     closingText: "Esta escala não está mais aceitando inscrições.",
     labels: [1],

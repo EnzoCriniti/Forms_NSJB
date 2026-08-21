@@ -44,6 +44,7 @@ nao mais um papel fixo. Detalhes em [docs/AI_CODEMAP.md](AI_CODEMAP.md) e em
 
 As camadas de sistema preservam a mecanica legada de `role` (`admin`/`viewer`) derivada das
 capacidades, para compatibilidade de sessao.
+Administradores diferentes podem usar a plataforma ao mesmo tempo; um novo login invalida apenas a sessao anterior da mesma conta.
 
 ## Funcionalidades por area
 
@@ -53,6 +54,7 @@ capacidades, para compatibilidade de sessao.
 - permite buscar, ordenar, filtrar e fixar formularios para perfis de edicao
 - permite abrir link publico
 - permite acessar resultados, quando o perfil autoriza
+- permite ao visitante abrir `Ver resultados` quando a publicacao externa foi habilitada no formulario
 - permite arquivar ou restaurar formularios
 - permite excluir formulario com chave mestra
 
@@ -68,6 +70,7 @@ Como essa area funciona:
 - cria formularios de presenca
 - cria formularios de escala
 - aplica presets como base inicial
+- oferece presets completo e enxuto da Escala da Organ, inclusive em bancos atualizados
 - edita titulo, sessao, descricao, datas e status
 - configura classificacoes
 - define campos de presenca
@@ -118,6 +121,7 @@ Como essa area funciona:
 - exibe respostas por formulario
 - exibe escala preenchida e pendente
 - mostra totais e resumo operacional
+- estima por refeicao os respondentes, criancas, jovens e visitantes presentes, considerando acompanhantes apenas quando a pessoa confirmou aquela refeicao
 - permite exportacao em CSV, quando habilitada pela tela
 - permite edicao de configuracao da escala por admin
 
@@ -152,6 +156,8 @@ Como essa area funciona:
 
 - agrupa formularios vinculados a um evento
 - permite publicar eventos e abrir formularios associados
+- permite encerrar e reabrir eventos, alem de alterar novamente o status pelo editor
+- exibe a data no titulo dos cards de evento para facilitar a navegacao
 - permite criar mensagens de anuncio (abertura), lembrete de presenca e lembrete de vagas em aberto
 - usa modelos reutilizaveis que carregam configuracao (destinatarios + janelas), presets de pessoas e configuracao global
 - editor com chips de variaveis (insercao no cursor), preview ao vivo e filtro por grau nos lembretes

@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { COLORS, Icon, Badge, StatusBadge, Btn, TypeBadge } from "./ui";
 import { canCreateForms, canViewForm } from "../lib/auth";
 import { formatDate, formatDateTime, getFormMode, getFormModeLabel, isLinkedRosterEnabled } from "../lib/forms";
-import { buildPublicFormPath, buildPublicFormUrl } from "../lib/appPublicRoutes";
+import { buildPublicFormPath, buildPublicFormResultsPath, buildPublicFormUrl } from "../lib/appPublicRoutes";
 
 const LIST_ACTION_STYLE = {
   width: 42,
@@ -36,7 +36,8 @@ export const FormListCard = ({
   const copiedPublicLinkTimerRef = useRef(null);
   const responses = form.metrics?.responses || 0;
   const total = form.metrics?.total || form.totalExpected || 0;
-  const canOpenResults = canViewForm(user, form);
+  const publicResultsEnabled = form.type === "presenca" && form.resultsConfig?.publicResultsEnabled === true;
+  const canOpenResults = user ? canViewForm(user, form) : publicResultsEnabled;
   const showFillSummary = Boolean(user) && (form.type === "escala_organ" || isLinkedRosterEnabled(form));
   const isScaleForm = form.type === "escala_organ";
   const typeIcon = isScaleForm ? "users" : "clipboard";
@@ -62,7 +63,11 @@ export const FormListCard = ({
 
   const openResults = () => {
     if (!canOpenResults) return;
-    onNavigate("results", form);
+    if (user) {
+      onNavigate("results", form);
+      return;
+    }
+    window.location.hash = buildPublicFormResultsPath(form);
   };
 
   const toggleArchive = async () => {

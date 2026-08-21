@@ -42,6 +42,7 @@ export const EventDetailView = ({
   onArchiveForm,
   onBack,
   onClose,
+  onReopen,
   onCreateForm,
   onCreateMessage,
   onDeleteForm,
@@ -76,6 +77,7 @@ export const EventDetailView = ({
       onBack={onBack}
       onPublish={onPublish}
       onClose={onClose}
+      onReopen={onReopen}
       onEdit={onEdit}
       onCreateForm={onCreateForm}
       onCreateMessage={onCreateMessage}
